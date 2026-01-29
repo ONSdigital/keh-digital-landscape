@@ -1,10 +1,10 @@
 # Digital Landscape
 
-![Linting Status](https://github.com/ONSDigital/keh-digital-landscape/actions/workflows/ci.yml/badge.svg)
-![CodeQL Status](https://github.com/ONSDigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
-![Dependabot Status](https://github.com/ONSDigital/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
-[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONSDigital/keh-digital-landscape/blob/main/LICENSE)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONSDigital/keh-digital-landscape.svg)](https://github.com/ONSDigital/keh-digital-landscape/pulls)
+![Linting Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci.yml/badge.svg)
+![CodeQL Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
+![Dependabot Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
+[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONSdigital/keh-digital-landscape/blob/main/LICENSE)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONSDigital/keh-digital-landscape.svg)](https://github.com/ONSdigital/keh-digital-landscape/pulls)
 
 This tool aims to provide a visual representation of the digital landscape at ONS. This consists of the following main pages:
 
