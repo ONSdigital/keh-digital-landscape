@@ -49,7 +49,7 @@ function HelpModal({ show, onClose }) {
           To view more detailed information about the Digital Landscape, view
           this{' '}
           <a
-            href="https://ons-innovation.github.io/keh-digital-landscape/"
+            href="https://onsdigital.github.io/keh-digital-landscape/"
             target="_blank"
             rel="noopener noreferrer"
           >
