@@ -9,14 +9,14 @@ resources:
     type: git
     icon: github
     source:
-      uri: https://github.com/ONS-Innovation/keh-digital-landscape
+      uri: https://github.com/ONSdigital/keh-digital-landscape
       username: ((github_access_token))
       password: x-oauth-basic
       branch: ((branch))
   - name: github-release
     type: github-release
     source:
-      owner: ONS-Innovation
+      owner: ONSdigital
       repository: keh-digital-landscape
       access_token: ((github_access_token))
   - name: github-release-tag
@@ -276,6 +276,8 @@ jobs:
               inputs:
                 - name: resource-repo
                 - name: github-release-tag
+              outputs:
+                - name: built-images
               params:
                 aws_account_id: ((aws_account_sdp_prod))
                 aws_role_arn: arn:aws:iam::((aws_account_sdp_prod)):role/sdp-concourse-prod
