@@ -59,7 +59,7 @@ This is the homepage of the tool. It provides a brief overview of the tool and i
 Clone the repository:
 
 ```bash
-git clone https://github.com/ONSDigital/keh-digital-landscape.git
+git clone https://github.com/ONSdigital/keh-digital-landscape.git
 ```
 
 Install both backend and frontend dependencies:
