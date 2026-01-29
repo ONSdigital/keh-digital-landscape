@@ -32,7 +32,9 @@ const AddressBookPage = () => {
       }
       const contentType = res.headers.get('content-type') || '';
       if (!contentType.includes('application/json')) {
-        throw new Error('Unexpected non-JSON response from server: \n' + q + '\n' + res);
+        throw new Error(
+          'Unexpected non-JSON response from server: \n' + q + '\n' + res
+        );
       }
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
