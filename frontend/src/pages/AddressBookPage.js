@@ -30,6 +30,12 @@ const AddressBookPage = () => {
       if (!res.ok) {
         throw new Error(`Request failed: ${res.status}`);
       }
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(
+          'Unexpected non-JSON response from server: \n' + q + '\n' + res
+        );
+      }
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch (e) {
