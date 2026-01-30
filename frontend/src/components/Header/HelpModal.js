@@ -245,24 +245,22 @@ function HelpModal({ show, onClose }) {
                   When should you use the technology in the 4 rings?
                   <ul className="help-modal-sublist">
                     <li>
-                      <strong>Adopt:</strong> use these technologies as the
-                      foundation for core applications and infrastructure.
+                      <strong>Adopt:</strong> use these technologies for all
+                      projects including mission-critical, customer-facing, and
+                      high-risk systems.
                     </li>
                     <li>
-                      <strong>Trial:</strong> conduct pilot projects,
-                      proof-of-concepts, or small-scale deployments with a low
-                      risk to evaluate their suitability before adopting them
-                      widely.
+                      <strong>Trial:</strong> use these technologies in low-risk
+                      projects in production, with security approval
                     </li>
                     <li>
-                      <strong>Assess:</strong> experiment with these
-                      technologies in non-critical environments, such as
-                      research projects, internal tools or sandbox deployments.
+                      <strong>Assess:</strong> use these technologies in
+                      research spikes, hackathons and proof-of-concepts
                     </li>
                     <li>
-                      <strong>Hold:</strong> avoid using these technologies
-                      unless they are required for supporting legacy systems
-                      that cannot be easily migrated.
+                      <strong>Hold:</strong> avoid use these technologies unless
+                      they are required for supporting legacy systems that
+                      cannot be easily migrated
                     </li>
                   </ul>
                 </li>
