@@ -126,8 +126,8 @@ The service organises technologies into quadrants:
 Technologies are classified into rings based on adoption status:
 
 - **Adopt** - Technologies ready for production use
-- **Trial** - Technologies worth pursuing in proof of concepts
-- **Assess** - Technologies to explore with the goal of understanding their fit
+- **Trial** - Technologies used in low-risk projects (with security approval)
+- **Assess** - Technologies used in research spikes, hackathons and proof-of-concepts
 - **Hold** - Technologies to avoid or phase out
 
 ## Validation Logic
