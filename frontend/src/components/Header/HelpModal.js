@@ -251,16 +251,16 @@ function HelpModal({ show, onClose }) {
                     </li>
                     <li>
                       <strong>Trial:</strong> use these technologies in low-risk
-                      projects in production, with security approval
+                      projects in production, with security approval.
                     </li>
                     <li>
                       <strong>Assess:</strong> use these technologies in
-                      research spikes, hackathons and proof-of-concepts
+                      research spikes, hackathons and proof-of-concepts.
                     </li>
                     <li>
-                      <strong>Hold:</strong> avoid use these technologies unless
+                      <strong>Hold:</strong> avoid using these technologies unless
                       they are required for supporting legacy systems that
-                      cannot be easily migrated
+                      cannot be easily migrated.
                     </li>
                   </ul>
                 </li>
