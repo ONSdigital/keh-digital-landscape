@@ -258,9 +258,9 @@ function HelpModal({ show, onClose }) {
                       research spikes, hackathons and proof-of-concepts.
                     </li>
                     <li>
-                      <strong>Hold:</strong> avoid using these technologies unless
-                      they are required for supporting legacy systems that
-                      cannot be easily migrated.
+                      <strong>Hold:</strong> avoid using these technologies
+                      unless they are required for supporting legacy systems
+                      that cannot be easily migrated.
                     </li>
                   </ul>
                 </li>
