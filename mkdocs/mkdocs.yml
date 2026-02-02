@@ -59,7 +59,6 @@ nav:
       - Overview: testing/index.md
       - Frontend: testing/frontend.md
       - Backend: testing/backend.md
-      - Frontend: testing/frontend.md
       - Accessibility: testing/accessibility.md
   - Additional Notes:
       - Multiple Directorates Support: additionalNotes/directorateSupport.md
