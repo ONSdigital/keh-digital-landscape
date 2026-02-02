@@ -18,8 +18,8 @@ resource "aws_iam_role" "ecs_task_role" {
 
 # Managed policy for CloudWatch Logs Access
 resource "aws_iam_policy" "task_logs_policy" {
-  name = "${var.domain}-${var.service_subdomain}-logs-policy"
-  path = "/"
+  name        = "${var.domain}-${var.service_subdomain}-logs-policy"
+  path        = "/"
   description = "Cloudwatch Logs Access"
 
   policy = jsonencode({
@@ -40,8 +40,8 @@ resource "aws_iam_policy" "task_logs_policy" {
 
 # Managed policy for S3 read and write access to specific bucket
 resource "aws_iam_policy" "s3_read_and_write" {
-  name = "${var.domain}-${var.service_subdomain}-s3-read-write"
-  path = "/"
+  name        = "${var.domain}-${var.service_subdomain}-s3-read-write"
+  path        = "/"
   description = "Read and write to specific bucket"
 
   policy = jsonencode({
@@ -68,8 +68,8 @@ resource "aws_iam_policy" "s3_read_and_write" {
 
 # Policy for S3 read access to copilot historic bucket
 resource "aws_iam_policy" "s3_copilot_read_only" {
-  name = "${var.domain}-${var.service_subdomain}-s3-copilot-read-only"
-  path = "/"
+  name        = "${var.domain}-${var.service_subdomain}-s3-copilot-read-only"
+  path        = "/"
   description = "Read-only access to copilot historic bucket"
 
   policy = jsonencode({
@@ -93,8 +93,8 @@ resource "aws_iam_policy" "s3_copilot_read_only" {
 
 # IAM policy to allow ECS task to access the specified Secrets Manager secret
 resource "aws_iam_policy" "secretsmanager_access" {
-  name = "${var.domain}-${var.service_subdomain}-secretsmanager-access"
-  path = "/"
+  name        = "${var.domain}-${var.service_subdomain}-secretsmanager-access"
+  path        = "/"
   description = "Access specified Secrets Manager secret"
 
   policy = jsonencode({
@@ -114,22 +114,22 @@ resource "aws_iam_policy" "secretsmanager_access" {
 
 # Attach managed policies to ECS Task Role
 resource "aws_iam_role_policy_attachment" "ecs_task_logs_attach" {
-  role = aws_iam_role.ecs_task_role.name
+  role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.task_logs_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_s3_read_and_write_attach" {
-  role = aws_iam_role.ecs_task_role.name
+  role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.s3_read_and_write.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_s3_copilot_read_only_attach" {
-  role = aws_iam_role.ecs_task_role.name
+  role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.s3_copilot_read_only.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_secretsmanager_access_attach" {
-  role = aws_iam_role.ecs_task_role.name
+  role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.secretsmanager_access.arn
 }
 
@@ -141,22 +141,22 @@ resource "aws_iam_group" "group" {
 
 # Attach managed policies to user group
 resource "aws_iam_group_policy_attachment" "group_task_logs_attach" {
-  group = aws_iam_group.service_group.name
+  group      = aws_iam_group.service_group.name
   policy_arn = aws_iam_policy.task_logs_policy.arn
 }
 
 resource "aws_iam_group_policy_attachment" "group_s3_read_and_write_attach" {
-  group = aws_iam_group.service_group.name
+  group      = aws_iam_group.service_group.name
   policy_arn = aws_iam_policy.s3_read_and_write.arn
 }
 
 resource "aws_iam_group_policy_attachment" "group_s3_copilot_read_only_attach" {
-  group = aws_iam_group.service_group.name
+  group      = aws_iam_group.service_group.name
   policy_arn = aws_iam_policy.s3_copilot_read_only.arn
 }
 
 resource "aws_iam_group_policy_attachment" "group_secretsmanager_access_attach" {
-  group = aws_iam_group.service_group.name
+  group      = aws_iam_group.service_group.name
   policy_arn = aws_iam_policy.secretsmanager_access.arn
 }
 
@@ -166,7 +166,7 @@ resource "aws_iam_user" "user" {
   path = "/"
 
   tags = {
-    tag-key = "tag-value" 
+    tag-key = "tag-value"
   }
 }
 
