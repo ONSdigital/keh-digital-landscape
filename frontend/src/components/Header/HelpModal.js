@@ -246,7 +246,7 @@ function HelpModal({ show, onClose }) {
                   <ul className="help-modal-sublist">
                     <li>
                       <strong>Adopt:</strong> use these technologies for all
-                      projects including mission-critical, customer-facing, and
+                      projects including mission-critical, customer-facing and
                       high-risk systems.
                     </li>
                     <li>
