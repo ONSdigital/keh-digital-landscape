@@ -171,7 +171,7 @@ resource "aws_iam_user" "user" {
 }
 
 # Assign IAM User to group
-resource "aws_iam_user_group_membership" "example1" {
+resource "aws_iam_user_group_membership" "user_group_attach" {
   user = aws_iam_user.user.name
 
   groups = [
