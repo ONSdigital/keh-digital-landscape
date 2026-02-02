@@ -2,14 +2,14 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: keh-digital-landscape
-  description: "An internally developed Digital Landscape platform that presents the organisation’s repositories, projects, technology stack and GitHub Copilot usage."
+  description: 'An internally developed Digital Landscape platform that presents the organisation’s repositories, projects, technology stack and GitHub Copilot usage.'
   annotations:
     github.com/project-slug: ONSDigital/keh-digital-landscape
   links:
     - url: https://onsdigital.github.io/keh-digital-landscape
-      title: Digital Landscape Documentation  
+      title: Digital Landscape Documentation
 spec:
   type: website
   lifecycle: production
   owner: keh-dev
-  system: "system:default/keh-system"
+  system: 'system:default/keh-system'

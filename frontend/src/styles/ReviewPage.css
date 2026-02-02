@@ -1,13 +1,10 @@
 .admin-page {
   padding: 0;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
-
   align-items: flex-start;
   justify-content: flex-start;
-
   max-height: calc(100vh - var(--header-height));
 }
 
@@ -66,7 +63,7 @@
   gap: 8px;
 }
 
-@media (max-width: 650px) {
+@media (width <= 650px) {
   .admin-filter-search-flex {
     flex-direction: column;
     align-items: flex-start;
@@ -88,7 +85,7 @@
   width: fit-content;
 }
 
-@media (max-width: 1250px) {
+@media (width <= 1250px) {
   .admin-details {
     flex-direction: column;
     align-items: flex-start;
@@ -135,7 +132,7 @@
   align-self: stretch;
 }
 
-@media (max-width: 1250px) {
+@media (width <= 1250px) {
   .admin-grid-container {
     flex-direction: column;
   }
@@ -163,20 +160,21 @@
   grid-template-columns: repeat(1, 1fr);
   width: 50%;
 }
-@media (max-width: 1250px) {
+
+@media (width <= 1250px) {
   .admin-grid:nth-child(3) {
     grid-template-columns: repeat(2, 1fr);
     width: 100%;
   }
 }
 
-@media (max-width: 1078px) {
+@media (width <= 1078px) {
   .admin-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 580px) {
+@media (width <= 580px) {
   .admin-grid {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -224,7 +222,7 @@
 
 .admin-box-divider {
   width: 100%;
-  height: 0px;
+  height: 0;
   border-top: 1px solid hsl(var(--border));
   box-sizing: border-box;
 }
@@ -272,7 +270,7 @@
   gap: 8px;
 }
 
-@media (max-width: 420px) {
+@media (width <= 420px) {
   .droppable-group-items {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -365,7 +363,7 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
   .draggable-item {
     padding: 4px 12px;
   }
@@ -394,7 +392,7 @@
 }
 
 .save-button:hover {
-  background-color: hsl(var(--primary) / 0.75);
+  background-color: hsl(var(--primary) / 75%);
 }
 
 .save-button:active {
@@ -427,7 +425,7 @@
   width: 1px;
 }
 
-@media (max-width: 1250px) {
+@media (width <= 1250px) {
   .timeline-display {
     max-width: none;
     width: 100%;
@@ -576,7 +574,7 @@
   gap: 8px;
 }
 
-@media (max-width: 1078px) {
+@media (width <= 1078px) {
   .add-technology-container {
     flex-direction: column;
   }
@@ -638,7 +636,7 @@ textarea.technology-input {
 }
 
 .add-button:hover {
-  background-color: hsl(var(--primary) / 0.75);
+  background-color: hsl(var(--primary) / 75%);
 }
 
 .add-button:active {
@@ -715,7 +713,7 @@ textarea.technology-input {
   border-color: hsl(var(--primary));
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .modal-overlay {
     align-items: flex-end;
     justify-content: flex-end;
@@ -747,14 +745,14 @@ textarea.technology-input {
 }
 
 .destructive {
-  background-color: hsl(var(--destructive) / 0.4);
+  background-color: hsl(var(--destructive) / 40%);
   padding: 2px 8px;
   box-sizing: border-box;
   width: fit-content;
 }
 
 .constructive {
-  background-color: hsl(120 100% 25% / 0.4);
+  background-color: hsl(120deg 100% 25% / 40%);
   padding: 2px 8px;
   box-sizing: border-box;
   width: fit-content;
@@ -788,7 +786,7 @@ textarea.technology-input {
 }
 
 .modal-buttons button:first-child:not(:disabled):hover {
-  background: hsl(var(--primary) / 0.9);
+  background: hsl(var(--primary) / 90%);
   color: hsl(var(--primary-foreground));
 }
 
@@ -798,7 +796,7 @@ textarea.technology-input {
 }
 
 .modal-buttons button:last-child:hover {
-  background: hsl(var(--destructive) / 0.9);
+  background: hsl(var(--destructive) / 90%);
   color: hsl(var(--destructive-foreground));
 }
 
@@ -841,7 +839,7 @@ textarea.technology-input {
 }
 
 .admin-button:not(:disabled):hover {
-  background-color: hsl(var(--muted) / 0.75);
+  background-color: hsl(var(--muted) / 75%);
 }
 
 .admin-button:active {
@@ -865,6 +863,7 @@ textarea.technology-input {
   gap: 16px;
   text-align: left;
 }
+
 .tech-confirm-modal div {
   display: flex;
   align-items: center;
@@ -872,7 +871,7 @@ textarea.technology-input {
   gap: 8px;
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .admin-modal {
     border: none;
     width: 100%;
@@ -899,6 +898,7 @@ textarea.technology-input {
   border-radius: var(--radius);
   padding: 4px;
   box-sizing: border-box;
+
   /* gap: 8px; */
 }
 
@@ -947,7 +947,7 @@ textarea.technology-input {
   outline-offset: -2px;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (width <= 1200px) {
   .admin-container {
     padding: 16px;
   }
@@ -994,15 +994,15 @@ textarea.technology-input {
 }
 
 .banner-type-indicator.info {
-  background-color: hsl(210, 100%, 50%);
+  background-color: hsl(210deg 100% 50%);
 }
 
 .banner-type-indicator.warning {
-  background-color: hsl(45, 100%, 50%);
+  background-color: hsl(45deg 100% 50%);
 }
 
 .banner-type-indicator.error {
-  background-color: hsl(0, 100%, 65%);
+  background-color: hsl(0deg 100% 65%);
 }
 
 .existing-banners {
@@ -1026,13 +1026,13 @@ textarea.technology-input {
 }
 
 .banner-content h2 {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   font-size: 16px;
   font-weight: 600;
 }
 
 .banner-content p {
-  margin: 0 0 12px 0;
+  margin: 0 0 12px;
   font-size: 14px;
 }
 
@@ -1055,23 +1055,23 @@ textarea.technology-input {
 }
 
 .banner-type.info {
-  background-color: hsl(210, 100%, 95%);
-  color: hsl(210, 100%, 30%);
+  background-color: hsl(210deg 100% 95%);
+  color: hsl(210deg 100% 30%);
 }
 
 .banner-type.warning {
-  background-color: hsl(45, 100%, 90%);
-  color: hsl(45, 100%, 30%);
+  background-color: hsl(45deg 100% 90%);
+  color: hsl(45deg 100% 30%);
 }
 
 .banner-type.error {
-  background-color: hsl(0, 100%, 95%);
-  color: hsl(0, 100%, 45%);
+  background-color: hsl(0deg 100% 95%);
+  color: hsl(0deg 100% 45%);
 }
 
 .banner-status.active {
-  background-color: hsl(120, 100%, 95%);
-  color: hsl(120, 100%, 25%);
+  background-color: hsl(120deg 100% 95%);
+  color: hsl(120deg 100% 25%);
 }
 
 .banner-status.hidden {
@@ -1101,7 +1101,7 @@ textarea.technology-input {
 }
 
 .banner-toggle-btn:hover {
-  background-color: hsl(var(--primary) / 0.9);
+  background-color: hsl(var(--primary) / 90%);
 }
 
 .banner-delete-btn {
@@ -1116,28 +1116,28 @@ textarea.technology-input {
 
 /* Dark mode adjustments */
 :root[class~='dark'] .banner-type.info {
-  background-color: hsl(210, 50%, 20%);
-  color: hsl(210, 100%, 85%);
+  background-color: hsl(210deg 50% 20%);
+  color: hsl(210deg 100% 85%);
 }
 
 :root[class~='dark'] .banner-type.warning {
-  background-color: hsl(45, 50%, 20%);
-  color: hsl(45, 100%, 85%);
+  background-color: hsl(45deg 50% 20%);
+  color: hsl(45deg 100% 85%);
 }
 
 :root[class~='dark'] .banner-type.error {
-  background-color: hsl(0, 50%, 20%);
-  color: hsl(0, 100%, 85%);
+  background-color: hsl(0deg 50% 20%);
+  color: hsl(0deg 100% 85%);
 }
 
 :root[class~='dark'] .banner-status.active {
-  background-color: hsl(120, 50%, 20%);
-  color: hsl(120, 100%, 80%);
+  background-color: hsl(120deg 50% 20%);
+  color: hsl(120deg 100% 80%);
 }
 
 :root[class~='dark'] .banner-status.hidden {
-  background-color: hsl(0, 0%, 20%);
-  color: hsl(0, 0%, 70%);
+  background-color: hsl(0deg 0% 20%);
+  color: hsl(0deg 0% 70%);
 }
 
 .tech-radar-status-column,
@@ -1175,7 +1175,7 @@ textarea.technology-input {
   text-align: center;
   padding: 16px;
   color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted) / 0.2);
+  background: hsl(var(--muted) / 20%);
   border-radius: var(--radius);
   border: 1px dashed hsl(var(--border));
   margin-top: 16px;
@@ -1215,33 +1215,32 @@ textarea.technology-input {
   font-size: 14px;
   line-height: 1.5;
   color: hsl(var(--foreground));
-  background-color: hsl(var(--muted) / 0.3);
+  background-color: hsl(var(--muted) / 30%);
   border: none;
   outline: none;
   resize: vertical;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
 }
 
 .simple-editor:focus {
-  background-color: hsl(var(--muted) / 0.5);
+  background-color: hsl(var(--muted) / 50%);
 }
 
 .highlight-line {
   display: inline-block;
   width: 100%;
-  background-color: rgba(0, 123, 255, 0.3) !important;
+  background-color: rgb(0 123 255 / 30%) !important;
   border-radius: 2px;
 }
 
 /* Dark mode enhancements for editor */
 :root[class~='dark'] .simple-editor {
-  background-color: hsl(var(--muted) / 0.2);
+  background-color: hsl(var(--muted) / 20%);
   color: hsl(var(--card-foreground));
 }
 
 :root[class~='dark'] .simple-editor:focus {
-  background-color: hsl(var(--muted) / 0.3);
+  background-color: hsl(var(--muted) / 30%);
 }
 
 .editor-help-text {
@@ -1336,7 +1335,7 @@ textarea.technology-input {
 
 .markdown-tabs {
   display: flex;
-  background: hsl(var(--muted) / 0.3);
+  background: hsl(var(--muted) / 30%);
   border-bottom: 1px solid hsl(var(--border));
 }
 
@@ -1353,7 +1352,7 @@ textarea.technology-input {
 }
 
 .markdown-tab:hover {
-  background: hsl(var(--muted) / 0.5);
+  background: hsl(var(--muted) / 50%);
   color: hsl(var(--foreground));
 }
 

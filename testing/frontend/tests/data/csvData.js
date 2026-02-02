@@ -13,7 +13,7 @@ export const csvData = [
     Architectures: 'AWS',
     Datastores: 'AWS S3 Bucket',
     Infrastructure:
-      'AWS Elastic Container Registry (ECR); AWS Elastic Container Service (ECS)',
+      'AWS Elastic Container Registry (ECR); AWS Elastic Container Service (ECS)'
   },
   {
     Project: 'Another Project - GCP and AWS services',
@@ -28,7 +28,7 @@ export const csvData = [
     Architectures: 'GCP',
     Datastores: 'AWS Aurora',
     Infrastructure:
-      'Amazon Simple Queue Service (SQS); Amazon Simple Notification Service (SNS)',
+      'Amazon Simple Queue Service (SQS); Amazon Simple Notification Service (SNS)'
   },
   {
     Project: 'GCP Project',
@@ -42,7 +42,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'GCP',
     Datastores: 'GCP BigQuery',
-    Infrastructure: 'Compute Engine (CE); Google Kubernetes Engine (GKE)',
+    Infrastructure: 'Compute Engine (CE); Google Kubernetes Engine (GKE)'
   },
   {
     Project: 'AWS with GCP services',
@@ -56,7 +56,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'AWS',
     Datastores: 'Google AlloyDB',
-    Infrastructure: 'Google Cloud Run; Google Kubernetes Engine (GKE)',
+    Infrastructure: 'Google Cloud Run; Google Kubernetes Engine (GKE)'
   },
   {
     Project: 'Oracle Project',
@@ -70,7 +70,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'Oracle',
     Datastores: 'Oracle DB',
-    Infrastructure: 'Oracle Cloud Infrastructure (OCI)',
+    Infrastructure: 'Oracle Cloud Infrastructure (OCI)'
   },
   {
     Project: 'Javascript Project with lowercase s',
@@ -84,7 +84,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'Hybrid',
     Datastores: 'SQlite',
-    Infrastructure: 'OCI',
+    Infrastructure: 'OCI'
   },
   {
     Project: 'JavaScript Project with capital S',
@@ -98,7 +98,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'Oracle',
     Datastores: 'DBMS',
-    Infrastructure: 'OCI',
+    Infrastructure: 'OCI'
   },
   {
     Project: 'Typescript Project',
@@ -112,7 +112,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'Oracle',
     Datastores: 'DBMS',
-    Infrastructure: 'OCI',
+    Infrastructure: 'OCI'
   },
   {
     Project: 'TypeScript',
@@ -126,7 +126,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'Oracle',
     Datastores: 'DBMS',
-    Infrastructure: 'OCI',
+    Infrastructure: 'OCI'
   },
   {
     Project: 'TypeScript with all lowercase',
@@ -140,7 +140,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'Oracle',
     Datastores: 'DBMS',
-    Infrastructure: 'OCI',
+    Infrastructure: 'OCI'
   },
   {
     Project: 'Javascript with all lowercase',
@@ -154,7 +154,7 @@ export const csvData = [
     Hosted: 'Cloud',
     Architectures: 'OCI',
     Datastores: 'SQlite',
-    Infrastructure: 'OCI',
+    Infrastructure: 'OCI'
   },
   {
     Project: 'Java Project',
@@ -168,6 +168,6 @@ export const csvData = [
     Hosted: 'Hybrid',
     Architectures: 'OCI',
     Datastores: 'SQlite',
-    Infrastructure: 'OCI',
-  },
-];
+    Infrastructure: 'OCI'
+  }
+]

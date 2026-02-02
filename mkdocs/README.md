@@ -23,7 +23,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 make setup

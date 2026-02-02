@@ -5,14 +5,14 @@ export const getFormattedTime = isoString => {
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false,
-  };
+    hour12: false
+  }
 
   if (!isoString) {
-    const no_activity = new Date('1900-01-01 00:00');
-    return no_activity.toLocaleString('en-GB', options).replace(',', '');
+    const no_activity = new Date('1900-01-01 00:00')
+    return no_activity.toLocaleString('en-GB', options).replace(',', '')
   }
-  const date = new Date(isoString);
+  const date = new Date(isoString)
 
-  return date.toLocaleString('en-GB', options).replace(',', '');
-};
+  return date.toLocaleString('en-GB', options).replace(',', '')
+}

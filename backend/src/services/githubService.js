@@ -1,14 +1,14 @@
 const {
-  getAppAndInstallation,
-} = require('../utilities/getAppAndInstallation.js');
-const logger = require('../config/logger');
+  getAppAndInstallation
+} = require('../utilities/getAppAndInstallation.js')
+const logger = require('../config/logger')
 
 /**
  * GitHubService class for managing GitHub operations
  */
 class GitHubService {
-  constructor() {
-    this.org = process.env.GITHUB_ORG || 'ONSdigital';
+  constructor () {
+    this.org = process.env.GITHUB_ORG || 'ONSdigital'
   }
 
   /**
@@ -17,43 +17,43 @@ class GitHubService {
    * @param {string} userToken - GitHub access token for verification
    * @returns {Promise<Array>} Array of team members with login, name, and url
    */
-  async getTeamMembers(teamSlug, userToken) {
+  async getTeamMembers (teamSlug, userToken) {
     if (!userToken) {
-      throw new Error('Authentication required to access team members');
+      throw new Error('Authentication required to access team members')
     }
 
     try {
       // First verify the user is a member of the team using their user token
-      const userTeams = await this.getUserTeams(userToken);
+      const userTeams = await this.getUserTeams(userToken)
 
       // Check if the user is a member of the requested team
-      const isTeamMember = userTeams.some(team => team.slug === teamSlug);
+      const isTeamMember = userTeams.some(team => team.slug === teamSlug)
 
       if (!isTeamMember) {
-        throw new Error(`User is not a member of the team: ${teamSlug}`);
+        throw new Error(`User is not a member of the team: ${teamSlug}`)
       }
 
       // Now use the app installation token to access the team members
-      const octokit = await getAppAndInstallation();
+      const octokit = await getAppAndInstallation()
 
       const response = await octokit.request(
         `GET /orgs/${this.org}/teams/${teamSlug}/members`,
         {
           headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
+            'X-GitHub-Api-Version': '2022-11-28'
           },
-          per_page: 100,
+          per_page: 100
         }
-      );
-      logger.info('Successfully fetched GitHub team members');
+      )
+      logger.info('Successfully fetched GitHub team members')
 
       // Only return login, name, and url for each member
-      return response.data || [];
+      return response.data || []
     } catch (error) {
       logger.error('GitHub API error while fetching team members:', {
-        error: error.message,
-      });
-      throw error;
+        error: error.message
+      })
+      throw error
     }
   }
 
@@ -62,32 +62,32 @@ class GitHubService {
    * @param {string} userToken - GitHub access token
    * @returns {Promise<Array>} Array of teams the user is a member of in the organisation
    */
-  async getUserTeams(userToken) {
+  async getUserTeams (userToken) {
     try {
-      const { Octokit } = await import('@octokit/rest');
+      const { Octokit } = await import('@octokit/rest')
 
-      const octokit = new Octokit({ auth: userToken });
+      const octokit = new Octokit({ auth: userToken })
 
-      const response = await octokit.request(`GET /user/teams`, {
+      const response = await octokit.request('GET /user/teams', {
         headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
+          'X-GitHub-Api-Version': '2022-11-28'
         },
-        per_page: 100,
-      });
-      logger.info('Successfully fetched GitHub teams');
+        per_page: 100
+      })
+      logger.info('Successfully fetched GitHub teams')
 
       // Only return slug, name, description, and url for each team
       return (response.data || []).map(team => ({
         slug: team.slug,
         name: team.name,
         description: team.description,
-        url: team.html_url,
-      }));
+        url: team.html_url
+      }))
     } catch (error) {
       logger.error("GitHub API error while fetching user's teams:", {
-        error: error.message,
-      });
-      throw error;
+        error: error.message
+      })
+      throw error
     }
   }
 
@@ -96,30 +96,30 @@ class GitHubService {
    * @param {string} teamSlug - The slug of the team to fetch members for
    * @returns {Promise<Array>} Array of team members
    */
-  async getTeamMembersAsAdmin(teamSlug) {
+  async getTeamMembersAsAdmin (teamSlug) {
     try {
-      const octokit = await getAppAndInstallation();
+      const octokit = await getAppAndInstallation()
 
       const response = await octokit.request(
         `GET /orgs/${this.org}/teams/${teamSlug}/members`,
         {
           headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
+            'X-GitHub-Api-Version': '2022-11-28'
           },
-          per_page: 100,
+          per_page: 100
         }
-      );
-      logger.info('Successfully fetched GitHub team members');
+      )
+      logger.info('Successfully fetched GitHub team members')
 
-      return response.data || [];
+      return response.data || []
     } catch (error) {
       logger.error('GitHub API error while fetching team members:', {
-        error: error.message,
-      });
-      throw error;
+        error: error.message
+      })
+      throw error
     }
   }
 }
 
 // Export a singleton instance
-module.exports = new GitHubService();
+module.exports = new GitHubService()

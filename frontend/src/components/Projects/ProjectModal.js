@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import '../../styles/components/ProjectModal.css';
-import '../../styles/LangColours.css';
-import { IoClose, IoSearch, IoChevronDown } from 'react-icons/io5';
-import SkeletonLanguageCard from '../Statistics/Skeletons/SkeletonLanguageCard';
-import { fetchRepositoryData } from '../../utilities/getRepositoryData';
-import { useTechnologyStatus } from '../../utilities/getTechnologyStatus';
+import React, { useState, useEffect } from 'react'
+import '../../styles/components/ProjectModal.css'
+import '../../styles/LangColours.css'
+import { IoClose, IoSearch, IoChevronDown } from 'react-icons/io5'
+import SkeletonLanguageCard from '../Statistics/Skeletons/SkeletonLanguageCard'
+import { fetchRepositoryData } from '../../utilities/getRepositoryData'
+import { useTechnologyStatus } from '../../utilities/getTechnologyStatus'
 
 /**
  * ProjectModal component for displaying project details in a modal.
@@ -21,222 +21,227 @@ const ProjectModal = ({
   onClose,
   project,
   renderTechnologyList,
-  onTechClick,
+  onTechClick
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [repoData, setRepoData] = useState(null);
-  const [otherRepoData, setOtherRepoData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [repoData, setRepoData] = useState(null)
+  const [otherRepoData, setOtherRepoData] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [expandedItems, setExpandedItems] = useState({
     projectDetails: true,
     repositories: true,
     dependencies: true,
-    dependentProjects: true, // Ensure Dependent Projects is open by default
-  });
-  const [expandedGroups, setExpandedGroups] = useState({});
-  const getTechnologyStatus = useTechnologyStatus();
+    dependentProjects: true // Ensure Dependent Projects is open by default
+  })
+  const [expandedGroups, setExpandedGroups] = useState({})
+  const getTechnologyStatus = useTechnologyStatus()
 
   useEffect(() => {
     const fetchRepoInfo = async () => {
       // if the project modal is open and have Repo in the project object
       if (isOpen && project?.Repo) {
-        setIsLoading(true);
+        setIsLoading(true)
 
         // split the Repo string by ; and remove any whitespace
         const allRepoUrls = project.Repo.split(';')
           .map(url => url.trim())
-          .filter(url => url);
+          .filter(url => url)
 
         // map the allRepoUrls to the github.com/ONSDigital repos
         const onsDigitalRepos = allRepoUrls
           .map(repo => {
-            const repoUrl = repo.split('#')[0].trim();
-            const match = repoUrl.match(/github\.com\/ONSDigital\/([^/\s]+)/i);
-            return match ? match[1] : null;
+            const repoUrl = repo.split('#')[0].trim()
+            const match = repoUrl.match(/github\.com\/ONSDigital\/([^/\s]+)/i)
+            return match ? match[1] : null
           })
-          .filter(Boolean);
+          .filter(Boolean)
 
         // if there are any onsDigitalRepos, fetch the repository data
-        let repoDataResults = [];
+        let repoDataResults = []
         if (onsDigitalRepos.length > 0) {
-          const data = await fetchRepositoryData(onsDigitalRepos);
+          const data = await fetchRepositoryData(onsDigitalRepos)
           if (data?.repositories) {
-            repoDataResults = data.repositories;
-            setRepoData(data.repositories);
+            repoDataResults = data.repositories
+            setRepoData(data.repositories)
           }
         } else {
-          setRepoData([]);
+          setRepoData([])
         }
 
         const fetchedRepoUrls = new Set(
           repoDataResults.map(repo => repo.url.toLowerCase())
-        );
+        )
 
         // other repos are the repos that are not in the onsDigitalRepos
         const otherRepos = allRepoUrls.filter(url => {
-          const normalizedUrl = url.toLowerCase();
+          const normalizedUrl = url.toLowerCase()
 
           return !Array.from(fetchedRepoUrls).some(
             fetchedUrl =>
               normalizedUrl.includes(fetchedUrl) ||
               fetchedUrl.includes(normalizedUrl)
-          );
-        });
+          )
+        })
 
-        setOtherRepoData(otherRepos);
-        setIsLoading(false);
+        setOtherRepoData(otherRepos)
+        setIsLoading(false)
       } else {
-        setRepoData(null);
-        setOtherRepoData([]);
+        setRepoData(null)
+        setOtherRepoData([])
       }
-    };
+    }
 
-    fetchRepoInfo();
-  }, [isOpen, project]);
+    fetchRepoInfo()
+  }, [isOpen, project])
 
-  if (!isOpen || !project) return null;
+  if (!isOpen || !project) return null
 
   const renderRepoInfo = () => {
     return (
       <div>
         <div
-          className="accordion-header"
+          className='accordion-header'
           onClick={() => toggleAccordionItem('repositories')}
         >
-          <h3 className="">Repositories</h3>
+          <h3 className=''>Repositories</h3>
           <span
             className={`accordion-icon ${expandedItems.repositories ? 'expanded' : ''}`}
           >
             <IoChevronDown />
           </span>
         </div>
-        {isLoading ? (
-          <SkeletonLanguageCard />
-        ) : project.Repo && expandedItems.repositories ? (
-          <div className="repo-grid">
-            {repoData?.map((repo, index) => (
-              <div key={index} className="repo-card">
-                <div className="repo-stats">
-                  <div className="repo-stats-left">
-                    <a
-                      href={repo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="repo-name"
-                    >
-                      {repo.name}
-                    </a>
-                  </div>
-                  <div className="repo-badges">
-                    <span className="repo-badge">
-                      {repo.visibility.toLowerCase()}
-                    </span>
-                    <span className="repo-badge">
-                      {repo.is_archived ? 'Archived' : 'Active'}
-                    </span>
-                    <p
-                      className={`repo-last-commit ${!repo.is_archived && new Date(repo.last_commit) < new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) ? 'last-commit-threshold' : ''}`}
-                    >
-                      Last commit:{' '}
-                      {new Date(repo.last_commit).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="language-labels">
-                  {repo.technologies.languages.map((lang, i) => {
-                    const status = getTechnologyStatus
-                      ? getTechnologyStatus(lang.name)
-                      : null;
-                    const isClickable =
-                      status && status !== 'review' && status !== 'ignore';
-                    return (
-                      <span
-                        key={i}
-                        className={`language-label ${isClickable ? `clickable-tech ${status}` : ''}`}
-                        onClick={() =>
-                          isClickable && onTechClick && onTechClick(lang.name)
-                        }
-                        title={`${lang.name} (${lang.percentage.toFixed(1)}%)`}
-                      >
-                        {`${lang.name} (${lang.percentage.toFixed(1)}%)`}
-                      </span>
-                    );
-                  })}
-                </div>
-                {repo.technologies?.languages && (
-                  <div className="repo-languages">
-                    <div className="language-bars">
-                      {repo.technologies.languages.map((lang, i) => (
-                        <div
-                          key={i}
-                          className={`language-bar ${lang.name}`}
-                          style={{
-                            width: `${lang.percentage}%`,
-                          }}
-                          title={`${lang.name}: ${lang.percentage.toFixed(1)}%`}
-                        />
-                      ))}
+        {isLoading
+          ? (
+            <SkeletonLanguageCard />
+            )
+          : project.Repo && expandedItems.repositories
+            ? (
+              <div className='repo-grid'>
+                {repoData?.map((repo, index) => (
+                  <div key={index} className='repo-card'>
+                    <div className='repo-stats'>
+                      <div className='repo-stats-left'>
+                        <a
+                          href={repo.url}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='repo-name'
+                        >
+                          {repo.name}
+                        </a>
+                      </div>
+                      <div className='repo-badges'>
+                        <span className='repo-badge'>
+                          {repo.visibility.toLowerCase()}
+                        </span>
+                        <span className='repo-badge'>
+                          {repo.is_archived ? 'Archived' : 'Active'}
+                        </span>
+                        <p
+                          className={`repo-last-commit ${!repo.is_archived && new Date(repo.last_commit) < new Date(Date.now() - 180 * 24 * 60 * 60 * 1000) ? 'last-commit-threshold' : ''}`}
+                        >
+                          Last commit:{' '}
+                          {new Date(repo.last_commit).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-            {otherRepoData && otherRepoData.length > 0 && (
-              <>
-                {otherRepoData.map((repoUrl, index) => {
-                  let displayName = repoUrl;
 
-                  return (
-                    <div key={index} className="repo-card">
-                      <div className="repo-stats">
-                        <div className="repo-stats-left">
-                          <a
+                    <div className='language-labels'>
+                      {repo.technologies.languages.map((lang, i) => {
+                        const status = getTechnologyStatus
+                          ? getTechnologyStatus(lang.name)
+                          : null
+                        const isClickable =
+                      status && status !== 'review' && status !== 'ignore'
+                        return (
+                          <span
+                            key={i}
+                            className={`language-label ${isClickable ? `clickable-tech ${status}` : ''}`}
+                            onClick={() =>
+                  isClickable && onTechClick && onTechClick(lang.name)}
+                            title={`${lang.name} (${lang.percentage.toFixed(1)}%)`}
+                          >
+                            {`${lang.name} (${lang.percentage.toFixed(1)}%)`}
+                          </span>
+                        )
+                      })}
+                    </div>
+                    {repo.technologies?.languages && (
+                      <div className='repo-languages'>
+                        <div className='language-bars'>
+                          {repo.technologies.languages.map((lang, i) => (
+                            <div
+                  key={i}
+                  className={`language-bar ${lang.name}`}
+                  style={{
+                            width: `${lang.percentage}%`
+                          }}
+                  title={`${lang.name}: ${lang.percentage.toFixed(1)}%`}
+                />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {otherRepoData && otherRepoData.length > 0 && (
+                  <>
+                    {otherRepoData.map((repoUrl, index) => {
+                      const displayName = repoUrl
+
+                      return (
+                        <div key={index} className='repo-card'>
+                          <div className='repo-stats'>
+                            <div className='repo-stats-left'>
+                  <a
                             href={repoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="repo-name"
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='repo-name'
                           >
                             {displayName}
                           </a>
-                        </div>
-                        <div className="repo-badges">
-                          <span className="repo-badge">
+                </div>
+                            <div className='repo-badges'>
+                  <span className='repo-badge'>
                             {repoUrl.includes('gitlab')
                               ? 'GitLab'
                               : repoUrl.includes('github')
                                 ? 'GitHub'
                                 : 'Repository'}
                           </span>
-                        </div>
-                      </div>
-                      <div className="repo-languages">
-                        <div className="language-bars">
-                          <div
-                            className={`language-bar`}
+                </div>
+                          </div>
+                          <div className='repo-languages'>
+                            <div className='language-bars'>
+                  <div
+                            className='language-bar'
                             style={{
-                              width: `100%`,
-                              backgroundColor: '#cccccc',
+                              width: '100%',
+                              backgroundColor: '#cccccc'
                             }}
-                            title={`Unknown`}
+                            title='Unknown'
                           />
+                </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
-        ) : !project.Repo && expandedItems.repositories ? (
-          <div className="repo-info-loading">
-            No repository information available. Please ensure repositories are
-            added to this project.
-          </div>
-        ) : null}
+                      )
+                    })}
+                  </>
+                )}
+              </div>
+              )
+            : !project.Repo && expandedItems.repositories
+                ? (
+                  <div className='repo-info-loading'>
+                    No repository information available. Please ensure repositories are
+                    added to this project.
+                  </div>
+                  )
+                : null}
       </div>
-    );
-  };
+    )
+  }
 
   // Group definitions
   const groups = {
@@ -247,7 +252,7 @@ const ProjectModal = ({
       'Hosted',
       'Architectures',
       'Environments',
-      'Publishing_Target',
+      'Publishing_Target'
     ],
     security: ['Source_Control'],
     data: ['Datastores', 'Database_Technologies'],
@@ -260,10 +265,10 @@ const ProjectModal = ({
       'Documentation_Tools',
       'UI_Tools',
       'Diagram_Tools',
-      'Miscellaneous',
+      'Miscellaneous'
     ],
-    repos: ['Repo'],
-  };
+    repos: ['Repo']
+  }
 
   const fieldLabels = {
     Language_Main: 'Main Language',
@@ -272,8 +277,8 @@ const ProjectModal = ({
     Hosted: 'Hosted On',
     Architectures: 'Architecture',
     Source_Control: 'Source Control',
-    Miscellaneous: 'Miscellaneous Tools',
-  };
+    Miscellaneous: 'Miscellaneous Tools'
+  }
 
   const technologyListFields = [
     'Language_Main',
@@ -292,47 +297,47 @@ const ProjectModal = ({
     'Documentation_Tools',
     'UI_Tools',
     'Diagram_Tools',
-    'Miscellaneous',
-  ];
+    'Miscellaneous'
+  ]
 
   // Keeps all the values so every value will appear
   const filterItems = items => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return items;
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) return items
     return items.filter(key => {
-      const label = (fieldLabels[key] || key.replace(/_/g, ' ')).toLowerCase();
-      const value = (project[key] ?? '').toString().toLowerCase();
-      return label.includes(q) || value.includes(q);
-    });
-  };
+      const label = (fieldLabels[key] || key.replace(/_/g, ' ')).toLowerCase()
+      const value = (project[key] ?? '').toString().toLowerCase()
+      return label.includes(q) || value.includes(q)
+    })
+  }
 
   const toggleAccordionGroup = item => {
     setExpandedGroups(prev => ({
       ...prev,
-      [item]: !prev[item],
-    }));
-  };
+      [item]: !prev[item]
+    }))
+  }
 
   const renderGroup = (title, keys) => {
-    const filteredKeys = filterItems(keys);
+    const filteredKeys = filterItems(keys)
 
-    if (filteredKeys.length === 0) return null;
+    if (filteredKeys.length === 0) return null
 
     const isEmptyValue = v => {
       if (typeof v === 'string') {
-        const trimmed = v.trim().toLowerCase();
-        return trimmed === '' || trimmed === 'none' || trimmed === 'n/a';
+        const trimmed = v.trim().toLowerCase()
+        return trimmed === '' || trimmed === 'none' || trimmed === 'n/a'
       }
-      return v == null;
-    };
+      return v == null
+    }
 
     return (
       <div
         id={`group-${title.toLowerCase().replace(/ /g, '-')}`}
-        className="project-group"
+        className='project-group'
       >
         <div
-          className="accordion-header"
+          className='accordion-header'
           onClick={() => toggleAccordionGroup(title)}
         >
           <h3>{title}</h3>
@@ -343,10 +348,10 @@ const ProjectModal = ({
           </span>
         </div>
         {!expandedGroups[title] && (
-          <div className="group-content">
+          <div className='group-content'>
             {filteredKeys.map(key => {
-              const label = fieldLabels[key] || key.replace(/_/g, ' ');
-              const value = project[key];
+              const label = fieldLabels[key] || key.replace(/_/g, ' ')
+              const value = project[key]
 
               if (key.toLowerCase() === 'miscellaneous') {
                 return (
@@ -356,33 +361,35 @@ const ProjectModal = ({
                     className={`detail-item ${title === 'Repositories' ? 'large-span' : ''}`}
                   >
                     <h3>{label}:</h3>
-                    {isEmptyValue(value) ? (
-                      <p>
-                        <em>No data captured</em>
-                      </p>
-                    ) : (
-                      <div className="miscellaneous-block">
-                        {value.split(';').map((item, idx) => {
-                          const colonIndex = item.indexOf(':');
-                          let l = item;
-                          let description = '';
-                          if (colonIndex !== -1) {
-                            l = item.slice(0, colonIndex);
-                            description = item.slice(colonIndex + 1).trim();
-                          }
-                          return (
-                            <div key={idx} className="misc-item">
-                              <div>{l.trim()}:</div>
-                              {description && (
-                                <div className="misc-desc">{description}</div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                    {isEmptyValue(value)
+                      ? (
+                        <p>
+                          <em>No data captured</em>
+                        </p>
+                        )
+                      : (
+                        <div className='miscellaneous-block'>
+                          {value.split(';').map((item, idx) => {
+                            const colonIndex = item.indexOf(':')
+                            let l = item
+                            let description = ''
+                            if (colonIndex !== -1) {
+                              l = item.slice(0, colonIndex)
+                              description = item.slice(colonIndex + 1).trim()
+                            }
+                            return (
+                              <div key={idx} className='misc-item'>
+                                <div>{l.trim()}:</div>
+                                {description && (
+                                  <div className='misc-desc'>{description}</div>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                        )}
                   </div>
-                );
+                )
               }
 
               return (
@@ -393,79 +400,81 @@ const ProjectModal = ({
                   tabIndex={0}
                 >
                   <h3>{label}:</h3>
-                  {isEmptyValue(value) ? (
-                    <p>
-                      <em>No data captured</em>
-                    </p>
-                  ) : (
-                    <p style={{ whiteSpace: 'pre-wrap' }}>
-                      {technologyListFields.includes(key)
-                        ? renderTechnologyList(value)
-                        : value.replace(/;/g, '; ')}
-                    </p>
-                  )}
+                  {isEmptyValue(value)
+                    ? (
+                      <p>
+                        <em>No data captured</em>
+                      </p>
+                      )
+                    : (
+                      <p style={{ whiteSpace: 'pre-wrap' }}>
+                        {technologyListFields.includes(key)
+                          ? renderTechnologyList(value)
+                          : value.replace(/;/g, '; ')}
+                      </p>
+                      )}
                 </div>
-              );
+              )
             })}
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const toggleAccordionItem = item => {
     setExpandedItems(prev => ({
       ...prev,
-      [item]: !prev[item],
-    }));
-  };
+      [item]: !prev[item]
+    }))
+  }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className='modal-overlay' onClick={onClose}>
       <div
-        className="modal-content project-modal"
+        className='modal-content project-modal'
         onClick={e => e.stopPropagation()}
       >
-        <div className="project-header">
-          <div className="project-header-left">
+        <div className='project-header'>
+          <div className='project-header-left'>
             <h2>{project.Project}</h2>
             {project.Project_Short && (
-              <div className="project-short-name-container">
+              <div className='project-short-name-container'>
                 {project.Project_Short && (
-                  <div className="project-short-name">
+                  <div className='project-short-name'>
                     ({project.Project_Short})
                   </div>
                 )}
               </div>
             )}
           </div>
-          <div className="project-header-right">
-            <div className="search-container-projects">
-              <IoSearch className="search-icon-projects" />
+          <div className='project-header-right'>
+            <div className='search-container-projects'>
+              <IoSearch className='search-icon-projects' />
               <input
-                type="text"
-                placeholder="Search project details..."
+                type='text'
+                placeholder='Search project details...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="search-input-projects"
-                aria-label="Search project details"
+                className='search-input-projects'
+                aria-label='Search project details'
               />
             </div>
             <button
-              className="modal-close"
+              className='modal-close'
               onClick={onClose}
-              title="Close modal"
-              aria-label="Close modal"
+              title='Close modal'
+              aria-label='Close modal'
             >
               <IoClose />
             </button>
           </div>
         </div>
 
-        <div className="project-accordion">
-          <div className="project-accordion-item">
+        <div className='project-accordion'>
+          <div className='project-accordion-item'>
             <div
-              className="accordion-header"
+              className='accordion-header'
               onClick={() => toggleAccordionItem('projectDetails')}
             >
               <h3>Project Details</h3>
@@ -476,9 +485,9 @@ const ProjectModal = ({
               </span>
             </div>
             {expandedItems.projectDetails && (
-              <div className="accordion-content">
+              <div className='accordion-content'>
                 {project.Programme && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Programme</h4>
                     <p>
                       {project.Programme} ({project.Programme_Short})
@@ -487,41 +496,41 @@ const ProjectModal = ({
                 )}
 
                 {project.Technical_Contact && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Technical Contact</h4>
                     <p>{project.Technical_Contact}</p>
                   </div>
                 )}
 
                 {project.Delivery_Manager && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Delivery Manager</h4>
                     <p>{project.Delivery_Manager}</p>
                   </div>
                 )}
 
                 {project.Developed && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Developed</h4>
                     <p>{project.Developed}</p>
                   </div>
                 )}
 
                 {project.Stage && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Stage</h4>
                     <p>{project.Stage}</p>
                   </div>
                 )}
 
                 {project.Documentation && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Documentation</h4>
                     <a
                       href={project.Documentation}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-link"
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='project-link'
                     >
                       {project.Documentation.length > 64
                         ? `${project.Documentation.slice(0, 64)}...`
@@ -531,7 +540,7 @@ const ProjectModal = ({
                 )}
 
                 {project.Description && (
-                  <div className="detail-section">
+                  <div className='detail-section'>
                     <h4>Description</h4>
                     <p>{project.Description}</p>
                   </div>
@@ -546,15 +555,14 @@ const ProjectModal = ({
           {/* Project Dependencies */}
           {project.Project_Dependencies &&
             project.Project_Dependencies.length > 0 && (
-              <div className="project-accordion-item" style={{ flex: 1 }}>
+              <div className='project-accordion-item' style={{ flex: 1 }}>
                 <div
-                  className="accordion-header"
+                  className='accordion-header'
                   onClick={() =>
                     setExpandedItems(prev => ({
                       ...prev,
-                      dependencies: !prev.dependencies,
-                    }))
-                  }
+                      dependencies: !prev.dependencies
+                    }))}
                   style={{ cursor: 'pointer' }}
                 >
                   <h3>Project Dependencies</h3>
@@ -565,7 +573,7 @@ const ProjectModal = ({
                   </span>
                 </div>
                 {expandedItems.dependencies && (
-                  <div className="accordion-content">
+                  <div className='accordion-content'>
                     <div>
                       {project.Project_Dependencies.map((dependency, index) => (
                         <p
@@ -574,23 +582,23 @@ const ProjectModal = ({
                             fontSize: '14px',
                             lineHeight: 1.5,
                             color: 'inherit',
-                            marginBottom: '4px',
+                            marginBottom: '4px'
                           }}
                         >
                           <span
-                            className="project-link"
+                            className='project-link'
                             style={{
                               cursor: 'pointer',
                               textDecoration: 'underline',
                               textDecorationStyle: 'dotted',
-                              textUnderlineOffset: '2px',
+                              textUnderlineOffset: '2px'
                             }}
                             onClick={() => {
                               if (typeof onTechClick === 'function') {
-                                onTechClick(dependency.name);
+                                onTechClick(dependency.name)
                               }
                               if (typeof onClose === 'function') {
-                                onClose();
+                                onClose()
                               }
                             }}
                             title={`View project: ${dependency.name}`}
@@ -606,19 +614,18 @@ const ProjectModal = ({
                   </div>
                 )}
               </div>
-            )}
+          )}
 
           {project.Listed_As_Project_Dependency &&
             project.Listed_As_Project_Dependency.length > 0 && (
-              <div className="project-accordion-item" style={{ flex: 1 }}>
+              <div className='project-accordion-item' style={{ flex: 1 }}>
                 <div
-                  className="accordion-header"
+                  className='accordion-header'
                   onClick={() =>
                     setExpandedItems(prev => ({
                       ...prev,
-                      dependentProjects: !prev.dependentProjects,
-                    }))
-                  }
+                      dependentProjects: !prev.dependentProjects
+                    }))}
                   style={{ cursor: 'pointer' }}
                 >
                   <h3>Dependent Projects</h3>
@@ -629,7 +636,7 @@ const ProjectModal = ({
                   </span>
                 </div>
                 {expandedItems.dependentProjects && (
-                  <div className="accordion-content">
+                  <div className='accordion-content'>
                     <div>
                       {project.Listed_As_Project_Dependency.map((dep, idx) => (
                         <p
@@ -638,20 +645,20 @@ const ProjectModal = ({
                             fontSize: '14px',
                             lineHeight: 1.5,
                             color: 'inherit',
-                            marginBottom: '4px',
+                            marginBottom: '4px'
                           }}
                         >
                           <span
-                            className="project-link"
+                            className='project-link'
                             style={{
                               cursor: 'pointer',
                               textDecoration: 'underline',
                               textDecorationStyle: 'dotted',
-                              textUnderlineOffset: '2px',
+                              textUnderlineOffset: '2px'
                             }}
                             onClick={() => {
                               if (typeof onTechClick === 'function') {
-                                onTechClick(dep.name);
+                                onTechClick(dep.name)
                               }
                             }}
                             title={`View project: ${dep.name}`}
@@ -665,12 +672,12 @@ const ProjectModal = ({
                   </div>
                 )}
               </div>
-            )}
+          )}
         </div>
 
         {renderRepoInfo()}
 
-        <div className="project-details">
+        <div className='project-details'>
           {renderGroup('Languages & Frameworks', groups.languages)}
           {renderGroup('Infrastructure & Deployment', groups.infrastructure)}
           {renderGroup('Security & Source Control', groups.security)}
@@ -679,7 +686,7 @@ const ProjectModal = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectModal;
+export default ProjectModal

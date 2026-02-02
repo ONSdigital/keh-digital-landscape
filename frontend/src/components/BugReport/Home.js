@@ -1,18 +1,18 @@
-import React from 'react';
-import '../../styles/components/BugReport.css';
+import React from 'react'
+import '../../styles/components/BugReport.css'
 
 const BugReport = () => {
-  const supportEmail = import.meta.env.VITE_SUPPORT_MAIL || '';
+  const supportEmail = import.meta.env.VITE_SUPPORT_MAIL || ''
   return (
-    <div className="bug-report-container">
+    <div className='bug-report-container'>
       <h2>Bug Report</h2>
       <span>
         If you have any bugs or issues with the Digital Landscape, please let us
         know by opening an issue on{' '}
         <a
-          href="https://github.com/ONSDigital/keh-digital-landscape/issues/new?labels=bug&template=bug_report.md"
-          target="_blank"
-          rel="noopener noreferrer"
+          href='https://github.com/ONSDigital/keh-digital-landscape/issues/new?labels=bug&template=bug_report.md'
+          target='_blank'
+          rel='noopener noreferrer'
         >
           GitHub
         </a>
@@ -23,8 +23,8 @@ const BugReport = () => {
         Or send an email to the{' '}
         <a
           href={`mailto:${supportEmail}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          target='_blank'
+          rel='noopener noreferrer'
         >
           {' '}
           Team
@@ -32,7 +32,7 @@ const BugReport = () => {
         .
       </span>
     </div>
-  );
-};
+  )
+}
 
-export default BugReport;
+export default BugReport

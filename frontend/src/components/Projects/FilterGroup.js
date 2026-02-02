@@ -1,5 +1,5 @@
-import React from 'react';
-import { IoCheckmarkSharp, IoChevronForward } from 'react-icons/io5';
+import React from 'react'
+import { IoCheckmarkSharp, IoChevronForward } from 'react-icons/io5'
 
 /**
  * FilterGroup component - A reusable filter group with an accordion toggle and checkboxes
@@ -21,12 +21,12 @@ const FilterGroup = ({
   toggleSection,
   items,
   selectedItems = [],
-  onItemChange,
+  onItemChange
 }) => {
   return (
-    <div className="filter-group">
+    <div className='filter-group'>
       <div
-        className="filter-group-title filter-accordion-header"
+        className='filter-group-title filter-accordion-header'
         onClick={() => toggleSection(sectionKey)}
       >
         <span>{title}</span>
@@ -35,17 +35,17 @@ const FilterGroup = ({
         />
       </div>
       {isExpanded && (
-        <div className="filter-checkbox-group">
+        <div className='filter-checkbox-group'>
           {items.map(item => (
-            <label key={item} className="filter-checkbox-label">
-              <div className="custom-checkbox">
+            <label key={item} className='filter-checkbox-label'>
+              <div className='custom-checkbox'>
                 {selectedItems.includes(item) && (
-                  <IoCheckmarkSharp className="checkbox-icon" />
+                  <IoCheckmarkSharp className='checkbox-icon' />
                 )}
               </div>
               <input
-                type="checkbox"
-                className="sr-only"
+                type='checkbox'
+                className='sr-only'
                 checked={selectedItems.includes(item)}
                 onChange={() => onItemChange(sectionKey, item)}
               />
@@ -55,7 +55,7 @@ const FilterGroup = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default FilterGroup;
+export default FilterGroup

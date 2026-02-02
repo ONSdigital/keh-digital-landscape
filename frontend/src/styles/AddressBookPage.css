@@ -8,7 +8,7 @@
 }
 
 .addressbook-howto__title {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   font-size: 1.125rem;
   line-height: 1.4;
 }
@@ -30,7 +30,7 @@
   margin-left: 4px;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .addressbook-howto {
     margin: 12px 12px 8px;
     padding: 14px 16px;
@@ -40,6 +40,7 @@
     font-size: 1rem;
   }
 }
+
 /* AddressBook page search styles */
 .addressbook-search {
   display: flex;
@@ -97,11 +98,12 @@
   transform: translateY(0.5px);
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   .addressbook-search {
     padding: 10px 12px;
     gap: 10px;
   }
+
   .addressbook-search__input,
   .addressbook-search__button {
     height: 40px;

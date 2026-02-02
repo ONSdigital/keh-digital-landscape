@@ -43,19 +43,19 @@ Some routes require authentication (like `/copilot/team`). For these routes, you
 http://localhost:3000/copilot/team
 ```
 
-2. Click the "Login with GitHub" button.
+1. Click the "Login with GitHub" button.
 
-3. You will be redirected to the GitHub login page. Login with your GitHub account.
+2. You will be redirected to the GitHub login page. Login with your GitHub account.
 
-4. You will be redirected back to the copilot team page.
+3. You will be redirected back to the copilot team page.
 
-5. Open Chrome DevTools and navigate to the "Application" tab.
+4. Open Chrome DevTools and navigate to the "Application" tab.
 
-6. Under "Cookies", find the "githubUserToken" cookie.
+5. Under "Cookies", find the "githubUserToken" cookie.
 
-7. Copy the `value` of the cookie, beginning with `ghu_`.
+6. Copy the `value` of the cookie, beginning with `ghu_`.
 
-8. Set the environment variable before running tests:
+7. Set the environment variable before running tests:
 
 ```bash
 export TEST_GITHUBUSERTOKEN="your-generated-token"
@@ -69,7 +69,7 @@ TEST_GITHUBUSERTOKEN=your-generated-token
 TEST_GITHUBTEAM=your-team-slug
 ```
 
-9. Run the tests:
+1. Run the tests:
 
 ```bash
 make test
@@ -102,7 +102,7 @@ Whilst this is automated testing, it can be easier to install the free axe DevTo
 Download the extension from [here](https://chromewebstore.google.com/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd).
 
 | axe DevTools Screenshot                               |
-| ----------------------------------------------------- |
+|-------------------------------------------------------|
 | ![axe devtools extension](./axe-tools-screenshot.png) |
 
 ## UI Tests

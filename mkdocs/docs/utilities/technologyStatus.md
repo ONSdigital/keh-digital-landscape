@@ -33,7 +33,7 @@ const getTechnologyStatus = (tech) => {
 ```
 
 | Parameter | Type                  | Description                                                                                                          |
-| --------- | --------------------- | -------------------------------------------------------------------------------------------------------------------- |
+|-----------|-----------------------|----------------------------------------------------------------------------------------------------------------------|
 | `tech`    | string                | The technology name to check status for                                                                              |
 | Returns   | string\|null\|Promise | The status string ("adopt", "trial", "assess", "hold"), null if not found, or a Promise that resolves to status/null |
 

@@ -3,8 +3,8 @@
   color: hsl(var(--card-foreground));
   border: 1px solid hsl(var(--border));
   box-shadow:
-    0 4px 6px -1px hsl(var(--foreground) / 0.3),
-    0 2px 4px -2px hsl(var(--foreground) / 0.3);
+    0 4px 6px -1px hsl(var(--foreground) / 30%),
+    0 2px 4px -2px hsl(var(--foreground) / 30%);
   border-radius: 0.5rem;
   pointer-events: auto;
   display: flex;
@@ -30,7 +30,7 @@
 .error-toast-title {
   font-size: 1.25rem;
   font-weight: 500;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -65,7 +65,7 @@
 }
 
 .error-toast-button:hover {
-  color: hsl(var(--primary) / 0.8);
+  color: hsl(var(--primary) / 80%);
 }
 
 .error-toast-button:focus {
@@ -84,5 +84,5 @@
 }
 
 .error-toast-link-button:hover {
-  color: hsl(var(--primary) / 0.8);
+  color: hsl(var(--primary) / 80%);
 }

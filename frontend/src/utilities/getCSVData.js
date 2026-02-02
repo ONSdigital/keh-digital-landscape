@@ -1,6 +1,6 @@
-import { toast } from 'react-hot-toast';
-import { useData } from '../contexts/dataContext';
-import customFetch from './customFetch';
+import { toast } from 'react-hot-toast'
+import { useData } from '../contexts/dataContext'
+import customFetch from './customFetch'
 
 /**
  * fetchCSVFromS3 function to fetch the CSV data from the S3 bucket.
@@ -10,42 +10,42 @@ import customFetch from './customFetch';
  */
 export const fetchCSVFromS3 = async () => {
   try {
-    const response = await customFetch(`/api/csv`);
+    const response = await customFetch('/api/csv')
     if (!response.ok) {
-      throw new Error('Failed to fetch CSV data');
+      throw new Error('Failed to fetch CSV data')
     }
 
-    const data = await response.json();
-    return data;
+    const data = await response.json()
+    return data
   } catch (error) {
     try {
-      const response = await fetch('/tech_radar/onsTechData.csv');
+      const response = await fetch('/tech_radar/onsTechData.csv')
       if (!response.ok) {
-        throw new Error('Failed to fetch local CSV');
+        throw new Error('Failed to fetch local CSV')
       }
-      const csvText = await response.text();
-      const rows = csvText.split('\n');
-      const headers = rows[0].split(',');
+      const csvText = await response.text()
+      const rows = csvText.split('\n')
+      const headers = rows[0].split(',')
       const data = rows.slice(1).map(row => {
-        const values = row.split(',');
+        const values = row.split(',')
         return headers.reduce((obj, header, i) => {
-          obj[header] = values[i];
-          return obj;
-        }, {});
-      });
-      return data;
+          obj[header] = values[i]
+          return obj
+        }, {})
+      })
+      return data
     } catch (fallbackError) {
-      toast.error('Failed to load project data.');
-      return null;
+      toast.error('Failed to load project data.')
+      return null
     }
   }
-};
+}
 
 /**
  * Hook wrapper for fetchCSVFromS3
  * @returns {Promise<Object>} - The CSV data
  */
 export const useCSVData = () => {
-  const { getCsvData } = useData();
-  return getCsvData;
-};
+  const { getCsvData } = useData()
+  return getCsvData
+}

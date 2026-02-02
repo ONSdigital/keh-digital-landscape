@@ -11,36 +11,36 @@
  */
 export const renderSimpleMarkdown = text => {
   if (!text || typeof text !== 'string') {
-    return text || '';
+    return text || ''
   }
 
-  let html = text;
+  let html = text
 
   // Escape HTML characters
-  html = html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  html = html.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
   // Handle links
   html = html.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-  );
+  )
 
   // Handle bold text
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
 
   // Handle italic text
-  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>')
 
   // Handle headers - ## h2 first, then # h1 to avoid conflicts
   // Also remove the newline that follows headers to prevent extra spacing
-  html = html.replace(/^## (.+)(\n|$)/gm, '<h2 class="markdown-h2">$1</h2>');
-  html = html.replace(/^# (.+)(\n|$)/gm, '<h1 class="markdown-h1">$1</h1>');
+  html = html.replace(/^## (.+)(\n|$)/gm, '<h2 class="markdown-h2">$1</h2>')
+  html = html.replace(/^# (.+)(\n|$)/gm, '<h1 class="markdown-h1">$1</h1>')
 
   // Handle line breaks - preserve all newlines as <br> tags
-  html = html.replace(/\n/g, '<br>');
+  html = html.replace(/\n/g, '<br>')
 
-  return html;
-};
+  return html
+}
 
 /**
  * React component wrapper for rendering markdown with dangerouslySetInnerHTML
@@ -51,9 +51,9 @@ export const renderSimpleMarkdown = text => {
  * @returns {JSX.Element} - React element with rendered markdown
  */
 export const MarkdownText = ({ text, className = '' }) => {
-  const html = renderSimpleMarkdown(text);
+  const html = renderSimpleMarkdown(text)
 
   return (
     <span className={className} dangerouslySetInnerHTML={{ __html: html }} />
-  );
-};
+  )
+}

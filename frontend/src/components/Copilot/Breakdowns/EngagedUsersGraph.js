@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -7,13 +7,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-} from 'recharts';
-import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+  Legend
+} from 'recharts'
+import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated'
 
 const EngagedUsersGraph = ({ data }) => {
   return (
-    <div className="copilot-graph-container">
+    <div className='copilot-graph-container'>
       <ResponsiveContainer>
         <ComposedChart
           width={400}
@@ -21,9 +21,9 @@ const EngagedUsersGraph = ({ data }) => {
           data={data}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
         >
-          <CartesianGrid stroke="#f5f5f5" vertical={false} />
+          <CartesianGrid stroke='#f5f5f5' vertical={false} />
           <XAxis
-            dataKey="date"
+            dataKey='date'
             interval={data.length - 2}
             tickLine={false}
             axisLine={{ stroke: '#f5f5f5' }}
@@ -32,19 +32,19 @@ const EngagedUsersGraph = ({ data }) => {
             wrapperStyle={{ color: 'black' }}
             formatter={value => formatNumberWithCommas(value)}
           />
-          <Legend verticalAlign="top" align="left" height={36} />
+          <Legend verticalAlign='top' align='left' height={36} />
           <Bar
             radius={[10, 10, 0, 0]}
-            dataKey="engagedUsers"
+            dataKey='engagedUsers'
             barSize={20}
-            fill="#3B7AD9"
-            yAxisId="left"
-            legendType="rect"
-            name="Engaged Users"
+            fill='#3B7AD9'
+            yAxisId='left'
+            legendType='rect'
+            name='Engaged Users'
           />
           <YAxis
             tickLine={false}
-            yAxisId="left"
+            yAxisId='left'
             axisLine={{ stroke: '#f5f5f5' }}
             domain={[0, 'dataMax + 5']}
             tickCount={5}
@@ -53,7 +53,7 @@ const EngagedUsersGraph = ({ data }) => {
         </ComposedChart>
       </ResponsiveContainer>
     </div>
-  );
-};
+  )
+}
 
-export default EngagedUsersGraph;
+export default EngagedUsersGraph

@@ -19,6 +19,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -79,7 +80,7 @@ body {
 
 .quadrant-label-text {
   font-size: 24px;
-  fill: hsl(var(--foreground) / 0.75);
+  fill: hsl(var(--foreground) / 75%);
   text-anchor: middle;
   font-family: inherit;
   transition: all 0.3s ease;
@@ -152,6 +153,7 @@ line {
 .quadrant-list {
   background: hsl(var(--card));
   border-radius: var(--radius);
+
   /* box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1); */
   transition: none;
   display: flex;
@@ -242,10 +244,10 @@ line {
 }
 
 .quadrant-list ul li:hover {
-  background-color: hsl(var(--muted) / 0.8);
+  background-color: hsl(var(--muted) / 80%);
 }
 
-@media (max-width: 1400px) {
+@media (width <= 1400px) {
   .quadrant-list ul {
     max-height: calc(50vh - var(--header-height));
   }
@@ -327,7 +329,7 @@ line {
 }
 
 .blip {
-  fill: currentColor;
+  fill: currentcolor;
   cursor: pointer;
   opacity: 0.9;
   z-index: -1;
@@ -360,7 +362,7 @@ text {
 }
 
 /* Responsive styles */
-@media (max-width: 1600px) {
+@media (width <= 1600px) {
   .quadrant-lists {
     grid-template-columns: 1fr 2fr 1fr;
   }
@@ -378,7 +380,7 @@ text {
   }
 }
 
-@media (max-width: 1400px) {
+@media (width <= 1400px) {
   .quadrant-lists {
     grid-template-columns: 1fr 2fr 1fr;
   }
@@ -392,14 +394,13 @@ text {
   }
 }
 
-@media (max-width: 1400px) {
+@media (width <= 1400px) {
   .quadrant-lists {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
     height: auto;
     overflow: visible;
-    padding: 0 8px 36px 8px;
-
+    padding: 0 8px 36px;
     box-sizing: border-box;
   }
 
@@ -436,21 +437,25 @@ text {
   .quadrant-list.top-left {
     grid-row: 2;
   }
+
   .quadrant-list.top-right {
     grid-row: 3;
   }
+
   .quadrant-list.bottom-left {
     grid-row: 4;
   }
+
   .quadrant-list.bottom-right {
     grid-row: 5;
   }
 }
 
-@media (max-width: 850px) {
+@media (width <= 850px) {
   .radar-page {
     padding: 0;
   }
+
   .radar-container {
     padding: 10px 0;
   }
@@ -476,7 +481,6 @@ text {
   padding: 16px;
   box-sizing: border-box;
   z-index: 1000;
-  min-height: 64px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -517,7 +521,7 @@ text {
 
 /* Update resize handle styling */
 .info-box::-webkit-resizer {
-  border-radius: 0 0 6px 0;
+  border-radius: 0 0 6px;
   background: hsl(var(--muted));
   border: 1px solid hsl(var(--border));
   cursor: se-resize;
@@ -525,7 +529,7 @@ text {
 
 /* Add padding to account for drag handle */
 .info-box-header {
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 /* Update close button position */
@@ -564,7 +568,7 @@ text {
 }
 
 .info-box p {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   color: hsl(var(--muted-foreground));
   font-size: 14px;
 }
@@ -598,9 +602,9 @@ text {
   box-sizing: border-box;
   overflow-y: auto;
   user-select: text;
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
+  user-select: text;
+  user-select: text;
+  user-select: text;
 }
 
 .timeline-description em {
@@ -693,25 +697,26 @@ text {
 }
 
 /* Responsive radar size */
-@media (max-width: 1400px) {
+@media (width <= 1400px) {
   .radar-container svg {
     width: 800px;
     height: 800px;
   }
 }
 
-@media (max-width: 850px) {
+@media (width <= 850px) {
   .radar-container svg {
     /* width: 600px;
     height: 600px; */
   }
 }
 
-@media (max-width: 650px) {
+@media (width <= 650px) {
   .radar-container {
     padding: 20px 0;
     margin: 0;
   }
+
   .radar-container svg {
     width: 99vw;
   }
@@ -779,12 +784,9 @@ text {
 /* Modal styles */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   backdrop-filter: blur(5px);
-  background: hsl(var(--background) / 0.5);
+  background: hsl(var(--background) / 50%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -798,7 +800,6 @@ text {
   font-size: 14px !important;
   font-weight: 500;
   margin: 0;
-
   color: hsl(var(--card-foreground));
   background: hsl(var(--card));
 }
@@ -838,7 +839,6 @@ text {
   cursor: pointer;
   padding: 0 16px;
   box-sizing: border-box;
-  border-radius: var(--radius) var(--radius) 0 0;
   background: hsl(var(--card));
   position: sticky;
   top: 0;
@@ -849,7 +849,7 @@ text {
 }
 
 .quadrant-header:hover {
-  background-color: hsl(var(--muted) / 0.5) !important;
+  background-color: hsl(var(--muted) / 50%) !important;
 }
 
 .quadrant-list ul {
@@ -870,6 +870,7 @@ text {
 }
 
 /* Ensure column headers have visual distinction */
+
 /* This style is applied when the ul itself is focused */
 .quadrant-list ul:focus + .quadrant-header {
   font-weight: bold;
@@ -976,7 +977,7 @@ text {
 /* Ring styles */
 .ring {
   fill: none;
-  fill: hsl(var(--muted) / 0.2);
+  fill: hsl(var(--muted) / 20%);
   stroke: hsl(var(--border));
   stroke-width: 3;
   stroke-opacity: 0.1;
@@ -985,12 +986,15 @@ text {
 .ring.adopt {
   stroke: var(--color-adopt);
 }
+
 .ring.trial {
   stroke: var(--color-trial);
 }
+
 .ring.assess {
   stroke: var(--color-assess);
 }
+
 .ring.hold {
   stroke: var(--color-hold);
 }
@@ -1065,7 +1069,7 @@ text {
 }
 
 .info-box-project-item:hover {
-  background-color: hsl(var(--muted) / 0.8);
+  background-color: hsl(var(--muted) / 80%);
 }
 
 .clickable-tech {
@@ -1133,7 +1137,7 @@ text {
   font-size: 14px;
   white-space: nowrap;
   z-index: 9999999;
-  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.1);
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 10%);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -1152,7 +1156,7 @@ text {
   transform: translateX(-50%);
   border-width: 4px;
   border-style: solid;
-  border-color: hsl(var(--popover)) transparent transparent transparent;
+  border-color: hsl(var(--popover)) transparent transparent;
 }
 
 /* Update these styles */
@@ -1189,7 +1193,7 @@ text {
   cursor: grabbing;
 }
 
-@media (max-width: 1400px) {
+@media (width <= 1400px) {
   .drag-handle {
     display: none;
   }
@@ -1239,6 +1243,7 @@ text {
   align-items: center;
   position: relative;
 }
+
 .timeline-node {
   padding: 2px 12px;
   box-sizing: border-box;
@@ -1254,6 +1259,7 @@ text {
   display: flex;
   align-items: center;
   gap: 6px;
+
   /* max-width: 300px; */
   overflow-y: auto;
   text-wrap: nowrap;
@@ -1336,7 +1342,7 @@ text {
 }
 
 .timeline-header p {
-  margin: 4px 0 0 0;
+  margin: 4px 0 0;
   font-size: 14px;
   color: hsl(var(--muted-foreground));
 }

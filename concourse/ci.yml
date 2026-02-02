@@ -229,20 +229,20 @@ jobs:
                     ./resource-repo/concourse/scripts/build_image.sh
             timeout: 15m
           - in_parallel:
-            - put: images-to-shared-ecr-frontend
-              inputs:
-                - built-images
-                - release-tag-output
-              params:
-                image: built-images/frontend.tar
-                additional_tags: release-tag-output/tag
-            - put: images-to-shared-ecr-backend
-              inputs:
-                - built-images
-                - release-tag-output
-              params:
-                image: built-images/backend.tar
-                additional_tags: release-tag-output/tag
+              - put: images-to-shared-ecr-frontend
+                inputs:
+                  - built-images
+                  - release-tag-output
+                params:
+                  image: built-images/frontend.tar
+                  additional_tags: release-tag-output/tag
+              - put: images-to-shared-ecr-backend
+                inputs:
+                  - built-images
+                  - release-tag-output
+                params:
+                  image: built-images/backend.tar
+                  additional_tags: release-tag-output/tag
           - <<: *terraform-task
             params:
               github_access_token: ((github_access_token))
@@ -315,4 +315,3 @@ jobs:
               <<: *notify-azure-webhook-task
               params:
                 env: prod
-            

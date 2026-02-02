@@ -36,7 +36,7 @@ export const csvData = [
     Diagram_Tools: 'Lucidchart',
     Miscellaneous:
       'Podman: Build images during CI/CD; Colima: Build images locally; TFSec: Static code analysis for HCL; Black: Python Linter; isort: Python Linter; mypy: Python Linter',
-    Publishing_Target: 'NPM; PyPI',
+    Publishing_Target: 'NPM; PyPI'
   },
   {
     ID: '#project-sample-project-2',
@@ -73,7 +73,7 @@ export const csvData = [
     UI_Tools: '',
     Diagram_Tools: 'Lucidchart',
     Miscellaneous: '',
-    Publishing_Target: '',
+    Publishing_Target: ''
   },
   {
     ID: '#project-sample-project-3',
@@ -111,7 +111,7 @@ export const csvData = [
     Diagram_Tools: 'Lucidchart',
     Miscellaneous:
       'Podman: Build images during CI/CD; Colima: Build images locally; TFSec: Static code analysis for HCL; Black: Python Linter; isort: Python Linter; mypy: Python Linter',
-    Publishing_Target: 'NPM; PyPI',
+    Publishing_Target: 'NPM; PyPI'
   },
   {
     ID: '#project-sample-project-4',
@@ -149,7 +149,7 @@ export const csvData = [
     Diagram_Tools: 'Lucidchart',
     Miscellaneous:
       'Podman: Build images during CI/CD; Colima: Build images locally; TFSec: Static code analysis for HCL; Black: Python Linter; isort: Python Linter; mypy: Python Linter',
-    Publishing_Target: 'NPM; PyPI',
+    Publishing_Target: 'NPM; PyPI'
   },
   {
     ID: '#project-sample-project-5',
@@ -187,7 +187,7 @@ export const csvData = [
     Diagram_Tools: 'Draw.io',
     Miscellaneous:
       'Poetry: Python package management; Pytest: Testing framework',
-    Publishing_Target: 'PyPI',
+    Publishing_Target: 'PyPI'
   },
   {
     ID: '#project-sample-project-6',
@@ -224,6 +224,6 @@ export const csvData = [
     UI_Tools: 'Figma',
     Diagram_Tools: 'Lucidchart',
     Miscellaneous: 'ESLint: Linting; Prettier: Code formatting',
-    Publishing_Target: 'NPM',
-  },
-];
+    Publishing_Target: 'NPM'
+  }
+]

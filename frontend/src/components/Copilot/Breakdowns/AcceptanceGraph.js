@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -8,13 +8,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-} from 'recharts';
-import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+  Legend
+} from 'recharts'
+import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated'
 
 const AcceptanceGraph = ({ data }) => {
   return (
-    <div className="copilot-graph-container">
+    <div className='copilot-graph-container'>
       <ResponsiveContainer>
         <ComposedChart
           width={400}
@@ -22,9 +22,9 @@ const AcceptanceGraph = ({ data }) => {
           data={data}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
         >
-          <CartesianGrid stroke="#f5f5f5" vertical={false} />
+          <CartesianGrid stroke='#f5f5f5' vertical={false} />
           <XAxis
-            dataKey="date"
+            dataKey='date'
             interval={data.length - 2}
             tickLine={false}
             axisLine={{ stroke: '#f5f5f5' }}
@@ -34,33 +34,32 @@ const AcceptanceGraph = ({ data }) => {
             formatter={(value, name) =>
               name === 'Acceptance Rate'
                 ? `${value.toFixed(2)}%`
-                : formatNumberWithCommas(value)
-            }
+                : formatNumberWithCommas(value)}
           />
-          <Legend verticalAlign="top" align="left" height={36} />
+          <Legend verticalAlign='top' align='left' height={36} />
           <Bar
             radius={[10, 10, 0, 0]}
-            dataKey="acceptances"
+            dataKey='acceptances'
             barSize={20}
-            fill="#70c4e6"
-            yAxisId="left"
-            legendType="rect"
-            name="Acceptances"
+            fill='#70c4e6'
+            yAxisId='left'
+            legendType='rect'
+            name='Acceptances'
           />
           <Line
             dot={false}
             strokeWidth={2}
-            strokeLinecap="round"
-            type="monotone"
-            dataKey="acceptanceRate"
-            stroke="#3B7AD9"
-            yAxisId="right"
-            legendType="rect"
-            name="Acceptance Rate"
+            strokeLinecap='round'
+            type='monotone'
+            dataKey='acceptanceRate'
+            stroke='#3B7AD9'
+            yAxisId='right'
+            legendType='rect'
+            name='Acceptance Rate'
           />
           <YAxis
             tickLine={false}
-            yAxisId="left"
+            yAxisId='left'
             axisLine={{ stroke: '#f5f5f5' }}
             domain={[0, 'dataMax + 5']}
             tickCount={5}
@@ -68,9 +67,9 @@ const AcceptanceGraph = ({ data }) => {
           />
           <YAxis
             tickLine={false}
-            yAxisId="right"
-            orientation="right"
-            stroke="#3B7AD9"
+            yAxisId='right'
+            orientation='right'
+            stroke='#3B7AD9'
             axisLine={{ stroke: '#f5f5f5' }}
             domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
             tickFormatter={value => `${value.toFixed(0)}%`}
@@ -79,7 +78,7 @@ const AcceptanceGraph = ({ data }) => {
         </ComposedChart>
       </ResponsiveContainer>
     </div>
-  );
-};
+  )
+}
 
-export default AcceptanceGraph;
+export default AcceptanceGraph

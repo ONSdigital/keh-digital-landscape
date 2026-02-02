@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,14 +7,14 @@ export default defineConfig({
   esbuild: {
     loader: 'jsx',
     include: /src\/.*\.[jt]sx?$/,
-    exclude: [],
+    exclude: []
   },
   optimizeDeps: {
     esbuildOptions: {
       loader: {
-        '.js': 'jsx',
-      },
-    },
+        '.js': 'jsx'
+      }
+    }
   },
   server: {
     port: 3000,
@@ -25,22 +25,22 @@ export default defineConfig({
         '/copilot/api',
         '/admin/api',
         '/review/api',
-        '/addressbook/api',
+        '/addressbook/api'
       ].map(path => [
         path,
         {
           target: process.env.VITE_BACKEND_URL || 'http://localhost:5001',
           changeOrigin: true,
-          secure: false,
-        },
+          secure: false
+        }
       ])
-    ),
+    )
   },
   build: {
     outDir: 'build',
-    sourcemap: false,
+    sourcemap: false
   },
   define: {
-    global: 'globalThis',
-  },
-});
+    global: 'globalThis'
+  }
+})

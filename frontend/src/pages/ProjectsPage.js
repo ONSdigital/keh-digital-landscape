@@ -1,54 +1,54 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header/Header';
-import Projects from '../components/Projects/Projects';
-import ProjectModal from '../components/Projects/ProjectModal';
-import { useData } from '../contexts/dataContext';
-import toast from 'react-hot-toast';
-import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
-import { BannerContainer } from '../components/Banner';
-import sendAlert from '../components/Alerts/Alerts';
+import React, { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Header from '../components/Header/Header'
+import Projects from '../components/Projects/Projects'
+import ProjectModal from '../components/Projects/ProjectModal'
+import { useData } from '../contexts/dataContext'
+import toast from 'react-hot-toast'
+import { useTechnologyStatus } from '../utilities/getTechnologyStatus'
+import { BannerContainer } from '../components/Banner'
+import sendAlert from '../components/Alerts/Alerts'
 
 /**
  * ProjectsPage component for displaying the projects page.
  *
  * @returns {JSX.Element} - The ProjectsPage component.
  */
-function ProjectsPage() {
-  const [projectsData, setProjectsData] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-  const [radarData, setRadarData] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
+function ProjectsPage () {
+  const [projectsData, setProjectsData] = useState(null)
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
+  const [radarData, setRadarData] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const navigate = useNavigate()
 
-  const { getCsvData, getTechRadarData } = useData();
-  const getTechnologyStatus = useTechnologyStatus();
+  const { getCsvData, getTechRadarData } = useData()
+  const getTechnologyStatus = useTechnologyStatus()
 
-  const fetchedOnce = useRef(false);
+  const fetchedOnce = useRef(false)
   useEffect(() => {
-    if (fetchedOnce.current) return;
-    fetchedOnce.current = true;
+    if (fetchedOnce.current) return
+    fetchedOnce.current = true
     const fetchData = async () => {
       try {
         const [csvData, techData] = await Promise.all([
           getCsvData(),
-          getTechRadarData(),
-        ]);
-        setProjectsData(csvData);
-        setRadarData(techData);
+          getTechRadarData()
+        ])
+        setProjectsData(csvData)
+        setRadarData(techData)
       } catch (error) {
         sendAlert(
           'Error on the Projects Page',
           error,
           'Failed to fetch data for the Projects page!'
-        );
-        toast.error('Unexpected error occurred.');
+        )
+        toast.error('Unexpected error occurred.')
       }
-    };
+    }
 
-    fetchData();
-  }, [getCsvData, getTechRadarData]);
+    fetchData()
+  }, [getCsvData, getTechRadarData])
 
   /**
    * handleProjectClick function handles the project click event.
@@ -56,25 +56,25 @@ function ProjectsPage() {
    * @param {Object} project - The project object to handle the click for.
    */
   const handleProjectClick = project => {
-    setIsProjectModalOpen(false);
+    setIsProjectModalOpen(false)
     setTimeout(() => {
-      setSelectedProject(project);
-      setIsProjectModalOpen(true);
-    }, 0);
-  };
+      setSelectedProject(project)
+      setIsProjectModalOpen(true)
+    }, 0)
+  }
 
   /**
    * handleRefresh function handles the refresh event.
    */
   const handleRefresh = async () => {
     try {
-      const newData = await getCsvData(true); // Pass forceRefresh as true
-      setProjectsData(newData);
-      toast.success('Data refreshed successfully.');
+      const newData = await getCsvData(true) // Pass forceRefresh as true
+      setProjectsData(newData)
+      toast.success('Data refreshed successfully.')
     } catch (error) {
-      toast.error('Error refreshing data.');
+      toast.error('Error refreshing data.')
     }
-  };
+  }
 
   /**
    * handleTechClick function handles the technology click event.
@@ -82,16 +82,16 @@ function ProjectsPage() {
    * @param {string} tech - The technology to handle the click for.
    */
   const handleTechClick = tech => {
-    if (!tech) return;
+    if (!tech) return
 
     const entry = radarData?.entries.find(
       entry => entry.title.toLowerCase() === tech.toLowerCase().trim()
-    );
+    )
 
     if (entry) {
-      navigate('/radar', { state: { selectedTech: tech } });
+      navigate('/radar', { state: { selectedTech: tech } })
     }
-  };
+  }
 
   /**
    * handleDependencyClick function handles dependency project clicks.
@@ -99,16 +99,16 @@ function ProjectsPage() {
    * @param {string} dependencyName - The name of the dependency project.
    */
   const handleDependencyClick = dependencyName => {
-    const normalizedName = dependencyName.trim().toLowerCase();
+    const normalizedName = dependencyName.trim().toLowerCase()
     const foundProject = projectsData?.find(
       p => p.Project && p.Project.trim().toLowerCase() === normalizedName
-    );
+    )
     if (foundProject) {
-      handleProjectClick(foundProject);
+      handleProjectClick(foundProject)
     } else {
-      toast.error('Project not found for dependency: ' + dependencyName);
+      toast.error('Project not found for dependency: ' + dependencyName)
     }
-  };
+  }
 
   /**
    * getFilteredProjects function gets the filtered projects based on search term.
@@ -116,15 +116,15 @@ function ProjectsPage() {
    * @returns {Array} - The filtered projects.
    */
   const getFilteredProjects = () => {
-    if (!projectsData) return [];
-    if (!searchTerm.trim()) return projectsData;
+    if (!projectsData) return []
+    if (!searchTerm.trim()) return projectsData
 
     return projectsData.filter(project => {
       const searchString =
-        `${project.Project} ${project.Project_Short} ${project.Project_Area} ${project.Team} ${project.Programme} ${project.Programme_Short} ${project.Description}`.toLowerCase();
-      return searchString.includes(searchTerm.toLowerCase());
-    });
-  };
+        `${project.Project} ${project.Project_Short} ${project.Project_Area} ${project.Team} ${project.Programme} ${project.Programme_Short} ${project.Description}`.toLowerCase()
+      return searchString.includes(searchTerm.toLowerCase())
+    })
+  }
 
   /**
    * renderTechnologyList function renders the technology list.
@@ -133,31 +133,33 @@ function ProjectsPage() {
    * @returns {JSX.Element|null} - The rendered technology list or null if not found.
    */
   const renderTechnologyList = technologies => {
-    if (!technologies) return null;
+    if (!technologies) return null
 
     return technologies.split(';').map((tech, index) => {
-      const trimmedTech = tech.trim();
-      const status = getTechnologyStatus(trimmedTech);
+      const trimmedTech = tech.trim()
+      const status = getTechnologyStatus(trimmedTech)
 
       return (
         <span key={index}>
           {index > 0 && '; '}
-          {status ? (
-            <span
-              className={`clickable-tech ${status}`}
-              onClick={() => handleTechClick(trimmedTech)}
-            >
-              {trimmedTech}
-            </span>
-          ) : (
-            trimmedTech
-          )}
+          {status
+            ? (
+              <span
+                className={`clickable-tech ${status}`}
+                onClick={() => handleTechClick(trimmedTech)}
+              >
+                {trimmedTech}
+              </span>
+              )
+            : (
+                trimmedTech
+              )}
         </span>
-      );
-    });
-  };
+      )
+    })
+  }
 
-  const filteredProjects = getFilteredProjects();
+  const filteredProjects = getFilteredProjects()
 
   return (
     <>
@@ -167,10 +169,10 @@ function ProjectsPage() {
         searchResults={[]}
         onSearchResultClick={handleProjectClick}
       />
-      <BannerContainer page="projects" />
-      <div className="projects-page">
+      <BannerContainer page='projects' />
+      <div className='projects-page'>
         <Projects
-          isOpen={true}
+          isOpen
           onClose={() => {}}
           projectsData={filteredProjects}
           handleProjectClick={handleProjectClick}
@@ -196,7 +198,7 @@ function ProjectsPage() {
         )}
       </div>
     </>
-  );
+  )
 }
 
-export default ProjectsPage;
+export default ProjectsPage

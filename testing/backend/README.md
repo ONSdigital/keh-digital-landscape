@@ -23,7 +23,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 make setup
@@ -51,19 +51,19 @@ The tests are organized into three main categories:
 make test-main
 ```
 
-2. **Admin API tests** - Admin banner management endpoints:
+1. **Admin API tests** - Admin banner management endpoints:
 
 ```bash
 make test-admin
 ```
 
-3. **Review API tests** - Tech radar update endpoints:
+1. **Review API tests** - Tech radar update endpoints:
 
 ```bash
 make test-review
 ```
 
-4. **Copilot API tests** - Copilot endpoints:
+1. **Copilot API tests** - Copilot endpoints:
 
 ```bash
 make test-copilot
@@ -74,7 +74,7 @@ make test-copilot
 Some Copilot API endpoints require authentication. To test these endpoints, you need to provide a GitHub token and team slug:
 
 1. Get a GitHub token:
-   - Go to http://localhost:3000/copilot/team
+   - Go to <http://localhost:3000/copilot/team>
    - Click "Login with GitHub" and complete the authentication
    - Open Chrome DevTools > Application tab > Cookies
    - Find the `githubUserToken` cookie and copy its value
@@ -85,7 +85,7 @@ Some Copilot API endpoints require authentication. To test these endpoints, you 
 export TEST_GITHUBUSERTOKEN="your_github_token"
 ```
 
-3. Run the Copilot tests:
+1. Run the Copilot tests:
 
 ```bash
 make test-copilot
@@ -135,7 +135,7 @@ make clean
 The tests cover these main endpoint groups:
 
 | Test File         | Endpoint Group   | Description                                         |
-| ----------------- | ---------------- | --------------------------------------------------- |
+|-------------------|------------------|-----------------------------------------------------|
 | `test_main.py`    | `/api/*`         | Core API endpoints (health, CSV, JSON, repository)  |
 | `test_admin.py`   | `/admin/api/*`   | Admin API endpoints for banner management           |
 | `test_review.py`  | `/review/api/*`  | Review API endpoints for tech radar updates         |

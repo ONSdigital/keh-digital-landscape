@@ -37,7 +37,7 @@ export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 git config --global url."https://x-access-token:$github_access_token@github.com/".insteadOf "https://github.com/"
 
 if [[ ${env} != "prod" ]]; then
-    env="dev"
+	env="dev"
 fi
 
 echo ${env}
@@ -49,25 +49,25 @@ terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
 # The following terraform-apply may need to change if the environment variables change
 
 terraform apply \
--var "aws_account_id=$aws_account_id" \
--var "aws_access_key_id=$aws_access_key_id" \
--var "aws_secret_access_key=$aws_secret_access_key" \
--var "domain=$domain" \
--var "service_subdomain=${service_subdomain}" \
--var "github_app_id=$github_app_id" \
--var "github_app_client_id=$github_app_client_id" \
--var "github_app_client_secret=$github_app_client_secret" \
--var "aws_secret_name=$aws_secret_name" \
--var "github_org=$github_org" \
--var "service_memory=${service_memory}" \
--var "service_cpu=${service_cpu}" \
--var "s3_bucket_name=${s3_bucket_name}" \
--var "api_s3_bucket_name=${api_s3_bucket_name}" \
--var "container_ver=${tag}" \
--var "container_ver_backend=${tag}" \
--var "frontend_ecr_repo=${container_image_frontend}" \
--var "backend_ecr_repo=${container_image_backend}" \
--var "copilot_bucket_name=${copilot_bucket_name}" \
--var "support_mail=${support_mail}" \
--var "alerts_channel_id=${alerts_channel_id}" \
--auto-approve
+	-var "aws_account_id=$aws_account_id" \
+	-var "aws_access_key_id=$aws_access_key_id" \
+	-var "aws_secret_access_key=$aws_secret_access_key" \
+	-var "domain=$domain" \
+	-var "service_subdomain=${service_subdomain}" \
+	-var "github_app_id=$github_app_id" \
+	-var "github_app_client_id=$github_app_client_id" \
+	-var "github_app_client_secret=$github_app_client_secret" \
+	-var "aws_secret_name=$aws_secret_name" \
+	-var "github_org=$github_org" \
+	-var "service_memory=${service_memory}" \
+	-var "service_cpu=${service_cpu}" \
+	-var "s3_bucket_name=${s3_bucket_name}" \
+	-var "api_s3_bucket_name=${api_s3_bucket_name}" \
+	-var "container_ver=${tag}" \
+	-var "container_ver_backend=${tag}" \
+	-var "frontend_ecr_repo=${container_image_frontend}" \
+	-var "backend_ecr_repo=${container_image_backend}" \
+	-var "copilot_bucket_name=${copilot_bucket_name}" \
+	-var "support_mail=${support_mail}" \
+	-var "alerts_channel_id=${alerts_channel_id}" \
+	-auto-approve

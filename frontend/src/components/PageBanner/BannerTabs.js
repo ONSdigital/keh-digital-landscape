@@ -1,8 +1,8 @@
-import '../../styles/components/PageBanner.css';
+import '../../styles/components/PageBanner.css'
 
-function BannerTabs({ tabs, activeTab, onTabChange }) {
+function BannerTabs ({ tabs, activeTab, onTabChange }) {
   return (
-    <div className="banner-tabs">
+    <div className='banner-tabs'>
       {tabs.map(tab => (
         <div
           key={tab.id}
@@ -13,7 +13,7 @@ function BannerTabs({ tabs, activeTab, onTabChange }) {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
-export default BannerTabs;
+export default BannerTabs

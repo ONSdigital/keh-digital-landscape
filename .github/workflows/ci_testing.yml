@@ -7,7 +7,7 @@ on:
     branches: ['**']
 
 concurrency:
-  group: "${{ github.head_ref || github.ref }}-${{ github.workflow }}"
+  group: '${{ github.head_ref || github.ref }}-${{ github.workflow }}'
   cancel-in-progress: true
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
         working-directory: testing/backend
     strategy:
       matrix:
-        python-version: ["3.12"]
+        python-version: ['3.12']
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python

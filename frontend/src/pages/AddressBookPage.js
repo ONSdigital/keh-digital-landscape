@@ -1,79 +1,79 @@
-import React, { useState } from 'react';
-import Header from '../components/Header/Header';
-import PageBanner from '../components/PageBanner/PageBanner';
-import UserCard from '../components/AddressBook/UserCard';
-import '../styles/components/PageBanner.css';
-import '../styles/AddressBookPage.css';
+import React, { useState } from 'react'
+import Header from '../components/Header/Header'
+import PageBanner from '../components/PageBanner/PageBanner'
+import UserCard from '../components/AddressBook/UserCard'
+import '../styles/components/PageBanner.css'
+import '../styles/AddressBookPage.css'
 
 const AddressBookPage = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [query, setQuery] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [query, setQuery] = useState('')
+  const [hasSearched, setHasSearched] = useState(false)
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    const q = query.trim();
-    setHasSearched(true);
+    e.preventDefault()
+    const q = query.trim()
+    setHasSearched(true)
     if (!q) {
-      setUsers([]);
-      setError(null);
-      return;
+      setUsers([])
+      setError(null)
+      return
     }
     try {
-      setLoading(true);
-      setError(null);
+      setLoading(true)
+      setError(null)
       const res = await fetch(
         `/addressbook/api/request?q=${encodeURIComponent(q)}`
-      );
+      )
       if (!res.ok) {
-        throw new Error(`Request failed: ${res.status}`);
+        throw new Error(`Request failed: ${res.status}`)
       }
-      const contentType = res.headers.get('content-type') || '';
+      const contentType = res.headers.get('content-type') || ''
       if (!contentType.includes('application/json')) {
         throw new Error(
           'Unexpected non-JSON response from server: \n' + q + '\n' + res
-        );
+        )
       }
-      const data = await res.json();
-      setUsers(Array.isArray(data) ? data : []);
+      const data = await res.json()
+      setUsers(Array.isArray(data) ? data : [])
     } catch (e) {
-      setError(e.message);
-      setUsers([]);
+      setError(e.message)
+      setUsers([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  if (loading) return <div style={{ padding: '1rem' }}>Loading...</div>;
-  if (error) return <div style={{ padding: '1rem' }}>Error: {error}</div>;
+  if (loading) return <div style={{ padding: '1rem' }}>Loading...</div>
+  if (error) return <div style={{ padding: '1rem' }}>Error: {error}</div>
 
   return (
     <div>
-      <Header hideSearch={true} />
+      <Header hideSearch />
 
       <PageBanner
-        title="GitHub Address Book"
-        description="Search for colleague information using a GitHub username or ONS email address"
+        title='GitHub Address Book'
+        description='Search for colleague information using a GitHub username or ONS email address'
         tabs={[]}
       />
 
       <section
-        className="addressbook-howto"
-        aria-labelledby="addressbook-howto-title"
+        className='addressbook-howto'
+        aria-labelledby='addressbook-howto-title'
       >
-        <h2 id="addressbook-howto-title" className="addressbook-howto__title">
+        <h2 id='addressbook-howto-title' className='addressbook-howto__title'>
           How to use
         </h2>
-        <ol className="addressbook-howto__list">
+        <ol className='addressbook-howto__list'>
           <li>
             Enter a colleague’s GitHub username or ONS email. You’ll see their
             name, work email, GitHub Profile URL and username in the results.
           </li>
           <li>
             You can enter multiple values separated by commas, e.g.
-            <span className="addressbook-howto__example">
+            <span className='addressbook-howto__example'>
               username-1, username-2
             </span>
             .
@@ -86,25 +86,25 @@ const AddressBookPage = () => {
       <div>
         <form
           onSubmit={handleSubmit}
-          className="addressbook-search"
-          role="search"
+          className='addressbook-search'
+          role='search'
         >
           <input
-            className="addressbook-search__input"
-            type="search"
-            id="q"
-            name="q"
-            placeholder="Enter email or GitHub username"
+            className='addressbook-search__input'
+            type='search'
+            id='q'
+            name='q'
+            placeholder='Enter email or GitHub username'
             value={query}
             onChange={e => setQuery(e.target.value)}
-            aria-label="Address book search"
-            autoComplete="off"
+            aria-label='Address book search'
+            autoComplete='off'
           />
           <button
-            className="addressbook-search__button"
-            type="submit"
+            className='addressbook-search__button'
+            type='submit'
             disabled={loading}
-            aria-label="Submit search"
+            aria-label='Submit search'
           >
             {loading ? 'Searching…' : 'Search'}
           </button>
@@ -112,10 +112,10 @@ const AddressBookPage = () => {
 
         <div style={{ padding: '1rem' }}>
           {hasSearched && users.length === 0 && !loading && !error && (
-            <div aria-label="No result text">No results.</div>
+            <div aria-label='No result text'>No results.</div>
           )}
           {users.map((userInfo, index) => (
-            <div className="singular-card" key={index}>
+            <div className='singular-card' key={index}>
               <UserCard
                 key={index}
                 username={userInfo.username}
@@ -130,7 +130,7 @@ const AddressBookPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AddressBookPage;
+export default AddressBookPage

@@ -1,6 +1,6 @@
 const sendAlert = async (statusInfo, errorInfo, moreInfo) => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-  const baseUrl = `${backendUrl}/alerts/api/alert`;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || ''
+  const baseUrl = `${backendUrl}/alerts/api/alert`
   const payload = {
     channel: import.meta.env.VITE_ALERTS_CHANNEL_ID,
     message: `
@@ -8,19 +8,19 @@ const sendAlert = async (statusInfo, errorInfo, moreInfo) => {
         status: ${statusInfo}, <br>
         event: ${errorInfo}, <br>
         description: ${moreInfo} <br>
-        `,
-  };
+        `
+  }
   const resp = await fetch(baseUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(payload),
-  });
+    body: JSON.stringify(payload)
+  })
   if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`Error sending alert: ${text}`);
+    const text = await resp.text()
+    throw new Error(`Error sending alert: ${text}`)
   }
-};
+}
 
-export default sendAlert;
+export default sendAlert

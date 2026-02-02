@@ -7,7 +7,7 @@
   gap: 32px;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .home-content {
     max-width: 100%;
   }
@@ -16,7 +16,7 @@
 .home-content-header {
   width: 100%;
   text-align: center;
-  background-color: hsl(var(--card) / 0.8);
+  background-color: hsl(var(--card) / 80%);
   border-radius: var(--radius);
   padding: 16px;
   box-sizing: border-box;
@@ -52,7 +52,7 @@
 }
 
 .nav-card {
-  background: hsl(var(--card) / 0.8);
+  background: hsl(var(--card) / 80%);
   border: 1px solid hsl(var(--border));
   border-radius: 1rem;
   padding: 16px;
@@ -72,18 +72,18 @@
 }
 
 .nav-card:hover {
-  background-color: hsl(var(--muted) / 0.95);
+  background-color: hsl(var(--muted) / 95%);
   box-shadow:
-    0 0 0 1px hsl(var(--foreground) / 0.05),
-    0 10px 10px hsl(var(--foreground) / 0.05),
-    0 12px 24px hsl(var(--foreground) / 0.05);
+    0 0 0 1px hsl(var(--foreground) / 5%),
+    0 10px 10px hsl(var(--foreground) / 5%),
+    0 12px 24px hsl(var(--foreground) / 5%);
 }
 
 .nav-card.odd-last-child {
   grid-column: span 2;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .nav-card:last-child {
     grid-column: span 1;
   }
@@ -117,10 +117,11 @@
   gap: 8px;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .navigation-cards {
     flex-direction: column;
   }
+
   .home-content h1 {
     font-size: 36px;
   }

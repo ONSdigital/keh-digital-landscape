@@ -8,7 +8,7 @@ export const reviewPositionCases = {
     assess: [],
     hold: [],
     review: ['test-Csharp'],
-    ignore: [],
+    ignore: []
   },
   'Data Science Campus (DSC)': {
     adopt: [
@@ -16,25 +16,25 @@ export const reviewPositionCases = {
       'test-gcp',
       'test-javascript-typescript',
       'test-r',
-      'test-Csharp',
+      'test-Csharp'
     ],
     trial: [],
     assess: [],
     hold: [],
     review: [],
-    ignore: [],
+    ignore: []
   },
   'Data Growth and Operations (DGO)': {
     adopt: [
       'test-aws',
       'test-gcp',
       'test-pl/sql',
-      'test-javascript-typescript',
+      'test-javascript-typescript'
     ],
     trial: ['test-r'],
     assess: [],
     hold: [],
     review: ['test-Csharp'],
-    ignore: [],
-  },
-};
+    ignore: []
+  }
+}

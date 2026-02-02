@@ -12,7 +12,7 @@ export const radarData = {
           moved: 0,
           ringId: 'review',
           date: '2025-07-01 00:00:00',
-          description: 'Added for review from tech audit (Infrastructure)',
+          description: 'Added for review from tech audit (Infrastructure)'
         },
         {
           moved: 4,
@@ -20,9 +20,9 @@ export const radarData = {
           date: '2025-09-11 00:00:00',
           description:
             'Technology Radar Update: Amazon Web Services (AWS) Categorised as **ADOPT**\n\n**Amazon Web Services (AWS)**.',
-          author: 'test@ons.gov.uk',
-        },
-      ],
+          author: 'test@ons.gov.uk'
+        }
+      ]
     },
     {
       id: 'test-gcp',
@@ -34,7 +34,7 @@ export const radarData = {
           moved: 0,
           ringId: 'review',
           date: '2025-07-01 00:00:00',
-          description: 'Added for review from tech audit (Infrastructure)',
+          description: 'Added for review from tech audit (Infrastructure)'
         },
         {
           moved: 4,
@@ -42,9 +42,9 @@ export const radarData = {
           date: '2025-09-11 00:00:00',
           description:
             'Technology Radar Update: Google Cloud Platform (GCP) Categorised as **ADOPT**\n\n**Amazon Web Services (AWS)**.',
-          author: 'test@ons.gov.uk',
-        },
-      ],
+          author: 'test@ons.gov.uk'
+        }
+      ]
     },
     {
       id: 'test-javascript-typescript',
@@ -56,7 +56,7 @@ export const radarData = {
           moved: 0,
           ringId: 'review',
           date: '2025-07-01 00:00:00',
-          description: 'Added for review from tech audit (Languages)',
+          description: 'Added for review from tech audit (Languages)'
         },
         {
           moved: 4,
@@ -64,9 +64,9 @@ export const radarData = {
           date: '2025-09-17 00:00:00',
           description:
             'Technology Radar Update: Javascript/TypeScript Categorised as **ADOPT**\n.',
-          author: 'test@ons.gov.uk',
-        },
-      ],
+          author: 'test@ons.gov.uk'
+        }
+      ]
     },
     {
       id: 'test-java',
@@ -78,7 +78,7 @@ export const radarData = {
           moved: 0,
           ringId: 'review',
           date: '2025-07-01 00:00:00',
-          description: 'Added for review from tech audit (Languages)',
+          description: 'Added for review from tech audit (Languages)'
         },
         {
           moved: 1,
@@ -86,9 +86,9 @@ export const radarData = {
           date: '2025-09-17 00:00:00',
           description:
             'Technology Radar Update: Java Categorised as **HOLD**\n.',
-          author: 'test@ons.gov.uk',
-        },
-      ],
+          author: 'test@ons.gov.uk'
+        }
+      ]
     },
     // The below is used to test multiple directorate support.
     // The below technology should appear in trial for all directorates
@@ -104,14 +104,14 @@ export const radarData = {
           ringId: 'review',
           date: '2025-09-23 00:00:00',
           description: 'Added for review from tech audit (Languages)',
-          author: 'test@ons.gov.uk',
+          author: 'test@ons.gov.uk'
         },
         {
           moved: 3,
           ringId: 'trial',
           date: '2025-09-23 00:00:01',
           description: 'Technology Radar Update: R Categorised as **TRIAL**\n.',
-          author: 'test@ons.gov.uk',
+          author: 'test@ons.gov.uk'
         },
         {
           moved: 1,
@@ -120,9 +120,9 @@ export const radarData = {
           description:
             'Technology Radar Update: R Categorised as **ADOPT**\nThis is for Data Science Campus (DSC) only.',
           author: 'test@ons.gov.uk',
-          directorate: 1,
-        },
-      ],
+          directorate: 1
+        }
+      ]
     },
     // The below technology should appear in trial for all directorates
     // and in adopt for Data Growth and Operations (DGO) only.
@@ -138,13 +138,13 @@ export const radarData = {
           moved: 0,
           ringId: 'review',
           date: '2025-07-01 00:00:00',
-          description: 'Added for review from tech audit (Languages)',
+          description: 'Added for review from tech audit (Languages)'
         },
         {
           moved: 3,
           ringId: 'trial',
           date: '2025-07-05 00:00:00',
-          description: 'Technology Radar Update: R Categorised as **TRIAL**\n.',
+          description: 'Technology Radar Update: R Categorised as **TRIAL**\n.'
         },
         {
           moved: 1,
@@ -153,9 +153,9 @@ export const radarData = {
           description:
             'Technology Radar Update ABCD: PL/SQL Categorised as **ADOPT**\n.',
           author: 'test@ons.gov.uk',
-          directorate: 2,
-        },
-      ],
+          directorate: 2
+        }
+      ]
     },
     // The below technology should appear in review for all directorates
     // and in adopt for Data Science only.
@@ -172,7 +172,7 @@ export const radarData = {
           ringId: 'review',
           date: '2025-09-23 00:00:00',
           description: 'Added for review from tech audit (Languages)',
-          author: 'test@ons.gov.uk',
+          author: 'test@ons.gov.uk'
         },
         {
           moved: 3,
@@ -181,7 +181,7 @@ export const radarData = {
           description:
             'Technology Radar Update: C# Categorised as **TRIAL**\n.',
           author: 'test@ons.gov.uk',
-          directorate: 1,
+          directorate: 1
         },
         {
           moved: 1,
@@ -190,49 +190,49 @@ export const radarData = {
           description:
             'Technology Radar Update: C# Categorised as **ADOPT**\nThis is for Data Science Campus (DSC) only.',
           author: 'test@ons.gov.uk',
-          directorate: 1,
-        },
-      ],
-    },
+          directorate: 1
+        }
+      ]
+    }
   ],
   quadrants: [
     {
       id: '1',
-      name: 'Languages',
+      name: 'Languages'
     },
     {
       id: '2',
-      name: 'Frameworks',
+      name: 'Frameworks'
     },
     {
       id: '3',
-      name: 'Supporting Tools',
+      name: 'Supporting Tools'
     },
     {
       id: '4',
-      name: 'Infrastructure',
-    },
+      name: 'Infrastructure'
+    }
   ],
   rings: [
     {
       id: 'adopt',
       name: 'ADOPT',
-      color: '#008a00',
+      color: '#008a00'
     },
     {
       id: 'trial',
       name: 'TRIAL',
-      color: '#cb00b4',
+      color: '#cb00b4'
     },
     {
       id: 'assess',
       name: 'ASSESS',
-      color: '#0069e5',
+      color: '#0069e5'
     },
     {
       id: 'hold',
       name: 'HOLD',
-      color: '#de001a',
-    },
-  ],
-};
+      color: '#de001a'
+    }
+  ]
+}

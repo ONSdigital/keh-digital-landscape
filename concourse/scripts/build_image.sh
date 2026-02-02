@@ -7,7 +7,7 @@ aws ecr get-login-password --region eu-west-2 | podman --storage-driver=vfs logi
 
 support_mail=$(echo "$secrets" | jq -r .support_mail)
 if [ -z "$support_mail" ] || [ "$support_mail" = "null" ]; then
-  echo "support_mail variable missing"
+	echo "support_mail variable missing"
 fi
 
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
