@@ -493,6 +493,39 @@ function HelpModal({ show, onClose }) {
             </div>
           ),
         };
+      case '/addressbook':
+        return {
+          title: 'Address Book Help',
+          content: (
+            <div className="help-modal-body">
+              {githubPagesLink()}
+              <h1>Guide</h1>
+              <span>
+                The Address Book page allows you to resolve employee information
+                from GitHub usernames and ONS email addresses. Here&apos;s how
+                to use it:
+              </span>
+              <ul className="help-modal-list">
+                <li>
+                  Enter a GitHub username (e.g., username) or an ONS email
+                  address (e.g., firstname.lastname@ons.gov.uk)
+                </li>
+                <li>Inputs are case-insensitive and automatically trimmed</li>
+                <li>
+                  Search for multiple users by separating inputs with commas
+                </li>
+                <li>
+                  Use mixed input types; if both inputs refer to the same
+                  employee, only one result is returned
+                </li>
+                <li>
+                  Results include full name, ONS email address, GitHub username,
+                  profile URL, and profile picture
+                </li>
+              </ul>
+            </div>
+          ),
+        };
       default:
         return {
           title: 'Help',
