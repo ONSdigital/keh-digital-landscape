@@ -64,21 +64,21 @@ jobs:
       statuses: write
 
     steps:
-      # # Git Checkout
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+      # Git Checkout
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
-      #     # If you use VALIDATE_ALL_CODEBASE = true, you can remove this line to
-      #     # improve performance
-      #     fetch-depth: 0
+          # If you use VALIDATE_ALL_CODEBASE = true, you can remove this line to
+          # improve performance
+          fetch-depth: 0
 
-      # - name: Check PAT and Set APPLY_FIXES
-      #   run: |
-      #     if [ -z "${{ secrets.PAT }}" ]; then
-      #       echo "APPLY_FIXES=none" >> "$GITHUB_ENV"
-      #     fi
+      - name: Check PAT and Set APPLY_FIXES
+        run: |
+          if [ -z "${{ secrets.PAT }}" ]; then
+            echo "APPLY_FIXES=none" >> "$GITHUB_ENV"
+          fi
 
       # MegaLinter
       - name: MegaLinter
