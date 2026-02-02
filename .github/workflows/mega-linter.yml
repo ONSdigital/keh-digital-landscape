@@ -38,7 +38,7 @@ env:
   APPLY_FIXES_MODE: commit
 
   # Show individual linter status in GitHub Actions status summary
-  GITHUB_STATUS_REPORTER: true
+  GITHUB_STATUS_REPORTER: false
 
   # Enable to show lint results in GitHub PR comments.
   GITHUB_COMMENT_REPORTER: true
