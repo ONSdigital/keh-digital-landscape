@@ -135,7 +135,7 @@ resource "aws_iam_role_policy_attachment" "ecs_secretsmanager_access_attach" {
 
 # IAM User Group
 resource "aws_iam_group" "group" {
-  name = "${var.domain}-${var.service_subdomain}-users"
+  name = "${var.domain}-${var.service_subdomain}-user-group"
   path = "/digital-landscape/"
 }
 
