@@ -74,7 +74,7 @@ function HelpModal({ show, onClose }) {
           {' '}
           To learn how to submit a technology to the Tech Radar, view this{' '}
           <a
-            href="https://github.com/ONSdigital/software-engineer-community/tree/62ed0cce1175ab1874041bae9a3ccf4aa67a096d/Software%20Engineering%20Principles_Policies_Guidelines_Templates_Plans%20and%20more/tech-radar-submissions"
+            href="https://github.com/ONSdigital/software-engineer-community/tree/master/Software%20Engineering%20Principles_Policies_Guidelines_Templates_Plans%20and%20more/tech-radar-submissions"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -245,19 +245,17 @@ function HelpModal({ show, onClose }) {
                   When should you use the technology in the 4 rings?
                   <ul className="help-modal-sublist">
                     <li>
-                      <strong>Adopt:</strong> use these technologies as the
-                      foundation for core applications and infrastructure.
+                      <strong>Adopt:</strong> use these technologies for all
+                      projects including mission-critical, customer-facing and
+                      high-risk systems.
                     </li>
                     <li>
-                      <strong>Trial:</strong> conduct pilot projects,
-                      proof-of-concepts, or small-scale deployments with a low
-                      risk to evaluate their suitability before adopting them
-                      widely.
+                      <strong>Trial:</strong> use these technologies in low-risk
+                      projects in production, with security approval.
                     </li>
                     <li>
-                      <strong>Assess:</strong> experiment with these
-                      technologies in non-critical environments, such as
-                      research projects, internal tools or sandbox deployments.
+                      <strong>Assess:</strong> use these technologies in
+                      research spikes, hackathons and proof-of-concepts.
                     </li>
                     <li>
                       <strong>Hold:</strong> avoid using these technologies
