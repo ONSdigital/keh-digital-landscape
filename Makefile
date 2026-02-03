@@ -79,6 +79,12 @@ lint-backend:
 lint-fix-backend:
 	cd backend && npm run lint:fix
 
+megalint-check:
+	npx mega-linter-runner --env APPLY_FIXES=none
+
+megalint-fix:
+	npx mega-linter-runner --env APPLY_FIXES=all
+
 format: format-frontend format-backend format-frontend-testing format-terraform
 
 format-frontend:
