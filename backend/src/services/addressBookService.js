@@ -1,14 +1,14 @@
-const s3Service = require('./s3Service')
-const logger = require('../config/logger')
+const s3Service = require('./s3Service');
+const logger = require('../config/logger');
 
 /**
  * AddressBookService manages address book lookups and formatting.
  */
 class AddressBookService {
-  constructor () {
-    this.emailKey = 'addressBookEmailKey.json' // Dictionary for Emails to Usernames
-    this.usernameKey = 'addressBookUsernameKey.json' // Dictionary for Usernames to Emails
-    this.IDKey = 'addressBookIDKey.json' // Dictionary for Usernames to ID
+  constructor() {
+    this.emailKey = 'addressBookEmailKey.json'; // Dictionary for Emails to Usernames
+    this.usernameKey = 'addressBookUsernameKey.json'; // Dictionary for Usernames to Emails
+    this.IDKey = 'addressBookIDKey.json'; // Dictionary for Usernames to ID
   }
 
   /**
@@ -16,26 +16,26 @@ class AddressBookService {
    * @returns {Promise<{emailToUsernameData: Record<string, string>, usernameToEmailData: Record<string, string>}>} Maps for conversion between usernames and emails.
    * @throws {Error} If S3 retrieval fails.
    */
-  async getAddressBookData () {
+  async getAddressBookData() {
     try {
-      const folder = 'AddressBook/'
+      const folder = 'AddressBook/';
 
       const [emailToUsernameRaw, usernameToEmailRaw, usernameToIdRaw] =
         await Promise.all([
           s3Service.getObject('main', folder + this.emailKey),
           s3Service.getObject('main', folder + this.usernameKey),
-          s3Service.getObject('main', folder + this.IDKey)
-        ])
-      const emailToUsernameData = this.normaliseMap(emailToUsernameRaw)
-      const usernameToEmailData = this.normaliseMap(usernameToEmailRaw)
-      const usernameToIDData = this.normaliseMap(usernameToIdRaw)
-      logger.info('Successfully fetched address book data')
-      return { emailToUsernameData, usernameToEmailData, usernameToIDData }
+          s3Service.getObject('main', folder + this.IDKey),
+        ]);
+      const emailToUsernameData = this.normaliseMap(emailToUsernameRaw);
+      const usernameToEmailData = this.normaliseMap(usernameToEmailRaw);
+      const usernameToIDData = this.normaliseMap(usernameToIdRaw);
+      logger.info('Successfully fetched address book data');
+      return { emailToUsernameData, usernameToEmailData, usernameToIDData };
     } catch (error) {
       logger.error('Error fetching address book data', {
-        error: error.message
-      })
-      throw error
+        error: error.message,
+      });
+      throw error;
     }
   }
 
@@ -44,15 +44,15 @@ class AddressBookService {
    * @param {Record<string, string>} obj
    * @returns {Record<string, string>}
    */
-  normaliseMap (obj) {
+  normaliseMap(obj) {
     try {
-      const entries = Object.entries(obj || {})
+      const entries = Object.entries(obj || {});
       return entries.reduce((acc, [k, v]) => {
-        acc[String(k).toLowerCase()] = v
-        return acc
-      }, {})
+        acc[String(k).toLowerCase()] = v;
+        return acc;
+      }, {});
     } catch {
-      return {}
+      return {};
     }
   }
 
@@ -62,35 +62,35 @@ class AddressBookService {
    * @returns {Promise<Array<[string|undefined, string|undefined, string|undefined]>>} Pairs as [username, email, accountID].
    * @throws {Error} If address book data cannot be fetched.
    */
-  async filterAddressBookData (input) {
+  async filterAddressBookData(input) {
     const { emailToUsernameData, usernameToEmailData, usernameToIDData } =
-      await this.getAddressBookData()
+      await this.getAddressBookData();
 
-    const output = []
+    const output = [];
 
     input.forEach(userDetail => {
-      const raw = String(userDetail).trim()
-      const isUsername = !raw.includes('@')
-      const key = raw.toLowerCase()
+      const raw = String(userDetail).trim();
+      const isUsername = !raw.includes('@');
+      const key = raw.toLowerCase();
 
       if (isUsername) {
-        const email = usernameToEmailData?.[key]
-        const accountID = usernameToIDData?.[key]
-        output.push([raw, email, accountID])
+        const email = usernameToEmailData?.[key];
+        const accountID = usernameToIDData?.[key];
+        output.push([raw, email, accountID]);
       } else {
-        const username = emailToUsernameData?.[key]
+        const username = emailToUsernameData?.[key];
         const canonicalEmail = username
           ? usernameToEmailData?.[String(username).toLowerCase()] ||
             raw.toLowerCase()
-          : raw.toLowerCase()
+          : raw.toLowerCase();
         const accountID = username
           ? usernameToIDData?.[String(username).toLowerCase()]
-          : undefined
-        output.push([username, canonicalEmail, accountID])
+          : undefined;
+        output.push([username, canonicalEmail, accountID]);
       }
-    })
+    });
 
-    return output
+    return output;
   }
 
   /**
@@ -98,42 +98,42 @@ class AddressBookService {
    * @param {string[]} input - Usernames or emails.
    * @returns {Promise<Array<{username: string|undefined, email: string|undefined, accountID: string|undefined, url: string, fullname: string|null}>|null>} User details including username, email, GitHub URL, and derived full name; returns null if no input provided.
    */
-  async formatAddressBookData (input = []) {
+  async formatAddressBookData(input = []) {
     if (input.length === 0) {
-      logger.warn('No inputs were given to Address Book Service')
-      return []
+      logger.warn('No inputs were given to Address Book Service');
+      return [];
     }
 
-    const output = await this.filterAddressBookData(input)
+    const output = await this.filterAddressBookData(input);
 
-    const formattedOutput = []
-    const seenUsernames = new Set()
+    const formattedOutput = [];
+    const seenUsernames = new Set();
 
     for (const user of output) {
-      const username = user[0]
-      const email = user[1]
-      const accountID = user[2]
-      const avatarLink = this.getAvatarLink(accountID)
-      const githubLink = this.getGitHubLink(username)
-      const fullName = this.getNameByEmail(email)
+      const username = user[0];
+      const email = user[1];
+      const accountID = user[2];
+      const avatarLink = this.getAvatarLink(accountID);
+      const githubLink = this.getGitHubLink(username);
+      const fullName = this.getNameByEmail(email);
 
       if (username && email && accountID && githubLink && fullName) {
-        const key = String(username).toLowerCase()
-        if (seenUsernames.has(key)) continue
-        seenUsernames.add(key)
+        const key = String(username).toLowerCase();
+        if (seenUsernames.has(key)) continue;
+        seenUsernames.add(key);
         const userInfo = {
           username,
           email,
           accountID,
           avatarUrl: avatarLink,
           url: githubLink,
-          fullname: fullName
-        }
-        formattedOutput.push(userInfo)
+          fullname: fullName,
+        };
+        formattedOutput.push(userInfo);
       }
     }
 
-    return formattedOutput
+    return formattedOutput;
   }
 
   /**
@@ -141,9 +141,9 @@ class AddressBookService {
    * @param {string} accountID
    * @returns {string} GitHub avatar URL.
    */
-  getAvatarLink (accountID) {
-    if (!accountID) return null
-    return `https://avatars.githubusercontent.com/u/${accountID}`
+  getAvatarLink(accountID) {
+    if (!accountID) return null;
+    return `https://avatars.githubusercontent.com/u/${accountID}`;
   }
 
   /**
@@ -151,9 +151,9 @@ class AddressBookService {
    * @param {string} username
    * @returns {string} GitHub profile URL.
    */
-  getGitHubLink (username) {
-    if (!username) return null
-    return `https://github.com/${username}`
+  getGitHubLink(username) {
+    if (!username) return null;
+    return `https://github.com/${username}`;
   }
 
   /**
@@ -161,15 +161,15 @@ class AddressBookService {
    * @param {string} email
    * @returns {string|null} Lowercased "firstname lastname" or null if email is falsy/invalid.
    */
-  getNameByEmail (email) {
-    if (!email) return null
+  getNameByEmail(email) {
+    if (!email) return null;
     return String(email)
       .toLowerCase()
       .split('@')[0]
       .split('.')
       .slice(0, 2)
-      .join(' ')
+      .join(' ');
   }
 }
 
-module.exports = new AddressBookService()
+module.exports = new AddressBookService();

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import '../../styles/components/MenuDropdown.css'
-import UserProfile from '../UserProfile/UserProfile'
-import Modal from '../BugReport/Modal'
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import '../../styles/components/MenuDropdown.css';
+import UserProfile from '../UserProfile/UserProfile';
+import Modal from '../BugReport/Modal';
 import {
   TbSmartHome,
   TbEditCircle,
@@ -10,12 +10,12 @@ import {
   TbUsers,
   TbChartBar,
   TbHelp,
-  TbBug
-} from 'react-icons/tb'
-import { VscCopilot } from 'react-icons/vsc'
-import { IoMenu } from 'react-icons/io5'
-import { MdOutlineRadar } from 'react-icons/md'
-import { FaRegAddressBook } from 'react-icons/fa'
+  TbBug,
+} from 'react-icons/tb';
+import { VscCopilot } from 'react-icons/vsc';
+import { IoMenu } from 'react-icons/io5';
+import { MdOutlineRadar } from 'react-icons/md';
+import { FaRegAddressBook } from 'react-icons/fa';
 
 /**
  * MenuDropdown component for displaying a dropdown menu with navigation links.
@@ -23,23 +23,23 @@ import { FaRegAddressBook } from 'react-icons/fa'
  * @param {Object} props - The props passed to the MenuDropdown component.
  * @param {Function} props.setShowHelpModal - Function to show the help modal.
  */
-function MenuDropdown ({ setShowHelpModal }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [showBugReportModal, setShowBugReportModal] = useState(false)
-  const dropdownRef = useRef(null)
-  const navigate = useNavigate()
-  const location = useLocation()
+function MenuDropdown({ setShowHelpModal }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showBugReportModal, setShowBugReportModal] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = event => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   /**
    * handleNavClick function navigates to the specified path and closes the dropdown menu.
@@ -47,36 +47,36 @@ function MenuDropdown ({ setShowHelpModal }) {
    * @param {string} path - The path to navigate to.
    */
   const handleNavClick = path => {
-    navigate(path)
-    setIsOpen(false)
-  }
+    navigate(path);
+    setIsOpen(false);
+  };
 
   const handleHelpClick = () => {
-    setShowHelpModal(true)
-    setIsOpen(false)
-  }
+    setShowHelpModal(true);
+    setIsOpen(false);
+  };
 
   const openReportBugModal = () => {
-    setShowBugReportModal(true)
-  }
+    setShowBugReportModal(true);
+  };
 
   const closeReportBugModal = () => {
-    setShowBugReportModal(false)
-  }
+    setShowBugReportModal(false);
+  };
 
   return (
-    <div className='menu-dropdown' ref={dropdownRef}>
+    <div className="menu-dropdown" ref={dropdownRef}>
       <button
-        className='menu-button'
+        className="menu-button"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label='Open menu'
+        aria-label="Open menu"
       >
         <IoMenu size={16} />
       </button>
 
       {isOpen && (
-        <div className='dropdown-content'>
-          <div className='home-button-container'>
+        <div className="dropdown-content">
+          <div className="home-button-container">
             <button
               onClick={() => handleNavClick('/')}
               className={location.pathname === '/' ? 'active' : ''}
@@ -86,7 +86,7 @@ function MenuDropdown ({ setShowHelpModal }) {
             </button>
           </div>
 
-          <div className='menu-section'>
+          <div className="menu-section">
             <button
               onClick={() => handleNavClick('/radar')}
               className={location.pathname === '/radar' ? 'active' : ''}
@@ -124,11 +124,11 @@ function MenuDropdown ({ setShowHelpModal }) {
             </button>
           </div>
 
-          <div className='menu-section restricted-section'>
-            <div className='menu-section-title'>Restricted</div>
+          <div className="menu-section restricted-section">
+            <div className="menu-section-title">Restricted</div>
             {/* Keep these as <a> tags for proper authentication handling */}
             <a
-              href='/review/dashboard'
+              href="/review/dashboard"
               className={
                 location.pathname === '/review/dashboard' ? 'active' : ''
               }
@@ -137,7 +137,7 @@ function MenuDropdown ({ setShowHelpModal }) {
               Review
             </a>
             <a
-              href='/admin/dashboard'
+              href="/admin/dashboard"
               className={
                 location.pathname === '/admin/dashboard' ? 'active' : ''
               }
@@ -147,7 +147,7 @@ function MenuDropdown ({ setShowHelpModal }) {
             </a>
           </div>
 
-          <div className='help-button-container'>
+          <div className="help-button-container">
             <button onClick={() => openReportBugModal()}>
               <TbBug size={16} />
               Report a Bug
@@ -158,12 +158,12 @@ function MenuDropdown ({ setShowHelpModal }) {
             </button>
           </div>
 
-          <UserProfile variant='dropdown' />
+          <UserProfile variant="dropdown" />
         </div>
       )}
       <Modal isOpen={showBugReportModal} onClose={closeReportBugModal} />
     </div>
-  )
+  );
 }
 
-export default MenuDropdown
+export default MenuDropdown;

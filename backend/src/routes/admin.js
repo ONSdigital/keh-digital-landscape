@@ -1,17 +1,17 @@
-const express = require('express')
-const s3Service = require('../services/s3Service')
-const techRadarService = require('../services/techRadarService')
-const logger = require('../config/logger')
+const express = require('express');
+const s3Service = require('../services/s3Service');
+const techRadarService = require('../services/techRadarService');
+const logger = require('../config/logger');
 const {
-  updateTechnologyInArray
-} = require('../utilities/updateTechnologyInArray')
-const { verifyJwt, requireAdmin } = require('../services/cognitoService')
+  updateTechnologyInArray,
+} = require('../utilities/updateTechnologyInArray');
+const { verifyJwt, requireAdmin } = require('../services/cognitoService');
 
-const router = express.Router()
+const router = express.Router();
 
 // Apply authentication middleware to all admin routes
-router.use(verifyJwt)
-router.use(requireAdmin)
+router.use(verifyJwt);
+router.use(requireAdmin);
 
 /**
  * Endpoint for updating the tech radar JSON in S3 from admin.
@@ -28,16 +28,16 @@ router.use(requireAdmin)
  */
 router.post('/tech-radar/update', async (req, res) => {
   try {
-    const { entries } = req.body
-    await techRadarService.updateTechRadarEntries(entries, 'admin')
-    res.json({ message: 'Tech radar updated successfully' })
+    const { entries } = req.body;
+    await techRadarService.updateTechRadarEntries(entries, 'admin');
+    res.json({ message: 'Tech radar updated successfully' });
   } catch (error) {
     if (error.message.includes('Invalid')) {
-      return res.status(400).json({ error: error.message })
+      return res.status(400).json({ error: error.message });
     }
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for updating banner messages.
@@ -50,7 +50,7 @@ router.post('/tech-radar/update', async (req, res) => {
  */
 router.post('/banners/update', async (req, res) => {
   try {
-    const { banner } = req.body
+    const { banner } = req.body;
 
     // Validate banner data
     if (
@@ -59,18 +59,18 @@ router.post('/banners/update', async (req, res) => {
       !Array.isArray(banner.pages) ||
       banner.pages.length === 0
     ) {
-      return res.status(400).json({ error: 'Invalid banner data' })
+      return res.status(400).json({ error: 'Invalid banner data' });
     }
 
-    let messagesData
+    let messagesData;
 
     try {
       // Try to get existing messages.json file
-      messagesData = await s3Service.getObject('main', 'messages.json')
+      messagesData = await s3Service.getObject('main', 'messages.json');
     } catch (error) {
       // If file doesn't exist, create a new structure
-      messagesData = { messages: [] }
-      logger.error('Creating new messages.json file: ', error)
+      messagesData = { messages: [] };
+      logger.error('Creating new messages.json file: ', error);
     }
 
     // Add the new banner to messages
@@ -80,17 +80,17 @@ router.post('/banners/update', async (req, res) => {
       description: banner.message, // For backwards compatibility
       type: banner.type || 'info',
       pages: banner.pages,
-      show: banner.show !== false // Default to true if not explicitly set to false
-    })
+      show: banner.show !== false, // Default to true if not explicitly set to false
+    });
 
     // Save the updated data
-    await s3Service.putObject('main', 'messages.json', messagesData)
-    res.json({ message: 'Banner added successfully' })
+    await s3Service.putObject('main', 'messages.json', messagesData);
+    res.json({ message: 'Banner added successfully' });
   } catch (error) {
-    logger.error('Error updating banner messages:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error updating banner messages:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for fetching all banner messages.
@@ -102,18 +102,18 @@ router.get('/banners', async (req, res) => {
   try {
     try {
       // Try to get existing messages.json file
-      const messagesData = await s3Service.getObject('main', 'messages.json')
-      res.json(messagesData)
+      const messagesData = await s3Service.getObject('main', 'messages.json');
+      res.json(messagesData);
     } catch (error) {
       // If file doesn't exist, return empty array
-      logger.error('No messages file exist:', error)
-      res.json({ messages: [] })
+      logger.error('No messages file exist:', error);
+      res.json({ messages: [] });
     }
   } catch (error) {
-    logger.error('Error fetching banner messages:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error fetching banner messages:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for toggling banner visibility.
@@ -127,18 +127,18 @@ router.get('/banners', async (req, res) => {
  */
 router.post('/banners/toggle', async (req, res) => {
   try {
-    const { index, show } = req.body
+    const { index, show } = req.body;
 
     if (index === undefined || typeof index !== 'number') {
-      return res.status(400).json({ error: 'Invalid banner index' })
+      return res.status(400).json({ error: 'Invalid banner index' });
     }
 
-    let messagesData
+    let messagesData;
     try {
-      messagesData = await s3Service.getObject('main', 'messages.json')
+      messagesData = await s3Service.getObject('main', 'messages.json');
     } catch (error) {
-      logger.error('Error fetching messages:', error)
-      return res.status(400).json({ error: 'Messages file not found' })
+      logger.error('Error fetching messages:', error);
+      return res.status(400).json({ error: 'Messages file not found' });
     }
 
     // Check if index is valid
@@ -147,20 +147,20 @@ router.post('/banners/toggle', async (req, res) => {
       index >= messagesData.messages.length ||
       index < 0
     ) {
-      return res.status(400).json({ error: 'Banner index out of range' })
+      return res.status(400).json({ error: 'Banner index out of range' });
     }
 
     // Update the banner visibility
-    messagesData.messages[index].show = show
+    messagesData.messages[index].show = show;
 
     // Save the updated data
-    await s3Service.putObject('main', 'messages.json', messagesData)
-    res.json({ message: 'Banner visibility updated successfully' })
+    await s3Service.putObject('main', 'messages.json', messagesData);
+    res.json({ message: 'Banner visibility updated successfully' });
   } catch (error) {
-    logger.error('Error toggling banner visibility:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error toggling banner visibility:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for deleting a banner.
@@ -173,18 +173,18 @@ router.post('/banners/toggle', async (req, res) => {
  */
 router.post('/banners/delete', async (req, res) => {
   try {
-    const { index } = req.body
+    const { index } = req.body;
 
     if (index === undefined || typeof index !== 'number') {
-      return res.status(400).json({ error: 'Invalid banner index' })
+      return res.status(400).json({ error: 'Invalid banner index' });
     }
 
-    let messagesData
+    let messagesData;
     try {
-      messagesData = await s3Service.getObject('main', 'messages.json')
+      messagesData = await s3Service.getObject('main', 'messages.json');
     } catch (error) {
-      logger.error('Error fetching messages:', error)
-      return res.status(400).json({ error: 'Messages file not found' })
+      logger.error('Error fetching messages:', error);
+      return res.status(400).json({ error: 'Messages file not found' });
     }
 
     // Check if index is valid
@@ -193,20 +193,20 @@ router.post('/banners/delete', async (req, res) => {
       index >= messagesData.messages.length ||
       index < 0
     ) {
-      return res.status(400).json({ error: 'Banner index out of range' })
+      return res.status(400).json({ error: 'Banner index out of range' });
     }
 
     // Remove the banner
-    messagesData.messages.splice(index, 1)
+    messagesData.messages.splice(index, 1);
 
     // Save the updated data
-    await s3Service.putObject('main', 'messages.json', messagesData)
-    res.json({ message: 'Banner deleted successfully' })
+    await s3Service.putObject('main', 'messages.json', messagesData);
+    res.json({ message: 'Banner deleted successfully' });
   } catch (error) {
-    logger.error('Error deleting banner:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error deleting banner:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for fetching array data from the Tech Audit Tool bucket.
@@ -217,17 +217,17 @@ router.post('/banners/delete', async (req, res) => {
 router.get('/array-data', async (req, res) => {
   try {
     try {
-      const arrayData = await s3Service.getObject('tat', 'array_data.json')
-      res.json(arrayData)
+      const arrayData = await s3Service.getObject('tat', 'array_data.json');
+      res.json(arrayData);
     } catch (error) {
-      logger.error('Error fetching array data:', { error: error.message })
-      res.status(500).json({ error: 'Failed to fetch technology data' })
+      logger.error('Error fetching array data:', { error: error.message });
+      res.status(500).json({ error: 'Failed to fetch technology data' });
     }
   } catch (error) {
-    logger.error('Error in array data endpoint:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error in array data endpoint:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for updating array data in the Tech Audit Tool bucket.
@@ -243,67 +243,67 @@ router.get('/array-data', async (req, res) => {
  */
 router.post('/array-data/update', async (req, res) => {
   try {
-    const { allCategories, category, items } = req.body
+    const { allCategories, category, items } = req.body;
 
     // Validate input
     if (allCategories) {
       if (!items || typeof items !== 'object') {
         return res.status(400).json({
           error:
-            'Invalid data format. Complete items object is required for all categories update.'
-        })
+            'Invalid data format. Complete items object is required for all categories update.',
+        });
       }
     } else {
       if (!category || !items || !Array.isArray(items)) {
         return res.status(400).json({
           error:
-            'Invalid data format. Category and items array are required for single category update.'
-        })
+            'Invalid data format. Category and items array are required for single category update.',
+        });
       }
     }
 
     // Get existing array data
-    let arrayData
+    let arrayData;
     try {
-      arrayData = await s3Service.getObject('tat', 'array_data.json')
+      arrayData = await s3Service.getObject('tat', 'array_data.json');
     } catch (error) {
       logger.error('Error fetching existing array data:', {
-        error: error.message
-      })
+        error: error.message,
+      });
       return res
         .status(500)
-        .json({ error: 'Failed to fetch existing data for update' })
+        .json({ error: 'Failed to fetch existing data for update' });
     }
 
     // Update the data
     if (allCategories) {
       // For all categories update, replace the entire object
-      arrayData = items
+      arrayData = items;
     } else {
       // Validate that the category exists in the current data to prevent category injection
       if (!Object.keys(arrayData).includes(category)) {
-        logger.error('Invalid category attempted:', { category })
+        logger.error('Invalid category attempted:', { category });
         return res.status(400).json({
-          error: 'Invalid category. The specified category does not exist.'
-        })
+          error: 'Invalid category. The specified category does not exist.',
+        });
       }
 
       // For single category update, update just that category
-      arrayData[category] = items
+      arrayData[category] = items;
     }
 
     // Save the updated data
-    await s3Service.putObject('tat', 'array_data.json', arrayData)
+    await s3Service.putObject('tat', 'array_data.json', arrayData);
     res.json({
       message: allCategories
         ? 'All technology lists updated successfully'
-        : `Technology list for ${category} updated successfully`
-    })
+        : `Technology list for ${category} updated successfully`,
+    });
   } catch (error) {
-    logger.error('Error updating array data:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error updating array data:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for fetching tech radar data for the admin page.
@@ -313,12 +313,12 @@ router.post('/array-data/update', async (req, res) => {
  */
 router.get('/tech-radar', async (req, res) => {
   try {
-    const radarData = await techRadarService.getTechRadarData()
-    res.json(radarData)
+    const radarData = await techRadarService.getTechRadarData();
+    res.json(radarData);
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for normalising technology names in project data.
@@ -332,29 +332,29 @@ router.get('/tech-radar', async (req, res) => {
  */
 router.post('/normalise-technology', async (req, res) => {
   try {
-    const { from, to } = req.body
+    const { from, to } = req.body;
 
     // Validate input
     if (!from || !to) {
       return res
         .status(400)
-        .json({ error: "Both 'from' and 'to' values are required" })
+        .json({ error: "Both 'from' and 'to' values are required" });
     }
 
     // Get existing project data
-    let projectData
+    let projectData;
     try {
-      projectData = await s3Service.getObject('tat', 'new_project_data.json')
+      projectData = await s3Service.getObject('tat', 'new_project_data.json');
     } catch (error) {
-      logger.error('Error fetching project data:', { error: error.message })
-      return res.status(500).json({ error: 'Failed to fetch project data' })
+      logger.error('Error fetching project data:', { error: error.message });
+      return res.status(500).json({ error: 'Failed to fetch project data' });
     }
 
     // Update technology names in project data
-    let updateCount = 0
+    let updateCount = 0;
     projectData.projects = projectData.projects.map(project => {
-      let updated = false
-      const architecture = project.architecture
+      let updated = false;
+      const architecture = project.architecture;
 
       // Update languages
       if (architecture.languages) {
@@ -362,21 +362,21 @@ router.post('/normalise-technology', async (req, res) => {
           architecture.languages.main,
           from,
           to
-        )
+        );
         const othersResult = updateTechnologyInArray(
           architecture.languages.others,
           from,
           to
-        )
+        );
 
         if (mainResult.updated) {
-          architecture.languages.main = mainResult.array
-          updated = true
+          architecture.languages.main = mainResult.array;
+          updated = true;
         }
 
         if (othersResult.updated) {
-          architecture.languages.others = othersResult.array
-          updated = true
+          architecture.languages.others = othersResult.array;
+          updated = true;
         }
       }
 
@@ -385,10 +385,10 @@ router.post('/normalise-technology', async (req, res) => {
         architecture.frameworks?.others,
         from,
         to
-      )
+      );
       if (frameworksResult.updated) {
-        architecture.frameworks.others = frameworksResult.array
-        updated = true
+        architecture.frameworks.others = frameworksResult.array;
+        updated = true;
       }
 
       // Update infrastructure
@@ -396,10 +396,10 @@ router.post('/normalise-technology', async (req, res) => {
         architecture.infrastructure?.others,
         from,
         to
-      )
+      );
       if (infrastructureResult.updated) {
-        architecture.infrastructure.others = infrastructureResult.array
-        updated = true
+        architecture.infrastructure.others = infrastructureResult.array;
+        updated = true;
       }
 
       // Update CICD
@@ -407,10 +407,10 @@ router.post('/normalise-technology', async (req, res) => {
         architecture.cicd?.others,
         from,
         to
-      )
+      );
       if (cicdResult.updated) {
-        architecture.cicd.others = cicdResult.array
-        updated = true
+        architecture.cicd.others = cicdResult.array;
+        updated = true;
       }
 
       // Update database
@@ -419,27 +419,27 @@ router.post('/normalise-technology', async (req, res) => {
           architecture.database.main,
           from,
           to
-        )
+        );
         const dbOthersResult = updateTechnologyInArray(
           architecture.database.others,
           from,
           to
-        )
+        );
 
         if (dbMainResult.updated) {
-          architecture.database.main = dbMainResult.array
-          updated = true
+          architecture.database.main = dbMainResult.array;
+          updated = true;
         }
 
         if (dbOthersResult.updated) {
-          architecture.database.others = dbOthersResult.array
-          updated = true
+          architecture.database.others = dbOthersResult.array;
+          updated = true;
         }
       }
 
       // Update supporting tools
       if (project.supporting_tools) {
-        const supportingTools = project.supporting_tools
+        const supportingTools = project.supporting_tools;
 
         // Update code_editors
         if (supportingTools.code_editors) {
@@ -447,21 +447,21 @@ router.post('/normalise-technology', async (req, res) => {
             supportingTools.code_editors.main,
             from,
             to
-          )
+          );
           const codeEditorsOthersResult = updateTechnologyInArray(
             supportingTools.code_editors.others,
             from,
             to
-          )
+          );
 
           if (codeEditorsMainResult.updated) {
-            supportingTools.code_editors.main = codeEditorsMainResult.array
-            updated = true
+            supportingTools.code_editors.main = codeEditorsMainResult.array;
+            updated = true;
           }
 
           if (codeEditorsOthersResult.updated) {
-            supportingTools.code_editors.others = codeEditorsOthersResult.array
-            updated = true
+            supportingTools.code_editors.others = codeEditorsOthersResult.array;
+            updated = true;
           }
         }
 
@@ -471,21 +471,21 @@ router.post('/normalise-technology', async (req, res) => {
             supportingTools.user_interface.main,
             from,
             to
-          )
+          );
           const uiOthersResult = updateTechnologyInArray(
             supportingTools.user_interface.others,
             from,
             to
-          )
+          );
 
           if (uiMainResult.updated) {
-            supportingTools.user_interface.main = uiMainResult.array
-            updated = true
+            supportingTools.user_interface.main = uiMainResult.array;
+            updated = true;
           }
 
           if (uiOthersResult.updated) {
-            supportingTools.user_interface.others = uiOthersResult.array
-            updated = true
+            supportingTools.user_interface.others = uiOthersResult.array;
+            updated = true;
           }
         }
 
@@ -495,21 +495,21 @@ router.post('/normalise-technology', async (req, res) => {
             supportingTools.diagrams.main,
             from,
             to
-          )
+          );
           const diagramsOthersResult = updateTechnologyInArray(
             supportingTools.diagrams.others,
             from,
             to
-          )
+          );
 
           if (diagramsMainResult.updated) {
-            supportingTools.diagrams.main = diagramsMainResult.array
-            updated = true
+            supportingTools.diagrams.main = diagramsMainResult.array;
+            updated = true;
           }
 
           if (diagramsOthersResult.updated) {
-            supportingTools.diagrams.others = diagramsOthersResult.array
-            updated = true
+            supportingTools.diagrams.others = diagramsOthersResult.array;
+            updated = true;
           }
         }
 
@@ -519,21 +519,21 @@ router.post('/normalise-technology', async (req, res) => {
             supportingTools.documentation.main,
             from,
             to
-          )
+          );
           const docOthersResult = updateTechnologyInArray(
             supportingTools.documentation.others,
             from,
             to
-          )
+          );
 
           if (docMainResult.updated) {
-            supportingTools.documentation.main = docMainResult.array
-            updated = true
+            supportingTools.documentation.main = docMainResult.array;
+            updated = true;
           }
 
           if (docOthersResult.updated) {
-            supportingTools.documentation.others = docOthersResult.array
-            updated = true
+            supportingTools.documentation.others = docOthersResult.array;
+            updated = true;
           }
         }
 
@@ -543,21 +543,21 @@ router.post('/normalise-technology', async (req, res) => {
             supportingTools.communication.main,
             from,
             to
-          )
+          );
           const commOthersResult = updateTechnologyInArray(
             supportingTools.communication.others,
             from,
             to
-          )
+          );
 
           if (commMainResult.updated) {
-            supportingTools.communication.main = commMainResult.array
-            updated = true
+            supportingTools.communication.main = commMainResult.array;
+            updated = true;
           }
 
           if (commOthersResult.updated) {
-            supportingTools.communication.others = commOthersResult.array
-            updated = true
+            supportingTools.communication.others = commOthersResult.array;
+            updated = true;
           }
         }
 
@@ -567,21 +567,21 @@ router.post('/normalise-technology', async (req, res) => {
             supportingTools.collaboration.main,
             from,
             to
-          )
+          );
           const collabOthersResult = updateTechnologyInArray(
             supportingTools.collaboration.others,
             from,
             to
-          )
+          );
 
           if (collabMainResult.updated) {
-            supportingTools.collaboration.main = collabMainResult.array
-            updated = true
+            supportingTools.collaboration.main = collabMainResult.array;
+            updated = true;
           }
 
           if (collabOthersResult.updated) {
-            supportingTools.collaboration.others = collabOthersResult.array
-            updated = true
+            supportingTools.collaboration.others = collabOthersResult.array;
+            updated = true;
           }
         }
 
@@ -590,38 +590,38 @@ router.post('/normalise-technology', async (req, res) => {
           typeof supportingTools.project_tracking === 'string' &&
           supportingTools.project_tracking === from
         ) {
-          supportingTools.project_tracking = to
-          updated = true
+          supportingTools.project_tracking = to;
+          updated = true;
         }
 
         if (
           typeof supportingTools.incident_management === 'string' &&
           supportingTools.incident_management === from
         ) {
-          supportingTools.incident_management = to
-          updated = true
+          supportingTools.incident_management = to;
+          updated = true;
         }
       }
 
       if (updated) {
-        updateCount++
+        updateCount++;
       }
 
-      return project
-    })
+      return project;
+    });
 
     // Save the updated data
-    await s3Service.putObject('tat', 'new_project_data.json', projectData)
+    await s3Service.putObject('tat', 'new_project_data.json', projectData);
     res.json({
       message: 'Technology names normalised successfully',
-      updatedProjects: updateCount
-    })
+      updatedProjects: updateCount,
+    });
   } catch (error) {
     logger.error('Error normalising technology names:', {
-      error: error.message
-    })
-    res.status(500).json({ error: error.message })
+      error: error.message,
+    });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
-module.exports = router
+module.exports = router;

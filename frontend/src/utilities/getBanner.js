@@ -1,4 +1,4 @@
-import customFetch from './customFetch'
+import customFetch from './customFetch';
 
 /**
  * Fetches banner messages from the backend and filters them for a specific page
@@ -7,18 +7,18 @@ import customFetch from './customFetch'
  */
 export const fetchBanners = async page => {
   try {
-    const baseUrl = '/api/banners'
+    const baseUrl = '/api/banners';
 
-    const response = await customFetch(baseUrl)
+    const response = await customFetch(baseUrl);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch banners')
+      throw new Error('Failed to fetch banners');
     }
 
-    const data = await response.json()
+    const data = await response.json();
 
     if (!data.messages || !Array.isArray(data.messages)) {
-      return []
+      return [];
     }
 
     // Filter banners that should be shown on the specified page
@@ -26,23 +26,23 @@ export const fetchBanners = async page => {
       .filter(message => {
         // Only include messages that have show set to true
         if (!message.show) {
-          return false
+          return false;
         }
 
         // Check if message is for this page
         // Handle both formats: 'page' property or 'pages' array
         if (message.page) {
-          return message.page === page
+          return message.page === page;
         } else if (Array.isArray(message.pages)) {
-          return message.pages.includes(page)
+          return message.pages.includes(page);
         }
 
-        return false
+        return false;
       })
       .map(message => ({
         title: message.title || message.message || '',
         description: message.description || message.message || '',
-        type: message.type || 'info'
+        type: message.type || 'info',
       }))
       .filter(banner => {
         // Check localStorage to see if this banner was dismissed
@@ -50,36 +50,36 @@ export const fetchBanners = async page => {
           `dismissed_banner_${banner.title}_${banner.description}`.replace(
             /\s+/g,
             '_'
-          )
-        const dismissed = localStorage.getItem(bannerId)
+          );
+        const dismissed = localStorage.getItem(bannerId);
 
         // If not dismissed, or if it's been more than 7 days since dismissal, show the banner
         if (!dismissed) {
-          return true
+          return true;
         }
 
         try {
-          const dismissedData = JSON.parse(dismissed)
-          const dismissedAt = dismissedData.dismissedAt
-          const now = new Date().getTime()
-          const sevenDays = 7 * 24 * 60 * 60 * 1000 // milliseconds in 7 days
+          const dismissedData = JSON.parse(dismissed);
+          const dismissedAt = dismissedData.dismissedAt;
+          const now = new Date().getTime();
+          const sevenDays = 7 * 24 * 60 * 60 * 1000; // milliseconds in 7 days
 
           // If it's been more than 7 days, show the banner again
-          return now - dismissedAt > sevenDays
+          return now - dismissedAt > sevenDays;
         } catch (e) {
           // If there's an error parsing the JSON, show the banner
-          return true
+          return true;
         }
-      })
+      });
 
     // Return only the last banner if there are multiple
     if (filteredBanners.length > 0) {
-      return [filteredBanners[filteredBanners.length - 1]]
+      return [filteredBanners[filteredBanners.length - 1]];
     }
 
-    return []
+    return [];
   } catch (error) {
-    console.error('Error fetching banners:', error)
-    return []
+    console.error('Error fetching banners:', error);
+    return [];
   }
-}
+};

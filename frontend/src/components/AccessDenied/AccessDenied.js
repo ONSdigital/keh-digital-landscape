@@ -1,7 +1,7 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { TbLock, TbHome, TbUserX, TbInfoCircle } from 'react-icons/tb'
-import '../../styles/components/AccessDenied.css'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { TbLock, TbHome, TbUserX, TbInfoCircle } from 'react-icons/tb';
+import '../../styles/components/AccessDenied.css';
 
 /**
  * AccessDenied component shown when user doesn't have required permissions
@@ -17,77 +17,73 @@ const AccessDenied = ({
   userEmail,
   userGroups,
   requiredRoles,
-  isDevelopmentMode
+  isDevelopmentMode,
 }) => {
-  const isGuest = !userEmail || userEmail === null
+  const isGuest = !userEmail || userEmail === null;
 
   return (
-    <div className='access-denied-container'>
-      <div className='access-denied-content'>
-        <div className='access-denied-icon'>
+    <div className="access-denied-container">
+      <div className="access-denied-content">
+        <div className="access-denied-icon">
           <TbLock size={64} />
         </div>
 
-        <h1 className='access-denied-title'>Access Denied</h1>
+        <h1 className="access-denied-title">Access Denied</h1>
 
-        <p className='access-denied-message'>
+        <p className="access-denied-message">
           You don&apos;t have permission to access the{' '}
           <strong>{pageName}</strong> page.
         </p>
 
-        <div className='access-denied-details'>
-          <div className='user-info-section'>
-            <div className='info-item'>
+        <div className="access-denied-details">
+          <div className="user-info-section">
+            <div className="info-item">
               <TbUserX size={20} />
               <span>
-                {isGuest
-                  ? (
-                    <span className='guest-text'>Guest User</span>
-                    )
-                  : (
-                    <span className='user-email'>{userEmail}</span>
-                    )}
+                {isGuest ? (
+                  <span className="guest-text">Guest User</span>
+                ) : (
+                  <span className="user-email">{userEmail}</span>
+                )}
               </span>
             </div>
 
-            <div className='info-item'>
+            <div className="info-item">
               <TbInfoCircle size={20} />
               <span>
                 Your roles:{' '}
-                {userGroups.length > 0
-                  ? (
-                    <span className='user-groups'>{userGroups.join(', ')}</span>
-                    )
-                  : (
-                    <span className='no-groups'>No roles assigned</span>
-                    )}
+                {userGroups.length > 0 ? (
+                  <span className="user-groups">{userGroups.join(', ')}</span>
+                ) : (
+                  <span className="no-groups">No roles assigned</span>
+                )}
               </span>
             </div>
           </div>
 
           {isDevelopmentMode && (
-            <div className='dev-mode-notice'>
+            <div className="dev-mode-notice">
               <TbInfoCircle size={16} />
               Running in development mode
             </div>
           )}
 
           {isGuest && (
-            <div className='guest-notice'>
+            <div className="guest-notice">
               <p>You need to be authenticated to access this page.</p>
               <p>Please contact the KEH team for access.</p>
             </div>
           )}
 
           {!isGuest && userGroups.length === 0 && (
-            <div className='no-roles-notice'>
+            <div className="no-roles-notice">
               <p>Your account doesn&apos;t have any roles assigned.</p>
               <p>Please contact the KEH team to request access.</p>
             </div>
           )}
 
           {!isGuest && userGroups.length > 0 && (
-            <div className='insufficient-roles-notice'>
+            <div className="insufficient-roles-notice">
               <p>
                 Your current role{userGroups.length > 1 ? 's' : ''}{' '}
                 {userGroups.length > 1 ? "don't" : "doesn't"} have access to
@@ -100,15 +96,15 @@ const AccessDenied = ({
           )}
         </div>
 
-        <div className='access-denied-actions'>
-          <Link to='/' className='back-home-btn'>
+        <div className="access-denied-actions">
+          <Link to="/" className="back-home-btn">
             <TbHome size={16} />
             Go to Home
           </Link>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AccessDenied
+export default AccessDenied;

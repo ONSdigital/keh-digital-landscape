@@ -1,5 +1,5 @@
-const rateLimit = require('express-rate-limit')
-const logger = require('./logger')
+const rateLimit = require('express-rate-limit');
+const logger = require('./logger');
 
 /**
  * Rate limiting configurations for different route groups
@@ -34,7 +34,7 @@ const generalApiLimiter = rateLimit({
   max: 60, // Limit each IP to 60 requests per minute (1 per second)
   message: {
     error: 'Too many requests from this IP, please try again later.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -42,14 +42,14 @@ const generalApiLimiter = rateLimit({
     logger.warn('Rate limit exceeded', {
       ip: req.ip,
       path: req.path,
-      userAgent: req.get('User-Agent')
-    })
+      userAgent: req.get('User-Agent'),
+    });
     res.status(429).json({
       error: 'Too many requests from this IP, please try again later.',
-      retryAfter: '1 minute'
-    })
-  }
-})
+      retryAfter: '1 minute',
+    });
+  },
+});
 
 // Stricter rate limiter for admin endpoints
 const adminApiLimiter = rateLimit({
@@ -57,7 +57,7 @@ const adminApiLimiter = rateLimit({
   max: 60, // Limit each IP to 60 requests per minute (1 per second)
   message: {
     error: 'Too many admin requests from this IP, please try again later.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -65,14 +65,14 @@ const adminApiLimiter = rateLimit({
     logger.warn('Admin rate limit exceeded', {
       ip: req.ip,
       path: req.path,
-      userAgent: req.get('User-Agent')
-    })
+      userAgent: req.get('User-Agent'),
+    });
     res.status(429).json({
       error: 'Too many admin requests from this IP, please try again later.',
-      retryAfter: '1 minute'
-    })
-  }
-})
+      retryAfter: '1 minute',
+    });
+  },
+});
 
 // More lenient rate limiter for authenticated user endpoints
 const userApiLimiter = rateLimit({
@@ -80,7 +80,7 @@ const userApiLimiter = rateLimit({
   max: 60, // Limit each IP to 60 requests per minute (1 per second)
   message: {
     error: 'Too many requests from this IP, please try again later.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -88,14 +88,14 @@ const userApiLimiter = rateLimit({
     logger.warn('User API rate limit exceeded', {
       ip: req.ip,
       path: req.path,
-      userAgent: req.get('User-Agent')
-    })
+      userAgent: req.get('User-Agent'),
+    });
     res.status(429).json({
       error: 'Too many requests from this IP, please try again later.',
-      retryAfter: '1 minute'
-    })
-  }
-})
+      retryAfter: '1 minute',
+    });
+  },
+});
 
 // Very lenient rate limiter for health checks
 const healthCheckLimiter = rateLimit({
@@ -103,7 +103,7 @@ const healthCheckLimiter = rateLimit({
   max: 60, // Allow 60 health checks per minute
   message: {
     error: 'Too many health check requests.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -111,14 +111,14 @@ const healthCheckLimiter = rateLimit({
     logger.warn('Health check rate limit exceeded', {
       ip: req.ip,
       path: req.path,
-      userAgent: req.get('User-Agent')
-    })
+      userAgent: req.get('User-Agent'),
+    });
     res.status(429).json({
       error: 'Too many health check requests.',
-      retryAfter: '1 minute'
-    })
-  }
-})
+      retryAfter: '1 minute',
+    });
+  },
+});
 
 // Strict rate limiter for potentially expensive operations like GitHub API calls
 const externalApiLimiter = rateLimit({
@@ -126,7 +126,7 @@ const externalApiLimiter = rateLimit({
   max: 60, // Limit each IP to 60 requests per minute (1 per second)
   message: {
     error: 'Too many requests to external APIs, please try again later.',
-    retryAfter: '1 minute'
+    retryAfter: '1 minute',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -134,19 +134,19 @@ const externalApiLimiter = rateLimit({
     logger.warn('External API rate limit exceeded', {
       ip: req.ip,
       path: req.path,
-      userAgent: req.get('User-Agent')
-    })
+      userAgent: req.get('User-Agent'),
+    });
     res.status(429).json({
       error: 'Too many requests to external APIs, please try again later.',
-      retryAfter: '1 minute'
-    })
-  }
-})
+      retryAfter: '1 minute',
+    });
+  },
+});
 
 module.exports = {
   generalApiLimiter,
   adminApiLimiter,
   userApiLimiter,
   healthCheckLimiter,
-  externalApiLimiter
-}
+  externalApiLimiter,
+};

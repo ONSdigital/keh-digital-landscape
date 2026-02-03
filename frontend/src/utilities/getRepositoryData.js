@@ -1,6 +1,6 @@
-import { toast } from 'react-hot-toast'
-import { useData } from '../contexts/dataContext'
-import customFetch from './customFetch'
+import { toast } from 'react-hot-toast';
+import { useData } from '../contexts/dataContext';
+import customFetch from './customFetch';
 
 /**
  * Fetch general repository statistics
@@ -11,29 +11,29 @@ import customFetch from './customFetch'
  */
 export const fetchRepositoryStats = async (date = null, archived = null) => {
   try {
-    const params = new URLSearchParams()
-    if (date && date !== 'all') params.append('datetime', date)
-    if (archived !== null) params.append('archived', archived)
+    const params = new URLSearchParams();
+    if (date && date !== 'all') params.append('datetime', date);
+    if (archived !== null) params.append('archived', archived);
 
-    const baseUrl = '/api/json'
+    const baseUrl = '/api/json';
 
-    const url = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl
+    const url = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
 
-    const response = await customFetch(url)
+    const response = await customFetch(url);
 
     if (!response.ok) {
       throw new Error(
         `Failed to fetch repository stats: ${response.statusText}`
-      )
+      );
     }
 
-    const data = await response.json()
-    return data
+    const data = await response.json();
+    return data;
   } catch (error) {
-    toast.error('Error loading repository statistics.')
-    return null
+    toast.error('Error loading repository statistics.');
+    return null;
   }
-}
+};
 
 /**
  * fetchRepositoryData function to fetch repository data for specific repositories.
@@ -50,47 +50,47 @@ export const fetchRepositoryData = async (
 ) => {
   try {
     if (!repositories || repositories.length === 0) {
-      return null
+      return null;
     }
 
-    const params = new URLSearchParams()
+    const params = new URLSearchParams();
 
-    params.append('repositories', repositories.join(','))
-    if (date) params.append('datetime', date)
-    if (archived !== null) params.append('archived', archived)
+    params.append('repositories', repositories.join(','));
+    if (date) params.append('datetime', date);
+    if (archived !== null) params.append('archived', archived);
 
     const response = await customFetch(
       `/api/repository/project/json?${params.toString()}`
-    )
+    );
 
     if (!response.ok) {
       throw new Error(
         `Failed to fetch repository data: ${response.statusText}`
-      )
+      );
     }
 
-    const data = await response.json()
-    return data
+    const data = await response.json();
+    return data;
   } catch (error) {
-    toast.error('Error loading repository data.')
-    return null
+    toast.error('Error loading repository data.');
+    return null;
   }
-}
+};
 
 /**
  * Hook wrapper for fetchRepositoryData
  * @returns {Function} - Function to fetch repository data with caching
  */
 export const useRepositoryData = () => {
-  const { getRepositoryData } = useData()
-  return getRepositoryData
-}
+  const { getRepositoryData } = useData();
+  return getRepositoryData;
+};
 
 /**
  * Hook wrapper for fetchRepositoryStats
  * @returns {Function} - Function to fetch repository stats with caching
  */
 export const useRepositoryStats = () => {
-  const { getRepositoryStats } = useData()
-  return getRepositoryStats
-}
+  const { getRepositoryStats } = useData();
+  return getRepositoryStats;
+};

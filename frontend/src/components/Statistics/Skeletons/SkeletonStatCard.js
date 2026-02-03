@@ -1,13 +1,13 @@
-import React from 'react'
-import '../../../styles/components/SkeletonLoading.css'
+import React from 'react';
+import '../../../styles/components/SkeletonLoading.css';
 
-function SkeletonStatCard ({ minWidth = '0' }) {
+function SkeletonStatCard({ minWidth = '0' }) {
   return (
-    <div className='stat-card skeleton' style={{ minWidth }}>
-      <div className='skeleton-title' />
-      <div className='skeleton-value' />
+    <div className="stat-card skeleton" style={{ minWidth }}>
+      <div className="skeleton-title" />
+      <div className="skeleton-value" />
     </div>
-  )
+  );
 }
 
-export default SkeletonStatCard
+export default SkeletonStatCard;

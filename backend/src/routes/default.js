@@ -1,12 +1,12 @@
-const express = require('express')
-const s3Service = require('../services/s3Service')
-const logger = require('../config/logger')
+const express = require('express');
+const s3Service = require('../services/s3Service');
+const logger = require('../config/logger');
 const {
-  transformProjectsToCSVFormat
-} = require('../utilities/projectDataTransformer')
-const { healthCheckLimiter } = require('../config/rateLimiter')
+  transformProjectsToCSVFormat,
+} = require('../utilities/projectDataTransformer');
+const { healthCheckLimiter } = require('../config/rateLimiter');
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * Endpoint for fetching project data and converting it to CSV format.
@@ -19,19 +19,19 @@ router.get('/csv', async (req, res) => {
     const jsonData = await s3Service.getObjectViaSignedUrl(
       'tat',
       'new_project_data.json'
-    )
+    );
 
     // Transform JSON data to CSV format using the utility function that handles reverse dependencies
-    const transformedData = transformProjectsToCSVFormat(jsonData.projects)
+    const transformedData = transformProjectsToCSVFormat(jsonData.projects);
 
-    res.status(200).json(transformedData)
+    res.status(200).json(transformedData);
   } catch (error) {
     logger.error('Error fetching and transforming project data:', {
-      error: error.message
-    })
-    res.status(500).json({ error: error.message })
+      error: error.message,
+    });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for fetching tech radar JSON data from S3. The tech data that goes on the radar and states where it belongs on the radar.
@@ -44,13 +44,13 @@ router.get('/tech-radar/json', async (req, res) => {
     const jsonData = await s3Service.getObjectViaSignedUrl(
       'main',
       'onsRadarSkeleton.json'
-    )
-    res.json(jsonData)
+    );
+    res.json(jsonData);
   } catch (error) {
-    logger.error('Error fetching JSON:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error fetching JSON:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for fetching repository statistics.
@@ -65,29 +65,29 @@ router.get('/tech-radar/json', async (req, res) => {
  */
 router.get('/json', async (req, res) => {
   try {
-    const { datetime, archived } = req.query
+    const { datetime, archived } = req.query;
     const jsonData = await s3Service.getObjectViaSignedUrl(
       'main',
       'repositories.json'
-    )
+    );
 
     // First filter by date if provided
-    let filteredRepos = jsonData.repositories
+    let filteredRepos = jsonData.repositories;
 
     if (datetime && !isNaN(Date.parse(datetime))) {
-      const targetDate = new Date(datetime)
-      const now = new Date()
+      const targetDate = new Date(datetime);
+      const now = new Date();
       filteredRepos = jsonData.repositories.filter(repo => {
-        const lastCommitDate = new Date(repo.last_commit)
-        return lastCommitDate >= targetDate && lastCommitDate <= now
-      })
+        const lastCommitDate = new Date(repo.last_commit);
+        return lastCommitDate >= targetDate && lastCommitDate <= now;
+      });
     }
 
     // Then filter by archived status if specified
     if (archived === 'true') {
-      filteredRepos = filteredRepos.filter(repo => repo.is_archived)
+      filteredRepos = filteredRepos.filter(repo => repo.is_archived);
     } else if (archived === 'false') {
-      filteredRepos = filteredRepos.filter(repo => !repo.is_archived)
+      filteredRepos = filteredRepos.filter(repo => !repo.is_archived);
     }
     // If archived is not specified, use all repos (for total view)
 
@@ -102,27 +102,27 @@ router.get('/json', async (req, res) => {
       ).length,
       total_internal_repos: filteredRepos.filter(
         repo => repo.visibility === 'INTERNAL'
-      ).length
-    }
+      ).length,
+    };
 
     // Calculate language statistics
-    const languageStats = {}
+    const languageStats = {};
     filteredRepos.forEach(repo => {
-      if (!repo.technologies?.languages) return
+      if (!repo.technologies?.languages) return;
 
       repo.technologies.languages.forEach(lang => {
         if (!languageStats[lang.name]) {
           languageStats[lang.name] = {
             repo_count: 0,
             total_percentage: 0,
-            total_size: 0
-          }
+            total_size: 0,
+          };
         }
-        languageStats[lang.name].repo_count++
-        languageStats[lang.name].total_percentage += lang.percentage
-        languageStats[lang.name].total_size += lang.size
-      })
-    })
+        languageStats[lang.name].repo_count++;
+        languageStats[lang.name].total_percentage += lang.percentage;
+        languageStats[lang.name].total_size += lang.size;
+      });
+    });
 
     // Calculate averages
     Object.keys(languageStats).forEach(lang => {
@@ -131,9 +131,9 @@ router.get('/json', async (req, res) => {
         average_percentage: +(
           languageStats[lang].total_percentage / languageStats[lang].repo_count
         ).toFixed(3),
-        total_size: languageStats[lang].total_size
-      }
-    })
+        total_size: languageStats[lang].total_size,
+      };
+    });
 
     res.json({
       stats,
@@ -141,14 +141,14 @@ router.get('/json', async (req, res) => {
       metadata: {
         last_updated:
           jsonData.metadata?.last_updated || new Date().toISOString(),
-        filter_date: datetime && !isNaN(Date.parse(datetime)) ? datetime : null
-      }
-    })
+        filter_date: datetime && !isNaN(Date.parse(datetime)) ? datetime : null,
+      },
+    });
   } catch (error) {
-    logger.error('Error fetching JSON:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error fetching JSON:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint for fetching specific repository information.
@@ -166,40 +166,40 @@ router.get('/json', async (req, res) => {
  */
 router.get('/repository/project/json', async (req, res) => {
   try {
-    const { repositories, datetime, archived } = req.query
+    const { repositories, datetime, archived } = req.query;
     if (!repositories) {
-      return res.status(400).json({ error: 'No repositories specified' })
+      return res.status(400).json({ error: 'No repositories specified' });
     }
 
     const repoNames = repositories
       .split(',')
-      .map(repo => repo.toLowerCase().trim())
+      .map(repo => repo.toLowerCase().trim());
 
     const jsonData = await s3Service.getObjectViaSignedUrl(
       'main',
       'repositories.json'
-    )
+    );
 
     // Filter repositories based on provided names
     let filteredRepos = jsonData.repositories.filter(repo =>
       repoNames.includes(repo.name.toLowerCase())
-    )
+    );
 
     // Apply date filter if provided
     if (datetime && !isNaN(Date.parse(datetime))) {
-      const targetDate = new Date(datetime)
-      const now = new Date()
+      const targetDate = new Date(datetime);
+      const now = new Date();
       filteredRepos = filteredRepos.filter(repo => {
-        const lastCommitDate = new Date(repo.last_commit)
-        return lastCommitDate >= targetDate && lastCommitDate <= now
-      })
+        const lastCommitDate = new Date(repo.last_commit);
+        return lastCommitDate >= targetDate && lastCommitDate <= now;
+      });
     }
 
     // Apply archived filter if specified
     if (archived === 'true') {
-      filteredRepos = filteredRepos.filter(repo => repo.is_archived)
+      filteredRepos = filteredRepos.filter(repo => repo.is_archived);
     } else if (archived === 'false') {
-      filteredRepos = filteredRepos.filter(repo => !repo.is_archived)
+      filteredRepos = filteredRepos.filter(repo => !repo.is_archived);
     }
 
     // Calculate statistics from filtered repository data
@@ -211,27 +211,27 @@ router.get('/repository/project/json', async (req, res) => {
         .length,
       total_internal_repos: filteredRepos.filter(
         r => r.visibility === 'INTERNAL'
-      ).length
-    }
+      ).length,
+    };
 
     // Calculate language statistics
-    const languageStats = {}
+    const languageStats = {};
     filteredRepos.forEach(repo => {
-      if (!repo.technologies?.languages) return
+      if (!repo.technologies?.languages) return;
 
       repo.technologies.languages.forEach(lang => {
         if (!languageStats[lang.name]) {
           languageStats[lang.name] = {
             repo_count: 0,
             total_percentage: 0,
-            total_size: 0
-          }
+            total_size: 0,
+          };
         }
-        languageStats[lang.name].repo_count++
-        languageStats[lang.name].total_percentage += lang.percentage
-        languageStats[lang.name].total_size += lang.size
-      })
-    })
+        languageStats[lang.name].repo_count++;
+        languageStats[lang.name].total_percentage += lang.percentage;
+        languageStats[lang.name].total_size += lang.size;
+      });
+    });
 
     // Calculate averages
     Object.keys(languageStats).forEach(lang => {
@@ -240,9 +240,9 @@ router.get('/repository/project/json', async (req, res) => {
         average_percentage: +(
           languageStats[lang].total_percentage / languageStats[lang].repo_count
         ).toFixed(3),
-        total_size: languageStats[lang].total_size
-      }
-    })
+        total_size: languageStats[lang].total_size,
+      };
+    });
 
     res.json({
       repositories: filteredRepos,
@@ -254,14 +254,14 @@ router.get('/repository/project/json', async (req, res) => {
         requested_repos: repoNames,
         found_repos: filteredRepos.map(repo => repo.name),
         filter_date: datetime && !isNaN(Date.parse(datetime)) ? datetime : null,
-        filter_archived: archived
-      }
-    })
+        filter_archived: archived,
+      },
+    });
   } catch (error) {
-    logger.error('Error fetching repository data:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error fetching repository data:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint to fetch list of directorates from S3.
@@ -271,13 +271,13 @@ router.get('/repository/project/json', async (req, res) => {
  */
 router.get('/directorates/json', async (req, res) => {
   try {
-    const data = await s3Service.getObject('main', 'directorates.json')
-    res.json(data)
+    const data = await s3Service.getObject('main', 'directorates.json');
+    res.json(data);
   } catch (error) {
-    logger.error('Error fetching directorates:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error fetching directorates:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint to fetch active banner messages.
@@ -287,31 +287,31 @@ router.get('/directorates/json', async (req, res) => {
  */
 router.get('/banners', async (req, res) => {
   try {
-    let messagesData = { messages: [] }
+    let messagesData = { messages: [] };
 
     try {
       // Try to get existing messages.json file
-      const data = await s3Service.getObject('main', 'messages.json')
+      const data = await s3Service.getObject('main', 'messages.json');
 
       // Filter only active banners
       messagesData.messages = data.messages.filter(
         banner => banner.show === true
-      )
+      );
     } catch (error) {
       // If file doesn't exist, return empty array
       logger.error(
         'No messages.json file found, returning empty array:',
         error
-      )
-      messagesData = { messages: [] }
+      );
+      messagesData = { messages: [] };
     }
 
-    res.json(messagesData)
+    res.json(messagesData);
   } catch (error) {
-    logger.error('Error fetching banner messages:', { error: error.message })
-    res.status(500).json({ error: error.message })
+    logger.error('Error fetching banner messages:', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Endpoint to fetch all banner messages (including inactive ones).
@@ -321,33 +321,33 @@ router.get('/banners', async (req, res) => {
  */
 router.get('/banners/all', async (req, res) => {
   try {
-    let messagesData = { messages: [] }
+    let messagesData = { messages: [] };
 
     try {
       // Try to get existing messages.json file
-      const data = await s3Service.getObject('main', 'messages.json')
+      const data = await s3Service.getObject('main', 'messages.json');
 
       // Filter only active banners
       messagesData.messages = data.messages.filter(
         banner => banner.show === true
-      )
+      );
     } catch (error) {
       // If file doesn't exist, return empty array
       logger.error(
         'No messages.json file found, returning empty array:',
         error
-      )
-      messagesData = { messages: [] }
+      );
+      messagesData = { messages: [] };
     }
 
-    res.json(messagesData)
+    res.json(messagesData);
   } catch (error) {
     logger.error('Error fetching all banner messages:', {
-      error: error.message
-    })
-    res.status(500).json({ error: error.message })
+      error: error.message,
+    });
+    res.status(500).json({ error: error.message });
   }
-})
+});
 
 /**
  * Health check endpoint to verify server status.
@@ -361,28 +361,28 @@ router.get('/banners/all', async (req, res) => {
  */
 router.get('/health', healthCheckLimiter, (req, res) => {
   logger.info('Health check endpoint called', {
-    timestamp: new Date().toISOString()
-  })
+    timestamp: new Date().toISOString(),
+  });
 
   // Add more specific headers
   res.set({
     'Content-Type': 'application/json',
     Connection: 'keep-alive',
     'Cache-Control': 'no-cache',
-    'X-Health-Check': 'true'
-  })
+    'X-Health-Check': 'true',
+  });
 
   const healthResponse = {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
-    pid: process.pid
-  }
+    pid: process.pid,
+  };
 
-  logger.debug('Health check details', healthResponse)
+  logger.debug('Health check details', healthResponse);
 
-  res.status(200).json(healthResponse)
-})
+  res.status(200).json(healthResponse);
+});
 
-module.exports = router
+module.exports = router;

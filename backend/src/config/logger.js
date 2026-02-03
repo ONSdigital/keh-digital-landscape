@@ -1,11 +1,11 @@
-const winston = require('winston')
-const WinstonCloudWatch = require('winston-cloudwatch')
+const winston = require('winston');
+const WinstonCloudWatch = require('winston-cloudwatch');
 
 // Define log format
 const logFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.json()
-)
+);
 
 // Create the winston logger
 const logger = winston.createLogger({
@@ -17,10 +17,10 @@ const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
-      )
-    })
-  ]
-})
+      ),
+    }),
+  ],
+});
 
 // Add CloudWatch transport if AWS credentials are available
 if (process.env.AWS_REGION) {
@@ -35,11 +35,11 @@ if (process.env.AWS_REGION) {
           timestamp: new Date().toISOString(),
           level,
           message,
-          ...meta
-        })
-      }
+          ...meta,
+        });
+      },
     })
-  )
+  );
 }
 
 // Export helper functions for different log levels
@@ -49,5 +49,5 @@ module.exports = {
   info: (message, meta = {}) => logger.info(message, meta),
   debug: (message, meta = {}) => logger.debug(message, meta),
   // Raw logger instance if needed
-  logger
-}
+  logger,
+};

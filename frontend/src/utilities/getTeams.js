@@ -1,4 +1,4 @@
-import customFetch from './customFetch'
+import customFetch from './customFetch';
 
 /**
  * Check if user is authenticated by testing cookie presence
@@ -7,19 +7,19 @@ import customFetch from './customFetch'
 export const checkAuthStatus = async () => {
   try {
     const response = await customFetch('/copilot/api/auth/status', {
-      credentials: 'include'
-    })
+      credentials: 'include',
+    });
 
     if (response.ok) {
-      const data = await response.json()
-      return data.authenticated
+      const data = await response.json();
+      return data.authenticated;
     }
-    return false
+    return false;
   } catch (error) {
-    console.error('Error checking auth status:', error)
-    return false
+    console.error('Error checking auth status:', error);
+    return false;
   }
-}
+};
 
 /**
  * Fetch teams the authenticated user can view (user teams or Copilot admin teams)
@@ -31,29 +31,29 @@ export const checkAuthStatus = async () => {
 export const fetchUserTeams = async () => {
   try {
     const response = await customFetch('/copilot/api/teams', {
-      credentials: 'include'
-    })
+      credentials: 'include',
+    });
 
     if (!response.ok) {
       console.error(
         'Failed to fetch teams:',
         response.status,
         response.statusText
-      )
-      return { teams: [], isAdmin: false, userTeamSlugs: [] }
+      );
+      return { teams: [], isAdmin: false, userTeamSlugs: [] };
     }
 
-    const data = await response.json()
+    const data = await response.json();
     return {
       teams: data.teams || [],
       isAdmin: data.isAdmin || false,
-      userTeamSlugs: data.userTeamSlugs || []
-    }
+      userTeamSlugs: data.userTeamSlugs || [],
+    };
   } catch (error) {
-    console.error('Error fetching teams:', error)
-    return { teams: [], isAdmin: false, userTeamSlugs: [] }
+    console.error('Error fetching teams:', error);
+    return { teams: [], isAdmin: false, userTeamSlugs: [] };
   }
-}
+};
 
 /**
  * Check copilot admin status for the authenticated user
@@ -62,28 +62,28 @@ export const fetchUserTeams = async () => {
 export const checkCopilotAdminStatus = async () => {
   try {
     const response = await customFetch('/copilot/api/admin/status', {
-      credentials: 'include'
-    })
+      credentials: 'include',
+    });
 
     if (!response.ok) {
       console.error(
         'Failed to check admin status:',
         response.status,
         response.statusText
-      )
-      return { teams: [], isAdmin: false }
+      );
+      return { teams: [], isAdmin: false };
     }
 
-    const data = await response.json()
+    const data = await response.json();
     return {
       teams: data.teams || [],
-      isAdmin: data.isAdmin || false
-    }
+      isAdmin: data.isAdmin || false,
+    };
   } catch (error) {
-    console.error('Error checking admin status:', error)
-    return { teams: [], isAdmin: false }
+    console.error('Error checking admin status:', error);
+    return { teams: [], isAdmin: false };
   }
-}
+};
 
 /**
  * Exchange GitHub OAuth code for access token
@@ -96,22 +96,22 @@ export const exchangeCodeForToken = async code => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ code })
-    })
+      body: JSON.stringify({ code }),
+    });
 
     if (!response.ok) {
-      console.error('Failed to exchange code for token:', response.statusText)
-      return false
+      console.error('Failed to exchange code for token:', response.statusText);
+      return false;
     }
 
-    const data = await response.json()
+    const data = await response.json();
 
-    return data.success
+    return data.success;
   } catch (error) {
-    console.error('Error exchanging code:', error)
-    return false
+    console.error('Error exchanging code:', error);
+    return false;
   }
-}
+};
 
 /**
  * Logout user and clear the authentication cookie
@@ -121,23 +121,23 @@ export const logoutUser = async () => {
   try {
     const response = await customFetch('/copilot/api/github/oauth/logout', {
       method: 'POST',
-      credentials: 'include'
-    })
+      credentials: 'include',
+    });
 
-    return response.ok
+    return response.ok;
   } catch (error) {
-    console.error('Error logging out:', error)
-    return false
+    console.error('Error logging out:', error);
+    return false;
   }
-}
+};
 
 /**
  * Redirect user to GitHub OAuth login
  * @returns {void}
  */
 export const loginWithGitHub = () => {
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || ''
-  const url = `${backendUrl}/copilot/api/github/oauth/login`
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+  const url = `${backendUrl}/copilot/api/github/oauth/login`;
 
-  window.location.href = url
-}
+  window.location.href = url;
+};

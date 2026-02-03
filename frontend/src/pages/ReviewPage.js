@@ -1,79 +1,79 @@
-import React, { useState, useEffect } from 'react'
-import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson'
-import { fetchCSVFromS3 } from '../utilities/getCSVData'
-import Header from '../components/Header/Header'
-import '../styles/ReviewPage.css'
-import { toast } from 'react-hot-toast'
-import SkeletonStatCard from '../components/Statistics/Skeletons/SkeletonStatCard'
-import MultiSelect from '../components/MultiSelect/MultiSelect'
-import InfoBox from '../components/InfoBox/InfoBox'
-import ProjectModal from '../components/Projects/ProjectModal'
-import { useTechnologyStatus } from '../utilities/getTechnologyStatus'
-import { useData } from '../contexts/dataContext'
-import { MarkdownText } from '../utilities/markdownRenderer'
-import { format, set } from 'date-fns'
-import { getDirectorates } from '../utilities/getDirectorates'
-import { specialTechMatchers } from '../utilities/getSpecialTechMatchers'
+import React, { useState, useEffect } from 'react';
+import { fetchTechRadarJSONFromS3 } from '../utilities/getTechRadarJson';
+import { fetchCSVFromS3 } from '../utilities/getCSVData';
+import Header from '../components/Header/Header';
+import '../styles/ReviewPage.css';
+import { toast } from 'react-hot-toast';
+import SkeletonStatCard from '../components/Statistics/Skeletons/SkeletonStatCard';
+import MultiSelect from '../components/MultiSelect/MultiSelect';
+import InfoBox from '../components/InfoBox/InfoBox';
+import ProjectModal from '../components/Projects/ProjectModal';
+import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
+import { useData } from '../contexts/dataContext';
+import { MarkdownText } from '../utilities/markdownRenderer';
+import { format, set } from 'date-fns';
+import { getDirectorates } from '../utilities/getDirectorates';
+import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
 import {
   getDirectorateColour,
-  getDirectorateName
-} from '../utilities/directorateUtils'
+  getDirectorateName,
+} from '../utilities/directorateUtils';
 
 const ReviewPage = () => {
-  const { getUserData } = useData()
-  const [currentUser, setCurrentUser] = useState(null)
+  const { getUserData } = useData();
+  const [currentUser, setCurrentUser] = useState(null);
   const [entries, setEntries] = useState({
     adopt: [],
     trial: [],
     assess: [],
     hold: [],
     review: [],
-    ignore: []
-  })
-  const [selectedItem, setSelectedItem] = useState(null)
-  const [timelineAscending, setTimelineAscending] = useState(false)
-  const [expandedTimelineEntry, setExpandedTimelineEntry] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [newTechnology, setNewTechnology] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedTitle, setEditedTitle] = useState('')
-  const [editedCategory, setEditedCategory] = useState('')
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false)
-  const [showAddConfirmModal, setShowAddConfirmModal] = useState(false)
-  const [pendingNewTechnology, setPendingNewTechnology] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategories, setSelectedCategories] = useState([])
-  const [showAddTechnologyModal, setShowAddTechnologyModal] = useState(false)
-  const [showMoveModal, setShowMoveModal] = useState(false)
-  const [pendingMove, setPendingMove] = useState(null)
-  const [moveDescription, setMoveDescription] = useState('')
-  const [activeTab, setActiveTab] = useState('write')
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [isDuplicate, setIsDuplicate] = useState(false)
-  const [projectsData, setProjectsData] = useState(null)
-  const [projectsForTech, setProjectsForTech] = useState([])
-  const [selectedProject, setSelectedProject] = useState(null)
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
-  const [showProjectCount, setShowProjectCount] = useState(false)
-  const [projectCountMap, setProjectCountMap] = useState({})
-  const getTechnologyStatus = useTechnologyStatus()
+    ignore: [],
+  });
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [timelineAscending, setTimelineAscending] = useState(false);
+  const [expandedTimelineEntry, setExpandedTimelineEntry] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newTechnology, setNewTechnology] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedCategory, setEditedCategory] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
+  const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
+  const [pendingNewTechnology, setPendingNewTechnology] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showAddTechnologyModal, setShowAddTechnologyModal] = useState(false);
+  const [showMoveModal, setShowMoveModal] = useState(false);
+  const [pendingMove, setPendingMove] = useState(null);
+  const [moveDescription, setMoveDescription] = useState('');
+  const [activeTab, setActiveTab] = useState('write');
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [projectsData, setProjectsData] = useState(null);
+  const [projectsForTech, setProjectsForTech] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [showProjectCount, setShowProjectCount] = useState(false);
+  const [projectCountMap, setProjectCountMap] = useState({});
+  const getTechnologyStatus = useTechnologyStatus();
 
-  const [selectedDirectorate, setSelectedDirectorate] = useState(null)
-  const [defaultDirectorate, setDefaultDirectorate] = useState(null)
-  const [directorateColour, setDirectorateColour] = useState('var(--accent)')
+  const [selectedDirectorate, setSelectedDirectorate] = useState(null);
+  const [defaultDirectorate, setDefaultDirectorate] = useState(null);
+  const [directorateColour, setDirectorateColour] = useState('var(--accent)');
   const [directorateName, setDirectorateName] = useState(
     'Digital Services (DS)'
-  )
-  const [directorates, setDirectorates] = useState([])
+  );
+  const [directorates, setDirectorates] = useState([]);
 
-  const [highlightedTechnologies, setHighlightedTechnologies] = useState([])
-  const [changedTechnologies, setChangedTechnologies] = useState([])
-  const [editedItem, setEditedItem] = useState(null)
+  const [highlightedTechnologies, setHighlightedTechnologies] = useState([]);
+  const [changedTechnologies, setChangedTechnologies] = useState([]);
+  const [editedItem, setEditedItem] = useState(null);
 
-  const [stashedDefaultTimeline, setStashedDefaultTimeline] = useState({})
+  const [stashedDefaultTimeline, setStashedDefaultTimeline] = useState({});
 
   // Fields to scan from CSV and their corresponding categories
   const fieldsToScan = {
@@ -88,67 +88,67 @@ const ReviewPage = () => {
     Cloud_Services: 'Infrastructure',
     IAM_Services: 'Infrastructure',
     Containers: 'Infrastructure',
-    Datastores: 'Infrastructure'
-  }
+    Datastores: 'Infrastructure',
+  };
 
   const categoryOptions = [
     { label: 'Languages', value: 'Languages' },
     { label: 'Frameworks', value: 'Frameworks' },
     { label: 'Supporting Tools', value: 'Supporting Tools' },
-    { label: 'Infrastructure', value: 'Infrastructure' }
-  ]
+    { label: 'Infrastructure', value: 'Infrastructure' },
+  ];
 
   useEffect(() => {
-    getDirectorates().then(setDirectorates)
-  }, [])
+    getDirectorates().then(setDirectorates);
+  }, []);
 
   // Default to directorate with default flag if none selected
   useEffect(() => {
     if (directorates.length > 0 && !selectedDirectorate) {
-      const defaultDirectorate = directorates.find(dir => dir.default)
+      const defaultDirectorate = directorates.find(dir => dir.default);
       const directorateId = defaultDirectorate
         ? defaultDirectorate.id
-        : directorates[0].id
+        : directorates[0].id;
 
-      setDefaultDirectorate(directorateId)
-      setSelectedDirectorate(directorateId)
-      setDirectorateColour(getDirectorateColour(directorateId, directorates))
-      setDirectorateName(getDirectorateName(directorateId, directorates))
+      setDefaultDirectorate(directorateId);
+      setSelectedDirectorate(directorateId);
+      setDirectorateColour(getDirectorateColour(directorateId, directorates));
+      setDirectorateName(getDirectorateName(directorateId, directorates));
     }
-  }, [directorates])
+  }, [directorates]);
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         const [radarData, csvData, userData] = await Promise.all([
           fetchTechRadarJSONFromS3(),
           fetchCSVFromS3(),
-          getUserData()
-        ])
+          getUserData(),
+        ]);
 
-        const categorizedEntries = categorizeEntries(radarData.entries)
-        setEntries(categorizedEntries)
-        setProjectsData(csvData)
-        setCurrentUser(userData)
+        const categorizedEntries = categorizeEntries(radarData.entries);
+        setEntries(categorizedEntries);
+        setProjectsData(csvData);
+        setCurrentUser(userData);
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error('Error fetching data:', error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchAllData()
-  }, [getUserData])
+    };
+    fetchAllData();
+  }, [getUserData]);
 
   // Recategorise entries when selectedDirectorate changes
   // Because we are only categorising the existing data and not fetching the data from S3,
   // Changes will persist until the page is reloaded, even if the user changes directorate multiple times
   useEffect(() => {
-    const radarData = { entries: Object.values(entries).flat() }
+    const radarData = { entries: Object.values(entries).flat() };
 
-    const categorized = categorizeEntries(radarData.entries)
-    setEntries(categorized)
-  }, [selectedDirectorate])
+    const categorized = categorizeEntries(radarData.entries);
+    setEntries(categorized);
+  }, [selectedDirectorate]);
 
   // Update project counts when project data is loaded and counts are shown
   useEffect(() => {
@@ -157,9 +157,9 @@ const ReviewPage = () => {
       showProjectCount &&
       Object.keys(projectCountMap).length === 0
     ) {
-      calculateAllProjectCounts()
+      calculateAllProjectCounts();
     }
-  }, [projectsData, showProjectCount])
+  }, [projectsData, showProjectCount]);
 
   const categorizeEntries = (
     radarEntries,
@@ -171,30 +171,30 @@ const ReviewPage = () => {
       assess: [],
       hold: [],
       review: [],
-      ignore: []
-    }
+      ignore: [],
+    };
 
     // Reset highlighted technologies before categorizing
-    setHighlightedTechnologies([])
+    setHighlightedTechnologies([]);
 
     radarEntries.forEach(entry => {
-      let selectedDirectorateTimeline = []
-      const defaultTimeline = []
+      let selectedDirectorateTimeline = [];
+      const defaultTimeline = [];
 
       // Consider selected directorate when categorising
       entry.timeline.forEach(t => {
-        const directorate = t.directorate || defaultDirectorate
+        const directorate = t.directorate || defaultDirectorate;
         if (directorate === inputDirectorate) {
-          selectedDirectorateTimeline.push(t)
+          selectedDirectorateTimeline.push(t);
         }
         if (directorate === defaultDirectorate) {
-          defaultTimeline.push(t)
+          defaultTimeline.push(t);
         }
-      })
+      });
 
       if (selectedDirectorateTimeline.length === 0) {
         // If no timeline entries for selected directorate, fall back to default timeline
-        selectedDirectorateTimeline = defaultTimeline
+        selectedDirectorateTimeline = defaultTimeline;
       } else {
         // If there are directorate-specific entries, besides default directorate,
         // We should highlight these technologies to make them obvious to the user
@@ -202,16 +202,16 @@ const ReviewPage = () => {
           const currentPosition =
             selectedDirectorateTimeline[
               selectedDirectorateTimeline.length - 1
-            ].ringId.toLowerCase()
+            ].ringId.toLowerCase();
           const digitalServicesPosition =
-            defaultTimeline[defaultTimeline.length - 1]?.ringId.toLowerCase()
+            defaultTimeline[defaultTimeline.length - 1]?.ringId.toLowerCase();
 
           // Only highlight if the position is different to default directorate
           if (
             currentPosition !== digitalServicesPosition &&
             !highlightedTechnologies.includes(entry.id)
           ) {
-            setHighlightedTechnologies(prev => [...prev, entry.id])
+            setHighlightedTechnologies(prev => [...prev, entry.id]);
           }
         }
       }
@@ -219,47 +219,47 @@ const ReviewPage = () => {
       // Stash the Digital Services timeline for later use if needed
       setStashedDefaultTimeline(prev => ({
         ...prev,
-        [entry.id]: defaultTimeline
-      }))
+        [entry.id]: defaultTimeline,
+      }));
 
-      entry.filteredTimeline = selectedDirectorateTimeline
+      entry.filteredTimeline = selectedDirectorateTimeline;
 
       const currentRing =
         selectedDirectorateTimeline[
           selectedDirectorateTimeline.length - 1
-        ].ringId.toLowerCase()
-      categorized[currentRing].push(entry)
-    })
+        ].ringId.toLowerCase();
+      categorized[currentRing].push(entry);
+    });
 
-    return categorized
-  }
+    return categorized;
+  };
 
   // Re-categorise entries when selectedDirectorate changes
   useEffect(() => {
-    if (!entries || !Object.values(entries).flat().length) return
+    if (!entries || !Object.values(entries).flat().length) return;
     // Flatten all entries to get the original radarEntries
     // In English, this combines all the lists within entries into a single array
     // This is so it has the full list to re-categorise from
-    const allEntries = Object.values(entries).flat()
-    const categorized = categorizeEntries(allEntries)
-    setEntries(categorized)
-  }, [selectedDirectorate])
+    const allEntries = Object.values(entries).flat();
+    const categorized = categorizeEntries(allEntries);
+    setEntries(categorized);
+  }, [selectedDirectorate]);
 
   // Add this function to calculate ring movement
   const calculateRingMovement = (sourceRing, destRing) => {
-    const ringOrder = ['ignore', 'review', 'hold', 'assess', 'trial', 'adopt']
-    const sourceIndex = ringOrder.indexOf(sourceRing.toLowerCase())
-    const destIndex = ringOrder.indexOf(destRing.toLowerCase())
+    const ringOrder = ['ignore', 'review', 'hold', 'assess', 'trial', 'adopt'];
+    const sourceIndex = ringOrder.indexOf(sourceRing.toLowerCase());
+    const destIndex = ringOrder.indexOf(destRing.toLowerCase());
 
     // If either ring is 'review', 'ignore' or rings are the same, no movement
     if (sourceRing === destRing) {
-      return 0
+      return 0;
     }
 
     // Calculate movement based on index difference
-    console.log(destIndex, sourceIndex, destIndex - sourceIndex)
-    return destIndex - sourceIndex
-  }
+    console.log(destIndex, sourceIndex, destIndex - sourceIndex);
+    return destIndex - sourceIndex;
+  };
 
   /**
    * handleDirectorateChange function to handle the directorate change event.
@@ -267,88 +267,88 @@ const ReviewPage = () => {
    * @param {string} dir - The selected directorate.
    */
   const handleDirectorateChange = dir => {
-    dir = Number(dir)
+    dir = Number(dir);
 
-    setSelectedDirectorate(dir)
-    setDirectorateColour(getDirectorateColour(dir, directorates))
-    setDirectorateName(getDirectorateName(dir, directorates))
+    setSelectedDirectorate(dir);
+    setDirectorateColour(getDirectorateColour(dir, directorates));
+    setDirectorateName(getDirectorateName(dir, directorates));
 
     // Clear selected item when directorate changes
     // This is so stale information doesn't persist within the info box component
-    setSelectedItem(null)
-  }
+    setSelectedItem(null);
+  };
 
   const handleDragStart = (e, item, sourceList) => {
     e.dataTransfer.setData(
       'text/plain',
       JSON.stringify({
         item,
-        sourceList
+        sourceList,
       })
-    )
-  }
+    );
+  };
 
   const handleDragOver = e => {
-    e.preventDefault()
-    const dropZone = e.target.closest('.droppable-area')
+    e.preventDefault();
+    const dropZone = e.target.closest('.droppable-area');
     if (dropZone) {
-      dropZone.classList.add('drag-over')
+      dropZone.classList.add('drag-over');
     }
-  }
+  };
 
   const handleDragLeave = e => {
-    e.preventDefault()
-    const dropZone = e.target.closest('.droppable-area')
+    e.preventDefault();
+    const dropZone = e.target.closest('.droppable-area');
     if (dropZone) {
-      dropZone.classList.remove('drag-over')
+      dropZone.classList.remove('drag-over');
     }
-  }
+  };
 
   const handleDrop = (e, destList) => {
-    e.preventDefault()
-    const dropZone = e.target.closest('.droppable-area')
+    e.preventDefault();
+    const dropZone = e.target.closest('.droppable-area');
     if (dropZone) {
-      dropZone.classList.remove('drag-over')
+      dropZone.classList.remove('drag-over');
     }
 
     try {
-      const data = JSON.parse(e.dataTransfer.getData('text/plain'))
-      const { item, sourceList } = data
+      const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+      const { item, sourceList } = data;
 
-      if (sourceList === destList) return
+      if (sourceList === destList) return;
 
       // Set up the pending move
 
       // sourceList is the ring we're moving from
       // This is a quick way to get the last ring without needing to parse the timeline again
       // The source position is also directorate aware so this is more accurate then parsing the timeline
-      const lastRing = sourceList
+      const lastRing = sourceList;
 
-      const defaultDescription = `Moved from ${lastRing} to ${destList}`
+      const defaultDescription = `Moved from ${lastRing} to ${destList}`;
 
       setPendingMove({
         item,
         sourceList,
         destList,
-        lastRing
-      })
-      setMoveDescription(defaultDescription)
-      setShowMoveModal(true)
+        lastRing,
+      });
+      setMoveDescription(defaultDescription);
+      setShowMoveModal(true);
     } catch (error) {
-      console.error('Error handling drop:', error)
+      console.error('Error handling drop:', error);
     }
-  }
+  };
 
   const handleMoveConfirm = () => {
-    const { item, sourceList, destList, lastRing } = pendingMove
+    const { item, sourceList, destList, lastRing } = pendingMove;
 
-    const updatedEntries = { ...entries }
+    const updatedEntries = { ...entries };
     updatedEntries[sourceList] = updatedEntries[sourceList].filter(
       entry => entry.id !== item.id
-    )
+    );
 
-    const movement = calculateRingMovement(lastRing, destList)
-    const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+    const movement = calculateRingMovement(lastRing, destList);
+    const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
     const updatedItem = {
       ...item,
@@ -360,10 +360,10 @@ const ReviewPage = () => {
           date: now,
           description: moveDescription,
           author: currentUser?.user?.email || null,
-          directorate: selectedDirectorate
-        }
-      ]
-    }
+          directorate: selectedDirectorate,
+        },
+      ],
+    };
 
     // Add movement to changedTechnologies if not already present
     if (!changedTechnologies.includes(item.title)) {
@@ -373,22 +373,22 @@ const ReviewPage = () => {
           technology: item.title,
           from: lastRing,
           to: destList,
-          directorate: selectedDirectorate
-        }
-      ])
+          directorate: selectedDirectorate,
+        },
+      ]);
     } else {
       // If already present, update the 'to' field
       setChangedTechnologies(prev =>
         prev.map(change => {
           if (change.technology === item.title) {
-            return { ...change, to: destList }
+            return { ...change, to: destList };
           }
-          return change
+          return change;
         })
-      )
+      );
     }
 
-    const digitalServicesTimeline = stashedDefaultTimeline[item.id]
+    const digitalServicesTimeline = stashedDefaultTimeline[item.id];
 
     if (digitalServicesTimeline) {
       // If we have a Digital Services timeline, we can compare positions
@@ -398,7 +398,7 @@ const ReviewPage = () => {
       const digitalServicesPosition =
         digitalServicesTimeline[
           digitalServicesTimeline.length - 1
-        ]?.ringId.toLowerCase()
+        ]?.ringId.toLowerCase();
 
       // If the directorate is not Digital Services, we should highlight this technology
       // This is because it now has a directorate-specific position
@@ -408,7 +408,7 @@ const ReviewPage = () => {
         digitalServicesPosition !== destList.toLowerCase() &&
         !highlightedTechnologies.includes(item.id)
       ) {
-        setHighlightedTechnologies(prev => [...prev, item.id])
+        setHighlightedTechnologies(prev => [...prev, item.id]);
       }
 
       // If the new position matches Digital Services, we should remove the highlight
@@ -417,7 +417,7 @@ const ReviewPage = () => {
         digitalServicesPosition === destList.toLowerCase() &&
         highlightedTechnologies.includes(item.id)
       ) {
-        setHighlightedTechnologies(prev => prev.filter(id => id !== item.id))
+        setHighlightedTechnologies(prev => prev.filter(id => id !== item.id));
       }
 
       // Informal Note:
@@ -425,37 +425,37 @@ const ReviewPage = () => {
       // It'd be a good idea to refactor this later into something more elegant
     }
 
-    updatedEntries[destList] = [...updatedEntries[destList], updatedItem]
-    setEntries(updatedEntries)
+    updatedEntries[destList] = [...updatedEntries[destList], updatedItem];
+    setEntries(updatedEntries);
 
     if (selectedItem && selectedItem.id === item.id) {
-      setSelectedItem(updatedItem)
+      setSelectedItem(updatedItem);
     }
 
     // No need to update project counts as the technology itself hasn't changed,
     // just its location in the radar
 
-    setShowMoveModal(false)
-    setPendingMove(null)
-    setMoveDescription('')
-    setActiveTab('write')
-  }
+    setShowMoveModal(false);
+    setPendingMove(null);
+    setMoveDescription('');
+    setActiveTab('write');
+  };
 
   const handleMoveCancel = () => {
-    setShowMoveModal(false)
-    setPendingMove(null)
-    setMoveDescription('')
-    setActiveTab('write')
-  }
+    setShowMoveModal(false);
+    setPendingMove(null);
+    setMoveDescription('');
+    setActiveTab('write');
+  };
 
   const handleSaveClick = () => {
-    setShowSaveConfirmModal(true)
-  }
+    setShowSaveConfirmModal(true);
+  };
 
   const handleSaveConfirmModalYes = async () => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || ''
-      const baseUrl = `${backendUrl}/review/api/tech-radar/update`
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+      const baseUrl = `${backendUrl}/review/api/tech-radar/update`;
 
       // Combine all entries back into a single array
       const allEntries = [
@@ -464,49 +464,49 @@ const ReviewPage = () => {
         ...entries.assess,
         ...entries.hold,
         ...entries.review,
-        ...entries.ignore
-      ]
+        ...entries.ignore,
+      ];
 
       const response = await fetch(baseUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ entries: allEntries })
-      })
+        body: JSON.stringify({ entries: allEntries }),
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to save changes')
+        throw new Error('Failed to save changes');
       }
 
-      toast.success('Changes saved successfully!')
-      setChangedTechnologies([])
+      toast.success('Changes saved successfully!');
+      setChangedTechnologies([]);
     } catch (error) {
-      console.error('Error saving changes:', error)
-      toast.error('Failed to save changes. Please try again.')
+      console.error('Error saving changes:', error);
+      toast.error('Failed to save changes. Please try again.');
     } finally {
-      setShowSaveConfirmModal(false)
+      setShowSaveConfirmModal(false);
     }
-  }
+  };
 
   const handleSaveConfirmModalNo = () => {
-    setShowSaveConfirmModal(false)
-  }
+    setShowSaveConfirmModal(false);
+  };
 
   const handleItemClick = item => {
     // If we're editing and clicking a different item, cancel the edit
     if (isEditing && selectedItem && selectedItem.id !== item.id) {
-      setIsEditing(false)
-      setEditedTitle('')
-      setEditedCategory('')
+      setIsEditing(false);
+      setEditedTitle('');
+      setEditedCategory('');
     }
 
     // Find projects using this technology
-    const projects = findProjectsUsingTechnology(item.title)
-    setProjectsForTech(projects)
+    const projects = findProjectsUsingTechnology(item.title);
+    setProjectsForTech(projects);
 
-    setSelectedItem(selectedItem?.id === item.id ? null : item)
-  }
+    setSelectedItem(selectedItem?.id === item.id ? null : item);
+  };
 
   const checkForDuplicateTechnology = techName => {
     const allTechnologies = [
@@ -515,28 +515,28 @@ const ReviewPage = () => {
       ...entries.assess,
       ...entries.hold,
       ...entries.review,
-      ...entries.ignore
-    ]
+      ...entries.ignore,
+    ];
 
     return allTechnologies.some(
       tech => tech.title.toLowerCase() === techName.toLowerCase()
-    )
-  }
+    );
+  };
 
   const handleTechnologyInputChange = e => {
-    const value = e.target.value
-    setNewTechnology(value)
-    setIsDuplicate(checkForDuplicateTechnology(value))
-  }
+    const value = e.target.value;
+    setNewTechnology(value);
+    setIsDuplicate(checkForDuplicateTechnology(value));
+  };
 
   const getDuplicateRing = () => {
     const duplicateRing = Object.keys(entries).find(ring =>
       entries[ring].some(
         entry => entry.title.toLowerCase() === newTechnology.toLowerCase()
       )
-    )
-    return duplicateRing
-  }
+    );
+    return duplicateRing;
+  };
 
   const handleAddClick = () => {
     // Map category to quadrant number
@@ -544,8 +544,8 @@ const ReviewPage = () => {
       Languages: '1',
       Frameworks: '2',
       'Supporting Tools': '3',
-      Infrastructure: '4'
-    }
+      Infrastructure: '4',
+    };
 
     const newEntry = {
       id: `tech-${Date.now()}`,
@@ -560,69 +560,69 @@ const ReviewPage = () => {
           ringId: 'review',
           date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
           description: 'Added for review',
-          author: currentUser?.user?.email || null
-        }
+          author: currentUser?.user?.email || null,
+        },
       ],
-      links: []
-    }
+      links: [],
+    };
 
     // Add new technology to change list
     if (!changedTechnologies.includes(newTechnology.trim())) {
       setChangedTechnologies(prev => [
         { technology: newTechnology.trim() },
-        ...prev
-      ])
+        ...prev,
+      ]);
     }
 
-    setPendingNewTechnology(newEntry)
-    setShowAddConfirmModal(true)
-    setShowAddTechnologyModal(false)
-  }
+    setPendingNewTechnology(newEntry);
+    setShowAddConfirmModal(true);
+    setShowAddTechnologyModal(false);
+  };
 
   const handleEditClick = () => {
-    setEditedTitle(selectedItem.title)
-    setEditedCategory(selectedItem.description)
-    setIsEditing(true)
-  }
+    setEditedTitle(selectedItem.title);
+    setEditedCategory(selectedItem.description);
+    setIsEditing(true);
+  };
 
   const handleCancelEdit = () => {
-    setIsEditing(false)
-    setEditedTitle('')
-    setEditedCategory('')
-  }
+    setIsEditing(false);
+    setEditedTitle('');
+    setEditedCategory('');
+  };
 
   const handleConfirmEdit = () => {
-    setShowConfirmModal(true)
+    setShowConfirmModal(true);
     setEditedItem({
       ...selectedItem,
       title: editedTitle,
       description: editedCategory,
-      quadrant: categoryToQuadrant[editedCategory]
-    })
-  }
+      quadrant: categoryToQuadrant[editedCategory],
+    });
+  };
 
   const categoryToQuadrant = {
     Languages: '1',
     Frameworks: '2',
     'Supporting Tools': '3',
-    Infrastructure: '4'
-  }
+    Infrastructure: '4',
+  };
 
   const handleConfirmModalYes = () => {
     const currentRing =
       selectedItem.timeline[
         selectedItem.timeline.length - 1
-      ].ringId.toLowerCase()
+      ].ringId.toLowerCase();
 
     // Create timeline entry for the change
-    const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss')
+    const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const timelineEntry = {
       moved: 0,
       ringId: currentRing,
       date: now,
       description: `Changed from ${selectedItem.title} (${selectedItem.description}) to ${editedTitle} (${editedCategory})`,
-      author: currentUser?.user?.email || null
-    }
+      author: currentUser?.user?.email || null,
+    };
 
     // Update the item with new values and timeline
     const updatedItem = {
@@ -630,29 +630,29 @@ const ReviewPage = () => {
       title: editedTitle,
       description: editedCategory,
       quadrant: categoryToQuadrant[editedCategory],
-      timeline: [...selectedItem.timeline, timelineEntry]
-    }
+      timeline: [...selectedItem.timeline, timelineEntry],
+    };
 
     // Update entries state
-    const updatedEntries = { ...entries }
+    const updatedEntries = { ...entries };
     updatedEntries[currentRing] = updatedEntries[currentRing].map(item =>
       item.id === selectedItem.id ? updatedItem : item
-    )
+    );
 
-    setEntries(updatedEntries)
-    setSelectedItem(updatedItem)
-    setIsEditing(false)
-    setShowConfirmModal(false)
-    setEditedTitle('')
-    setEditedCategory('')
-    setEditedItem(null)
+    setEntries(updatedEntries);
+    setSelectedItem(updatedItem);
+    setIsEditing(false);
+    setShowConfirmModal(false);
+    setEditedTitle('');
+    setEditedCategory('');
+    setEditedItem(null);
 
     // Track the edit as a change so Save button becomes enabled
     const existingChangeIndex = changedTechnologies.findIndex(
       change =>
         change.technology === selectedItem.title ||
         change.technology === editedTitle
-    )
+    );
     if (existingChangeIndex === -1) {
       setChangedTechnologies(prev => [
         ...prev,
@@ -661,9 +661,9 @@ const ReviewPage = () => {
           edited: true,
           from: selectedItem.title,
           category: editedCategory,
-          directorate: selectedDirectorate
-        }
-      ])
+          directorate: selectedDirectorate,
+        },
+      ]);
     } else {
       // Update existing change entry
       setChangedTechnologies(prev =>
@@ -674,81 +674,81 @@ const ReviewPage = () => {
                 technology: editedTitle,
                 edited: true,
                 category: editedCategory,
-                directorate: selectedDirectorate
+                directorate: selectedDirectorate,
               }
             : change
         )
-      )
+      );
     }
 
-    toast.success('Technology updated successfully')
-  }
+    toast.success('Technology updated successfully');
+  };
 
   const handleConfirmModalNo = () => {
-    setShowConfirmModal(false)
-  }
+    setShowConfirmModal(false);
+  };
 
   const handleAddConfirmModalYes = () => {
     setEntries(prev => ({
       ...prev,
-      review: [...prev.review, pendingNewTechnology]
-    }))
-    setNewTechnology('')
-    setSelectedCategory('')
-    setPendingNewTechnology(null)
-    setShowAddConfirmModal(false)
+      review: [...prev.review, pendingNewTechnology],
+    }));
+    setNewTechnology('');
+    setSelectedCategory('');
+    setPendingNewTechnology(null);
+    setShowAddConfirmModal(false);
 
     // Update project count for the new technology if project counts are shown
     if (showProjectCount) {
-      const techName = pendingNewTechnology.title
+      const techName = pendingNewTechnology.title;
       setProjectCountMap(prev => ({
         ...prev,
-        [techName]: findProjectsUsingTechnology(techName).length
-      }))
+        [techName]: findProjectsUsingTechnology(techName).length,
+      }));
     }
 
-    toast.success('Technology added to Review')
-  }
+    toast.success('Technology added to Review');
+  };
 
   const handleAddConfirmModalNo = () => {
-    setPendingNewTechnology(null)
-    setShowAddConfirmModal(false)
-  }
+    setPendingNewTechnology(null);
+    setShowAddConfirmModal(false);
+  };
 
   // Add mouse handlers
   const handleMouseDown = e => {
-    setIsDragging(true)
-    const rect = e.currentTarget.getBoundingClientRect()
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
     setDragOffset({
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    })
-  }
+      y: e.clientY - rect.top,
+    });
+  };
 
   useEffect(() => {
     const handleMouseMove = e => {
       if (isDragging) {
         setDragPosition({
           x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y
-        })
+          y: e.clientY - dragOffset.y,
+        });
       }
-    }
+    };
 
     const handleMouseUp = () => {
-      setIsDragging(false)
-    }
+      setIsDragging(false);
+    };
 
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, dragOffset])
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
 
   /**
    * Find projects using the selected technology
@@ -756,7 +756,7 @@ const ReviewPage = () => {
    * @returns {Array} - Array of projects using the technology
    */
   const findProjectsUsingTechnology = tech => {
-    if (!projectsData) return []
+    if (!projectsData) return [];
 
     return projectsData.filter(project => {
       const allTechColumns = [
@@ -787,45 +787,45 @@ const ReviewPage = () => {
         'Documentation_Tools',
         'UI_Tools',
         'Diagram_Tools',
-        'Miscellaneous'
-      ]
+        'Miscellaneous',
+      ];
 
       return allTechColumns.some(column => {
-        const value = project[column]
-        if (!value) return false
-        const matcher = specialTechMatchers[tech]
+        const value = project[column];
+        if (!value) return false;
+        const matcher = specialTechMatchers[tech];
         if (matcher) {
-          return value.split(';').some(matcher)
+          return value.split(';').some(matcher);
         }
         // If there is a colon, extract all techs before colons
         if (value.includes(':')) {
           // Match all non-space sequences before a colon, or all words before a colon
           const techMatches = [...value.matchAll(/([^\s:;]+):/g)].map(match =>
             match[1].trim()
-          )
+          );
           return techMatches.some(
             techName => techName.toLowerCase() === tech.toLowerCase().trim()
-          )
+          );
         } else {
           // Otherwise, split by ; and match as usual
           return value
             .split(';')
             .some(
               item => item.trim().toLowerCase() === tech.toLowerCase().trim()
-            )
+            );
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
   const handleProjectClick = project => {
-    setSelectedProject(project)
-    setIsProjectModalOpen(true)
-  }
+    setSelectedProject(project);
+    setIsProjectModalOpen(true);
+  };
 
   const renderTimeline = () => {
     if (!selectedItem) {
-      return null
+      return null;
     }
 
     return (
@@ -841,55 +841,55 @@ const ReviewPage = () => {
         projectsForTech={projectsForTech}
         handleProjectClick={handleProjectClick}
         onEditConfirm={(title, category) => {
-          setEditedTitle(title)
-          setEditedCategory(category)
-          handleConfirmEdit()
+          setEditedTitle(title);
+          setEditedCategory(category);
+          handleConfirmEdit();
         }}
         onEditCancel={handleCancelEdit}
         isHighlighted={highlightedTechnologies.includes(selectedItem.id)}
         selectedDirectorate={directorateName}
         timeline={selectedItem.filteredTimeline}
       />
-    )
-  }
+    );
+  };
 
   /**
    * Calculates project counts for all technologies
    * @returns {void}
    */
   const calculateAllProjectCounts = () => {
-    if (!projectsData) return
+    if (!projectsData) return;
 
-    const countMap = {}
+    const countMap = {};
 
     // Get all technologies from all entries
     const allTechnologies = Object.values(entries)
       .flat()
-      .map(entry => entry.title)
+      .map(entry => entry.title);
 
     // Calculate counts for each technology
     allTechnologies.forEach(tech => {
       if (!countMap[tech]) {
-        countMap[tech] = findProjectsUsingTechnology(tech).length
+        countMap[tech] = findProjectsUsingTechnology(tech).length;
       }
-    })
+    });
 
-    setProjectCountMap(countMap)
-  }
+    setProjectCountMap(countMap);
+  };
 
   /**
    * Toggle showing project counts
    * @returns {void}
    */
   const toggleProjectCount = () => {
-    const newState = !showProjectCount
-    setShowProjectCount(newState)
+    const newState = !showProjectCount;
+    setShowProjectCount(newState);
 
     // Calculate project counts when enabling the feature
     if (newState && Object.keys(projectCountMap).length === 0) {
-      calculateAllProjectCounts()
+      calculateAllProjectCounts();
     }
-  }
+  };
 
   /**
    * Renders a box with a list of technologies
@@ -901,15 +901,15 @@ const ReviewPage = () => {
   const renderBox = (title, items, id) => {
     if (isLoading) {
       return (
-        <div className='admin-box'>
+        <div className="admin-box">
           <h2>{title.charAt(0).toUpperCase() + title.slice(1)}</h2>
-          <div className='droppable-area'>
+          <div className="droppable-area">
             {[1, 2, 3].map(i => (
               <SkeletonStatCard key={i} />
             ))}
           </div>
         </div>
-      )
+      );
     }
 
     /**
@@ -920,12 +920,12 @@ const ReviewPage = () => {
     const filteredItems = items.filter(item => {
       const matchesSearch =
         searchTerm === '' ||
-        item.title.toLowerCase().includes(searchTerm.toLowerCase())
+        item.title.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategories =
         selectedCategories.length === 0 ||
-        selectedCategories.some(cat => cat.value === item.description)
-      return matchesSearch && matchesCategories
-    })
+        selectedCategories.some(cat => cat.value === item.description);
+      return matchesSearch && matchesCategories;
+    });
 
     /**
      * Groups filtered items by their description category
@@ -933,39 +933,39 @@ const ReviewPage = () => {
      * @returns {Object} Object with description keys mapping to arrays of items
      */
     const groupedItems = filteredItems.reduce((acc, item) => {
-      const description = item.description || 'Other'
+      const description = item.description || 'Other';
       if (!acc[description]) {
-        acc[description] = []
+        acc[description] = [];
       }
-      acc[description].push(item)
-      return acc
-    }, {})
+      acc[description].push(item);
+      return acc;
+    }, {});
 
     return (
       <div className={`admin-box ${title.toLowerCase()}-box`}>
         <h2>{title.charAt(0).toUpperCase() + title.slice(1)}</h2>
         <div
-          className='droppable-area'
+          className="droppable-area"
           tabIndex={0}
-          role='region'
+          role="region"
           aria-label={`Drop area for ${title}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={e => handleDrop(e, id)}
         >
           {Object.entries(groupedItems).map(([description, groupItems]) => (
-            <div key={description} className='droppable-group'>
-              <div className='droppable-group-header'>{description}</div>
-              <div className='droppable-group-items'>
+            <div key={description} className="droppable-group">
+              <div className="droppable-group-header">{description}</div>
+              <div className="droppable-group-items">
                 {groupItems.map(item => {
                   const projectCount = showProjectCount
                     ? projectCountMap[item.title] || 0
-                    : 0
+                    : 0;
                   return (
                     <div
                       id={`technology-${item.id}`}
                       key={item.id}
-                      className='draggable-item'
+                      className="draggable-item"
                       draggable
                       onDragStart={e => handleDragStart(e, item, id)}
                       onClick={() => handleItemClick(item)}
@@ -976,27 +976,27 @@ const ReviewPage = () => {
                             : undefined,
                         border: highlightedTechnologies.includes(item.id)
                           ? `2px solid ${directorateColour}`
-                          : undefined
+                          : undefined,
                       }}
                     >
-                      <div className='draggable-item-content'>
-                        <span className='item-title'>{item.title}</span>
+                      <div className="draggable-item-content">
+                        <span className="item-title">{item.title}</span>
                         {showProjectCount && projectCount > 0 && (
-                          <span className='project-count-badge'>
+                          <span className="project-count-badge">
                             {projectCount}
                           </span>
                         )}
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
           ))}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   /**
    * Renders a list of technologies with statuses
@@ -1004,42 +1004,40 @@ const ReviewPage = () => {
    * @returns {React.ReactNode} - The rendered list of technologies
    */
   const renderTechnologyList = technologies => {
-    if (!technologies) return null
+    if (!technologies) return null;
 
     return technologies.split(';').map((tech, index) => {
-      const trimmedTech = tech.trim()
-      const status = getTechnologyStatus(trimmedTech)
+      const trimmedTech = tech.trim();
+      const status = getTechnologyStatus(trimmedTech);
 
       return (
         <span key={index}>
           {index > 0 && '; '}
-          {status
-            ? (
-              <span
-                className={`clickable-tech ${status}`}
-                onClick={() => handleTechClick(trimmedTech)}
-              >
-                {trimmedTech}
-              </span>
-              )
-            : (
-                trimmedTech
-              )}
+          {status ? (
+            <span
+              className={`clickable-tech ${status}`}
+              onClick={() => handleTechClick(trimmedTech)}
+            >
+              {trimmedTech}
+            </span>
+          ) : (
+            trimmedTech
+          )}
         </span>
-      )
-    })
-  }
+      );
+    });
+  };
 
   const handleTechClick = tech => {
     const foundTech = Object.values(entries)
       .flat()
-      .find(entry => entry.title.toLowerCase() === tech.toLowerCase())
+      .find(entry => entry.title.toLowerCase() === tech.toLowerCase());
 
     if (foundTech) {
-      setIsProjectModalOpen(false)
-      handleItemClick(foundTech)
+      setIsProjectModalOpen(false);
+      handleItemClick(foundTech);
     }
-  }
+  };
 
   return (
     <>
@@ -1050,41 +1048,41 @@ const ReviewPage = () => {
         onSearchResultClick={() => {}}
         hideSearch={false}
       />
-      <div className='admin-page'>
-        <div className='admin-details'>
+      <div className="admin-page">
+        <div className="admin-details">
           <div
-            className='admin-header-left'
+            className="admin-header-left"
             style={{
               width: '100%',
-              background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background)) 55%, ${directorateColour})`
+              background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background)) 55%, ${directorateColour})`,
             }}
           >
-            <div className='admin-review-title'>
+            <div className="admin-review-title">
               <h1>Reviewer Dashboard</h1>
             </div>
-            <div className='admin-filter-search-flex'>
-              <div className='admin-filter-section-container'>
-                <div className='admin-filter-section'>
+            <div className="admin-filter-search-flex">
+              <div className="admin-filter-section-container">
+                <div className="admin-filter-section">
                   <h2>Filter by Category</h2>
                   <MultiSelect
                     options={categoryOptions}
                     value={selectedCategories}
                     onChange={setSelectedCategories}
-                    placeholder='Select categories...'
+                    placeholder="Select categories..."
                   />
                 </div>
-                <div className='admin-filter-section'>
+                <div className="admin-filter-section">
                   <label
-                    htmlFor='directorate-select'
+                    htmlFor="directorate-select"
                     style={{ minWidth: '200px' }}
                   >
                     <h2>Filter by Directorate</h2>
                   </label>
                   <select
-                    id='directorate-select'
+                    id="directorate-select"
                     onChange={e => handleDirectorateChange(e.target.value)}
-                    className='multi-select-control'
-                    aria-label='Select Directorate'
+                    className="multi-select-control"
+                    aria-label="Select Directorate"
                   >
                     {directorates.map(dir => (
                       <option key={dir.name} value={dir.id}>
@@ -1095,45 +1093,45 @@ const ReviewPage = () => {
                 </div>
               </div>
             </div>
-            <div className='admin-actions'>
+            <div className="admin-actions">
               <div>
                 <h2> Reviewer Actions</h2>
               </div>
-              <div className='buttons'>
+              <div className="buttons">
                 <button
-                  className='admin-button'
+                  className="admin-button"
                   onClick={() => setShowAddTechnologyModal(true)}
                   disabled={isLoading}
-                  title='Add Technology'
-                  aria-label='Add Technology'
+                  title="Add Technology"
+                  aria-label="Add Technology"
                 >
                   Add Technology
                 </button>
                 <button
-                  className='admin-button'
+                  className="admin-button"
                   onClick={toggleProjectCount}
-                  title='Toggle Project Count'
-                  aria-label='Toggle Project Count'
+                  title="Toggle Project Count"
+                  aria-label="Toggle Project Count"
                 >
                   {showProjectCount
                     ? 'Hide Project Count'
                     : 'Show Project Count'}
                 </button>
                 <button
-                  className='admin-button'
+                  className="admin-button"
                   onClick={handleSaveClick}
                   disabled={isLoading || changedTechnologies.length === 0}
-                  title='Save Changes'
-                  aria-label='Save Changes'
+                  title="Save Changes"
+                  aria-label="Save Changes"
                 >
                   Save Changes
                 </button>
                 <button
-                  className='admin-button'
+                  className="admin-button"
                   onClick={() => window.location.reload()}
                   disabled={isLoading || changedTechnologies.length === 0}
-                  title='Revert Changes'
-                  aria-label='Revert Changes'
+                  title="Revert Changes"
+                  aria-label="Revert Changes"
                 >
                   Revert Changes
                 </button>
@@ -1141,14 +1139,14 @@ const ReviewPage = () => {
             </div>
             <div>
               <div
-                id='directorate-title'
+                id="directorate-title"
                 style={{
                   paddingRight: '16px',
                   fontWeight: 'bold',
                   fontSize: '1.6em',
                   color: 'white',
                   float: 'right',
-                  textShadow: '1px 1px 2px black'
+                  textShadow: '1px 1px 2px black',
                 }}
               >
                 {getDirectorateName(selectedDirectorate, directorates)}
@@ -1164,7 +1162,7 @@ const ReviewPage = () => {
                       boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
                       backgroundColor: 'hsl(var(--background))',
                       padding: '2px',
-                      borderRadius: '4px'
+                      borderRadius: '4px',
                     }}
                   >
                     highlighted
@@ -1174,48 +1172,46 @@ const ReviewPage = () => {
               </p>
             </div>
           </div>
-          <div className='admin-search-filter'>
-            {isLoading
-              ? (
-                <SkeletonStatCard minWidth='400px' />
-                )
-              : (
-                  renderTimeline()
-                )}
+          <div className="admin-search-filter">
+            {isLoading ? (
+              <SkeletonStatCard minWidth="400px" />
+            ) : (
+              renderTimeline()
+            )}
           </div>
         </div>
 
-        <div className='admin-grid-container'>
-          <div className='admin-grid'>
+        <div className="admin-grid-container">
+          <div className="admin-grid">
             {renderBox('Adopt', entries.adopt, 'adopt')}
             {renderBox('Trial', entries.trial, 'trial')}
             {renderBox('Assess', entries.assess, 'assess')}
             {renderBox('Hold', entries.hold, 'hold')}
           </div>
-          <div className='admin-divider'> </div>
-          <div className='admin-grid'>
+          <div className="admin-divider"> </div>
+          <div className="admin-grid">
             {renderBox('Review', entries.review, 'review')}
             {renderBox('Ignore', entries.ignore, 'ignore')}
           </div>
         </div>
       </div>
       {showAddTechnologyModal && (
-        <div className='modal-overlay'>
-          <div className='admin-modal'>
+        <div className="modal-overlay">
+          <div className="admin-modal">
             <h3>Add New Technology</h3>
-            <div className='admin-modal-inputs'>
-              <div className='admin-modal-field'>
+            <div className="admin-modal-inputs">
+              <div className="admin-modal-field">
                 <label>Technology Name</label>
                 <input
-                  type='text'
+                  type="text"
                   value={newTechnology}
                   onChange={handleTechnologyInputChange}
-                  placeholder='Enter new technology'
-                  className='technology-input'
-                  aria-label='Enter Technology Name'
+                  placeholder="Enter new technology"
+                  className="technology-input"
+                  aria-label="Enter Technology Name"
                 />
                 {isDuplicate && (
-                  <span className='error-message'>
+                  <span className="error-message">
                     Error: technology already exists in the{' '}
                     <strong className={`${getDuplicateRing()}-box`}>
                       {getDuplicateRing()}
@@ -1224,37 +1220,37 @@ const ReviewPage = () => {
                   </span>
                 )}
               </div>
-              <div className='admin-modal-field'>
+              <div className="admin-modal-field">
                 <label>Category</label>
                 <select
                   value={selectedCategory}
                   onChange={e => setSelectedCategory(e.target.value)}
-                  className='category-select'
-                  aria-label='Select Category'
+                  className="category-select"
+                  aria-label="Select Category"
                 >
-                  <option value=''>Select Category</option>
-                  <option value='Languages'>Languages</option>
-                  <option value='Frameworks'>Frameworks</option>
-                  <option value='Supporting Tools'>Supporting Tools</option>
-                  <option value='Infrastructure'>Infrastructure</option>
+                  <option value="">Select Category</option>
+                  <option value="Languages">Languages</option>
+                  <option value="Frameworks">Frameworks</option>
+                  <option value="Supporting Tools">Supporting Tools</option>
+                  <option value="Infrastructure">Infrastructure</option>
                 </select>
               </div>
             </div>
-            <div className='modal-buttons'>
+            <div className="modal-buttons">
               <button
                 onClick={handleAddClick}
                 disabled={
                   !newTechnology.trim() || !selectedCategory || isDuplicate
                 }
-                title='Add Technology'
-                aria-label='Add Technology'
+                title="Add Technology"
+                aria-label="Add Technology"
               >
                 Add
               </button>
               <button
                 onClick={() => setShowAddTechnologyModal(false)}
-                title='Cancel'
-                aria-label='Cancel'
+                title="Cancel"
+                aria-label="Cancel"
               >
                 Cancel
               </button>
@@ -1263,25 +1259,25 @@ const ReviewPage = () => {
         </div>
       )}
       {showConfirmModal && (
-        <div className='modal-overlay'>
-          <div className='admin-modal'>
+        <div className="modal-overlay">
+          <div className="admin-modal">
             <h3>Confirm Changes</h3>
             <p>Are you sure you want to update this technology?</p>
-            <p className='destructive'>
+            <p className="destructive">
               From: {selectedItem.title} ({selectedItem.description})
             </p>
-            <p className='constructive'>
+            <p className="constructive">
               To: {editedTitle} ({editedCategory})
             </p>
-            <div className='modal-buttons'>
+            <div className="modal-buttons">
               <button
                 onClick={handleConfirmModalYes}
-                title='Confirm'
-                aria-label='Confirm'
+                title="Confirm"
+                aria-label="Confirm"
               >
                 Yes
               </button>
-              <button onClick={handleConfirmModalNo} title='No' aria-label='No'>
+              <button onClick={handleConfirmModalNo} title="No" aria-label="No">
                 No
               </button>
             </div>
@@ -1289,57 +1285,51 @@ const ReviewPage = () => {
         </div>
       )}
       {showSaveConfirmModal && (
-        <div className='modal-overlay'>
-          <div className='admin-modal'>
+        <div className="modal-overlay">
+          <div className="admin-modal">
             <h3>WARNING</h3>
             <p>Are you sure you want to save all changes to the Tech Radar?</p>
             <p>This action cannot be undone.</p>
             <h3>Changes:</h3>
-            {changedTechnologies.length === 0
-              ? (
-                <p>No changes made.</p>
-                )
-              : (
-                <ul className='change-list'>
-                  {changedTechnologies.map((change, index) => (
-                    <li key={index}>
-                      {change.from === undefined &&
+            {changedTechnologies.length === 0 ? (
+              <p>No changes made.</p>
+            ) : (
+              <ul className="change-list">
+                {changedTechnologies.map((change, index) => (
+                  <li key={index}>
+                    {change.from === undefined &&
                     change.to === undefined &&
-                    !change.edited
-                        ? (
-                          <>
-                            {change.technology} (
-                            <span style={{ color: 'green', fontWeight: 'bold' }}>
-                              New
-                          </span>
-                            )
-                          </>
-                          )
-                        : change.edited && change.to === undefined
-                          ? (
-                            <>
-                              {change.from} &rarr; {change.technology} (
-                              <span style={{ color: 'blue', fontWeight: 'bold' }}>
-                                Edited
-                            </span>
-                              )
-                            </>
-                            )
-                          : (
-                            <>
-                              {change.technology}: {change.from} &rarr; {change.to} (
-                              {getDirectorateName(change.directorate, directorates)})
-                            </>
-                            )}
-                    </li>
-                  ))}
-                </ul>
-                )}
-            <div className='modal-buttons'>
+                    !change.edited ? (
+                      <>
+                        {change.technology} (
+                        <span style={{ color: 'green', fontWeight: 'bold' }}>
+                          New
+                        </span>
+                        )
+                      </>
+                    ) : change.edited && change.to === undefined ? (
+                      <>
+                        {change.from} &rarr; {change.technology} (
+                        <span style={{ color: 'blue', fontWeight: 'bold' }}>
+                          Edited
+                        </span>
+                        )
+                      </>
+                    ) : (
+                      <>
+                        {change.technology}: {change.from} &rarr; {change.to} (
+                        {getDirectorateName(change.directorate, directorates)})
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="modal-buttons">
               <button
                 onClick={handleSaveConfirmModalYes}
-                title='Yes'
-                aria-label='Yes'
+                title="Yes"
+                aria-label="Yes"
               >
                 Yes
               </button>
@@ -1349,15 +1339,15 @@ const ReviewPage = () => {
         </div>
       )}
       {showAddConfirmModal && pendingNewTechnology && (
-        <div className='modal-overlay'>
-          <div className='admin-modal tech-confirm-modal'>
+        <div className="modal-overlay">
+          <div className="admin-modal tech-confirm-modal">
             <h3>Add New Technology</h3>
             <p>Are you sure you want to add this technology?</p>
             <div>
               <p>Name:</p>
               <p>{pendingNewTechnology.title}</p>
             </div>
-            <div className='modal-automatic'>
+            <div className="modal-automatic">
               <p>Ring:</p>
               <p>
                 <i>automatic</i> Review{' '}
@@ -1367,18 +1357,18 @@ const ReviewPage = () => {
               <p>Quadrant:</p>
               <p>{pendingNewTechnology.description}</p>
             </div>
-            <div className='modal-buttons'>
+            <div className="modal-buttons">
               <button
                 onClick={handleAddConfirmModalYes}
-                title='Yes'
-                aria-label='Yes'
+                title="Yes"
+                aria-label="Yes"
               >
                 Yes
               </button>
               <button
                 onClick={handleAddConfirmModalNo}
-                title='No'
-                aria-label='No'
+                title="No"
+                aria-label="No"
               >
                 No
               </button>
@@ -1387,8 +1377,8 @@ const ReviewPage = () => {
         </div>
       )}
       {showMoveModal && pendingMove && (
-        <div className='modal-overlay'>
-          <div className='admin-modal'>
+        <div className="modal-overlay">
+          <div className="admin-modal">
             <h3>Move Technology</h3>
             <p>Moving {pendingMove.item.title}</p>
             <p>
@@ -1406,54 +1396,50 @@ const ReviewPage = () => {
             <p>
               For the Directorate: <strong>{directorateName}</strong>
             </p>
-            <div className='admin-modal-field'>
+            <div className="admin-modal-field">
               <label>Description</label>
-              <div className='markdown-editor'>
-                <div className='markdown-tabs'>
+              <div className="markdown-editor">
+                <div className="markdown-tabs">
                   <button
-                    type='button'
+                    type="button"
                     className={`markdown-tab ${activeTab === 'write' ? 'active' : ''}`}
                     onClick={() => setActiveTab('write')}
                   >
                     Write
                   </button>
                   <button
-                    type='button'
+                    type="button"
                     className={`markdown-tab ${activeTab === 'preview' ? 'active' : ''}`}
                     onClick={() => setActiveTab('preview')}
                   >
                     Preview
                   </button>
                 </div>
-                <div className='markdown-content'>
-                  {activeTab === 'write'
-                    ? (
-                      <>
-                        <textarea
-                          value={moveDescription}
-                          onChange={e => setMoveDescription(e.target.value)}
-                          className='technology-input markdown-textarea'
-                          rows={5}
-                          placeholder='Enter move description. You can use # headers, *italic*, **bold**, and [links](url)'
-                        />
-                      </>
-                      )
-                    : (
-                      <div className='markdown-preview'>
-                        {moveDescription.trim()
-                          ? (
-                            <MarkdownText text={moveDescription} />
-                            )
-                          : (
-                            <span className='preview-placeholder'>
-                              Nothing to preview
-                            </span>
-                            )}
-                      </div>
+                <div className="markdown-content">
+                  {activeTab === 'write' ? (
+                    <>
+                      <textarea
+                        value={moveDescription}
+                        onChange={e => setMoveDescription(e.target.value)}
+                        className="technology-input markdown-textarea"
+                        rows={5}
+                        placeholder="Enter move description. You can use # headers, *italic*, **bold**, and [links](url)"
+                      />
+                    </>
+                  ) : (
+                    <div className="markdown-preview">
+                      {moveDescription.trim() ? (
+                        <MarkdownText text={moveDescription} />
+                      ) : (
+                        <span className="preview-placeholder">
+                          Nothing to preview
+                        </span>
                       )}
+                    </div>
+                  )}
                 </div>
               </div>
-              <small className='markdown-hint'>
+              <small className="markdown-hint">
                 Supports: # h1, ## h2, *italic*, **bold**, [link text](url)
               </small>
             </div>
@@ -1464,19 +1450,19 @@ const ReviewPage = () => {
                 their own position.
               </small>
             </p>
-            <div className='modal-buttons'>
+            <div className="modal-buttons">
               <button
                 onClick={handleMoveConfirm}
                 disabled={moveDescription.length < 1}
-                title='Confirm'
-                aria-label='Confirm'
+                title="Confirm"
+                aria-label="Confirm"
               >
                 Confirm
               </button>
               <button
                 onClick={handleMoveCancel}
-                title='Cancel'
-                aria-label='Cancel'
+                title="Cancel"
+                aria-label="Cancel"
               >
                 Cancel
               </button>
@@ -1495,7 +1481,7 @@ const ReviewPage = () => {
         />
       )}
     </>
-  )
-}
+  );
+};
 
-export default ReviewPage
+export default ReviewPage;

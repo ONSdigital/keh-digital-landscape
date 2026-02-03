@@ -5,29 +5,29 @@
  */
 export const specialTechMatchers = {
   AWS: item => {
-    const lowered = item.trim().toLowerCase()
-    return lowered.includes('aws') || lowered.includes('amazon')
+    const lowered = item.trim().toLowerCase();
+    return lowered.includes('aws') || lowered.includes('amazon');
   },
   GCP: item => {
-    const excluded_gcp = ['google meet', 'google docs']
-    const lowered = item.trim().toLowerCase()
-    if (excluded_gcp.includes(lowered)) return false
-    return lowered.includes('google') || lowered.includes('gcp')
+    const excluded_gcp = ['google meet', 'google docs'];
+    const lowered = item.trim().toLowerCase();
+    if (excluded_gcp.includes(lowered)) return false;
+    return lowered.includes('google') || lowered.includes('gcp');
   },
   'Javascript/TypeScript': item => {
-    const lowered = item.trim().toLowerCase()
-    return lowered === 'javascript' || lowered === 'typescript'
+    const lowered = item.trim().toLowerCase();
+    return lowered === 'javascript' || lowered === 'typescript';
   },
   SAS: item => {
-    const lowered = item.trim().toLowerCase()
-    return lowered === 'base sas' || lowered === 'sas'
+    const lowered = item.trim().toLowerCase();
+    return lowered === 'base sas' || lowered === 'sas';
   },
   'HCL (Terraform)': item => {
-    const lowered = item.trim().toLowerCase()
+    const lowered = item.trim().toLowerCase();
     return (
       lowered === 'hcl (terraform)' ||
       lowered === 'hcl' ||
       lowered === 'terraform'
-    )
-  }
-}
+    );
+  },
+};

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import '../../styles/components/Sidebar.css'
-import HelpModal from '../Header/HelpModal'
-import ThemeToggle from '../ThemeToggle/ThemeToggle'
-import UserProfile from '../UserProfile/UserProfile'
-import Modal from '../BugReport/Modal'
-import { MdOutlineRadar } from 'react-icons/md'
-import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import '../../styles/components/Sidebar.css';
+import HelpModal from '../Header/HelpModal';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import UserProfile from '../UserProfile/UserProfile';
+import Modal from '../BugReport/Modal';
+import { MdOutlineRadar } from 'react-icons/md';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import {
   TbSmartHome,
   TbEditCircle,
@@ -14,35 +14,35 @@ import {
   TbUsers,
   TbChartBar,
   TbHelp,
-  TbBug
-} from 'react-icons/tb'
-import { VscCopilot } from 'react-icons/vsc'
-import { FaRegAddressBook } from 'react-icons/fa'
+  TbBug,
+} from 'react-icons/tb';
+import { VscCopilot } from 'react-icons/vsc';
+import { FaRegAddressBook } from 'react-icons/fa';
 
 const Sidebar = () => {
-  const location = useLocation()
-  const [showHelpModal, setShowHelpModal] = useState(false)
-  const [showBugReportModal, setShowBugReportModal] = useState(false)
+  const location = useLocation();
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showBugReportModal, setShowBugReportModal] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebarCollapsed')
-    return saved === 'true'
-  })
+    const saved = localStorage.getItem('sidebarCollapsed');
+    return saved === 'true';
+  });
 
   useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', isCollapsed)
-  }, [isCollapsed])
+    localStorage.setItem('sidebarCollapsed', isCollapsed);
+  }, [isCollapsed]);
 
   const handleSetShowHelpModal = () => {
-    setShowHelpModal(!showHelpModal)
-  }
+    setShowHelpModal(!showHelpModal);
+  };
 
   const openReportBugModal = () => {
-    setShowBugReportModal(true)
-  }
+    setShowBugReportModal(true);
+  };
 
   const closeReportBugModal = () => {
-    setShowBugReportModal(false)
-  }
+    setShowBugReportModal(false);
+  };
 
   const generalNavItems = [
     { path: '/', label: 'Home', icon: <TbSmartHome />, isLink: true },
@@ -50,13 +50,13 @@ const Sidebar = () => {
       path: '/radar',
       label: 'Tech Radar',
       icon: <MdOutlineRadar />,
-      isLink: true
+      isLink: true,
     },
     {
       path: '/statistics',
       label: 'Statistics',
       icon: <TbChartBar />,
-      isLink: true
+      isLink: true,
     },
     { path: '/projects', label: 'Projects', icon: <TbUsers />, isLink: true },
     {
@@ -64,118 +64,116 @@ const Sidebar = () => {
       label: 'GitHub Copilot',
       icon: <VscCopilot />,
       isLink: true,
-      hasChildren: true
+      hasChildren: true,
     },
     {
       path: '/addressbook',
       label: 'Address Book',
       icon: <FaRegAddressBook />,
-      isLink: true
-    }
-  ]
+      isLink: true,
+    },
+  ];
 
   const restrictedNavItems = [
     {
       path: '/review/dashboard',
       label: 'Review',
       icon: <TbEditCircle />,
-      isLink: false
+      isLink: false,
     },
     {
       path: '/admin/dashboard',
       label: 'Admin',
       icon: <TbUserShield />,
-      isLink: false
-    }
-  ]
+      isLink: false,
+    },
+  ];
 
   const renderNavItems = items => {
     return items.map(item =>
-      item.isLink
-        ? (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`sidebar-link ${item.hasChildren ? (location.pathname.includes(item.path) ? 'active' : '') : location.pathname === item.path ? 'active' : ''}`}
-            aria-label={item.label}
-          >
-            <span className='sidebar-icon'>{item.icon}</span>
-            {!isCollapsed && <span className='sidebar-label'>{item.label}</span>}
-          </Link>
-          )
-        : (
-          <a
-            key={item.path}
-            href={item.path}
-            className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
-            aria-label={item.label}
-          >
-            <span className='sidebar-icon'>{item.icon}</span>
-            {!isCollapsed && <span className='sidebar-label'>{item.label}</span>}
-          </a>
-          )
-    )
-  }
+      item.isLink ? (
+        <Link
+          key={item.path}
+          to={item.path}
+          className={`sidebar-link ${item.hasChildren ? (location.pathname.includes(item.path) ? 'active' : '') : location.pathname === item.path ? 'active' : ''}`}
+          aria-label={item.label}
+        >
+          <span className="sidebar-icon">{item.icon}</span>
+          {!isCollapsed && <span className="sidebar-label">{item.label}</span>}
+        </Link>
+      ) : (
+        <a
+          key={item.path}
+          href={item.path}
+          className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
+          aria-label={item.label}
+        >
+          <span className="sidebar-icon">{item.icon}</span>
+          {!isCollapsed && <span className="sidebar-label">{item.label}</span>}
+        </a>
+      )
+    );
+  };
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-      <nav className='sidebar-nav'>
+      <nav className="sidebar-nav">
         {renderNavItems(generalNavItems)}
 
         {/* Restricted Section */}
-        <div className='sidebar-section'>
+        <div className="sidebar-section">
           {!isCollapsed && (
-            <div className='sidebar-section-title'>Restricted</div>
+            <div className="sidebar-section-title">Restricted</div>
           )}
           {renderNavItems(restrictedNavItems)}
         </div>
       </nav>
-      <div className='sidebar-footer'>
-        <div className='sidebar-footer-buttons'>
+      <div className="sidebar-footer">
+        <div className="sidebar-footer-buttons">
           <button
             onClick={() => openReportBugModal()}
-            className='sidebar-footer-button'
-            aria-label='Open report bug modal'
+            className="sidebar-footer-button"
+            aria-label="Open report bug modal"
           >
-            <span className='sidebar-icon'>
+            <span className="sidebar-icon">
               <TbBug />
             </span>
             {!isCollapsed && (
-              <span className='sidebar-label'>Report a Bug</span>
+              <span className="sidebar-label">Report a Bug</span>
             )}
           </button>
           <Modal isOpen={showBugReportModal} onClose={closeReportBugModal} />
           <button
             onClick={() => handleSetShowHelpModal()}
-            className='sidebar-footer-button'
-            aria-label='Help button to open help modal'
+            className="sidebar-footer-button"
+            aria-label="Help button to open help modal"
           >
-            <span className='sidebar-icon'>
+            <span className="sidebar-icon">
               <TbHelp />
             </span>
-            {!isCollapsed && <span className='sidebar-label'>Help</span>}
+            {!isCollapsed && <span className="sidebar-label">Help</span>}
           </button>
           <ThemeToggle variant={isCollapsed ? 'small' : 'large'} />
           <button
-            className='sidebar-footer-button'
+            className="sidebar-footer-button"
             onClick={() => setIsCollapsed(!isCollapsed)}
             aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isCollapsed ? <IoChevronForward /> : <IoChevronBack />}
 
             {!isCollapsed && (
-              <span className='sidebar-label'>Collapse Sidebar</span>
+              <span className="sidebar-label">Collapse Sidebar</span>
             )}
           </button>
         </div>
-        <UserProfile variant='sidebar' isCollapsed={isCollapsed} />
+        <UserProfile variant="sidebar" isCollapsed={isCollapsed} />
       </div>
       <HelpModal
         show={showHelpModal}
         onClose={() => handleSetShowHelpModal()}
       />
     </aside>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

@@ -1,80 +1,80 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { useLocation } from 'react-router-dom'
-import '../styles/App.css'
-import Header from '../components/Header/Header'
-import { useData } from '../contexts/dataContext'
+import React, { useEffect, useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import '../styles/App.css';
+import Header from '../components/Header/Header';
+import { useData } from '../contexts/dataContext';
 import {
   IoInformationCircle,
   IoGridOutline,
   IoChevronUpOutline,
-  IoChevronDownOutline
-} from 'react-icons/io5'
-import ProjectModal from '../components/Projects/ProjectModal'
-import InfoBox from '../components/InfoBox/InfoBox'
-import { useTechnologyStatus } from '../utilities/getTechnologyStatus'
-import { BannerContainer } from '../components/Banner'
-import { getDirectorates } from '../utilities/getDirectorates'
-import { specialTechMatchers } from '../utilities/getSpecialTechMatchers'
+  IoChevronDownOutline,
+} from 'react-icons/io5';
+import ProjectModal from '../components/Projects/ProjectModal';
+import InfoBox from '../components/InfoBox/InfoBox';
+import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
+import { BannerContainer } from '../components/Banner';
+import { getDirectorates } from '../utilities/getDirectorates';
+import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
 import {
   getDirectorateColour,
-  getDirectorateName
-} from '../utilities/directorateUtils'
-import sendAlert from '../components/Alerts/Alerts'
+  getDirectorateName,
+} from '../utilities/directorateUtils';
+import sendAlert from '../components/Alerts/Alerts';
 
 /**
  * RadarPage component for displaying the radar page.
  *
  * @returns {JSX.Element} - The RadarPage component.
  */
-function RadarPage () {
-  const fetchedOnce = useRef(false)
-  const projectsFetchedOnce = useRef(false)
-  const [data, setData] = useState(null)
-  const [selectedBlip, setSelectedBlip] = useState(null)
-  const [lockedBlip, setLockedBlip] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchResults, setSearchResults] = useState([])
-  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(true)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragPosition, setDragPosition] = useState({ x: 148, y: 80 })
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+function RadarPage() {
+  const fetchedOnce = useRef(false);
+  const projectsFetchedOnce = useRef(false);
+  const [data, setData] = useState(null);
+  const [selectedBlip, setSelectedBlip] = useState(null);
+  const [lockedBlip, setLockedBlip] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState({ x: 148, y: 80 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [expandedQuadrants, setExpandedQuadrants] = useState({
     1: true,
     2: true,
     3: true,
-    4: true
-  })
-  const [filteredQuadrant, setFilteredQuadrant] = useState(null)
-  const [projectsData, setProjectsData] = useState(null)
-  const [projectsForTech, setProjectsForTech] = useState([])
-  const [selectedProject, setSelectedProject] = useState(null)
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)
-  const [draggingQuadrant, setDraggingQuadrant] = useState(null)
+    4: true,
+  });
+  const [filteredQuadrant, setFilteredQuadrant] = useState(null);
+  const [projectsData, setProjectsData] = useState(null);
+  const [projectsForTech, setProjectsForTech] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [draggingQuadrant, setDraggingQuadrant] = useState(null);
   const [quadrantPositions, setQuadrantPositions] = useState({
     4: null, // top-left
     1: null, // top-right
     3: null, // bottom-left
-    2: null // bottom-right
-  })
-  const [quadrantDragOffset, setQuadrantDragOffset] = useState({ x: 0, y: 0 })
-  const [allBlips, setAllBlips] = useState([])
-  const [selectedTimelineItem, setSelectedTimelineItem] = useState(null)
-  const [timelineAscending, setTimelineAscending] = useState(false)
-  const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false)
-  const location = useLocation()
+    2: null, // bottom-right
+  });
+  const [quadrantDragOffset, setQuadrantDragOffset] = useState({ x: 0, y: 0 });
+  const [allBlips, setAllBlips] = useState([]);
+  const [selectedTimelineItem, setSelectedTimelineItem] = useState(null);
+  const [timelineAscending, setTimelineAscending] = useState(false);
+  const [isProjectsModalOpen, setIsProjectsModalOpen] = useState(false);
+  const location = useLocation();
 
-  const { getTechRadarData, getCsvData } = useData()
-  const getTechnologyStatus = useTechnologyStatus()
+  const { getTechRadarData, getCsvData } = useData();
+  const getTechnologyStatus = useTechnologyStatus();
 
-  const [selectedDirectorate, setSelectedDirectorate] = useState(null)
-  const [defaultDirectorate, setDefaultDirectorate] = useState(null)
-  const [directorateColour, setDirectorateColour] = useState('var(--accent)')
-  const [directorateName, setDirectorateName] = useState('Unknown Directorate')
-  const [directorates, setDirectorates] = useState([])
+  const [selectedDirectorate, setSelectedDirectorate] = useState(null);
+  const [defaultDirectorate, setDefaultDirectorate] = useState(null);
+  const [directorateColour, setDirectorateColour] = useState('var(--accent)');
+  const [directorateName, setDirectorateName] = useState('Unknown Directorate');
+  const [directorates, setDirectorates] = useState([]);
 
   useEffect(() => {
-    getDirectorates().then(setDirectorates)
-  }, [])
+    getDirectorates().then(setDirectorates);
+  }, []);
 
   /**
    * Maps a language to its tech radar equivalent using specialTechMatchers
@@ -85,33 +85,33 @@ function RadarPage () {
   const mapLanguageToTechRadar = language => {
     for (const [techName, matcher] of Object.entries(specialTechMatchers)) {
       if (matcher(language)) {
-        return techName
+        return techName;
       }
     }
-    return language
-  }
+    return language;
+  };
 
   // Default to directorate with default flag if none selected
   useEffect(() => {
     if (directorates.length > 0 && !selectedDirectorate) {
-      const defaultDirectorate = directorates.find(dir => dir.default)
+      const defaultDirectorate = directorates.find(dir => dir.default);
       const directorateId = defaultDirectorate
         ? defaultDirectorate.id
-        : directorates[0].id
+        : directorates[0].id;
 
-      setDefaultDirectorate(directorateId)
-      setSelectedDirectorate(directorateId)
-      setDirectorateColour(getDirectorateColour(directorateId, directorates))
-      setDirectorateName(getDirectorateName(directorateId, directorates))
+      setDefaultDirectorate(directorateId);
+      setSelectedDirectorate(directorateId);
+      setDirectorateColour(getDirectorateColour(directorateId, directorates));
+      setDirectorateName(getDirectorateName(directorateId, directorates));
     }
-  }, [directorates])
+  }, [directorates]);
 
   /**
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-    if (fetchedOnce.current) return
-    fetchedOnce.current = true
+    if (fetchedOnce.current) return;
+    fetchedOnce.current = true;
     getTechRadarData()
       .then(data => setData(data))
       .catch(err =>
@@ -120,30 +120,30 @@ function RadarPage () {
           err,
           'Failed to fetch data for the radar data'
         )
-      )
-  }, [getTechRadarData])
+      );
+  }, [getTechRadarData]);
 
   /**
    * useEffect hook to fetch the projects data from S3.
    */
   useEffect(() => {
-    if (projectsFetchedOnce.current) return
-    projectsFetchedOnce.current = true
+    if (projectsFetchedOnce.current) return;
+    projectsFetchedOnce.current = true;
     const fetchData = async () => {
       try {
-        const data = await getCsvData()
-        setProjectsData(data)
+        const data = await getCsvData();
+        setProjectsData(data);
       } catch (err) {
         sendAlert(
           'Error 🚨',
           err.message,
           'Failed to fetch data for the projects data in the Radar page.'
-        )
+        );
       }
-    }
+    };
 
-    fetchData()
-  }, [getCsvData])
+    fetchData();
+  }, [getCsvData]);
 
   /**
    * Function to filter the timeline based on the selected directorate.
@@ -155,29 +155,29 @@ function RadarPage () {
    * @return {Array} - The filtered timeline.
    */
   const getFilteredTimeline = timeline => {
-    let filteredTimeline = []
-    const digitalServicesTimeline = []
+    let filteredTimeline = [];
+    const digitalServicesTimeline = [];
 
     timeline.forEach(entry => {
-      const directorate = entry.directorate || 'Digital Services (DS)'
+      const directorate = entry.directorate || 'Digital Services (DS)';
 
       if (
         directorate === selectedDirectorate &&
         directorate !== 'Digital Services (DS)'
       ) {
-        filteredTimeline.push(entry)
+        filteredTimeline.push(entry);
       }
       if (directorate === 'Digital Services (DS)') {
-        digitalServicesTimeline.push(entry)
+        digitalServicesTimeline.push(entry);
       }
-    })
+    });
 
     if (filteredTimeline.length === 0) {
-      filteredTimeline = digitalServicesTimeline
+      filteredTimeline = digitalServicesTimeline;
     }
 
-    return filteredTimeline
-  }
+    return filteredTimeline;
+  };
 
   /**
    * Function to get the most recent ring from the timeline, considering the selected directorate.
@@ -188,12 +188,12 @@ function RadarPage () {
    * @return {string} - The most recent ring ID.
    */
   const getMostRecentRing = timeline => {
-    const filteredTimeline = getFilteredTimeline(timeline)
+    const filteredTimeline = getFilteredTimeline(timeline);
 
     // Get the most recent ring from the filtered timeline
-    const mostRecentRing = filteredTimeline[filteredTimeline.length - 1].ringId
-    return mostRecentRing
-  }
+    const mostRecentRing = filteredTimeline[filteredTimeline.length - 1].ringId;
+    return mostRecentRing;
+  };
 
   /**
    * Function to determine if a technology entry should be highlighted based on the selected directorate.
@@ -205,9 +205,9 @@ function RadarPage () {
    * @return {boolean} - Whether the entry should be highlighted.
    */
   const getShouldBeHighlighted = timeline => {
-    const filteredTimeline = getFilteredTimeline(timeline)
+    const filteredTimeline = getFilteredTimeline(timeline);
 
-    let shouldBeHighlighted = false
+    let shouldBeHighlighted = false;
 
     // TODO: Address highlight logic if needed
     // At the moment, technologies get highlighted if they have directorate specific history (i.e. moved out of Digital Services at any point in time)
@@ -216,19 +216,19 @@ function RadarPage () {
     // This logic may need to be revisited in future if it causes confusion (i.e. Why is this tech highlighted here but not on the review page? Why is this technology highlighted with it matches Digital Services?)
 
     for (const entry of filteredTimeline) {
-      const directorate = entry.directorate || 'Digital Services (DS)'
+      const directorate = entry.directorate || 'Digital Services (DS)';
 
       if (
         directorate === selectedDirectorate &&
         selectedDirectorate !== 'Digital Services (DS)'
       ) {
-        shouldBeHighlighted = true
-        break
+        shouldBeHighlighted = true;
+        break;
       }
     }
 
-    return shouldBeHighlighted
-  }
+    return shouldBeHighlighted;
+  };
 
   /**
    * handleDirectorateChange function to handle the directorate change event.
@@ -236,69 +236,69 @@ function RadarPage () {
    * @param {string} dir - The selected directorate.
    */
   const handleDirectorateChange = dir => {
-    dir = Number(dir)
+    dir = Number(dir);
 
-    setSelectedDirectorate(dir)
-    setDirectorateColour(getDirectorateColour(dir, directorates))
-    setDirectorateName(getDirectorateName(dir, directorates))
+    setSelectedDirectorate(dir);
+    setDirectorateColour(getDirectorateColour(dir, directorates));
+    setDirectorateName(getDirectorateName(dir, directorates));
 
     // Clear blip selection when directorate changes
     // This is so stale information doesn't persist within the info box component
-    setSelectedBlip(null)
-    setLockedBlip(null)
-  }
+    setSelectedBlip(null);
+    setLockedBlip(null);
+  };
 
   /**
    * useEffect hook to set the allBlips state with the blips array.
    */
   useEffect(() => {
-    if (!data) return
+    if (!data) return;
 
     const blipsArray = Object.values(data.quadrants)
       .flatMap(quadrant => {
-        const quadrantId = quadrant.id
-        return numberedEntries[quadrantId] || []
+        const quadrantId = quadrant.id;
+        return numberedEntries[quadrantId] || [];
       })
-      .sort((a, b) => a.number - b.number)
+      .sort((a, b) => a.number - b.number);
 
-    setAllBlips(blipsArray)
-  }, [data])
+    setAllBlips(blipsArray);
+  }, [data]);
 
   /**
    * useEffect hook to handle the keyboard navigation for the blips.
    */
   useEffect(() => {
     const handleKeyDown = e => {
-      if (!lockedBlip || !allBlips.length) return
+      if (!lockedBlip || !allBlips.length) return;
 
       const currentIndex = allBlips.findIndex(
         blip => blip.id === lockedBlip.id
-      )
-      if (currentIndex === -1) return
+      );
+      if (currentIndex === -1) return;
 
-      let nextBlip
+      let nextBlip;
 
       if (e.key === '1') {
         if (currentIndex > 0) {
-          nextBlip = allBlips[currentIndex - 1]
+          nextBlip = allBlips[currentIndex - 1];
         }
       } else if (e.key === '2') {
         if (currentIndex < allBlips.length - 1) {
-          nextBlip = allBlips[currentIndex + 1]
+          nextBlip = allBlips[currentIndex + 1];
         }
       }
 
       if (nextBlip) {
-        const projects = findProjectsUsingTechnology(nextBlip.title)
-        setProjectsForTech(projects)
-        setLockedBlip(nextBlip)
-        setSelectedBlip(nextBlip)
+        const projects = findProjectsUsingTechnology(nextBlip.title);
+        setProjectsForTech(projects);
+        setLockedBlip(nextBlip);
+        setSelectedBlip(nextBlip);
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [lockedBlip, allBlips])
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lockedBlip, allBlips]);
 
   /**
    * quadrantAngles constant to store the angles for the quadrants.
@@ -307,8 +307,8 @@ function RadarPage () {
     1: 45,
     2: 135,
     3: 225,
-    4: 315
-  }
+    4: 315,
+  };
 
   /**
    * ringRadii constant to store the radii for the rings.
@@ -317,8 +317,8 @@ function RadarPage () {
     adopt: [0, 150],
     trial: [150, 250],
     assess: [250, 325],
-    hold: [325, 400]
-  }
+    hold: [325, 400],
+  };
 
   /**
    * calculateBlipPosition function to calculate the position of the blip.
@@ -330,84 +330,84 @@ function RadarPage () {
    * @returns {Object} - The position of the blip.
    */
   const calculateBlipPosition = (quadrant, ring, index, total) => {
-    const baseAngle = quadrantAngles[quadrant]
-    const [innerRadius, outerRadius] = ringRadii[ring.toLowerCase()]
-    const ringWidth = outerRadius - innerRadius
+    const baseAngle = quadrantAngles[quadrant];
+    const [innerRadius, outerRadius] = ringRadii[ring.toLowerCase()];
+    const ringWidth = outerRadius - innerRadius;
 
     if (filteredQuadrant) {
       // When filtered, distribute evenly around the full circle
-      const angleStep = (2 * Math.PI) / total
-      const angle = -Math.PI / 2 + index * angleStep // Start from top (-90 degrees)
+      const angleStep = (2 * Math.PI) / total;
+      const angle = -Math.PI / 2 + index * angleStep; // Start from top (-90 degrees)
 
       // Randomize the radius slightly within the ring
-      const radiusVariation = ringWidth * 0.4 // Use 40% of ring width for variation
-      const radiusOffset = 1 * radiusVariation - radiusVariation / 2
-      const radius = innerRadius + ringWidth / 2 + radiusOffset
+      const radiusVariation = ringWidth * 0.4; // Use 40% of ring width for variation
+      const radiusOffset = 1 * radiusVariation - radiusVariation / 2;
+      const radius = innerRadius + ringWidth / 2 + radiusOffset;
 
       return {
         x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius
-      }
+        y: Math.sin(angle) * radius,
+      };
     } else {
       // Normal quadrant view
-      const radiusSteps = Math.ceil(Math.sqrt(total))
-      const angleSteps = Math.ceil(total / radiusSteps)
+      const radiusSteps = Math.ceil(Math.sqrt(total));
+      const angleSteps = Math.ceil(total / radiusSteps);
 
-      const radiusIndex = Math.floor(index / angleSteps + 0.75)
-      const angleIndex = index % angleSteps
+      const radiusIndex = Math.floor(index / angleSteps + 0.75);
+      const angleIndex = index % angleSteps;
 
-      const radiusStep = ringWidth / (radiusSteps + 2)
-      const radius = innerRadius + (radiusIndex + 1) * radiusStep
+      const radiusStep = ringWidth / (radiusSteps + 2);
+      const radius = innerRadius + (radiusIndex + 1) * radiusStep;
 
-      const angleStep = Math.PI / 2.4 / angleSteps
-      const adjustedBaseAngle = (baseAngle - 117.5) * (Math.PI / 180)
-      const angle = adjustedBaseAngle + angleIndex * angleStep
+      const angleStep = Math.PI / 2.4 / angleSteps;
+      const adjustedBaseAngle = (baseAngle - 117.5) * (Math.PI / 180);
+      const angle = adjustedBaseAngle + angleIndex * angleStep;
 
       return {
         x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius
-      }
+        y: Math.sin(angle) * radius,
+      };
     }
-  }
+  };
 
   const getColorForRing = ring => {
     const colors = {
       adopt: '#008a00',
       trial: '#cb00b4',
       assess: '#0069e5',
-      hold: '#de001a'
-    }
-    return colors[ring]
-  }
+      hold: '#de001a',
+    };
+    return colors[ring];
+  };
   const handleSearch = term => {
-    setSearchTerm(term)
+    setSearchTerm(term);
     if (!term.trim()) {
-      setSearchResults([])
-      return
+      setSearchResults([]);
+      return;
     }
     const results = data.entries
       .filter(entry => {
         // Get the most recent timeline entry
-        const mostRecentRing = getMostRecentRing(entry.timeline)
+        const mostRecentRing = getMostRecentRing(entry.timeline);
 
         // Exclude entries where most recent ring is review or ignore
         if (mostRecentRing === 'review' || mostRecentRing === 'ignore') {
-          return false
+          return false;
         }
 
         // Check if title or description matches search term
         return (
           entry.title.toLowerCase().includes(term.toLowerCase()) ||
           entry.description.toLowerCase().includes(term.toLowerCase())
-        )
+        );
       })
       .map(entry => ({
         ...entry,
-        timeline: getFilteredTimeline(entry.timeline)
-      }))
+        timeline: getFilteredTimeline(entry.timeline),
+      }));
 
-    setSearchResults(results)
-  }
+    setSearchResults(results);
+  };
 
   /**
    * handleSearchResultClick function to handle the search result click event.
@@ -415,21 +415,21 @@ function RadarPage () {
    * @param {Object} entry - The entry object to handle the click for.
    */
   const handleSearchResultClick = entry => {
-    const quadrant = entry.quadrant
+    const quadrant = entry.quadrant;
     const entryWithNumber = numberedEntries[quadrant].find(
       e => e.id === entry.id
-    )
+    );
 
-    const projects = findProjectsUsingTechnology(entry.title)
+    const projects = findProjectsUsingTechnology(entry.title);
 
-    setProjectsForTech(projects)
-    setLockedBlip(entryWithNumber)
-    setSelectedBlip(entryWithNumber)
-    setIsInfoBoxVisible(true)
+    setProjectsForTech(projects);
+    setLockedBlip(entryWithNumber);
+    setSelectedBlip(entryWithNumber);
+    setIsInfoBoxVisible(true);
 
-    setSearchTerm('')
-    setSearchResults([])
-  }
+    setSearchTerm('');
+    setSearchResults([]);
+  };
 
   /**
    * handleMouseDown function to handle the mouse down event.
@@ -437,13 +437,13 @@ function RadarPage () {
    * @param {Event} e - The event object.
    */
   const handleMouseDown = e => {
-    setIsDragging(true)
-    const rect = e.currentTarget.getBoundingClientRect()
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
     setDragOffset({
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    })
-  }
+      y: e.clientY - rect.top,
+    });
+  };
 
   /**
    * useEffect hook to handle the mouse move event.
@@ -453,8 +453,8 @@ function RadarPage () {
       if (isDragging) {
         setDragPosition({
           x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y
-        })
+          y: e.clientY - dragOffset.y,
+        });
       }
 
       if (draggingQuadrant) {
@@ -462,30 +462,30 @@ function RadarPage () {
           ...prev,
           [draggingQuadrant]: {
             x: e.clientX - quadrantDragOffset.x,
-            y: e.clientY - quadrantDragOffset.y
-          }
-        }))
+            y: e.clientY - quadrantDragOffset.y,
+          },
+        }));
       }
-    }
+    };
 
     /**
      * handleMouseUp function to handle the mouse up event.
      */
     const handleMouseUp = () => {
-      setIsDragging(false)
-      setDraggingQuadrant(null)
-    }
+      setIsDragging(false);
+      setDraggingQuadrant(null);
+    };
 
     if (isDragging || draggingQuadrant) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, dragOffset, draggingQuadrant, quadrantDragOffset])
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset, draggingQuadrant, quadrantDragOffset]);
 
   /**
    * toggleQuadrant function to toggle the quadrant.
@@ -495,9 +495,9 @@ function RadarPage () {
   const toggleQuadrant = quadrantId => {
     setExpandedQuadrants(prev => ({
       ...prev,
-      [quadrantId]: !prev[quadrantId]
-    }))
-  }
+      [quadrantId]: !prev[quadrantId],
+    }));
+  };
 
   /**
    * findProjectsUsingTechnology function to find the projects using the technology.
@@ -506,7 +506,7 @@ function RadarPage () {
    * @returns {Array} - The projects using the technology.
    */
   const findProjectsUsingTechnology = tech => {
-    if (!projectsData) return []
+    if (!projectsData) return [];
 
     return projectsData.filter(project => {
       const allTechColumns = [
@@ -537,36 +537,36 @@ function RadarPage () {
         'Documentation_Tools',
         'UI_Tools',
         'Diagram_Tools',
-        'Miscellaneous'
-      ]
+        'Miscellaneous',
+      ];
 
       return allTechColumns.some(column => {
-        const value = project[column]
-        if (!value) return false
-        const matcher = specialTechMatchers[tech]
+        const value = project[column];
+        if (!value) return false;
+        const matcher = specialTechMatchers[tech];
         if (matcher) {
-          return value.split(';').some(matcher)
+          return value.split(';').some(matcher);
         }
         // If there is a colon, extract all techs before colons
         if (value.includes(':')) {
           // Match all non-space sequences before a colon, or all words before a colon
           const techMatches = [...value.matchAll(/([^\s:;]+):/g)].map(match =>
             match[1].trim()
-          )
+          );
           return techMatches.some(
             techName => techName.toLowerCase() === tech.toLowerCase().trim()
-          )
+          );
         } else {
           // Otherwise, split by ; and match as usual
           return value
             .split(';')
             .some(
               item => item.trim().toLowerCase() === tech.toLowerCase().trim()
-            )
+            );
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
   /**
    * handleBlipClick function to handle the blip click event.
@@ -575,26 +575,26 @@ function RadarPage () {
    * @param {boolean} fromModal - Whether the click is from the modal.
    */
   const handleBlipClick = (entry, fromModal = false) => {
-    const projects = findProjectsUsingTechnology(entry.title)
-    setProjectsForTech(projects)
-    setIsInfoBoxVisible(true)
+    const projects = findProjectsUsingTechnology(entry.title);
+    setProjectsForTech(projects);
+    setIsInfoBoxVisible(true);
 
-    const quadrant = entry.quadrant
+    const quadrant = entry.quadrant;
     const entryWithNumber = numberedEntries[quadrant].find(
       e => e.id === entry.id
-    )
+    );
 
     if (fromModal) {
-      setLockedBlip(entryWithNumber)
-      setSelectedBlip(entryWithNumber)
+      setLockedBlip(entryWithNumber);
+      setSelectedBlip(entryWithNumber);
     } else if (lockedBlip?.id === entry.id) {
-      setLockedBlip(null)
-      setSelectedBlip(null)
+      setLockedBlip(null);
+      setSelectedBlip(null);
     } else {
-      setLockedBlip(entryWithNumber)
-      setSelectedBlip(entryWithNumber)
+      setLockedBlip(entryWithNumber);
+      setSelectedBlip(entryWithNumber);
     }
-  }
+  };
 
   /**
    * handleBlipHover function to handle the blip hover event.
@@ -602,13 +602,13 @@ function RadarPage () {
    * @param {Object} entry - The entry object to handle the hover for.
    */
   const handleBlipHover = entry => {
-    setSelectedBlip(entry)
+    setSelectedBlip(entry);
     if (entry !== null) {
-      const projects = findProjectsUsingTechnology(entry.title)
-      setProjectsForTech(projects)
-      setIsInfoBoxVisible(true)
+      const projects = findProjectsUsingTechnology(entry.title);
+      setProjectsForTech(projects);
+      setIsInfoBoxVisible(true);
     }
-  }
+  };
 
   /**
    * handleProjectClick function to handle the project click event.
@@ -616,9 +616,9 @@ function RadarPage () {
    * @param {Object} project - The project object to handle the click for.
    */
   const handleProjectClick = project => {
-    setSelectedProject(project)
-    setIsProjectModalOpen(true)
-  }
+    setSelectedProject(project);
+    setIsProjectModalOpen(true);
+  };
 
   /**
    * handleStatsTechClick function to handle the stats tech click event.
@@ -627,44 +627,44 @@ function RadarPage () {
    */
   const handleStatsTechClick = techName => {
     if (!techName) {
-      setIsInfoBoxVisible(false)
-      return
+      setIsInfoBoxVisible(false);
+      return;
     }
 
-    const mappedTechName = mapLanguageToTechRadar(techName)
+    const mappedTechName = mapLanguageToTechRadar(techName);
     const entry = data.entries.find(
       entry => entry.title.toLowerCase() === mappedTechName.toLowerCase()
-    )
+    );
 
     if (entry) {
-      const quadrant = entry.quadrant
+      const quadrant = entry.quadrant;
       const entryWithNumber = numberedEntries[quadrant].find(
         e => e.id === entry.id
-      )
+      );
 
-      setIsProjectModalOpen(false)
-      console.log(isProjectsModalOpen)
-      setIsProjectsModalOpen(false)
+      setIsProjectModalOpen(false);
+      console.log(isProjectsModalOpen);
+      setIsProjectsModalOpen(false);
 
-      handleBlipClick(entryWithNumber, true)
+      handleBlipClick(entryWithNumber, true);
     }
-  }
+  };
 
   /**
    * useEffect hook to handle the selected tech from the projects page.
    */
   useEffect(() => {
     if (location.state?.selectedTech) {
-      const tech = location.state.selectedTech
-      const mappedTech = mapLanguageToTechRadar(tech)
+      const tech = location.state.selectedTech;
+      const mappedTech = mapLanguageToTechRadar(tech);
       const entry = data?.entries.find(
         entry => entry.title.toLowerCase() === mappedTech.toLowerCase()
-      )
+      );
       if (entry) {
-        handleBlipClick(entry, true)
+        handleBlipClick(entry, true);
       }
     }
-  }, [location.state, data])
+  }, [location.state, data]);
 
   /**
    * handleTechClick function to handle the tech click event.
@@ -672,24 +672,24 @@ function RadarPage () {
    * @param {string} tech - The technology to handle the click for.
    */
   const handleTechClick = tech => {
-    const mappedTech = mapLanguageToTechRadar(tech)
+    const mappedTech = mapLanguageToTechRadar(tech);
     const radarEntry = data.entries.find(
       entry => entry.title.toLowerCase() === mappedTech.toLowerCase().trim()
-    )
+    );
 
     if (radarEntry) {
-      const quadrant = radarEntry.quadrant
+      const quadrant = radarEntry.quadrant;
       const entryWithNumber = numberedEntries[quadrant].find(
         entry => entry.id === radarEntry.id
-      )
+      );
 
-      setIsProjectModalOpen(false)
-      console.log(isProjectsModalOpen)
-      setIsProjectsModalOpen(false)
+      setIsProjectModalOpen(false);
+      console.log(isProjectsModalOpen);
+      setIsProjectsModalOpen(false);
 
-      handleBlipClick(entryWithNumber, true)
+      handleBlipClick(entryWithNumber, true);
     }
-  }
+  };
 
   /**
    * renderTechnologyList function to render the technology list.
@@ -698,31 +698,29 @@ function RadarPage () {
    * @returns {JSX.Element|null} - The rendered technology list or null if not found.
    */
   const renderTechnologyList = technologies => {
-    if (!technologies) return null
+    if (!technologies) return null;
 
     return technologies.split(';').map((tech, index) => {
-      const trimmedTech = tech.trim()
-      const status = getTechnologyStatus(trimmedTech)
+      const trimmedTech = tech.trim();
+      const status = getTechnologyStatus(trimmedTech);
 
       return (
         <span key={index}>
           {index > 0 && '; '}
-          {status
-            ? (
-              <span
-                className={`clickable-tech ${status}`}
-                onClick={() => handleTechClick(trimmedTech)}
-              >
-                {trimmedTech}
-              </span>
-              )
-            : (
-                trimmedTech
-              )}
+          {status ? (
+            <span
+              className={`clickable-tech ${status}`}
+              onClick={() => handleTechClick(trimmedTech)}
+            >
+              {trimmedTech}
+            </span>
+          ) : (
+            trimmedTech
+          )}
         </span>
-      )
-    })
-  }
+      );
+    });
+  };
 
   /**
    * handleQuadrantMouseDown function to handle the quadrant mouse down event.
@@ -731,16 +729,16 @@ function RadarPage () {
    * @param {string} quadrantId - The quadrant ID.
    */
   const handleQuadrantMouseDown = (e, quadrantId) => {
-    e.stopPropagation()
+    e.stopPropagation();
     if (e.target.closest('.drag-handle')) {
-      const rect = e.currentTarget.getBoundingClientRect()
+      const rect = e.currentTarget.getBoundingClientRect();
       setQuadrantDragOffset({
         x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      })
-      setDraggingQuadrant(quadrantId)
+        y: e.clientY - rect.top,
+      });
+      setDraggingQuadrant(quadrantId);
     }
-  }
+  };
 
   /**
    * handleQuadrantFilter function to handle quadrant filtering.
@@ -749,44 +747,44 @@ function RadarPage () {
    */
   const handleQuadrantFilter = quadrantId => {
     if (filteredQuadrant === quadrantId) {
-      setFilteredQuadrant(null) // Unfilter if clicking the same quadrant
+      setFilteredQuadrant(null); // Unfilter if clicking the same quadrant
     } else {
-      setFilteredQuadrant(quadrantId) // Filter by new quadrant
+      setFilteredQuadrant(quadrantId); // Filter by new quadrant
     }
-  }
+  };
 
   if (!data) {
     return (
       <div>
         <Header />
-        <div className='loading-container'>
-          <div className='loading-spinner' />
+        <div className="loading-container">
+          <div className="loading-spinner" />
           <p>Loading Radar...</p>
         </div>
       </div>
-    )
+    );
   }
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
-    const quadrant = entry.quadrant
+    const quadrant = entry.quadrant;
 
-    const mostRecentRing = getMostRecentRing(entry.timeline)
+    const mostRecentRing = getMostRecentRing(entry.timeline);
 
     // Skip if the most recent timeline entry has ringId of "review" or "ignore"
-    if (mostRecentRing === 'review' || mostRecentRing === 'ignore') return acc
+    if (mostRecentRing === 'review' || mostRecentRing === 'ignore') return acc;
 
-    if (!acc[quadrant]) acc[quadrant] = {}
-    if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = []
+    if (!acc[quadrant]) acc[quadrant] = {};
+    if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = [];
 
     acc[quadrant][mostRecentRing].push({
       ...entry,
-      timeline: getFilteredTimeline(entry.timeline)
-    })
-    return acc
-  }, {})
+      timeline: getFilteredTimeline(entry.timeline),
+    });
+    return acc;
+  }, {});
 
-  const numberedEntries = {}
-  let counter = 1
+  const numberedEntries = {};
+  let counter = 1;
   Object.keys(groupedEntries).forEach(quadrant => {
     numberedEntries[quadrant] = [];
     ['adopt', 'trial', 'assess', 'hold'].forEach(ring => {
@@ -794,12 +792,12 @@ function RadarPage () {
         groupedEntries[quadrant][ring].forEach(entry => {
           numberedEntries[quadrant].push({
             ...entry,
-            number: counter++
-          })
-        })
+            number: counter++,
+          });
+        });
       }
-    })
-  })
+    });
+  });
 
   return (
     <>
@@ -811,8 +809,8 @@ function RadarPage () {
         onOpenProjects={() => setIsProjectsModalOpen(true)}
         onStatsTechClick={handleStatsTechClick}
       />
-      <BannerContainer page='radar' />
-      <div className='radar-page'>
+      <BannerContainer page="radar" />
+      <div className="radar-page">
         {isInfoBoxVisible && (
           <InfoBox
             isAdmin={false}
@@ -833,24 +831,24 @@ function RadarPage () {
         )}
 
         <div
-          className='radar-filter-container'
+          className="radar-filter-container"
           style={{
-            background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background)) 20%, ${directorateColour})`
+            background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background)) 20%, ${directorateColour})`,
           }}
         >
           <h2 style={{ margin: 0 }}>Filters</h2>
-          <div className='radar-filter-group'>
+          <div className="radar-filter-group">
             <label
-              htmlFor='directorate-select'
+              htmlFor="directorate-select"
               style={{ paddingRight: '16px' }}
             >
               Directorate:{' '}
             </label>
             <select
-              id='directorate-select'
+              id="directorate-select"
               onChange={e => handleDirectorateChange(e.target.value)}
-              className='multi-select-control'
-              aria-label='Select Directorate'
+              className="multi-select-control"
+              aria-label="Select Directorate"
             >
               {directorates.map(dir => (
                 <option key={dir.name} value={dir.id}>
@@ -861,22 +859,22 @@ function RadarPage () {
           </div>
 
           <div
-            id='directorate-title'
+            id="directorate-title"
             style={{
               fontWeight: 'bold',
               fontSize: '1.6em',
               color: 'white',
               float: 'right',
-              textShadow: '1px 1px 2px black'
+              textShadow: '1px 1px 2px black',
             }}
           >
             {directorateName}
           </div>
         </div>
 
-        <div className='quadrant-lists'>
+        <div className="quadrant-lists">
           <div
-            id='top-left-quadrant'
+            id="top-left-quadrant"
             className={`quadrant-list top-left ${
               expandedQuadrants['4'] ? 'expanded' : 'collapsed'
             }`}
@@ -887,30 +885,30 @@ function RadarPage () {
                     left: quadrantPositions['4'].x,
                     top: quadrantPositions['4'].y,
                     margin: 0,
-                    zIndex: draggingQuadrant === '4' ? 1000 : 100
+                    zIndex: draggingQuadrant === '4' ? 1000 : 100,
                   }
                 : {}),
               cursor: draggingQuadrant === '4' ? 'grabbing' : 'auto',
               boxShadow:
                 draggingQuadrant === '4'
                   ? '0 4px 10px 0 hsl(var(--foreground) / 0.1)'
-                  : 'none'
+                  : 'none',
             }}
             onMouseDown={e => handleQuadrantMouseDown(e, '4')}
           >
-            <div className='quadrant-header'>
-              <span className='drag-handle'>
+            <div className="quadrant-header">
+              <span className="drag-handle">
                 <IoGridOutline size={12} />
               </span>
               <div
-                className='quadrant-header-content'
+                className="quadrant-header-content"
                 onClick={() => toggleQuadrant('4')}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '4').name}</h2>
-                  <span className='info-icon'>
+                  <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className='tooltip'>Click to view more details</span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -918,21 +916,19 @@ function RadarPage () {
                     expandedQuadrants['4'] ? 'expanded' : ''
                   }`}
                 >
-                  {expandedQuadrants['4']
-                    ? (
-                      <IoChevronUpOutline size={16} />
-                      )
-                    : (
-                      <IoChevronDownOutline size={16} />
-                      )}
+                  {expandedQuadrants['4'] ? (
+                    <IoChevronUpOutline size={16} />
+                  ) : (
+                    <IoChevronDownOutline size={16} />
+                  )}
                 </span>
               </div>
             </div>
             {expandedQuadrants['4'] && (
               <ul
-                tabIndex='0'
-                role='list'
-                aria-label='Infrastructure technologies'
+                tabIndex="0"
+                role="list"
+                aria-label="Infrastructure technologies"
               >
                 {numberedEntries['4']?.map((entry, index) => (
                   <li
@@ -940,24 +936,24 @@ function RadarPage () {
                     onClick={() => handleBlipClick(entry)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === ' ') {
-                        handleBlipClick(entry)
-                        e.preventDefault()
+                        handleBlipClick(entry);
+                        e.preventDefault();
                       } else if (e.key === 'ArrowDown') {
-                        const nextItem = e.target.nextElementSibling
+                        const nextItem = e.target.nextElementSibling;
                         if (nextItem) {
-                          nextItem.focus()
+                          nextItem.focus();
                         }
-                        e.preventDefault()
+                        e.preventDefault();
                       } else if (e.key === 'ArrowUp') {
-                        const prevItem = e.target.previousElementSibling
+                        const prevItem = e.target.previousElementSibling;
                         if (prevItem) {
-                          prevItem.focus()
+                          prevItem.focus();
                         }
-                        e.preventDefault()
+                        e.preventDefault();
                       }
                     }}
-                    tabIndex='0'
-                    role='listitem'
+                    tabIndex="0"
+                    role="listitem"
                     aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
                     style={{
                       cursor: 'pointer',
@@ -966,11 +962,11 @@ function RadarPage () {
                         : 'none',
                       paddingLeft: getShouldBeHighlighted(entry.timeline)
                         ? '8px'
-                        : '12px'
+                        : '12px',
                     }}
                   >
-                    <span className='entry-number'>{entry.number}.</span>
-                    <span className='entry-title'>{entry.title}</span>
+                    <span className="entry-number">{entry.number}.</span>
+                    <span className="entry-title">{entry.title}</span>
                     <span
                       className={`entry-ring ${getMostRecentRing(entry.timeline).toLowerCase()}`}
                     >
@@ -993,30 +989,30 @@ function RadarPage () {
                     left: quadrantPositions['1'].x,
                     top: quadrantPositions['1'].y,
                     margin: 0,
-                    zIndex: draggingQuadrant === '1' ? 1000 : 100
+                    zIndex: draggingQuadrant === '1' ? 1000 : 100,
                   }
                 : {}),
               cursor: draggingQuadrant === '1' ? 'grabbing' : 'auto',
               boxShadow:
                 draggingQuadrant === '1'
                   ? '0 4px 10px 0 hsl(var(--foreground) / 0.1)'
-                  : 'none'
+                  : 'none',
             }}
             onMouseDown={e => handleQuadrantMouseDown(e, '1')}
           >
-            <div className='quadrant-header'>
-              <span className='drag-handle'>
+            <div className="quadrant-header">
+              <span className="drag-handle">
                 <IoGridOutline size={12} />
               </span>
               <div
-                className='quadrant-header-content'
+                className="quadrant-header-content"
                 onClick={() => toggleQuadrant('1')}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '1').name}</h2>
-                  <span className='info-icon'>
+                  <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className='tooltip'>Click to view more details</span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -1024,41 +1020,39 @@ function RadarPage () {
                     expandedQuadrants['1'] ? 'expanded' : ''
                   }`}
                 >
-                  {expandedQuadrants['1']
-                    ? (
-                      <IoChevronUpOutline size={16} />
-                      )
-                    : (
-                      <IoChevronDownOutline size={16} />
-                      )}
+                  {expandedQuadrants['1'] ? (
+                    <IoChevronUpOutline size={16} />
+                  ) : (
+                    <IoChevronDownOutline size={16} />
+                  )}
                 </span>
               </div>
             </div>
-            <ul tabIndex='0' role='list' aria-label='Languages technologies'>
+            <ul tabIndex="0" role="list" aria-label="Languages technologies">
               {numberedEntries['1']?.map((entry, index) => (
                 <li
                   key={entry.id}
                   onClick={() => handleBlipClick(entry)}
                   onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      handleBlipClick(entry)
-                      e.preventDefault()
+                      handleBlipClick(entry);
+                      e.preventDefault();
                     } else if (e.key === 'ArrowDown') {
-                      const nextItem = e.target.nextElementSibling
+                      const nextItem = e.target.nextElementSibling;
                       if (nextItem) {
-                        nextItem.focus()
+                        nextItem.focus();
                       }
-                      e.preventDefault()
+                      e.preventDefault();
                     } else if (e.key === 'ArrowUp') {
-                      const prevItem = e.target.previousElementSibling
+                      const prevItem = e.target.previousElementSibling;
                       if (prevItem) {
-                        prevItem.focus()
+                        prevItem.focus();
                       }
-                      e.preventDefault()
+                      e.preventDefault();
                     }
                   }}
-                  tabIndex='0'
-                  role='listitem'
+                  tabIndex="0"
+                  role="listitem"
                   aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
                   style={{
                     cursor: 'pointer',
@@ -1067,11 +1061,11 @@ function RadarPage () {
                       : 'none',
                     paddingLeft: getShouldBeHighlighted(entry.timeline)
                       ? '8px'
-                      : '12px'
+                      : '12px',
                   }}
                 >
-                  <span className='entry-number'>{entry.number}.</span>
-                  <span className='entry-title'>{entry.title}</span>
+                  <span className="entry-number">{entry.number}.</span>
+                  <span className="entry-title">{entry.title}</span>
                   <span
                     className={`entry-ring ${getMostRecentRing(entry.timeline).toLowerCase()}`}
                   >
@@ -1082,115 +1076,115 @@ function RadarPage () {
             </ul>
           </div>
 
-          <div className='radar-container' tabIndex={0}>
-            <svg width='1000' height='1000' viewBox='-500 -500 1000 1000'>
+          <div className="radar-container" tabIndex={0}>
+            <svg width="1000" height="1000" viewBox="-500 -500 1000 1000">
               {/* Rings */}
               {Object.entries(ringRadii).map(([ring, [_, radius]]) => (
                 <circle
                   key={ring}
-                  cx='0'
-                  cy='0'
+                  cx="0"
+                  cy="0"
                   r={radius}
                   className={`ring ${ring}`}
                 />
               ))}
 
               <line
-                x1='-500'
-                y1='0'
-                x2='500'
-                y2='0'
-                className='quadrant-line'
+                x1="-500"
+                y1="0"
+                x2="500"
+                y2="0"
+                className="quadrant-line"
               />
               <line
-                x1='0'
-                y1='-500'
-                x2='0'
-                y2='500'
-                className='quadrant-line'
+                x1="0"
+                y1="-500"
+                x2="0"
+                y2="500"
+                className="quadrant-line"
               />
 
-              <text x='0' y='-350' className='ring-label'>
+              <text x="0" y="-350" className="ring-label">
                 HOLD
               </text>
-              <text x='0' y='-275' className='ring-label'>
+              <text x="0" y="-275" className="ring-label">
                 ASSESS
               </text>
-              <text x='0' y='-185' className='ring-label'>
+              <text x="0" y="-185" className="ring-label">
                 TRIAL
               </text>
-              <text x='0' y='0' className='ring-label'>
+              <text x="0" y="0" className="ring-label">
                 ADOPT
               </text>
 
-              <g className='quadrant-labels'>
+              <g className="quadrant-labels">
                 <g
-                  transform='translate(250, -400)'
+                  transform="translate(250, -400)"
                   className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== '1' ? 'dimmed' : ''}`}
                   onClick={e => {
-                    e.stopPropagation()
-                    handleQuadrantFilter('1')
+                    e.stopPropagation();
+                    handleQuadrantFilter('1');
                   }}
                 >
                   <rect
-                    x='-60'
-                    y='-20'
-                    width='120'
-                    height='40'
-                    fill='transparent'
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
                   />
-                  <text className='quadrant-label-text'>Languages</text>
+                  <text className="quadrant-label-text">Languages</text>
                 </g>
                 <g
-                  transform='translate(250, 400)'
+                  transform="translate(250, 400)"
                   className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== '2' ? 'dimmed' : ''}`}
                   onClick={e => {
-                    e.stopPropagation()
-                    handleQuadrantFilter('2')
+                    e.stopPropagation();
+                    handleQuadrantFilter('2');
                   }}
                 >
                   <rect
-                    x='-60'
-                    y='-20'
-                    width='120'
-                    height='40'
-                    fill='transparent'
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
                   />
-                  <text className='quadrant-label-text'>Frameworks</text>
+                  <text className="quadrant-label-text">Frameworks</text>
                 </g>
                 <g
-                  transform='translate(-250, 400)'
+                  transform="translate(-250, 400)"
                   className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== '3' ? 'dimmed' : ''}`}
                   onClick={e => {
-                    e.stopPropagation()
-                    handleQuadrantFilter('3')
+                    e.stopPropagation();
+                    handleQuadrantFilter('3');
                   }}
                 >
                   <rect
-                    x='-60'
-                    y='-20'
-                    width='120'
-                    height='40'
-                    fill='transparent'
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
                   />
-                  <text className='quadrant-label-text'>Supporting Tools</text>
+                  <text className="quadrant-label-text">Supporting Tools</text>
                 </g>
                 <g
-                  transform='translate(-250, -400)'
+                  transform="translate(-250, -400)"
                   className={`quadrant-label ${filteredQuadrant && filteredQuadrant !== '4' ? 'dimmed' : ''}`}
                   onClick={e => {
-                    e.stopPropagation()
-                    handleQuadrantFilter('4')
+                    e.stopPropagation();
+                    handleQuadrantFilter('4');
                   }}
                 >
                   <rect
-                    x='-60'
-                    y='-20'
-                    width='120'
-                    height='40'
-                    fill='transparent'
+                    x="-60"
+                    y="-20"
+                    width="120"
+                    height="40"
+                    fill="transparent"
                   />
-                  <text className='quadrant-label-text'>Infrastructure</text>
+                  <text className="quadrant-label-text">Infrastructure</text>
                 </g>
               </g>
 
@@ -1208,62 +1202,64 @@ function RadarPage () {
                           ring,
                           index,
                           entries.length
-                        )
+                        );
                         const number = numberedEntries[quadrant].find(
                           e => e.id === entry.id
-                        ).number
-                        const isSelected = lockedBlip?.id === entry.id
+                        ).number;
+                        const isSelected = lockedBlip?.id === entry.id;
 
                         return (
                           <g
                             id={`blip-${entry.id}`}
                             key={entry.id}
                             transform={`translate(${position.x}, ${position.y})`}
-                            className='blip-container'
+                            className="blip-container"
                             onMouseEnter={() =>
                               !lockedBlip &&
                               handleBlipHover(
                                 numberedEntries[quadrant].find(
                                   e => e.id === entry.id
                                 )
-                              )}
+                              )
+                            }
                             onMouseLeave={() =>
-                              !lockedBlip && handleBlipHover(null)}
+                              !lockedBlip && handleBlipHover(null)
+                            }
                             onClick={() => {
-                              handleBlipClick(entry)
+                              handleBlipClick(entry);
                             }}
                           >
                             <circle
-                              r='15'
+                              r="15"
                               className={`blip ${ring.toLowerCase()}`}
                             />
                             {getShouldBeHighlighted(entry.timeline) && (
                               <circle
-                                r='15'
-                                className='blip-highlight'
+                                r="15"
+                                className="blip-highlight"
                                 stroke={directorateColour}
-                                strokeWidth='2'
-                                fill='none'
+                                strokeWidth="2"
+                                fill="none"
                               />
                             )}
                             {isSelected && (
                               <circle
-                                r='18'
-                                className='blip-highlight'
+                                r="18"
+                                className="blip-highlight"
                                 stroke={getColorForRing(ring.toLowerCase())}
-                                strokeWidth='2'
-                                fill='none'
+                                strokeWidth="2"
+                                fill="none"
                               />
                             )}
                             <text
-                              className='blip-number'
-                              textAnchor='middle'
-                              dy='.3em'
+                              className="blip-number"
+                              textAnchor="middle"
+                              dy=".3em"
                             >
                               {number}
                             </text>
                           </g>
-                        )
+                        );
                       })
                   )
               )}
@@ -1281,30 +1277,30 @@ function RadarPage () {
                     left: quadrantPositions['3'].x,
                     top: quadrantPositions['3'].y,
                     margin: 0,
-                    zIndex: draggingQuadrant === '3' ? 1000 : 100
+                    zIndex: draggingQuadrant === '3' ? 1000 : 100,
                   }
                 : {}),
               cursor: draggingQuadrant === '3' ? 'grabbing' : 'auto',
               boxShadow:
                 draggingQuadrant === '3'
                   ? '0 4px 10px 0 hsl(var(--foreground) / 0.1)'
-                  : 'none'
+                  : 'none',
             }}
             onMouseDown={e => handleQuadrantMouseDown(e, '3')}
           >
-            <div className='quadrant-header'>
-              <span className='drag-handle'>
+            <div className="quadrant-header">
+              <span className="drag-handle">
                 <IoGridOutline size={12} />
               </span>
               <div
-                className='quadrant-header-content'
+                className="quadrant-header-content"
                 onClick={() => toggleQuadrant('3')}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '3').name}</h2>
-                  <span className='info-icon'>
+                  <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className='tooltip'>Click to view more details</span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -1312,20 +1308,18 @@ function RadarPage () {
                     expandedQuadrants['3'] ? 'expanded' : ''
                   }`}
                 >
-                  {expandedQuadrants['3']
-                    ? (
-                      <IoChevronUpOutline size={16} />
-                      )
-                    : (
-                      <IoChevronDownOutline size={16} />
-                      )}
+                  {expandedQuadrants['3'] ? (
+                    <IoChevronUpOutline size={16} />
+                  ) : (
+                    <IoChevronDownOutline size={16} />
+                  )}
                 </span>
               </div>
             </div>
             <ul
-              tabIndex='0'
-              role='list'
-              aria-label='Supporting Tools technologies'
+              tabIndex="0"
+              role="list"
+              aria-label="Supporting Tools technologies"
             >
               {numberedEntries['3']?.map((entry, index) => (
                 <li
@@ -1333,24 +1327,24 @@ function RadarPage () {
                   onClick={() => handleBlipClick(entry)}
                   onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      handleBlipClick(entry)
-                      e.preventDefault()
+                      handleBlipClick(entry);
+                      e.preventDefault();
                     } else if (e.key === 'ArrowDown') {
-                      const nextItem = e.target.nextElementSibling
+                      const nextItem = e.target.nextElementSibling;
                       if (nextItem) {
-                        nextItem.focus()
+                        nextItem.focus();
                       }
-                      e.preventDefault()
+                      e.preventDefault();
                     } else if (e.key === 'ArrowUp') {
-                      const prevItem = e.target.previousElementSibling
+                      const prevItem = e.target.previousElementSibling;
                       if (prevItem) {
-                        prevItem.focus()
+                        prevItem.focus();
                       }
-                      e.preventDefault()
+                      e.preventDefault();
                     }
                   }}
-                  tabIndex='0'
-                  role='listitem'
+                  tabIndex="0"
+                  role="listitem"
                   aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
                   style={{
                     cursor: 'pointer',
@@ -1359,11 +1353,11 @@ function RadarPage () {
                       : 'none',
                     paddingLeft: getShouldBeHighlighted(entry.timeline)
                       ? '8px'
-                      : '12px'
+                      : '12px',
                   }}
                 >
-                  <span className='entry-number'>{entry.number}.</span>
-                  <span className='entry-title'>{entry.title}</span>
+                  <span className="entry-number">{entry.number}.</span>
+                  <span className="entry-title">{entry.title}</span>
                   <span
                     className={`entry-ring ${getMostRecentRing(entry.timeline).toLowerCase()}`}
                   >
@@ -1385,30 +1379,30 @@ function RadarPage () {
                     left: quadrantPositions['2'].x,
                     top: quadrantPositions['2'].y,
                     margin: 0,
-                    zIndex: draggingQuadrant === '2' ? 1000 : 100
+                    zIndex: draggingQuadrant === '2' ? 1000 : 100,
                   }
                 : {}),
               cursor: draggingQuadrant === '2' ? 'grabbing' : 'auto',
               boxShadow:
                 draggingQuadrant === '2'
                   ? '0 4px 10px 0 hsl(var(--foreground) / 0.1)'
-                  : 'none'
+                  : 'none',
             }}
             onMouseDown={e => handleQuadrantMouseDown(e, '2')}
           >
-            <div className='quadrant-header'>
-              <span className='drag-handle'>
+            <div className="quadrant-header">
+              <span className="drag-handle">
                 <IoGridOutline size={12} />
               </span>
               <div
-                className='quadrant-header-content'
+                className="quadrant-header-content"
                 onClick={() => toggleQuadrant('2')}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '2').name}</h2>
-                  <span className='info-icon'>
+                  <span className="info-icon">
                     <IoInformationCircle size={18} />
-                    <span className='tooltip'>Click to view more details</span>
+                    <span className="tooltip">Click to view more details</span>
                   </span>
                 </div>
                 <span
@@ -1416,41 +1410,39 @@ function RadarPage () {
                     expandedQuadrants['2'] ? 'expanded' : ''
                   }`}
                 >
-                  {expandedQuadrants['2']
-                    ? (
-                      <IoChevronUpOutline size={16} />
-                      )
-                    : (
-                      <IoChevronDownOutline size={16} />
-                      )}
+                  {expandedQuadrants['2'] ? (
+                    <IoChevronUpOutline size={16} />
+                  ) : (
+                    <IoChevronDownOutline size={16} />
+                  )}
                 </span>
               </div>
             </div>
-            <ul tabIndex='0' role='list' aria-label='Frameworks technologies'>
+            <ul tabIndex="0" role="list" aria-label="Frameworks technologies">
               {numberedEntries['2']?.map(entry => (
                 <li
                   key={entry.id}
                   onClick={() => handleBlipClick(entry)}
                   onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      handleBlipClick(entry)
-                      e.preventDefault()
+                      handleBlipClick(entry);
+                      e.preventDefault();
                     } else if (e.key === 'ArrowDown') {
-                      const nextItem = e.target.nextElementSibling
+                      const nextItem = e.target.nextElementSibling;
                       if (nextItem) {
-                        nextItem.focus()
+                        nextItem.focus();
                       }
-                      e.preventDefault()
+                      e.preventDefault();
                     } else if (e.key === 'ArrowUp') {
-                      const prevItem = e.target.previousElementSibling
+                      const prevItem = e.target.previousElementSibling;
                       if (prevItem) {
-                        prevItem.focus()
+                        prevItem.focus();
                       }
-                      e.preventDefault()
+                      e.preventDefault();
                     }
                   }}
-                  tabIndex='0'
-                  role='listitem'
+                  tabIndex="0"
+                  role="listitem"
                   aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
                   style={{
                     cursor: 'pointer',
@@ -1459,11 +1451,11 @@ function RadarPage () {
                       : 'none',
                     paddingLeft: getShouldBeHighlighted(entry.timeline)
                       ? '8px'
-                      : '12px'
+                      : '12px',
                   }}
                 >
-                  <span className='entry-number'>{entry.number}.</span>
-                  <span className='entry-title'>{entry.title}</span>
+                  <span className="entry-number">{entry.number}.</span>
+                  <span className="entry-title">{entry.title}</span>
                   <span
                     className={`entry-ring ${getMostRecentRing(entry.timeline).toLowerCase()}`}
                   >
@@ -1487,7 +1479,7 @@ function RadarPage () {
         )}
       </div>
     </>
-  )
+  );
 }
 
-export default RadarPage
+export default RadarPage;

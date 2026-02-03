@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import Banner from './Banner'
-import { useData } from '../../contexts/dataContext'
+import React, { useEffect, useState } from 'react';
+import Banner from './Banner';
+import { useData } from '../../contexts/dataContext';
 
 /**
  * Container component that fetches and displays banners for a specific page.
@@ -10,34 +10,34 @@ import { useData } from '../../contexts/dataContext'
  * @returns {JSX.Element} The BannerContainer component
  */
 const BannerContainer = ({ page }) => {
-  const { getPageBanners } = useData()
-  const [banners, setBanners] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { getPageBanners } = useData();
+  const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        setLoading(true)
-        const pageBanners = await getPageBanners(page)
-        setBanners(pageBanners)
+        setLoading(true);
+        const pageBanners = await getPageBanners(page);
+        setBanners(pageBanners);
       } catch (error) {
-        console.error(`Error fetching banners for ${page}:`, error)
+        console.error(`Error fetching banners for ${page}:`, error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     if (page) {
-      fetchBanners()
+      fetchBanners();
     }
-  }, [page, getPageBanners])
+  }, [page, getPageBanners]);
 
   if (loading || banners.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <div className='banner-fixed'>
+    <div className="banner-fixed">
       {banners.map((banner, index) => (
         <Banner
           key={index}
@@ -46,12 +46,12 @@ const BannerContainer = ({ page }) => {
           type={banner.type}
           onClose={() => {
             // Remove banner from local state when closed
-            setBanners([])
+            setBanners([]);
           }}
         />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default BannerContainer
+export default BannerContainer;

@@ -1,10 +1,10 @@
-import React from 'react'
-import { useTheme } from '../../contexts/ThemeContext'
-import '../../styles/components/ThemeToggle.css'
+import React from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
+import '../../styles/components/ThemeToggle.css';
 import {
   IoMoonOutline as MoonIcon,
-  IoSunnyOutline as SunIcon
-} from 'react-icons/io5'
+  IoSunnyOutline as SunIcon,
+} from 'react-icons/io5';
 
 /**
  * ThemeToggle component allows users to switch between light and dark theme.
@@ -14,8 +14,8 @@ import {
  * @param {string} props.variant - The variant of the toggle ('small' or 'large')
  * @returns A button that toggles the theme when clicked.
  */
-function ThemeToggle ({ variant = 'small' }) {
-  const { theme, toggleTheme } = useTheme()
+function ThemeToggle({ variant = 'small' }) {
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <button
@@ -25,12 +25,12 @@ function ThemeToggle ({ variant = 'small' }) {
     >
       {theme === 'light' ? <SunIcon /> : <MoonIcon />}
       {variant === 'large' && (
-        <span className='theme-toggle-label'>
+        <span className="theme-toggle-label">
           {theme === 'light' ? 'Light' : 'Dark'}
         </span>
       )}
     </button>
-  )
+  );
 }
 
-export default ThemeToggle
+export default ThemeToggle;

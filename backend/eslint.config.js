@@ -1,26 +1,26 @@
-const { defineConfig } = require('eslint/config')
+const { defineConfig } = require('eslint/config');
 
-const globals = require('globals')
-const js = require('@eslint/js')
+const globals = require('globals');
+const js = require('@eslint/js');
 
-const { FlatCompat } = require('@eslint/eslintrc')
+const { FlatCompat } = require('@eslint/eslintrc');
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-})
+  allConfig: js.configs.all,
+});
 
 module.exports = defineConfig([
   {
     languageOptions: {
       globals: {
-        ...globals.node
+        ...globals.node,
       },
 
       ecmaVersion: 'latest',
       sourceType: 'module',
-      parserOptions: {}
+      parserOptions: {},
     },
 
     extends: compat.extends('eslint:recommended', 'prettier'),
@@ -31,8 +31,8 @@ module.exports = defineConfig([
       'no-unused-vars': [
         'error',
         {
-          argsIgnorePattern: '^_'
-        }
+          argsIgnorePattern: '^_',
+        },
       ],
 
       'no-duplicate-imports': 'error',
@@ -40,9 +40,9 @@ module.exports = defineConfig([
       'no-multiple-empty-lines': [
         'error',
         {
-          max: 1
-        }
-      ]
-    }
-  }
-])
+          max: 1,
+        },
+      ],
+    },
+  },
+]);

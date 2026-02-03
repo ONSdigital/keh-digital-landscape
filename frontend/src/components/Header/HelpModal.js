@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import { IoClose } from 'react-icons/io5'
-import '../../styles/components/HelpModal.css'
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { IoClose } from 'react-icons/io5';
+import '../../styles/components/HelpModal.css';
 
 /**
  * HelpModal component for displaying help information in a modal.
@@ -10,31 +10,31 @@ import '../../styles/components/HelpModal.css'
  * @param {boolean} props.show - Whether the modal should be shown.
  * @param {Function} props.onClose - Function to call when the modal is closed.
  */
-function HelpModal ({ show, onClose }) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [shouldRender, setShouldRender] = useState(false)
-  const location = useLocation()
+function HelpModal({ show, onClose }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (show) {
-      setShouldRender(true)
+      setShouldRender(true);
       // Small delay to ensure DOM is ready before starting animation
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          setIsVisible(true)
-        })
-      })
+          setIsVisible(true);
+        });
+      });
     } else {
-      setIsVisible(false)
+      setIsVisible(false);
       // Wait for animation to finish before unmounting
       const timer = setTimeout(() => {
-        setShouldRender(false)
-      }, 1000) // Match this with the CSS transition duration
-      return () => clearTimeout(timer)
+        setShouldRender(false);
+      }, 1000); // Match this with the CSS transition duration
+      return () => clearTimeout(timer);
     }
-  }, [show])
+  }, [show]);
 
-  if (!shouldRender) return null
+  if (!shouldRender) return null;
 
   /**
    * githubPagesLink function returns a link to the Digital Landscape documentation.
@@ -49,9 +49,9 @@ function HelpModal ({ show, onClose }) {
           To view more detailed information about the Digital Landscape, view
           this{' '}
           <a
-            href='https://onsdigital.github.io/keh-digital-landscape/'
-            target='_blank'
-            rel='noopener noreferrer'
+            href="https://onsdigital.github.io/keh-digital-landscape/"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             documentation
           </a>
@@ -59,8 +59,8 @@ function HelpModal ({ show, onClose }) {
         </span>
         <br />
       </>
-    )
-  }
+    );
+  };
 
   /**
    * submissionRepoLink function returns a link to the Tech Radar submission documentation.
@@ -74,9 +74,9 @@ function HelpModal ({ show, onClose }) {
           {' '}
           To learn how to submit a technology to the Tech Radar, view this{' '}
           <a
-            href='https://github.com/ONSdigital/software-engineer-community/tree/master/Software%20Engineering%20Principles_Policies_Guidelines_Templates_Plans%20and%20more/tech-radar-submissions'
-            target='_blank'
-            rel='noopener noreferrer'
+            href="https://github.com/ONSdigital/software-engineer-community/tree/master/Software%20Engineering%20Principles_Policies_Guidelines_Templates_Plans%20and%20more/tech-radar-submissions"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             repository
           </a>
@@ -84,8 +84,8 @@ function HelpModal ({ show, onClose }) {
         </span>
         <br />
       </>
-    )
-  }
+    );
+  };
 
   const copilotPage = () => {
     return (
@@ -96,7 +96,7 @@ function HelpModal ({ show, onClose }) {
           Digital. Here&apos;s how to use it:
           <br />
         </span>
-        <ul className='help-modal-list'>
+        <ul className="help-modal-list">
           <li>
             Click &quot;Organisation Usage&quot; to view Copilot usage across
             the ONS Digital organisation. You can view historic data grouped by
@@ -108,11 +108,11 @@ function HelpModal ({ show, onClose }) {
             team. You can filter the data by date range.
           </li>
         </ul>
-        <ul className='help-modal-list'>
+        <ul className="help-modal-list">
           <li>
             On the Organisation page you can view dates by certain time ranges.
             These are:
-            <ul className='help-modal-list'>
+            <ul className="help-modal-list">
               <li>By day</li>
               <li>By week</li>
               <li>By month</li>
@@ -136,8 +136,8 @@ function HelpModal ({ show, onClose }) {
           be shown.
         </span>
       </>
-    )
-  }
+    );
+  };
 
   /**
    * getModalContent function returns the content for the help modal based on the current pathname.
@@ -149,19 +149,19 @@ function HelpModal ({ show, onClose }) {
       return {
         title: 'Copilot Dashboard',
         content: (
-          <div className='help-modal-body'>
+          <div className="help-modal-body">
             {githubPagesLink()}
             {copilotPage()}
           </div>
-        )
-      }
+        ),
+      };
     }
     switch (location.pathname) {
       case '/radar':
         return {
           title: 'Tech Radar Help',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               {submissionRepoLink()}
               <h1>Guide</h1>
@@ -169,7 +169,7 @@ function HelpModal ({ show, onClose }) {
                 The Tech Radar is a visual representation of our technology
                 landscape. Here&apos;s how to use it:
               </span>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>
                   Click on any point on the Radar to see detailed information
                   about that technology
@@ -191,10 +191,10 @@ function HelpModal ({ show, onClose }) {
                 </li>
               </ul>
               <h1>Quadrants and Rings</h1>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>
                   The 4 quadrants are:
-                  <ul className='help-modal-sublist'>
+                  <ul className="help-modal-sublist">
                     <li>
                       <strong>Languages:</strong> such as Python, JavaScript,
                       Java
@@ -215,7 +215,7 @@ function HelpModal ({ show, onClose }) {
                 </li>
                 <li>
                   What do the 4 rings mean?
-                  <ul className='help-modal-sublist'>
+                  <ul className="help-modal-sublist">
                     <li>
                       <strong>Adopt:</strong> technologies that are mature,
                       widely adopted and recommended for use in production
@@ -243,7 +243,7 @@ function HelpModal ({ show, onClose }) {
                 </li>
                 <li>
                   When should you use the technology in the 4 rings?
-                  <ul className='help-modal-sublist'>
+                  <ul className="help-modal-sublist">
                     <li>
                       <strong>Adopt:</strong> use these technologies for all
                       projects including mission-critical, customer-facing and
@@ -266,32 +266,32 @@ function HelpModal ({ show, onClose }) {
                 </li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       case '/':
         return {
           title: 'Digital Landscape Help',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               <h1>Overview</h1>
               <span>
                 Welcome to the Digital Landscape - your overview of our digital
                 technology ecosystem.
               </span>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>Browse through different technology categories</li>
                 <li>See trending technologies and recent changes</li>
                 <li>Access detailed statistics and reports</li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       case '/statistics':
         return {
           title: 'Statistics Help',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               <h1>Guide</h1>
               <span>
@@ -299,7 +299,7 @@ function HelpModal ({ show, onClose }) {
                 used in the ONSDigital GitHub Organisation. Here&apos;s how to
                 use it:
               </span>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>
                   Select a date range to see the statistics and languages used
                   in that time period (default is all time).
@@ -327,20 +327,20 @@ function HelpModal ({ show, onClose }) {
                 </li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       case '/projects':
         return {
           title: 'Projects Help',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               <h1>Guide</h1>
               <span>
                 The Projects page is a visual representation of the projects in
                 ONS. Here&apos;s how to use it:
               </span>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>
                   View the list of projects. The bar to the right of the project
                   list shows the number of technologies listed in the project.
@@ -361,20 +361,20 @@ function HelpModal ({ show, onClose }) {
                 <li>Click refresh to fetch the latest data.</li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       case '/review/dashboard':
         return {
           title: 'Review Dashboard',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               <h1>Guide</h1>
               <span>
                 This page should only be used by reviewers. Here is how to use
                 it:{' '}
               </span>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>
                   View respective rings as boxes, with the technology
                   categorised by quadrants.
@@ -406,17 +406,17 @@ function HelpModal ({ show, onClose }) {
                 </li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       case '/admin/dashboard':
         return {
           title: 'Admin Dashboard',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               <h1>Banner Management</h1>
 
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>View the Existing banners at the bottom of the page.</li>
                 <li>
                   To create a new banner, enter the banner title and the banner
@@ -446,7 +446,7 @@ function HelpModal ({ show, onClose }) {
               </ul>
               <h1>Technology Management</h1>
 
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>View the Banner and Technology Management sections.</li>
                 <li>
                   The blue technology items are the technologies that are in the
@@ -459,7 +459,7 @@ function HelpModal ({ show, onClose }) {
                 <li>
                   Here are some general rules for the Technology Management
                   section:
-                  <ul className='help-modal-sublist'>
+                  <ul className="help-modal-sublist">
                     <li>
                       <strong>Node.js</strong> instead of NodeJS or node.js
                     </li>
@@ -481,23 +481,23 @@ function HelpModal ({ show, onClose }) {
                 </li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       case '/copilot/org/historic':
         return {
           title: 'Copilot Dashboard',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               {copilotPage()}
             </div>
-          )
-        }
+          ),
+        };
       case '/addressbook':
         return {
           title: 'Address Book Help',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               <h1>Guide</h1>
               <span>
@@ -505,7 +505,7 @@ function HelpModal ({ show, onClose }) {
                 from GitHub usernames and ONS email addresses. Here&apos;s how
                 to use it:
               </span>
-              <ul className='help-modal-list'>
+              <ul className="help-modal-list">
                 <li>
                   Enter a GitHub username (e.g., username) or an ONS email
                   address (e.g., firstname.lastname@ons.gov.uk)
@@ -524,13 +524,13 @@ function HelpModal ({ show, onClose }) {
                 </li>
               </ul>
             </div>
-          )
-        }
+          ),
+        };
       default:
         return {
           title: 'Help',
           content: (
-            <div className='help-modal-body'>
+            <div className="help-modal-body">
               {githubPagesLink()}
               {submissionRepoLink()}
               <span>
@@ -538,25 +538,25 @@ function HelpModal ({ show, onClose }) {
                 different sections.
               </span>
             </div>
-          )
-        }
+          ),
+        };
     }
-  }
+  };
 
-  const modalContent = getModalContent()
+  const modalContent = getModalContent();
 
   return (
     <div
       className={`help-modal-overlay ${isVisible ? 'show' : ''}`}
       onClick={onClose}
     >
-      <div className='help-modal-content' onClick={e => e.stopPropagation()}>
-        <div className='help-modal-header'>
-          <h2 className='help-modal-title'>{modalContent.title}</h2>
+      <div className="help-modal-content" onClick={e => e.stopPropagation()}>
+        <div className="help-modal-header">
+          <h2 className="help-modal-title">{modalContent.title}</h2>
           <button
-            className='help-modal-close'
+            className="help-modal-close"
             onClick={onClose}
-            aria-label='Close modal'
+            aria-label="Close modal"
           >
             <IoClose size={20} />
           </button>
@@ -564,7 +564,7 @@ function HelpModal ({ show, onClose }) {
         {modalContent.content}
       </div>
     </div>
-  )
+  );
 }
 
-export default HelpModal
+export default HelpModal;

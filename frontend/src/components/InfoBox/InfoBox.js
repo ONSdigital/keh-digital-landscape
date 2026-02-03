@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   IoArrowUpOutline,
   IoArrowDownOutline,
   IoRemoveOutline,
   IoGridOutline,
   IoChevronDownOutline,
-  IoChevronUpOutline
-} from 'react-icons/io5'
+  IoChevronUpOutline,
+} from 'react-icons/io5';
 import {
   FaSortAmountDownAlt,
   FaSortAmountUpAlt,
   FaEdit,
   FaCheck,
-  FaTimes
-} from 'react-icons/fa'
-import { MarkdownText } from '../../utilities/markdownRenderer'
+  FaTimes,
+} from 'react-icons/fa';
+import { MarkdownText } from '../../utilities/markdownRenderer';
 
 const InfoBox = ({
   isAdmin = false,
@@ -31,37 +31,37 @@ const InfoBox = ({
   onEditCancel,
   isHighlighted = false,
   selectedDirectorate = 'Digital Services (DS)',
-  timeline = selectedItem ? selectedItem.timeline : []
+  timeline = selectedItem ? selectedItem.timeline : [],
 }) => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedTitle, setEditedTitle] = useState('')
-  const [editedCategory, setEditedCategory] = useState('')
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragPosition, setDragPosition] = useState(initialPosition)
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [localTitle, setLocalTitle] = useState(selectedItem?.title || '')
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedCategory, setEditedCategory] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState(initialPosition);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [localTitle, setLocalTitle] = useState(selectedItem?.title || '');
   const [localCategory, setLocalCategory] = useState(
     selectedItem?.description || ''
-  )
-  const [showProjects, setShowProjects] = useState(true)
+  );
+  const [showProjects, setShowProjects] = useState(true);
 
   const handleMouseDown = e => {
-    e.stopPropagation() // Prevent event from bubbling to parent
-    setIsDragging(true)
-    const infoBox = e.currentTarget.closest('.info-box')
-    const infoBoxRect = infoBox.getBoundingClientRect()
-    const clickX = e.clientX - infoBoxRect.left
-    const clickY = e.clientY - infoBoxRect.top
+    e.stopPropagation(); // Prevent event from bubbling to parent
+    setIsDragging(true);
+    const infoBox = e.currentTarget.closest('.info-box');
+    const infoBoxRect = infoBox.getBoundingClientRect();
+    const clickX = e.clientX - infoBoxRect.left;
+    const clickY = e.clientY - infoBoxRect.top;
 
     setDragOffset({
       x: clickX,
-      y: clickY
-    })
-  }
+      y: clickY,
+    });
+  };
 
   const formatTimelineDate = date => {
-    const dateObj = new Date(date)
-    const day = dateObj.getDate()
+    const dateObj = new Date(date);
+    const day = dateObj.getDate();
     const suffix =
       day % 10 === 1 && day !== 11
         ? 'st'
@@ -69,80 +69,80 @@ const InfoBox = ({
           ? 'nd'
           : day % 10 === 3 && day !== 13
             ? 'rd'
-            : 'th'
+            : 'th';
 
     return dateObj
       .toLocaleDateString('en-GB', {
         day: 'numeric',
         month: 'short',
-        year: 'numeric'
+        year: 'numeric',
       })
-      .replace(/\d+/, day + suffix)
-  }
+      .replace(/\d+/, day + suffix);
+  };
 
   useEffect(() => {
     const handleMouseMove = e => {
       if (isDragging) {
         setDragPosition({
           x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y
-        })
+          y: e.clientY - dragOffset.y,
+        });
       }
-    }
+    };
 
     const handleMouseUp = () => {
-      setIsDragging(false)
-    }
+      setIsDragging(false);
+    };
 
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, dragOffset])
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
 
   useEffect(() => {
     if (selectedItem) {
-      setLocalTitle(selectedItem.title)
-      setLocalCategory(selectedItem.description)
+      setLocalTitle(selectedItem.title);
+      setLocalCategory(selectedItem.description);
     }
-  }, [selectedItem])
+  }, [selectedItem]);
 
   // Reset selected timeline item when selected technology changes
   useEffect(() => {
     if (setSelectedTimelineItem) {
-      setSelectedTimelineItem(null)
+      setSelectedTimelineItem(null);
     }
-  }, [selectedItem, setSelectedTimelineItem])
+  }, [selectedItem, setSelectedTimelineItem]);
 
   const handleEditClick = () => {
-    setEditedTitle(selectedItem.title)
-    setEditedCategory(selectedItem.description)
-    setIsEditing(true)
-  }
+    setEditedTitle(selectedItem.title);
+    setEditedCategory(selectedItem.description);
+    setIsEditing(true);
+  };
 
   const handleCancelEdit = () => {
-    setIsEditing(false)
-    setEditedTitle('')
-    setEditedCategory('')
-    if (onEditCancel) onEditCancel()
-  }
+    setIsEditing(false);
+    setEditedTitle('');
+    setEditedCategory('');
+    if (onEditCancel) onEditCancel();
+  };
 
   const handleConfirmEdit = () => {
     if (onEditConfirm) {
-      onEditConfirm(editedTitle, editedCategory)
+      onEditConfirm(editedTitle, editedCategory);
     }
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   if (!selectedItem) {
     return (
       <div
-        className='info-box'
+        className="info-box"
         style={{
           position: 'fixed',
           left: dragPosition.x,
@@ -154,29 +154,29 @@ const InfoBox = ({
           minHeight: '100px',
           justifyContent: 'center',
           resize: 'none',
-          cursor: 'grab'
+          cursor: 'grab',
         }}
         onMouseDown={handleMouseDown}
       >
-        <button className='info-box-close' onClick={onClose}>
+        <button className="info-box-close" onClick={onClose}>
           ×
         </button>
-        <p className='info-box-placeholder'>
+        <p className="info-box-placeholder">
           Hover over a blip to see details or click to lock the selection
         </p>
       </div>
-    )
+    );
   }
 
-  const mostRecentRing = timeline[timeline.length - 1].ringId
+  const mostRecentRing = timeline[timeline.length - 1].ringId;
 
   const positionMessage = isHighlighted
     ? `Moved specifically for ${selectedDirectorate}.`
-    : 'Imported from Digital Services.'
+    : 'Imported from Digital Services.';
 
   return (
     <div
-      className='info-box'
+      className="info-box"
       style={{
         position: 'fixed',
         left: dragPosition.x,
@@ -188,77 +188,75 @@ const InfoBox = ({
         resize: 'both',
         overflow: 'auto',
         maxWidth: '90vw',
-        maxHeight: '80vh'
+        maxHeight: '80vh',
       }}
     >
-      <button className='info-box-close' onClick={onClose}>
+      <button className="info-box-close" onClick={onClose}>
         ×
       </button>
-      <div className='info-box-header'>
-        <div className='info-box-drag-handle' onMouseDown={handleMouseDown}>
+      <div className="info-box-header">
+        <div className="info-box-drag-handle" onMouseDown={handleMouseDown}>
           <IoGridOutline size={12} />
         </div>
         {selectedItem.number && (
-          <span className='info-box-number'>#{selectedItem.number}</span>
+          <span className="info-box-number">#{selectedItem.number}</span>
         )}
 
-        {isEditing
-          ? (
-            <>
-              <input
-                type='text'
-                value={editedTitle}
-                onChange={e => setEditedTitle(e.target.value)}
-                className='edit-title-input'
-              />
-              <select
-                value={editedCategory}
-                onChange={e => setEditedCategory(e.target.value)}
-                className='edit-category-select'
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={editedTitle}
+              onChange={e => setEditedTitle(e.target.value)}
+              className="edit-title-input"
+            />
+            <select
+              value={editedCategory}
+              onChange={e => setEditedCategory(e.target.value)}
+              className="edit-category-select"
+            >
+              <option value="Languages">Languages</option>
+              <option value="Frameworks">Frameworks</option>
+              <option value="Supporting Tools">Supporting Tools</option>
+              <option value="Infrastructure">Infrastructure</option>
+            </select>
+            <div className="edit-buttons">
+              <button
+                className="edit-confirm-button"
+                onClick={handleConfirmEdit}
+                tabIndex={0}
+                title="Save changes"
               >
-                <option value='Languages'>Languages</option>
-                <option value='Frameworks'>Frameworks</option>
-                <option value='Supporting Tools'>Supporting Tools</option>
-                <option value='Infrastructure'>Infrastructure</option>
-              </select>
-              <div className='edit-buttons'>
-                <button
-                  className='edit-confirm-button'
-                  onClick={handleConfirmEdit}
-                  tabIndex={0}
-                  title='Save changes'
-                >
-                  <FaCheck size={12} />
-                </button>
-                <button
-                  className='edit-cancel-button'
-                  onClick={handleCancelEdit}
-                  tabIndex={0}
-                  title='Cancel changes'
-                >
-                  <FaTimes size={12} />
-                </button>
-              </div>
-            </>
-            )
-          : (
-            <>
-              <h2>{localTitle}</h2>
-              {isAdmin && (
-                <button
-                  className='edit-button'
-                  onClick={handleEditClick}
-                  tabIndex={0}
-                  title='Edit technology'
-                >
-                  <FaEdit size={12} />
-                </button>
-              )}
-            </>
+                <FaCheck size={12} />
+              </button>
+              <button
+                className="edit-cancel-button"
+                onClick={handleCancelEdit}
+                tabIndex={0}
+                title="Cancel changes"
+              >
+                <FaTimes size={12} />
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2>{localTitle}</h2>
+            {isAdmin && (
+              <button
+                className="edit-button"
+                onClick={handleEditClick}
+                tabIndex={0}
+                title="Edit technology"
+              >
+                <FaEdit size={12} />
+              </button>
             )}
+          </>
+        )}
       </div>
-      <div className='info-box-header'>
-        <p className='info-box-ring'>{localCategory}</p>
+      <div className="info-box-header">
+        <p className="info-box-ring">{localCategory}</p>
         <span className={`info-box-ring ${mostRecentRing.toLowerCase()}`}>
           {mostRecentRing}
         </span>
@@ -268,27 +266,25 @@ const InfoBox = ({
         <small style={{ marginTop: '4px' }}>{positionMessage}</small>
       )}
 
-      <div className='timeline-header'>
-        <div className='timeline-header-title'>
+      <div className="timeline-header">
+        <div className="timeline-header-title">
           <h3>Timeline</h3>
           <button
-            className='timeline-sort-button'
+            className="timeline-sort-button"
             onClick={() => setTimelineAscending(!timelineAscending)}
             title={timelineAscending ? 'Newest first' : 'Oldest first'}
           >
-            {timelineAscending
-              ? (
-                <FaSortAmountDownAlt size={12} />
-                )
-              : (
-                <FaSortAmountUpAlt size={12} />
-                )}
+            {timelineAscending ? (
+              <FaSortAmountDownAlt size={12} />
+            ) : (
+              <FaSortAmountUpAlt size={12} />
+            )}
           </button>
         </div>
         <p>Click a box to show the description of the event</p>
       </div>
 
-      <div className='timeline-container' tabIndex={0}>
+      <div className="timeline-container" tabIndex={0}>
         {[...timeline]
           .reverse()
           .slice()
@@ -296,16 +292,17 @@ const InfoBox = ({
           .map((timelineItem, index, array) => (
             <div
               key={timelineItem.date + timelineItem.ringId + index}
-              className='timeline-item'
+              className="timeline-item"
             >
               <div
                 className={`timeline-node ${timelineItem.ringId.toLowerCase()} ${timelineItem === selectedTimelineItem ? 'active' : ''}`}
                 onClick={() =>
                   setSelectedTimelineItem(
                     timelineItem === selectedTimelineItem ? null : timelineItem
-                  )}
+                  )
+                }
               >
-                <span className='timeline-movement'>
+                <span className="timeline-movement">
                   {timelineItem.moved > 0 && <IoArrowUpOutline size={10} />}
                   {timelineItem.moved === 0 && <IoRemoveOutline size={10} />}
                   {timelineItem.moved < 0 && <IoArrowDownOutline size={10} />}
@@ -314,22 +311,22 @@ const InfoBox = ({
                 {formatTimelineDate(timelineItem.date)}
               </div>
               {index < array.length - 1 && (
-                <div className='timeline-connector' />
+                <div className="timeline-connector" />
               )}
             </div>
           ))}
       </div>
       {selectedTimelineItem && (
-        <div className='info-box-timeline-item'>
-          <span className='info-box-timeline-item-title'>
+        <div className="info-box-timeline-item">
+          <span className="info-box-timeline-item-title">
             Review {' - '}
             {formatTimelineDate(selectedTimelineItem.date)}
           </span>
-          <div className='timeline-description'>
+          <div className="timeline-description">
             <MarkdownText text={selectedTimelineItem.description} />
           </div>
           {selectedTimelineItem.author && (
-            <span className='timeline-author'>
+            <span className="timeline-author">
               {' '}
               by {selectedTimelineItem.author}
             </span>
@@ -338,8 +335,8 @@ const InfoBox = ({
       )}
 
       {projectsForTech.length > 0 && (
-        <div className='info-box-projects'>
-          <div className='info-box-projects-header'>
+        <div className="info-box-projects">
+          <div className="info-box-projects-header">
             <h4>
               <strong>
                 {projectsForTech.length}{' '}
@@ -348,20 +345,18 @@ const InfoBox = ({
               using this technology:
             </h4>
             <button
-              className='show-hide-button'
+              className="show-hide-button"
               onClick={() => setShowProjects(!showProjects)}
             >
-              {showProjects
-                ? (
-                  <>
-                    Hide <IoChevronUpOutline />
-                  </>
-                  )
-                : (
-                  <>
-                    Show <IoChevronDownOutline />
-                  </>
-                  )}
+              {showProjects ? (
+                <>
+                  Hide <IoChevronUpOutline />
+                </>
+              ) : (
+                <>
+                  Show <IoChevronDownOutline />
+                </>
+              )}
             </button>
           </div>
           {showProjects && (
@@ -372,7 +367,7 @@ const InfoBox = ({
                   <li
                     key={index}
                     onClick={() => handleProjectClick(project)}
-                    className='info-box-project-item clickable-tech'
+                    className="info-box-project-item clickable-tech"
                   >
                     {project.Project || project.Project_Short}
                   </li>
@@ -384,13 +379,13 @@ const InfoBox = ({
       )}
 
       {selectedItem.links && selectedItem.links.length > 0 && (
-        <ul className='info-box-links'>
+        <ul className="info-box-links">
           {selectedItem.links.map((link, index) => (
             <a
               key={index}
               href={link}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {link}
             </a>
@@ -398,7 +393,7 @@ const InfoBox = ({
         </ul>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default InfoBox
+export default InfoBox;

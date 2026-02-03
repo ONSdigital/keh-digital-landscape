@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import MenuDropdown from '../MenuDropdown/MenuDropdown'
-import HelpModal from './HelpModal'
-import ThemeToggle from '../ThemeToggle/ThemeToggle'
-import '../../styles/components/Header.css'
-import Logo from '../../assets/logo.png'
-import { IoClose, IoSearch } from 'react-icons/io5'
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import MenuDropdown from '../MenuDropdown/MenuDropdown';
+import HelpModal from './HelpModal';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import '../../styles/components/Header.css';
+import Logo from '../../assets/logo.png';
+import { IoClose, IoSearch } from 'react-icons/io5';
 
 /**
  * Header component for the Tech Radar application.
@@ -24,65 +24,65 @@ import { IoClose, IoSearch } from 'react-icons/io5'
  * @param {Function} props.onStatsTechClick - Function to call when a technology is clicked.
  * @param {boolean} props.hideSearch - Whether to hide the search bar.
  */
-function Header ({
+function Header({
   searchTerm = '',
   onSearchChange = () => {},
   searchResults = [],
   onSearchResultClick = () => {},
   onOpenProjects = () => {},
   onStatsTechClick = () => {},
-  hideSearch = false
+  hideSearch = false,
 }) {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [showHelpModal, setShowHelpModal] = useState(false)
-  const searchInputRef = useRef(null)
-  const [shortcutKey, setShortcutKey] = useState('⌘')
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const searchInputRef = useRef(null);
+  const [shortcutKey, setShortcutKey] = useState('⌘');
 
   useEffect(() => {
     // More reliable OS detection
-    const userAgent = navigator.userAgent.toLowerCase()
-    const isMac = /macintosh|macintel|macppc|mac68k|darwin/i.test(userAgent)
-    setShortcutKey(isMac ? '⌘' : 'CTRL')
-  }, [])
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMac = /macintosh|macintel|macppc|mac68k|darwin/i.test(userAgent);
+    setShortcutKey(isMac ? '⌘' : 'CTRL');
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = e => {
       // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        searchInputRef.current?.focus()
+        e.preventDefault();
+        searchInputRef.current?.focus();
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   /**
    * Clears the search term.
    */
   const clearSearch = () => {
-    onSearchChange('')
-  }
+    onSearchChange('');
+  };
 
   const handleSetShowHelpModal = () => {
-    setShowHelpModal(!showHelpModal)
-  }
+    setShowHelpModal(!showHelpModal);
+  };
 
   // Get search placeholder based on current route
   const getSearchPlaceholder = () => {
     switch (location.pathname) {
       case '/projects':
-        return 'Search projects...'
+        return 'Search projects...';
       case '/statistics':
-        return 'Search languages...'
+        return 'Search languages...';
       case '/copilot/team':
-        return 'Search teams...'
+        return 'Search teams...';
       default:
-        return 'Search technologies...'
+        return 'Search technologies...';
     }
-  }
+  };
 
   // Only show search results dropdown on radar page
   const shouldShowSearchResults = () => {
@@ -90,16 +90,16 @@ function Header ({
       location.pathname === '/radar' &&
       searchResults &&
       searchResults.length > 0
-    )
-  }
+    );
+  };
 
   return (
-    <header className='radar-header'>
-      <div className='header-left'>
+    <header className="radar-header">
+      <div className="header-left">
         <img
           src={Logo}
-          alt='Logo'
-          className='logo'
+          alt="Logo"
+          className="logo"
           onClick={() => navigate('/')}
           style={{ cursor: 'pointer' }}
         />
@@ -107,38 +107,36 @@ function Header ({
           Digital Landscape
         </h1>
       </div>
-      <div className='header-right'>
+      <div className="header-right">
         {!hideSearch && (
-          <div className='search-container'>
-            <IoSearch className='search-icon' />
+          <div className="search-container">
+            <IoSearch className="search-icon" />
             <input
               ref={searchInputRef}
-              type='text'
+              type="text"
               placeholder={getSearchPlaceholder()}
               value={searchTerm}
               onChange={e => onSearchChange(e.target.value)}
-              className='search-input'
+              className="search-input"
             />
-            {searchTerm
-              ? (
-                <button className='search-clear' onClick={clearSearch}>
-                  <IoClose />
-                </button>
-                )
-              : (
-                <div className='search-shortcut'>
-                  <span>{shortcutKey} + K</span>
-                </div>
-                )}
+            {searchTerm ? (
+              <button className="search-clear" onClick={clearSearch}>
+                <IoClose />
+              </button>
+            ) : (
+              <div className="search-shortcut">
+                <span>{shortcutKey} + K</span>
+              </div>
+            )}
             {shouldShowSearchResults() && (
-              <div className='search-results'>
+              <div className="search-results">
                 {searchResults.map(result => (
                   <div
                     key={result.id || result.Project || result.title}
-                    className='search-result-item'
+                    className="search-result-item"
                     onClick={() => onSearchResultClick(result)}
                   >
-                    <span className='search-result-title'>{result.title}</span>
+                    <span className="search-result-title">{result.title}</span>
                     {result.timeline && (
                       <span
                         className={`search-result-ring ${result.timeline[result.timeline.length - 1].ringId.toLowerCase()}`}
@@ -152,13 +150,13 @@ function Header ({
             )}
           </div>
         )}
-        <div className='mobile-menu'>
+        <div className="mobile-menu">
           <MenuDropdown
             onOpenProjects={onOpenProjects}
             onStatsTechClick={onStatsTechClick}
             setShowHelpModal={handleSetShowHelpModal}
           />
-          <ThemeToggle variant='small' />
+          <ThemeToggle variant="small" />
         </div>
         <HelpModal
           show={showHelpModal}
@@ -166,7 +164,7 @@ function Header ({
         />
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
