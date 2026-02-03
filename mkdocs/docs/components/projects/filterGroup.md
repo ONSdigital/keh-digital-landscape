@@ -18,7 +18,7 @@ The FilterGroup component provides a reusable, collapsible filter section with c
 The FilterGroup component accepts the following props:
 
 | Prop            | Type     | Default  | Description                                         |
-|-----------------|----------|----------|-----------------------------------------------------|
+| --------------- | -------- | -------- | --------------------------------------------------- |
 | `title`         | string   | Required | The title displayed in the filter group header      |
 | `sectionKey`    | string   | Required | A unique identifier for this filter section         |
 | `isExpanded`    | boolean  | Required | Controls whether the filter options are visible     |

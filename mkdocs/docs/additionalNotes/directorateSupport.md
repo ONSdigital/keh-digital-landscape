@@ -41,7 +41,7 @@ In order to get this file from S3, the frontend application makes a request to t
 ### Key Attributes
 
 | Attribute | Description                                                                                                                                                                                                                                 |
-|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`      | A unique identifier for the directorate. This is used to reference the directorate in each technology's timeline entries. Using an id over its name is required to avoid having to change existing data should the directorate name change. |
 | `name`    | The full name of the directorate. This is displayed in the UI when selecting a directorate. This will typically be in the format "Directorate Name (Abbreviation)".                                                                         |
 | `colour`  | The colour associated with the directorate. This is used for visual differentiation in the UI.                                                                                                                                              |

@@ -16,7 +16,7 @@ The ProjectModal component provides a detailed view of project information in a 
 The ProjectModal component accepts the following props:
 
 | Prop                   | Type     | Default  | Description                                                 |
-|------------------------|----------|----------|-------------------------------------------------------------|
+| ---------------------- | -------- | -------- | ----------------------------------------------------------- |
 | `isOpen`               | boolean  | Required | Controls the visibility of the modal                        |
 | `onClose`              | function | Required | Handler function called when the modal is closed            |
 | `project`              | object   | Required | The project object containing all project details           |

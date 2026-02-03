@@ -18,7 +18,7 @@ The Statistics component provides a visualisation of repository and programming 
 The Statistics component accepts the following props:
 
 | Prop               | Type     | Default  | Description                                           |
-|--------------------|----------|----------|-------------------------------------------------------|
+| ------------------ | -------- | -------- | ----------------------------------------------------- |
 | `data`             | object   | Required | Object containing repository and language statistics  |
 | `onTechClick`      | function | Required | Handler function called when a technology is clicked  |
 | `onDateChange`     | function | Required | Handler function called when the date filter changes  |
