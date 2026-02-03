@@ -43,7 +43,15 @@ FILEIO_REPORTER: false
 # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 # DISABLE_ERRORS: true
 
+# Ignore all file within Git Ignore for linting and security as these will not be pushed to GitHub
+IGNORE_GITIGNORED_FILES: true
+
 # Use yml file to allow the use of comments. Megalinter's default is .markdown-lint.json
 MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdown-lint.yml
 
 YAML_V8R_FILTER_REGEX_EXCLUDE: 'dependabot.yml' # Dependabot yaml in SchemaStore is currently not up to date. Dependabot is validated on push by GitHub by default.
+
+PRE_COMMANDS: 
+  - command: pip install -r req.txt
+    cwd: testing/backend/
+    run_before_linters: true
