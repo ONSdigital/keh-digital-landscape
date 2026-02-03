@@ -58,3 +58,9 @@ PRE_COMMANDS:
   - command: pip install -r req.txt
     cwd: testing/backend/
     run_before_linters: true
+
+PYTHON_BANDIT_ARGUMENTS:
+  - -r
+  - testing/backend/src
+  - -s
+  - B101
