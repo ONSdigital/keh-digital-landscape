@@ -19,7 +19,6 @@ FORMATTERS_DISABLE_ERRORS: false
 
 DISABLE:
   - COPYPASTE
-  - PYTHON
   - EDITORCONFIG
   - SPELL
 
@@ -48,3 +47,12 @@ FILEIO_REPORTER: false
 MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdown-lint.yml
 
 YAML_V8R_FILTER_REGEX_EXCLUDE: 'dependabot.yml' # Dependabot yaml in SchemaStore is currently not up to date. Dependabot is validated on push by GitHub by default.
+
+# Pass custom arguments to KICS via MegaLinter to exclude specific queries
+# - Generic Token (Passwords And Secrets): a88baa34-e2ad-44ea-ad6f-8cac87bc7c71
+# - Security Group Rule Without Description: 68eb4bf3-f9bf-463d-b5cf-e029bb446d2e
+# - Security Group Not Used: 4849211b-ac39-479e-ae78-5694d506cb24
+# - S3 Bucket Without Enabled MFA Delete: c5b31ab9-0f26-4a49-b8aa-4cc064392f4d
+# - Chown Flag Exists (Dockerfile): aa93e17f-b6db-4162-9334-c70334e7ac28
+# - Container Traffic Not Bound To Host Interface (Docker Compose): 451d79dc-0588-476a-ad03-3c7f0320abb3
+INFRASTRUCTURE_KICS_ARGUMENTS: "--exclude-queries a88baa34-e2ad-44ea-ad6f-8cac87bc7c71,68eb4bf3-f9bf-463d-b5cf-e029bb446d2e,4849211b-ac39-479e-ae78-5694d506cb24,c5b31ab9-0f26-4a49-b8aa-4cc064392f4d,aa93e17f-b6db-4162-9334-c70334e7ac28,451d79dc-0588-476a-ad03-3c7f0320abb3"
