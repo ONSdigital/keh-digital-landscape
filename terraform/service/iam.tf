@@ -174,3 +174,13 @@ resource "aws_iam_user_group_membership" "user_group_attach" {
     aws_iam_group.group.name
   ]
 }
+
+# IAM Key Rotation Module
+module "iam_key_rotation" {
+  source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
+
+  iam_username          = aws_iam_user.user.name
+  access_key_secret_arn = aws_secretsmanager_secret.access_key.arn
+  secret_key_secret_arn = aws_secretsmanager_secret.secret_key.arn
+  rotation_in_days      = 90
+}
