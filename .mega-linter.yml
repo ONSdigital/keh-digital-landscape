@@ -38,7 +38,8 @@ DISABLE_LINTERS:
   - ACTION_ACTIONLINT
 
   # Disable since Ruff is used more widely in our code
-  - FLAKE8
+  - PYTHON_FLAKE8
+  - PYTHON_PYRIGHT
 
 SHOW_ELAPSED_TIME: true
 
@@ -55,12 +56,10 @@ MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdown-lint.yml
 YAML_V8R_FILTER_REGEX_EXCLUDE: 'dependabot.yml' # Dependabot yaml in SchemaStore is currently not up to date. Dependabot is validated on push by GitHub by default.
 
 PRE_COMMANDS: 
-  - command: pip install -r req.txt
-    cwd: testing/backend/
+  - command: python3 -m pip install -r testing/backend/req.txt
+    cwd: .
     run_before_linters: true
 
 PYTHON_BANDIT_ARGUMENTS:
-  - -r
-  - testing/backend/src
   - -s
   - B101
