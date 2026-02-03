@@ -37,6 +37,9 @@ DISABLE_LINTERS:
   # Disable due to poor configuration options
   - ACTION_ACTIONLINT
 
+  # Disable since Ruff is used more widely in our code
+  - FLAKE8
+
 SHOW_ELAPSED_TIME: true
 
 FILEIO_REPORTER: false
