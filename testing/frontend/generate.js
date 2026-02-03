@@ -4,14 +4,14 @@
  * @param {Object} results - The axe results object
  * @returns {string} - HTML report
  */
-function generateHtmlReport (route, results) {
+function generateHtmlReport(route, results) {
   // compute counts by impact severity
   const severityCounts = results.violations.reduce((acc, violation) => {
     const impact =
-      violation.impact || violation.nodes[0]?.any[0]?.impact || 'unknown'
-    acc[impact] = (acc[impact] || 0) + 1
-    return acc
-  }, {})
+      violation.impact || violation.nodes[0]?.any[0]?.impact || 'unknown';
+    acc[impact] = (acc[impact] || 0) + 1;
+    return acc;
+  }, {});
   const violationsList = results.violations
     .map(violation => {
       const nodesList = violation.nodes
@@ -23,9 +23,9 @@ function generateHtmlReport (route, results) {
             <h4>Failure Summary:</h4>
             <pre>${escapeHtml(node.failureSummary)}</pre>
           </div>
-        `
+        `;
         })
-        .join('')
+        .join('');
 
       return `
         <div class="violation">
@@ -36,9 +36,9 @@ function generateHtmlReport (route, results) {
           <h4>Affected Elements:</h4>
           ${nodesList}
         </div>
-      `
+      `;
     })
-    .join('')
+    .join('');
 
   return `
       <!DOCTYPE html>
@@ -121,7 +121,7 @@ function generateHtmlReport (route, results) {
         }
       </body>
       </html>
-    `
+    `;
 }
 
 /**
@@ -129,31 +129,31 @@ function generateHtmlReport (route, results) {
  * @param {string} html - String to escape
  * @returns {string} - Escaped string
  */
-function escapeHtml (html) {
+function escapeHtml(html) {
   return html
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+    .replace(/'/g, '&#039;');
 }
 
 // Add a combined report generator
-function generateCombinedHtmlReport (routeResults, tags) {
-  const now = new Date().toLocaleString()
+function generateCombinedHtmlReport(routeResults, tags) {
+  const now = new Date().toLocaleString();
   const reportSections = routeResults
     .map(({ route, results }) => {
-      const html = generateHtmlReport(route, results)
-      const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/)
-      const bodyContent = match ? match[1] : ''
+      const html = generateHtmlReport(route, results);
+      const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/);
+      const bodyContent = match ? match[1] : '';
       return `
         <section class="page-report">
           ${bodyContent}
         </section>
         <hr />
-      `
+      `;
     })
-    .join('\n')
+    .join('\n');
 
   return `
       <!DOCTYPE html>
@@ -219,18 +219,18 @@ function generateCombinedHtmlReport (routeResults, tags) {
         ${reportSections}
       </body>
       </html>
-    `
+    `;
 }
 
 // Add markdown report generators
-function generateMarkdownReport (route, results) {
+function generateMarkdownReport(route, results) {
   // compute counts by impact severity
   const severityCounts = results.violations.reduce((acc, violation) => {
     const impact =
-      violation.impact || violation.nodes[0]?.any[0]?.impact || 'unknown'
-    acc[impact] = (acc[impact] || 0) + 1
-    return acc
-  }, {})
+      violation.impact || violation.nodes[0]?.any[0]?.impact || 'unknown';
+    acc[impact] = (acc[impact] || 0) + 1;
+    return acc;
+  }, {});
 
   const violationsList = results.violations
     .map(violation => {
@@ -246,9 +246,9 @@ ${node.html}
 \`\`\`
 ${node.failureSummary}
 \`\`\`
-`
+`;
         })
-        .join('\n')
+        .join('\n');
 
       return `
 ### ${violation.id}: ${violation.help}
@@ -258,9 +258,9 @@ ${node.failureSummary}
 
 #### Affected Elements:
 ${nodesList}
-`
+`;
     })
-    .join('\n---\n')
+    .join('\n---\n');
 
   return `
 # Accessibility Report
@@ -280,25 +280,25 @@ Report generated on ${new Date().toLocaleString()}
 
 ## Violations
 ${results.violations.length === 0 ? '**No violations found!**' : violationsList}
-`
+`;
 }
 
-function generateCombinedMarkdownReport (routeResults, tags) {
-  const now = new Date().toLocaleString()
+function generateCombinedMarkdownReport(routeResults, tags) {
+  const now = new Date().toLocaleString();
   const reportSections = routeResults
     .map(({ route, results }) => {
-      const markdown = generateMarkdownReport(route, results)
+      const markdown = generateMarkdownReport(route, results);
       // Remove the first line (report title) to avoid duplication
-      const content = markdown.split('\n').slice(2).join('\n')
-      return content
+      const content = markdown.split('\n').slice(2).join('\n');
+      return content;
     })
-    .join('\n\n---\n\n')
+    .join('\n\n---\n\n');
 
   return `# Combined Accessibility Report
 Report generated on ${now}
 ${tags && tags.length ? `\nTested with tags: ${tags.join(', ')}` : '\nTested with all tags'}
 
-${reportSections}`
+${reportSections}`;
 }
 
 // Update exports to include markdown generators
@@ -306,5 +306,5 @@ module.exports = {
   generateHtmlReport,
   generateCombinedHtmlReport,
   generateMarkdownReport,
-  generateCombinedMarkdownReport
-}
+  generateCombinedMarkdownReport,
+};

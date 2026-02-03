@@ -11,23 +11,23 @@ const mockRepositoryData = {
         languages: [
           { name: 'Fortran', size: 70000, percentage: 70 },
           { name: 'Assembly', size: 20000, percentage: 20 },
-          { name: 'PHP', size: 10000, percentage: 10 }
-        ]
-      }
-    }
+          { name: 'PHP', size: 10000, percentage: 10 },
+        ],
+      },
+    },
   ],
   stats: {
     total_repos: 1,
     total_private_repos: 0,
     total_public_repos: 1,
-    total_internal_repos: 0
+    total_internal_repos: 0,
   },
   language_statistics: {},
   metadata: {
     last_updated: '2025-11-26T00:00:00Z',
     requested_repos: ['sample-project-4'],
-    found_repos: ['sample-project-4']
-  }
-}
+    found_repos: ['sample-project-4'],
+  },
+};
 
-export { mockRepositoryData }
+export { mockRepositoryData };

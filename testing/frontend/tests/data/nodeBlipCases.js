@@ -12,9 +12,9 @@ export const nodeBlipCases = [
       'TypeScript',
       'AWS Project',
       'TypeScript with all lowercase',
-      'Javascript with all lowercase'
+      'Javascript with all lowercase',
     ],
-    projectsCountText: '7 projects'
+    projectsCountText: '7 projects',
   },
   {
     name: 'Java',
@@ -25,9 +25,9 @@ export const nodeBlipCases = [
       'Another Project - GCP and AWS services',
       'GCP Project',
       'AWS with GCP services',
-      'Java Project'
+      'Java Project',
     ],
-    projectsCountText: '4 project'
+    projectsCountText: '4 project',
   },
   {
     name: 'AWS',
@@ -37,9 +37,9 @@ export const nodeBlipCases = [
     projects: [
       'AWS Project',
       'Another Project - GCP and AWS services',
-      'AWS with GCP services'
+      'AWS with GCP services',
     ],
-    projectsCountText: '3 projects'
+    projectsCountText: '3 projects',
   },
   {
     name: 'GCP',
@@ -49,8 +49,8 @@ export const nodeBlipCases = [
     projects: [
       'GCP Project',
       'Another Project - GCP and AWS services',
-      'AWS with GCP services'
+      'AWS with GCP services',
     ],
-    projectsCountText: '3 projects'
-  }
-]
+    projectsCountText: '3 projects',
+  },
+];

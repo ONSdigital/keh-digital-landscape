@@ -102,7 +102,7 @@ Whilst this is automated testing, it can be easier to install the free axe DevTo
 Download the extension from [here](https://chromewebstore.google.com/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd).
 
 | axe DevTools Screenshot                               |
-|-------------------------------------------------------|
+| ----------------------------------------------------- |
 | ![axe devtools extension](./axe-tools-screenshot.png) |
 
 ## UI Tests
