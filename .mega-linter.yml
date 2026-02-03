@@ -47,6 +47,3 @@ FILEIO_REPORTER: false
 MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdown-lint.yml
 
 YAML_V8R_FILTER_REGEX_EXCLUDE: 'dependabot.yml' # Dependabot yaml in SchemaStore is currently not up to date. Dependabot is validated on push by GitHub by default.
-
-PYTHON_PYRIGHT_PRE_COMMANDS:
-  - pip install -r testing/backend/req.txt
