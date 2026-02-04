@@ -52,7 +52,7 @@ const interceptAPICall = async ({ page }) => {
   await page.reload();
 
   // Go to Teams page
-  await page.click('div#tab-team');
+  await page.getByText('Team Usage').first().click();
 };
 
 // Test suite for searching teams

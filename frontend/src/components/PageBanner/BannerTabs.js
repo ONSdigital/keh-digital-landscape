@@ -5,7 +5,6 @@ function BannerTabs({ tabs, activeTab, onTabChange }) {
     <div className="banner-tabs">
       {tabs.map(tab => (
         <div
-          id={`tab-${tab.id}`}
           key={tab.id}
           className={`banner-tab ${activeTab === tab.id ? 'active' : ''}`}
           onClick={() => onTabChange(tab.id)}
