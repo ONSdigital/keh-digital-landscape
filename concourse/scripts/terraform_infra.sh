@@ -60,7 +60,7 @@ terraform plan \
 -var "domain=${domain}" \
 -var "service_subdomain=${service_subdomain}" \
 -var "domain_extension=${domain_extension}" \
--var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/"]' \"
+-var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/"]'\
 -var "azuread_provider_name=${azuread_provider_name}" \
 -var "enable_azuread_saml=${enable_azuread_saml}" \
 -var "azure_ad_metadata_url=${azure_ad_metadata_url}" 
