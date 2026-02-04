@@ -52,7 +52,7 @@ terraform plan \
 -var "aws_secret_access_key=$aws_secret_access_key" \
 -var "domain=$domain" \
 -var "service_subdomain=${service_subdomain}" \
--var 'sign-out_url=["https://${service_subdomain}.${domain}.${domain_extension}/logout"]'
+-var 'sign-out_urls=["https://${service_subdomain}.${domain}.${domain_extension}/logout"]'
 
 echo "Set the Digital Landscape service"
 
