@@ -25,4 +25,5 @@ module "cognito" {
   sign_out_urls         = var.sign_out_urls
   enable_azuread_saml   = var.enable_azuread_saml
   azure_ad_metadata_url = var.azure_ad_metadata_url
+  azuread_provider_name = var.azuread_provider_name
 }
