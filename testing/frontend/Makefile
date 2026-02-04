@@ -8,7 +8,7 @@ test-all:
 	node test.js
 
 test-ui:
-	npx playwright test ./tests/search.test/js
+	npx playwright test ./tests/search.test.js
 
 clean:
 	rm -rf reports
