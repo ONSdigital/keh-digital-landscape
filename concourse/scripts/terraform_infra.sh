@@ -53,7 +53,7 @@ echo "Set the Cognito group"
 cd resource-repo/terraform/authentication
 terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
 
-terraform plan \
+terraform apply \
 -var "aws_account_id=${aws_account_id}" \
 -var "aws_access_key_id=${aws_access_key_id}" \
 -var "aws_secret_access_key=${aws_secret_access_key}" \
