@@ -47,17 +47,18 @@ cd resource-repo/terraform/authentication
 terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
 
 terraform plan \
--var "aws_account_id=$aws_account_id" \
--var "aws_access_key_id=$aws_access_key_id" \
--var "aws_secret_access_key=$aws_secret_access_key" \
--var "domain=$domain" \
+-var "aws_account_id=${aws_account_id}" \
+-var "aws_access_key_id=${aws_access_key_id}" \
+-var "aws_secret_access_key=${aws_secret_access_key}" \
+-var "domain=${domain}" \
 -var "service_subdomain=${service_subdomain}" \
 -var "domain_extension=${domain_extension}" \
--var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/logout"]'\
+-var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/logout"]'
 
 echo "Set the Digital Landscape service"
+cd ../service
 
-cd resource-repo/terraform/service
+# cd resource-repo/terraform/service
 
 terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
 
