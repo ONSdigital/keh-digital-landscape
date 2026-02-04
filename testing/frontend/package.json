@@ -9,9 +9,9 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@axe-core/playwright": "^4.11.1",
+    "@axe-core/playwright": "^4.8.5",
     "dotenv": "^17.2.3",
-    "playwright": "^1.58.1",
+    "playwright": "^1.55.1",
     "prettier": "^3.8.1"
   }
 }

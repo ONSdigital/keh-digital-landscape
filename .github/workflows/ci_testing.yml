@@ -49,10 +49,10 @@ jobs:
           node-version: '24'
       - name: Install dependencies
         run: make install-dev
+      - name: Export CI variable to enable running in CI mode
+        run: echo "CI=true" >> $GITHUB_ENV
       - name: Start app in background
         run: make dev-ci &
-      - name: Export CI variable to enable Playwright config tweaks
-        run: echo "CI=true" >> $GITHUB_ENV
       - name: Run Playwright tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
