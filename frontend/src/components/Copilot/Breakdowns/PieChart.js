@@ -77,8 +77,8 @@ const PieChart = ({ engagedUsers, title = 'User Engagement' }) => {
               />
             ))}
           </Pie>
-          <Tooltip formatter={(value, name) => [`${value}%`, name]} />
           <Legend iconType="circle" iconSize={10} />
+          <Tooltip formatter={(value, name) => [`${value}%`, name]} />
         </RechartsPieChart>
       </ResponsiveContainer>
     </div>
