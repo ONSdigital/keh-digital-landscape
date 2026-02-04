@@ -42,6 +42,20 @@ fi
 
 echo ${env}
 
+echo "Set the Cognito group"
+cd resource-repo/terraform/authentication
+terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
+
+terraform plan \
+-var "aws_account_id=$aws_account_id" \
+-var "aws_access_key_id=$aws_access_key_id" \
+-var "aws_secret_access_key=$aws_secret_access_key" \
+-var "domain=$domain" \
+-var "service_subdomain=${service_subdomain}" \
+-var 'sign-out_url=["https://${service_subdomain}.${domain}.${domain_extension}/logout"]'
+
+echo "Set the Digital Landscape service"
+
 cd resource-repo/terraform/service
 
 terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
