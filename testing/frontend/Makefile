@@ -8,7 +8,8 @@ test-all:
 	node test.js
 
 test-ui:
-	npx playwright test
+	chmod +x run-playwright.sh
+	sh run-playwright.sh
 
 clean:
 	rm -rf reports
