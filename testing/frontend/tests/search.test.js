@@ -8,6 +8,12 @@ const teamsDummyData = {
     description: 'UI devs',
     url: 'https://github.com/orgs/our-org/teams/frontend',
   },
+  team2: {
+    slug: 'team-2',
+    name: 'Team 2',
+    description: 'Description for Team 2',
+    url: 'https://github.com/orgs/our-org/teams/team-2',
+  }
 };
 
 // Function to intercept and mock the API call
@@ -24,6 +30,12 @@ const interceptAPICall = async ({ page }) => {
             name: teamsDummyData.frontend.name,
             description: teamsDummyData.frontend.description,
             url: teamsDummyData.frontend.url,
+          },
+          {
+            slug: teamsDummyData.team2.slug,
+            name: teamsDummyData.team2.name,
+            description: teamsDummyData.team2.description,
+            url: teamsDummyData.team2.url,
           },
         ],
         isAdmin: true,
@@ -51,6 +63,8 @@ const interceptAPICall = async ({ page }) => {
   ]);
   await page.reload();
 
+  await page.pause();
+
   // Go to Teams page
   await page.getByText('Team Usage').first().click();
 };
@@ -62,7 +76,8 @@ test.describe('Teams search functionality with existing and non-existing teams',
     await interceptAPICall({ page });
 
     // Search for a team
-    await page.fill('input[placeholder="Search teams..."]', 'Frontend');
+    const searchInput = page.getByRole('main').getByPlaceholder('Search teams...');
+    await searchInput.fill('Frontend');
 
     // Assert the page title is correct
     await expect(page).toHaveTitle(/Digital Landscape - ONS/);
@@ -91,7 +106,8 @@ test.describe('Teams search functionality with existing and non-existing teams',
     await interceptAPICall({ page });
 
     // Search for a team
-    await page.fill('input[placeholder="Search teams..."]', 'Backend');
+    const searchInput = page.getByRole('main').getByPlaceholder('Search teams...');
+    await searchInput.fill('Backend');
 
     // Assert the page title is correct
     await expect(page).toHaveTitle(/Digital Landscape - ONS/);
