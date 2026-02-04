@@ -31,9 +31,11 @@ copilot_bucket_name=$(echo "$secrets" | jq -r .copilot_bucket_name)
 support_mail=$(echo "$secrets" | jq -r .support_mail)
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
 
+# Cognito variables for AzureAD SAML
 domain_extension=$(echo "$secrets" | jq -r .domain_extension)
 enable_azuread_saml=$(echo "$secrets" | jq -r .enable_azuread_saml)
 azure_ad_metadata_url=$(echo "$secrets" | jq -r .azure_ad_metadata_url)
+azuread_provider_name=$(echo "$secrets" | jq -r .azuread_provider_name)
 
 
 export AWS_ACCESS_KEY_ID=$aws_access_key_id
@@ -58,7 +60,8 @@ terraform plan \
 -var "domain=${domain}" \
 -var "service_subdomain=${service_subdomain}" \
 -var "domain_extension=${domain_extension}" \
--var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/logout"]' \
+-var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/"]' \"
+-var "azuread_provider_name=${azuread_provider_name}" \
 -var "enable_azuread_saml=${enable_azuread_saml}" \
 -var "azure_ad_metadata_url=${azure_ad_metadata_url}" 
 
