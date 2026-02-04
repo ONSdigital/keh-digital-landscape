@@ -91,6 +91,24 @@ variable "sign_out_urls" {
   default     = []
 }
 
+variable "enable_azuread_saml" {
+  type    = bool
+  default = false
+  description = "Indicating whether to enable Azure AD SAML authentication (defaults to false)"
+}
+
+variable "azuread_provider_name" {
+  type    = string
+  default = "ONS"
+  description = "Identify the Azure AD provider in Cognito (defaults to 'ONS')"
+}
+
+variable "azure_ad_metadata_url" {
+  type    = string
+  default = null
+  description = "Azure AD Federation Metadata URL (preferred)."
+}
+
 locals {
   url         = "${var.domain}.${var.domain_extension}"
   service_url = "${var.service_subdomain}.${local.url}"

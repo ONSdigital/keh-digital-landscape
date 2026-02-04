@@ -11,16 +11,18 @@ terraform {
 }
 
 module "cognito" {
-  source = "git::https://github.com/ONS-Innovation/keh-cognito-auth-tf-module.git?ref=v1.3"
+  source = "git::https://github.com/ONS-Innovation/keh-cognito-auth-tf-module.git?ref=KEH-1870_azure_sso"
 
-  domain             = var.domain
-  service_subdomain  = var.service_subdomain
-  domain_extension   = var.domain_extension
-  region             = var.region
-  project_tag        = var.project_tag
-  team_owner_tag     = var.team_owner_tag
-  business_owner_tag = var.business_owner_tag
-  service_title      = var.service_title
-  user_groups        = var.user_groups
-  sign_out_urls      = var.sign_out_urls
+  domain                = var.domain
+  service_subdomain     = var.service_subdomain
+  domain_extension      = var.domain_extension
+  region                = var.region
+  project_tag           = var.project_tag
+  team_owner_tag        = var.team_owner_tag
+  business_owner_tag    = var.business_owner_tag
+  service_title         = var.service_title
+  user_groups           = var.user_groups
+  sign_out_urls         = var.sign_out_urls
+  enable_azuread_saml   = var.enable_azuread_saml
+  azure_ad_metadata_url = var.azure_ad_metadata_url
 }
