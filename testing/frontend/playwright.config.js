@@ -7,5 +7,5 @@ export default defineConfig({
   },
   retries: process.env.CI ? 1 : 0, // Retry failed tests once on CI to account for flakiness
 
-  workers: process.env.CI ? 2 : undefined, // Use 2 workers on CI
+  workers: process.env.CI ? 1 : undefined, // Limit to  on CI for stability
 });
