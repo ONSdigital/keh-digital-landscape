@@ -59,6 +59,9 @@ PYTHON_PYLINT_PRE_COMMANDS:
   - command: python3 -m pip install -r testing/backend/req.txt
     run_before_linters: true
 
+PYTHON_PYLINT_ARGUMENTS:
+  - --disable=import-error
+
 PYTHON_BANDIT_ARGUMENTS:
   - -s
   - B101
