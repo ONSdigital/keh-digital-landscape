@@ -49,7 +49,7 @@ fi
 
 echo ${env}
 
-echo "Set the Cognito group"
+echo "Setting the Auth service"
 cd resource-repo/terraform/authentication
 terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
 
