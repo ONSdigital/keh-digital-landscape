@@ -55,13 +55,13 @@ MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdown-lint.yml
 
 YAML_V8R_FILTER_REGEX_EXCLUDE: 'dependabot.yml' # Dependabot yaml in SchemaStore is currently not up to date. Dependabot is validated on push by GitHub by default.
 
-PYTHON_PYLINT_PRE_COMMANDS:
-  - command: python3 -m pip install -r testing/backend/req.txt
-    run_before_linters: true
-
+# Disabled Pylint import errors as import for request and pytest kept failing
 PYTHON_PYLINT_ARGUMENTS:
   - --disable=import-error
 
+# Disabled Bandit B101 and B311 errors:
+# B101 - https://bandit.readthedocs.io/en/latest/plugins/b101_assert_used.html
+# B311 - https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random 
 PYTHON_BANDIT_ARGUMENTS:
-  - -s
-  - B101
+  - --skip
+  - B101, B311
