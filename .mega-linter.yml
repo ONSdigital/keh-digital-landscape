@@ -64,4 +64,4 @@ PYTHON_PYLINT_ARGUMENTS:
 # B311 - https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random 
 PYTHON_BANDIT_ARGUMENTS:
   - --skip
-  - B101, B311
+  - B101,B311
