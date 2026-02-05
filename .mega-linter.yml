@@ -41,6 +41,9 @@ DISABLE_LINTERS:
   - PYTHON_FLAKE8
   - PYTHON_PYRIGHT
 
+  # Disable as we have JavaScript linter and formatting already
+  - JAVASCRIPT_STANDARD
+
 SHOW_ELAPSED_TIME: true
 
 FILEIO_REPORTER: false
