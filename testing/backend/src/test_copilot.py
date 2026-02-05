@@ -3,8 +3,9 @@ This module contains the test cases for the copilot API endpoints.
 """
 
 import os
-import requests
+
 import pytest
+import requests
 
 BASE_URL = "http://localhost:5001/copilot"
 

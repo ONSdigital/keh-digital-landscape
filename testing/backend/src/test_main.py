@@ -3,6 +3,7 @@ This module contains the test cases for the backend API.
 """
 
 from datetime import datetime, timedelta
+
 import requests
 
 BASE_URL = "http://localhost:5001"

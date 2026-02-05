@@ -3,6 +3,7 @@ This module contains the test cases for the address book API endpoints.
 """
 
 import os
+
 import requests
 
 BASE_URL = "http://localhost:5001/addressbook"

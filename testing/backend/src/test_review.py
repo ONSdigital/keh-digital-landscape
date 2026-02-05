@@ -3,6 +3,7 @@ This module contains the test cases for the review API endpoints.
 """
 
 import random
+
 import requests
 
 BASE_URL = "http://localhost:5001"
