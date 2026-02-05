@@ -63,7 +63,8 @@ terraform apply \
 -var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/"]' \
 -var "azuread_provider_name=${azuread_provider_name}" \
 -var "enable_azuread_saml=${enable_azuread_saml}" \
--var "azure_ad_metadata_url=${azure_ad_metadata_url}" 
+-var "azure_ad_metadata_url=${azure_ad_metadata_url}" \
+-auto-approve
 
 echo "Set the Digital Landscape service"
 cd ../service
