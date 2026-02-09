@@ -164,6 +164,10 @@ resource "aws_iam_group_policy_attachment" "group_secretsmanager_access_attach" 
 resource "aws_iam_user" "user" {
   name = "${var.domain}-${var.service_subdomain}"
   path = "/"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Assign IAM User to group
@@ -176,11 +180,27 @@ resource "aws_iam_user_group_membership" "user_group_attach" {
 }
 
 # IAM Key Rotation Module
-module "iam_key_rotation" {
-  source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
-
-  iam_username          = aws_iam_user.user.name
-  access_key_secret_arn = aws_secretsmanager_secret.access_key.arn
-  secret_key_secret_arn = aws_secretsmanager_secret.secret_key.arn
-  rotation_in_days      = 90
-}
+#
+# This module was originally provisioned by Terraform. It remains here commented out
+# to ensure that our overall AWS infrastructure for this service is captured fully.
+#
+# Additionally, it prevents accidental deletion of EventBridge Scheduler, which would 
+# reset the 90-day rotation timer and delay key rotation (security/compliance risk).
+# 
+# Terraform does not support prevent_destroy on modules, so we cannot protect
+# the scheduler from accidental recreation during infrastructure changes.
+#
+# Existing Infrastructure in AWS (managed manually):
+# - Lambda: iam-key-rotation-sdp-dev-digital-landscape (timeout: 30s)
+# - EventBridge Scheduler: rotate-iam-key-sdp-dev-digital-landscape (every 90 days)
+# - IAM Roles: IamKeyRotation_sdp-dev-digital-landscape, scheduler-sdp-dev-digital-landscape
+# - CloudWatch Logs: /aws/lambda/iam-key-rotation-sdp-dev-digital-landscape
+#
+# module "iam_key_rotation" {
+#   source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
+#
+#   iam_username          = aws_iam_user.user.name
+#   access_key_secret_arn = aws_secretsmanager_secret.access_key.arn
+#   secret_key_secret_arn = aws_secretsmanager_secret.secret_key.arn
+#   rotation_in_days      = 90
+# }
