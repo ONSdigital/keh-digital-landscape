@@ -181,9 +181,9 @@ resource "aws_iam_user_group_membership" "user_group_attach" {
 
 # IAM Key Rotation Module
 #
-# This module was originally provisioned by Terraform. It remains here commented out
-# to ensure that our overall AWS infrastructure for this service is captured fully.
-# See AWS Key Rotation documentation on Confluence for further details.
+# This module was originally provisioned by Terraform, but is no longer managed by it. 
+# It remains here commented out, ensuring the overall AWS infrastructure for this service
+# is captured fully. See AWS Key Rotation documentation on Confluence for further details.
 #
 # module "iam_key_rotation" {
 #   source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
