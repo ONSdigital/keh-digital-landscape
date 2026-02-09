@@ -183,18 +183,7 @@ resource "aws_iam_user_group_membership" "user_group_attach" {
 #
 # This module was originally provisioned by Terraform. It remains here commented out
 # to ensure that our overall AWS infrastructure for this service is captured fully.
-#
-# Additionally, it prevents accidental deletion of EventBridge Scheduler, which would 
-# reset the 90-day rotation timer and delay key rotation (security/compliance risk).
-# 
-# Terraform does not support prevent_destroy on modules, so we cannot protect
-# the scheduler from accidental recreation during infrastructure changes.
-#
-# Existing Infrastructure in AWS (managed manually):
-# - Lambda: iam-key-rotation-sdp-dev-digital-landscape (timeout: 30s)
-# - EventBridge Scheduler: rotate-iam-key-sdp-dev-digital-landscape (every 90 days)
-# - IAM Roles: IamKeyRotation_sdp-dev-digital-landscape, scheduler-sdp-dev-digital-landscape
-# - CloudWatch Logs: /aws/lambda/iam-key-rotation-sdp-dev-digital-landscape
+# See AWS Key Rotation documentation on Confluence for further details.
 #
 # module "iam_key_rotation" {
 #   source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
