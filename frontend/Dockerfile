@@ -29,7 +29,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV VITE_SUPPORT_MAIL=$VITE_SUPPORT_MAIL
 # Install serve for production (pinned)
-RUN npm install -g serve@14.2.1
+RUN npm install -g serve@14.2.5
 
 # Copy only the built app from the builder stage
 COPY --from=builder /app/build ./build
