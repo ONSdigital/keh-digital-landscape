@@ -213,18 +213,6 @@ variable "alerts_channel_id" {
   type        = string
 }
 
-variable "initial_access_key_id" {
-  description = "Initial access key ID for IAM user (will be rotated by Lambda)"
-  type        = string
-  sensitive   = true
-}
-
-variable "initial_secret_access_key" {
-  description = "Initial secret access key for IAM user (will be rotated by Lambda)"
-  type        = string
-  sensitive   = true
-}
-
 locals {
   url         = "${var.domain}.${var.domain_extension}"
   service_url = "${var.service_subdomain}.${local.url}"
