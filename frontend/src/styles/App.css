@@ -333,7 +333,7 @@ line {
   cursor: pointer;
   opacity: 0.9;
   z-index: -1;
-  r: 12;
+  r: 12px;
 }
 
 .blip-number {
@@ -602,9 +602,6 @@ text {
   box-sizing: border-box;
   overflow-y: auto;
   user-select: text;
-  user-select: text;
-  user-select: text;
-  user-select: text;
 }
 
 .timeline-description em {
@@ -730,7 +727,7 @@ text {
   }
 
   .blip {
-    r: 12;
+    r: 12px;
   }
 
   .blip-number {
