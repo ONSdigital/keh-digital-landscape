@@ -63,17 +63,17 @@ const AddressBookPage = () => {
         className="addressbook-howto"
         aria-labelledby="addressbook-howto-title"
       >
-        <h2 id="addressbook-howto-title" className="addressbook-howto__title">
+        <h2 id="addressbook-howto-title" className="addressbook-howto-title">
           How to use
         </h2>
-        <ol className="addressbook-howto__list">
+        <ol className="addressbook-howto-list">
           <li>
             Enter a colleague’s GitHub username or ONS email. You’ll see their
             name, work email, GitHub Profile URL and username in the results.
           </li>
           <li>
             You can enter multiple values separated by commas, e.g.
-            <span className="addressbook-howto__example">
+            <span className="addressbook-howto-example">
               username-1, username-2
             </span>
             .
@@ -90,7 +90,7 @@ const AddressBookPage = () => {
           role="search"
         >
           <input
-            className="addressbook-search__input"
+            className="addressbook-search-input"
             type="search"
             id="q"
             name="q"
@@ -101,7 +101,7 @@ const AddressBookPage = () => {
             autoComplete="off"
           />
           <button
-            className="addressbook-search__button"
+            className="addressbook-search-button"
             type="submit"
             disabled={loading}
             aria-label="Submit search"
