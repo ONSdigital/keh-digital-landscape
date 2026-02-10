@@ -164,10 +164,6 @@ resource "aws_iam_group_policy_attachment" "group_secretsmanager_access_attach" 
 resource "aws_iam_user" "user" {
   name = "${var.domain}-${var.service_subdomain}"
   path = "/"
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 # Assign IAM User to group
@@ -180,16 +176,12 @@ resource "aws_iam_user_group_membership" "user_group_attach" {
 }
 
 # IAM Key Rotation Module
-#
-# This module was originally provisioned by Terraform, but is no longer managed by it. 
-# It remains here commented out, ensuring the overall AWS infrastructure for this service
-# is captured fully. See AWS Key Rotation documentation on Confluence for further details.
-#
-# module "iam_key_rotation" {
-#   source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
-#
-#   iam_username          = aws_iam_user.user.name
-#   access_key_secret_arn = aws_secretsmanager_secret.access_key.arn
-#   secret_key_secret_arn = aws_secretsmanager_secret.secret_key.arn
-#   rotation_in_days      = 90
-# }
+
+module "iam_key_rotation" {
+  source = "git::https://github.com/ONSdigital/aws-iam-key-rotation.git"
+
+  iam_username          = aws_iam_user.user.name
+  access_key_secret_arn = aws_secretsmanager_secret.access_key.arn
+  secret_key_secret_arn = aws_secretsmanager_secret.secret_key.arn
+  rotation_in_days      = 90
+}
