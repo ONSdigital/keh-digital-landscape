@@ -109,7 +109,7 @@ format-check:
 help:
 	@echo "Available commands:"
 	@echo "  make dev          			- Run in development mode (uses dev.sh)"
-	@echo "  make dev-ci         		- Run in ci development mode without shell trap"
+	@echo "  make dev-ci         			- Run in ci development mode without shell trap"
 	@echo "  make frontend     			- Run just the frontend"
 	@echo "  make backend      			- Run just the backend"
 	@echo " "
@@ -134,6 +134,9 @@ help:
 	@echo "  make lint-backend         		- Run linting for backend without fix"
 	@echo "  make lint-fix-backend     		- Fix linting for backend and fix"
 	@echo "  make format-backend        		- Format backend code"
+	@echo " "
+	@echo "  make megalint-check         		- Run Megalinter within repo, without fix" 
+	@echo "  make megalint-fix			- Run Megalinter within repo, using fix"
 	@echo " "
 	@echo "  make logs         			- View Docker logs"
 	@echo "  make ps           			- List running Docker containers"
