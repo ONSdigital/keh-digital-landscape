@@ -44,6 +44,10 @@ DISABLE_LINTERS:
   # Disable as we have JavaScript linter and formatting already
   - JAVASCRIPT_STANDARD
 
+  # Disable since we have our own markdown linting and formatting using prettier
+  - MARKDOWN_MARKDOWN_TABLE_FORMATTER
+  - MARKDOWN_MARKDOWNLINT
+
 SHOW_ELAPSED_TIME: true
 
 FILEIO_REPORTER: false
