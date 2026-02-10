@@ -281,7 +281,6 @@
   transition: all 0.2s ease;
 }
 
-
 .tech-item-sources {
   display: flex;
   overflow-x: auto; /* Use auto to allow keyboard scroll when focused */
