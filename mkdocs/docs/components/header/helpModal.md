@@ -7,7 +7,7 @@ The HelpModal component provides contextual help and guidance for users when vie
 The HelpModal component accepts the following props:
 
 | Prop      | Type     | Default  | Description                                      |
-| --------- | -------- | -------- | ------------------------------------------------ |
+|-----------|----------|----------|--------------------------------------------------|
 | `show`    | boolean  | Required | Controls the visibility of the modal             |
 | `onClose` | function | Required | Handler function called when the modal is closed |
 

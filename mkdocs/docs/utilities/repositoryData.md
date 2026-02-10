@@ -26,7 +26,7 @@ This function:
 The function accepts the following parameters:
 
 | Parameter      | Type     | Default  | Description                                                |
-| -------------- | -------- | -------- | ---------------------------------------------------------- |
+|----------------|----------|----------|------------------------------------------------------------|
 | `repositories` | string[] | Required | Array of repository names to fetch data for                |
 | `date`         | string   | `null`   | ISO date string to filter repositories by last commit date |
 | `archived`     | string   | `null`   | 'true'/'false' to filter archived repositories             |

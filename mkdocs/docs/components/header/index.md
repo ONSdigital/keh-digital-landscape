@@ -7,7 +7,7 @@ The Header component serves as the primary navigation interface for the Digital 
 The Header component accepts the following props:
 
 | Prop                  | Type     | Default    | Description                                                        |
-| --------------------- | -------- | ---------- | ------------------------------------------------------------------ |
+|-----------------------|----------|------------|--------------------------------------------------------------------|
 | `searchTerm`          | string   | `""`       | The current search term displayed in the search input              |
 | `onSearchChange`      | function | `() => {}` | Handler function called when the search term changes               |
 | `searchResults`       | array    | `[]`       | Array of search results to display in the dropdown                 |
