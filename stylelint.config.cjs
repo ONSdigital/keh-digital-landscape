@@ -1,7 +1,7 @@
 /** @type {import('stylelint').Config} */
-export default {
+module.exports = {
   rules: {
     "no-descending-specificity": null,
-    "keyframes-name-pattern": null,
+    "keyframes-name-pattern": null
   }
 };
