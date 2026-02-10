@@ -1,4 +1,4 @@
-.PHONY: dev dev-ci frontend backend install install-dev docker-build docker-up docker-down clean test logs ps setup lint lint-frontend lint-fix-frontend lint-backend lint-fix-backend format format-frontend format-backend format-check help
+.PHONY: dev dev-ci frontend backend install install-dev docker-build docker-up docker-down clean test logs ps setup lint lint-frontend lint-fix-frontend lint-backend lint-fix-backend format format-frontend format-backend format-check help megalint-check megalint-fix
 
 # Development environment
 dev:
