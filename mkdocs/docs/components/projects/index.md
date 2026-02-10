@@ -18,7 +18,7 @@ The Projects component provides a comprehensive view of all projects within the 
 The Projects component accepts the following props:
 
 | Prop                  | Type     | Default    | Description                                                 |
-|-----------------------|----------|------------|-------------------------------------------------------------|
+| --------------------- | -------- | ---------- | ----------------------------------------------------------- |
 | `isOpen`              | boolean  | Required   | Controls the visibility of the projects list                |
 | `projectsData`        | array    | Required   | Array of project objects containing project details         |
 | `handleProjectClick`  | function | Required   | Handler function called when a project is clicked           |

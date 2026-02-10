@@ -19,7 +19,7 @@ The PieChart component provides a visual representation of project data categori
 The PieChart component accepts the following props:
 
 | Prop                 | Type     | Default                                             | Description                                                        |
-|----------------------|----------|-----------------------------------------------------|--------------------------------------------------------------------|
+| -------------------- | -------- | --------------------------------------------------- | ------------------------------------------------------------------ |
 | `projectsData`       | array    | Required                                            | Array of project objects containing project details                |
 | `title`              | string   | Required                                            | The title to display above the chart                               |
 | `categoryField`      | string   | Required                                            | The field name to use for categorisation                           |

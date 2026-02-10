@@ -36,7 +36,7 @@ export default Layout;
 ## Props
 
 | Prop       | Type            | Description                                    |
-|------------|-----------------|------------------------------------------------|
+| ---------- | --------------- | ---------------------------------------------- |
 | `children` | React.ReactNode | The content to render in the main content area |
 
 ## Usage

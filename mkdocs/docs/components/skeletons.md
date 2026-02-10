@@ -15,7 +15,7 @@ The `SkeletonStatCard` component renders a placeholder for statistical cards tha
 #### Props
 
 | Prop       | Type   | Default | Description                        |
-|------------|--------|---------|------------------------------------|
+| ---------- | ------ | ------- | ---------------------------------- |
 | `minWidth` | string | `"0"`   | Minimum width of the skeleton card |
 
 #### Usage
