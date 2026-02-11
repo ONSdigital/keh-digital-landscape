@@ -68,7 +68,7 @@ PYTHON_PYLINT_ARGUMENTS:
 
 # Disabled Bandit B101 and B311 errors:
 # B101 - https://bandit.readthedocs.io/en/latest/plugins/b101_assert_used.html
-# B311 - https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random 
+# B311 - https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
 PYTHON_BANDIT_ARGUMENTS:
   - --skip
   - B101,B311
