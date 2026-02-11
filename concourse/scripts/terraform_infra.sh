@@ -31,6 +31,13 @@ copilot_bucket_name=$(echo "$secrets" | jq -r .copilot_bucket_name)
 support_mail=$(echo "$secrets" | jq -r .support_mail)
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
 
+# Cognito variables for AzureAD SAML
+domain_extension=$(echo "$secrets" | jq -r .domain_extension)
+enable_azuread_saml=$(echo "$secrets" | jq -r .enable_azuread_saml)
+azure_ad_metadata_url=$(echo "$secrets" | jq -r .azure_ad_metadata_url)
+azuread_provider_name=$(echo "$secrets" | jq -r .azuread_provider_name)
+
+
 export AWS_ACCESS_KEY_ID=$aws_access_key_id
 export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 
@@ -42,7 +49,27 @@ fi
 
 echo ${env}
 
-cd resource-repo/terraform/service
+echo "Setting the Auth service"
+cd resource-repo/terraform/authentication
+terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
+
+terraform apply \
+-var "aws_account_id=${aws_account_id}" \
+-var "aws_access_key_id=${aws_access_key_id}" \
+-var "aws_secret_access_key=${aws_secret_access_key}" \
+-var "domain=${domain}" \
+-var "service_subdomain=${service_subdomain}" \
+-var "domain_extension=${domain_extension}" \
+-var 'sign_out_urls=["https://'${service_subdomain}.${domain}.${domain_extension}'/"]' \
+-var "azuread_provider_name=${azuread_provider_name}" \
+-var "enable_azuread_saml=${enable_azuread_saml}" \
+-var "azure_ad_metadata_url=${azure_ad_metadata_url}" \
+-auto-approve
+
+echo "Set the Digital Landscape service"
+cd ../service
+
+# cd resource-repo/terraform/service
 
 terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
 
