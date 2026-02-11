@@ -62,9 +62,10 @@ nav:
       - Accessibility: testing/accessibility.md
   - Additional Notes:
       - Multiple Directorates Support: additionalNotes/directorateSupport.md
+  - Infrastructure:
+      - Cognito: cognito.md
   - MkDocs:
       - Documentation: documentation.md
-      - Cognito: cognito.md
 theme:
   name: material
   language: en
