@@ -1,7 +1,7 @@
-# A GitHub Actions workflow to deploy MkDocs documentation to GitHub Pages on push to the master or main branch.
 ---
+# A GitHub Actions workflow to deploy MkDocs documentation to GitHub Pages on push to the master or main branch.
 name: Deploy MkDocs
-on:
+"on":
   push:
     branches:
       - master
