@@ -25,10 +25,10 @@ resource "aws_security_group" "allow_rules_service" {
   # Allow internal communication between containers
   ingress {
     description = "Allow internal backend traffic"
-    from_port = var.backend_port
-    to_port   = var.backend_port
-    protocol  = "tcp"
-    self      = true
+    from_port   = var.backend_port
+    to_port     = var.backend_port
+    protocol    = "tcp"
+    self        = true
   }
 
   egress {
