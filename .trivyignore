@@ -1,3 +1,18 @@
 
 # Multi-factor Authentication is unneeded as IAM is for dev keys not users
 AVD-AWS-0123
+
+# Logging holds nothing sensitive therefore does not need further encryption
+AVD-AWS-0017
+
+# Further encryption is unneeded for Secrets manager
+AVD-AWS-0098
+
+# Larger ONS does not restrict outbound traffic from egress therefore we do not either
+AVD-AWS-0104
+
+# Logging for S3 Buckets is unnecessary 
+AVD-AWS-0089
+
+# S3 Buckets do not need further encryption as they carry nothing sensitive
+AVD-AWS-0132
