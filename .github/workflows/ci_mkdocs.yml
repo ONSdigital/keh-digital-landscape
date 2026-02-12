@@ -11,6 +11,9 @@ name: MkDocs CI
     paths:
       - 'mkdocs/**'
 
+permissions:
+  contents: read
+
 jobs:
   lint-docs:
     runs-on: ubuntu-latest
