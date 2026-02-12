@@ -84,4 +84,4 @@ PYTHON_BANDIT_ARGUMENTS:
 # CKV2_AWS_62 - S3 Bucket notifications are unnecessary - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-62
 CHECKOV_ARGUMENTS:
   - --skip-check
-  - CKV_TF_1, CKV_AWS_273, CKV_AWS_158, CKV_AWS_333, CKV_AWS_149, CKV_AWS_382, CKV_AWS_145, CKV2_AWS_62, CKV2_AWS_57
+  - "CKV_TF_1,CKV_AWS_273,CKV_AWS_158,CKV_AWS_333,CKV_AWS_149,CKV_AWS_382,CKV_AWS_145,CKV2_AWS_62,CKV2_AWS_57"
