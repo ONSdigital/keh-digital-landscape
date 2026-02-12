@@ -1366,6 +1366,21 @@ text {
   background: hsl(var(--muted));
 }
 
+.radix-tooltip-content {
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.1);
+  z-index: 9999999;
+}
+
+.radix-tooltip-arrow {
+  fill: hsl(var(--popover));
+}
+
 /* Tech Radar Filters Styling */
 .radar-filter-container {
   padding: 16px;
