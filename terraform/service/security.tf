@@ -6,6 +6,7 @@ resource "aws_security_group" "allow_rules_service" {
 
   # Allow traffic from ALB to frontend
   ingress {
+    description = "Allow inbound traffic to frontend"
     from_port   = var.frontend_port
     to_port     = var.frontend_port
     protocol    = "tcp"
@@ -14,6 +15,7 @@ resource "aws_security_group" "allow_rules_service" {
 
   # Allow traffic from ALB to backend
   ingress {
+    description = "Allow inbound traffic to backend"
     from_port   = var.backend_port
     to_port     = var.backend_port
     protocol    = "tcp"
@@ -22,6 +24,7 @@ resource "aws_security_group" "allow_rules_service" {
 
   # Allow internal communication between containers
   ingress {
+    description = "Allow internal backend traffic"
     from_port = var.backend_port
     to_port   = var.backend_port
     protocol  = "tcp"
@@ -29,6 +32,7 @@ resource "aws_security_group" "allow_rules_service" {
   }
 
   egress {
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
