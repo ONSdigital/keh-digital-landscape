@@ -72,16 +72,3 @@ PYTHON_PYLINT_ARGUMENTS:
 PYTHON_BANDIT_ARGUMENTS:
   - --skip
   - B101,B311
-
-# Skip specific Checkov rules
-# CKV_TF_1 - This is a false positive - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/supply-chain-policies/terraform-policies/ensure-terraform-module-sources-use-git-url-with-commit-hash-revision
-# CKV_AWS_273 - Our AWS usage is controlled by a SSO, not IAM which are used for dev keys - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-273
-# CKV_AWS_158 - We do not have sensitive data within cloudwatch therefore we do not need further encryption - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-cloudwatch-log-group-is-encrypted-by-kms
-# CKV_AWS_333 - Our ECS services have a public IP assigned but there is a reason as to why, with a TODO - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-333
-# CKV_AWS_149 - Our Secrets manager does not have sensitive data thereforew does not require further encryption - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-secrets-manager-secret-is-encrypted-using-kms
-# CKV_AWS_382 - ONS does allow outbound traffic from services generally - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/bc-aws-382
-# CKV_AWS_145 - S3 Buckets do not require further encryption - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default
-# CKV2_AWS_62 - S3 Bucket notifications are unnecessary - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-62
-CHECKOV_ARGUMENTS:
-  - --skip-check
-  - "CKV_TF_1,CKV_AWS_273,CKV_AWS_158,CKV_AWS_333,CKV_AWS_149,CKV_AWS_382,CKV_AWS_145,CKV2_AWS_62,CKV2_AWS_57"
