@@ -1,3 +1,4 @@
+---
 # Skip specific Checkov rules
 # CKV_TF_1 - This is a false positive - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/supply-chain-policies/terraform-policies/ensure-terraform-module-sources-use-git-url-with-commit-hash-revision
 # CKV_AWS_273 - Our AWS usage is controlled by a SSO, not IAM which are used for dev keys - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-273
@@ -23,4 +24,4 @@ skip-check:
   - CKV_AWS_18
   - CKV2_AWS_61
   - CKV_AWS_144
-  
+

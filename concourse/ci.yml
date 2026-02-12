@@ -12,8 +12,8 @@ resources:
     source:
       uri: https://github.com/ONSdigital/keh-digital-landscape
       username: ((github_access_token))
-      #checkov:skip=CKV_SECRET_6:This one alert is a false positive
-      password: x-oauth-basic 
+      # checkov:skip=CKV_SECRET_6:This one alert is a false positive
+      password: x-oauth-basic
       branch: ((branch))
   - name: github-release
     type: github-release
