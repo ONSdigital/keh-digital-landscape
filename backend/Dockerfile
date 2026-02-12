@@ -41,5 +41,7 @@ USER appuser
 
 EXPOSE 5001
 
+HEALTHCHECK NONE
+
 # Run in production mode
 CMD ["node", "src/index.js"]
