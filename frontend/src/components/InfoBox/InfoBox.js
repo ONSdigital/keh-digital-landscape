@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TimelineTooltip from './Tooltip/Tooltip';
+import Tooltip from './Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
   IoArrowDownOutline,
@@ -309,7 +309,7 @@ const InfoBox = ({
                   {timelineItem.moved < 0 && <IoArrowDownOutline size={10} />}
                 </span>
 
-                <TimelineTooltip
+                <Tooltip
                   title={
                     index === 0
                       ? 'Current/Last Updated Date'
@@ -320,7 +320,7 @@ const InfoBox = ({
                   <div className="timeline-node">
                     {formatTimelineDate(timelineItem.date)}
                   </div>
-                </TimelineTooltip>
+                </Tooltip>
               </div>
               {index < array.length - 1 && (
                 <div className="timeline-connector" />

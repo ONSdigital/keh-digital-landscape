@@ -1,7 +1,7 @@
-import * as Tooltip from '@radix-ui/react-tooltip';
+import * as ReactTooltip from '@radix-ui/react-tooltip';
 import '../../../styles/App.css';
 
-const TimelineTooltip = ({
+const Tooltip = ({
   title,
   children,
   side = 'top',
@@ -9,24 +9,24 @@ const TimelineTooltip = ({
   delayDuration = 100,
 }) => {
   return (
-    <Tooltip.Provider delayDuration={delayDuration}>
-      <Tooltip.Root>
-        <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
+    <ReactTooltip.Provider delayDuration={delayDuration}>
+      <ReactTooltip.Root>
+        <ReactTooltip.Trigger asChild>{children}</ReactTooltip.Trigger>
 
-        <Tooltip.Portal>
-          <Tooltip.Content
-            className="radix-tooltip-content"
+        <ReactTooltip.Portal>
+          <ReactTooltip.Content
+            className="tooltip-content"
             side={side}
             align={align}
             sideOffset={6}
           >
             {title}
-            <Tooltip.Arrow className="radix-tooltip-arrow" />
-          </Tooltip.Content>
-        </Tooltip.Portal>
-      </Tooltip.Root>
-    </Tooltip.Provider>
+            <ReactTooltip.Arrow className="tooltip-arrow" />
+          </ReactTooltip.Content>
+        </ReactTooltip.Portal>
+      </ReactTooltip.Root>
+    </ReactTooltip.Provider>
   );
 };
 
-export default TimelineTooltip;
+export default Tooltip;

@@ -1366,7 +1366,7 @@ text {
   background: hsl(var(--muted));
 }
 
-.radix-tooltip-content {
+.tooltip-content {
   background: hsl(var(--popover));
   color: hsl(var(--popover-foreground));
   padding: 8px 12px;
@@ -1377,7 +1377,7 @@ text {
   z-index: 9999999;
 }
 
-.radix-tooltip-arrow {
+.tooltip-arrow {
   fill: hsl(var(--popover));
 }
 
