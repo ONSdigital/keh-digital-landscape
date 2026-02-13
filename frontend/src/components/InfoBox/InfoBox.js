@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Tooltip from './Tooltip/Tooltip';
+import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
   IoArrowDownOutline,
@@ -315,9 +315,9 @@ const InfoBox = ({
                       ? 'Current/Last Updated Date'
                       : 'Historical Date'
                   }
-                  side="top"
+                  side="bottom"
                 >
-                  <div className="timeline-node">
+                  <div className="timeline-date">
                     {formatTimelineDate(timelineItem.date)}
                   </div>
                 </Tooltip>

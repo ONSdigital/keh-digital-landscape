@@ -480,7 +480,7 @@ text {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 16px;
   text-align: left;
   user-select: none;
   resize: both;
@@ -1369,11 +1369,11 @@ text {
 .tooltip-content {
   background: hsl(var(--popover));
   color: hsl(var(--popover-foreground));
-  padding: 8px 12px;
+  padding: 4px 8px;
   border-radius: var(--radius);
   font-size: 14px;
   white-space: nowrap;
-  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.1);
+  box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1);
   z-index: 9999999;
 }
 
