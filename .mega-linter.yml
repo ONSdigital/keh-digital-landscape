@@ -49,7 +49,7 @@ DISABLE_LINTERS:
   - MARKDOWN_MARKDOWNLINT
 
 # Ignore KICS findings by CWE
-KICS_ARGUMENTS:
+REPOSITORY_KICS_ARGUMENTS:
   - --exclude-results
   - cwe-284
 
