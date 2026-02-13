@@ -1,6 +1,16 @@
+
+#!/bin/sh
 set -euo pipefail
 
+
 apk add --no-cache aws-cli podman jq iptables
+
+
+# Check if aws_role_arn is set
+if [ -z "${aws_role_arn:-}" ]; then
+	echo "Error: aws_role_arn is not set."
+	exit 1
+fi
 
 aws sts assume-role --output text \
 	--role-arn "${aws_role_arn}" \
@@ -8,6 +18,10 @@ aws sts assume-role --output text \
 	--query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" |
 	awk -F '\t' '{print $1 > ("AccessKeyId")}{print $2 > ("SecretAccessKey")}{print $3 > ("SessionToken")}'
 
-export AWS_ACCESS_KEY_ID="$(cat AccessKeyId)"
-export AWS_SECRET_ACCESS_KEY="$(cat SecretAccessKey)"
-export AWS_SESSION_TOKEN="$(cat SessionToken)"
+
+AWS_ACCESS_KEY_ID="$(cat AccessKeyId)"
+export AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY="$(cat SecretAccessKey)"
+export AWS_SECRET_ACCESS_KEY
+AWS_SESSION_TOKEN="$(cat SessionToken)"
+export AWS_SESSION_TOKEN
