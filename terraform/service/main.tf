@@ -260,7 +260,7 @@ resource "aws_ecs_service" "application" {
 }
 
 # Cloudwatch alarm that sounds when we have >0 A-ELB 5xx errors.
-resource "aws_cloudwatch_metric_alarm" "Application-ELB_5xx_alarm" {
+resource "aws_cloudwatch_metric_alarm" "application_elb_5xx_alarm" {
   alarm_name                = "Digital_Landscape_Application_ELB_5xx_alarm"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
@@ -277,7 +277,7 @@ resource "aws_cloudwatch_metric_alarm" "Application-ELB_5xx_alarm" {
 
 
 # Cloudwatch metric filter which checks if the backend health check endpoint is called, if so return 0, else add 1 to current failure count
-resource "aws_cloudwatch_log_metric_filter" "Backend_health_check_filter" {
+resource "aws_cloudwatch_log_metric_filter" "backend_health_check_filter" {
   name           = "Digital_Landscape_backend_health_check_filter"
   pattern        = "Health check endpoint called"
   log_group_name = aws_cloudwatch_log_group.backend_logs.name
@@ -292,7 +292,7 @@ resource "aws_cloudwatch_log_metric_filter" "Backend_health_check_filter" {
 
 
 # Cloudwatch alarm that sounds when we have >0 health checks fail, or if there is no data every minute it sounds
-resource "aws_cloudwatch_metric_alarm" "Backend_health_check_alarm" {
+resource "aws_cloudwatch_metric_alarm" "backend_health_check_alarm" {
   alarm_name          = "Digital_Landscape_backend_health_alarm"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
