@@ -27,7 +27,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Install wget in the final image before switching to non-root user
-RUN apk add --no-cache wget
+RUN apk add --no-cache wget=1.25.0-r2
 
 # Create non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
