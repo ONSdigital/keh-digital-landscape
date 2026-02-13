@@ -1,6 +1,5 @@
-
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 
 apk add --no-cache aws-cli podman jq iptables
