@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 apk add --no-cache jq
 
@@ -49,20 +49,20 @@ copilot_bucket_name=$(echo "$secrets" | jq -r .copilot_bucket_name)
 support_mail=$(echo "$secrets" | jq -r .support_mail)
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
 
-export AWS_ACCESS_KEY_ID=$aws_access_key_id
-export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
+export AWS_ACCESS_KEY_ID="$aws_access_key_id"
+export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
 
 git config --global url."https://x-access-token:${github_access_token}@github.com/".insteadOf "https://github.com/"
 
-if [[ ${env} != "prod" ]]; then
+if [ "$env" != "prod" ]; then
   env="dev"
 fi
 
-echo ${env}
+echo "$env"
 
 cd resource-repo/terraform/service
 
-terraform init -backend-config=env/${env}/backend-${env}.tfbackend -reconfigure
+terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
 # The following terraform-apply may need to change if the environment variables change
 
