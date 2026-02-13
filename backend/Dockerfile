@@ -20,7 +20,7 @@ USER appuser
 RUN npm ci --omit=dev
 
 # Copy the rest of the application files
-COPY --chown=appuser:appgroup . .
+COPY . .
 
 # Production stage
 FROM node:22-alpine
@@ -33,9 +33,9 @@ RUN apk add --no-cache wget
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy only the necessary files
-COPY --from=builder --chown=appuser:appgroup /app/package*.json ./
-COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
-COPY --from=builder --chown=appuser:appgroup /app/src ./src
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/src ./src
 
 USER appuser
 
