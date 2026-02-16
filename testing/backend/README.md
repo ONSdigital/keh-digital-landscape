@@ -135,7 +135,7 @@ make clean
 The tests cover these main endpoint groups:
 
 | Test File         | Endpoint Group   | Description                                         |
-|-------------------|------------------|-----------------------------------------------------|
+| ----------------- | ---------------- | --------------------------------------------------- |
 | `test_main.py`    | `/api/*`         | Core API endpoints (health, CSV, JSON, repository)  |
 | `test_admin.py`   | `/admin/api/*`   | Admin API endpoints for banner management           |
 | `test_review.py`  | `/review/api/*`  | Review API endpoints for tech radar updates         |

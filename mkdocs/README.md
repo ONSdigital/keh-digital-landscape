@@ -18,16 +18,16 @@ cd mkdocs
 
 1. Create a virtual environment (recommended but not required):
 
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
 2. Install dependencies:
 
-    ```bash
-    make setup
-    ```
+   ```bash
+   make setup
+   ```
 
 ## Running locally
 

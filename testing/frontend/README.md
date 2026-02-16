@@ -71,9 +71,9 @@ TEST_GITHUBTEAM=your-team-slug
 
 1. Run the tests:
 
-  ```bash
-  make test
-  ```
+```bash
+make test
+```
 
 Routes that require authentication are marked with `"authenticated": "githubUserToken"` in `test-config.json`.
 
