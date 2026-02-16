@@ -78,11 +78,11 @@ variable "token_validity_values" {
     id_token      = number
   })
   default = {
-    # kics-scan ignore-line (ignoring line as false positive secret)
+    # kics-scan ignore-line (This one alert is a false positive)
     refresh_token = 30 # 30 days
-    # kics-scan ignore-line
+    # kics-scan ignore-line (This one alert is a false positive)
     access_token = 3 # 3 hours
-    # kics-scan ignore-line
+    # kics-scan ignore-line (This one alert is a false positive)
     id_token = 3 # 3 hours
 
   }
