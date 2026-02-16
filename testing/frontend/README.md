@@ -69,7 +69,7 @@ TEST_GITHUBUSERTOKEN=your-generated-token
 TEST_GITHUBTEAM=your-team-slug
 ```
 
-1. Run the tests:
+9. Run the tests:
 
 ```bash
 make test
