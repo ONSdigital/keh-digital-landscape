@@ -225,6 +225,28 @@ Run the linting for the backend:
 make lint-backend
 ```
 
+## Megalinter
+
+Megalinter is implemented as a secondary linting, formatting and security tool.
+
+Run Megalinter:
+
+```bash
+make megalint-check
+```
+
+Fix the issues caught by megalinter:
+
+```bash
+make megalint-fix
+```
+
+The rules ignored by megalinter are held in:
+- kics.config
+- mega-linter.yml
+- checkov.yml
+- within some .yml and .yaml files
+
 ## Terraform
 
 Follow these instructions in the central documenation to configure the Terraform:
