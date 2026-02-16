@@ -317,7 +317,16 @@ const InfoBox = ({
                   }
                   side="bottom"
                 >
-                  <div className="timeline-date">
+                  <div
+                    className="timeline-date"
+                    aria-label={
+                      index === 0
+                        ? 'Current/Last Updated Date: ' +
+                          formatTimelineDate(timelineItem.date)
+                        : 'Historical Date: ' +
+                          formatTimelineDate(timelineItem.date)
+                    }
+                  >
                     {formatTimelineDate(timelineItem.date)}
                   </div>
                 </Tooltip>

@@ -9,7 +9,6 @@ const Tooltip = ({
   delayDuration = 100,
   arrowHeight = 3,
   arrowWidth = 8,
-  ariaLabel = title,
 }) => {
   return (
     <ReactTooltip.Provider delayDuration={delayDuration}>
@@ -22,7 +21,6 @@ const Tooltip = ({
             side={side}
             align={align}
             sideOffset={6}
-            aria-label={ariaLabel}
           >
             {title}
             <ReactTooltip.Arrow
