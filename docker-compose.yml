@@ -1,6 +1,5 @@
 # Local Docker Compose config
 ---
-
 services:
   frontend:
     build:
