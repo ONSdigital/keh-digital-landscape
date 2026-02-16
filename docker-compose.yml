@@ -16,6 +16,8 @@ services:
     user: appuser
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - all
 
   backend:
     build: ./backend
@@ -31,9 +33,9 @@ services:
     user: appuser
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - all
 
 networks:
   app-network:
     driver: bridge
-
-cap_drop: all
