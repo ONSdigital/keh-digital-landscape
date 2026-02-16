@@ -1,6 +1,5 @@
 # GitHub Actions lint workflow
 ---
-  
 name: Linting and Formatting
 
 on:

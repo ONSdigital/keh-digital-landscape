@@ -1,6 +1,5 @@
 # Testing CI workflow
 ---
-  
 name: CI Testing
 
 on:
