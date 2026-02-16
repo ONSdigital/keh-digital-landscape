@@ -39,9 +39,9 @@ Some routes require authentication (like `/copilot/team`). For these routes, you
 
 1. Go to the copilot team page:
 
-  ```http
-  http://localhost:3000/copilot/team
-  ```
+```http
+http://localhost:3000/copilot/team
+```
 
 2. Click the "Login with GitHub" button.
 
