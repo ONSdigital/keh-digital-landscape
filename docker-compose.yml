@@ -35,3 +35,5 @@ services:
 networks:
   app-network:
     driver: bridge
+
+cap_drop: all

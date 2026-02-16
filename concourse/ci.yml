@@ -250,7 +250,7 @@ jobs:
                   additional_tags: release-tag-output/tag
           - <<: *terraform-task
             params:
-            # kics-scan ignore-line (This one alert is a false positive)
+              # kics-scan ignore-line (This one alert is a false positive)
               github_access_token: ((github_access_token))
               env: dev
               secrets: ((sdp_dev_digital_landscape_secrets))
@@ -312,7 +312,7 @@ jobs:
             timeout: 10m
           - <<: *terraform-task
             params:
-            # kics-scan ignore-line (This one alert is a false positive)
+              # kics-scan ignore-line (This one alert is a false positive)
               github_access_token: ((github_access_token))
               env: prod
               secrets: ((sdp_prod_digital_landscape_secrets))
