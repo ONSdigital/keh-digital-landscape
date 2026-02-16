@@ -39,23 +39,23 @@ Some routes require authentication (like `/copilot/team`). For these routes, you
 
 1. Go to the copilot team page:
 
-```http
-http://localhost:3000/copilot/team
-```
+  ```http
+  http://localhost:3000/copilot/team
+  ```
 
-1. Click the "Login with GitHub" button.
+2. Click the "Login with GitHub" button.
 
-2. You will be redirected to the GitHub login page. Login with your GitHub account.
+3. You will be redirected to the GitHub login page. Login with your GitHub account.
 
-3. You will be redirected back to the copilot team page.
+4. You will be redirected back to the copilot team page.
 
-4. Open Chrome DevTools and navigate to the "Application" tab.
+5. Open Chrome DevTools and navigate to the "Application" tab.
 
-5. Under "Cookies", find the "githubUserToken" cookie.
+6. Under "Cookies", find the "githubUserToken" cookie.
 
-6. Copy the `value` of the cookie, beginning with `ghu_`.
+7. Copy the `value` of the cookie, beginning with `ghu_`.
 
-7. Set the environment variable before running tests:
+8. Set the environment variable before running tests:
 
 ```bash
 export TEST_GITHUBUSERTOKEN="your-generated-token"
@@ -71,9 +71,9 @@ TEST_GITHUBTEAM=your-team-slug
 
 1. Run the tests:
 
-```bash
-make test
-```
+  ```bash
+  make test
+  ```
 
 Routes that require authentication are marked with `"authenticated": "githubUserToken"` in `test-config.json`.
 

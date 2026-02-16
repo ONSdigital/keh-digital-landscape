@@ -18,16 +18,16 @@ cd testing/backend
 
 1. Create a virtual environment (recommended but not required):
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-1. Install dependencies:
+2. Install dependencies:
 
-```bash
-make setup
-```
+   ```bash
+   make setup
+   ```
 
 ## Running Tests
 
@@ -47,27 +47,27 @@ The tests are organized into three main categories:
 
 1. **Main API tests** - Core API endpoints like health check, CSV data, and repository statistics:
 
-```bash
-make test-main
-```
+   ```bash
+   make test-main
+   ```
 
-1. **Admin API tests** - Admin banner management endpoints:
+2. **Admin API tests** - Admin banner management endpoints:
 
-```bash
-make test-admin
-```
+   ```bash
+   make test-admin
+   ```
 
-1. **Review API tests** - Tech radar update endpoints:
+3. **Review API tests** - Tech radar update endpoints:
 
-```bash
-make test-review
-```
+   ```bash
+   make test-review
+   ```
 
-1. **Copilot API tests** - Copilot endpoints:
+4. **Copilot API tests** - Copilot endpoints:
 
-```bash
-make test-copilot
-```
+   ```bash
+   make test-copilot
+   ```
 
 ### Authentication for Tests
 
@@ -81,15 +81,15 @@ Some Copilot API endpoints require authentication. To test these endpoints, you 
 
 2. Set the environment variables:
 
-```bash
-export TEST_GITHUBUSERTOKEN="your_github_token"
-```
+   ```bash
+   export TEST_GITHUBUSERTOKEN="your_github_token"
+   ```
 
-1. Run the Copilot tests:
+3. Run the Copilot tests:
 
-```bash
-make test-copilot
-```
+   ```bash
+   make test-copilot
+   ```
 
 Tests that require authentication will be skipped if the token is not provided.
 
