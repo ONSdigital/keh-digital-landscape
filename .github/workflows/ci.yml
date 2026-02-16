@@ -1,7 +1,9 @@
+# GitHub Actions lint workflow
 ---
+  
 name: Linting and Formatting
 
-'on':
+on:
   push:
     branches: [main]
   pull_request:

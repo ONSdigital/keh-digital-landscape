@@ -1,4 +1,6 @@
+# Concourse pipeline configuration
 ---
+
 resource_types:
   - name: key-value
     type: registry-image

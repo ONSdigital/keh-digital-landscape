@@ -1,7 +1,9 @@
+# MkDocs CI workflow
 ---
+
 name: MkDocs CI
 
-'on':
+on:
   push:
     branches: [main]
     paths:

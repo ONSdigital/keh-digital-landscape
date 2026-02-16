@@ -1,3 +1,4 @@
+# Backstage component descriptor
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component

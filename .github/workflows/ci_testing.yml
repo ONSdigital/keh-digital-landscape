@@ -1,7 +1,9 @@
+# Testing CI workflow
 ---
+  
 name: CI Testing
 
-'on':
+on:
   workflow_dispatch:
   pull_request:
     branches: ['**']
