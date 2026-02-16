@@ -4,7 +4,6 @@ set -eu
 export STORAGE_DRIVER=vfs
 export PODMAN_SYSTEMD_UNIT=concourse-task
 
-
 # Check required variables
 if [ -z "${aws_account_id:-}" ]; then
 	echo "Error: aws_account_id is not set."

@@ -1,9 +1,7 @@
 #!/bin/sh
 set -eu
 
-
 apk add --no-cache aws-cli podman jq iptables
-
 
 # Check if aws_role_arn is set
 if [ -z "${aws_role_arn:-}" ]; then
@@ -16,7 +14,6 @@ aws sts assume-role --output text \
 	--role-session-name concourse-pipeline-run \
 	--query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" |
 	awk -F '\t' '{print $1 > ("AccessKeyId")}{print $2 > ("SecretAccessKey")}{print $3 > ("SessionToken")}'
-
 
 AWS_ACCESS_KEY_ID="$(cat AccessKeyId)"
 export AWS_ACCESS_KEY_ID
