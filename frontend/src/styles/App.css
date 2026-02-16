@@ -1367,18 +1367,20 @@ text {
 }
 
 .tooltip-content {
-  background: hsl(var(--popover));
-  color: hsl(var(--popover-foreground));
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
   padding: 4px 8px;
   border-radius: var(--radius);
   font-size: 14px;
   white-space: nowrap;
-  box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1);
+
+  border: 1px solid hsl(var(--border) / 0.15);
+  box-shadow: 0 4px 8px hsl(var(--border) / 0.1);
   z-index: 9999999;
 }
 
 .tooltip-arrow {
-  fill: hsl(var(--popover));
+  fill: hsl(var(--accent));
 }
 
 /* Tech Radar Filters Styling */
