@@ -1,7 +1,7 @@
 # Update the Application Load Balancer to forward appropriate requests
 # to the backend service running in ECS Fargate.
 # Create target group, used by ALB to forward requests to ECS service
-resource "aws_lb_target_group" "frontend_new_tg" {
+resource "aws_lb_target_group" "frontend_tg" {
   name        = "${var.service_subdomain}-front-farg-tg"
   port        = var.frontend_port
   protocol    = "HTTP"
@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "frontend_new_tg" {
 }
 
 # Backend target group
-resource "aws_lb_target_group" "backend_new_tg" {
+resource "aws_lb_target_group" "backend_tg" {
   name        = "${var.service_subdomain}-back-farg-tg"
   port        = var.backend_port
   protocol    = "HTTP"
@@ -85,7 +85,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.frontend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.frontend_tg.arn
 #   }
 # }
 
@@ -121,7 +121,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.backend_tg.arn
 #   }
 # }
 
@@ -143,7 +143,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.backend_tg.arn
 #   }
 # }
 
@@ -166,7 +166,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.backend_tg.arn
 #   }
 # }
 
@@ -189,7 +189,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.frontend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.frontend_tg.arn
 #   }
 # }
 
@@ -229,7 +229,7 @@ resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_new_tg.arn
+    target_group_arn = aws_lb_target_group.backend_tg.arn
   }
 }
 
@@ -264,7 +264,7 @@ resource "aws_lb_listener_rule" "digital_landscape_backend_rule_2" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_new_tg.arn
+    target_group_arn = aws_lb_target_group.backend_tg.arn
   }
 }
 
@@ -294,6 +294,6 @@ resource "aws_lb_listener_rule" "digital_landscape_frontend_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend_new_tg.arn
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
   }
 }
