@@ -225,7 +225,7 @@ Run the linting for the backend:
 make lint-backend
 ```
 
-## Megalinter
+### Megalinter
 
 Megalinter is implemented as a secondary linting, formatting and security tool.
 
@@ -240,12 +240,6 @@ Fix the issues caught by megalinter:
 ```bash
 make megalint-fix
 ```
-
-The rules ignored by megalinter are held in:
-- kics.config
-- mega-linter.yml
-- checkov.yml
-- within some .yml and .yaml files
 
 ## Terraform
 
