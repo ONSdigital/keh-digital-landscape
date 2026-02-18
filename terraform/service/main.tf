@@ -38,6 +38,14 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           protocol      = "tcp"
         }
       ],
+      readonlyRootFilesystem = true,
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
+        }
+      ],
       logConfiguration = {
         logDriver = "awslogs",
         options = {
@@ -81,6 +89,14 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           containerPort = var.backend_port,
           hostPort      = var.backend_port,
           protocol      = "tcp"
+        }
+      ],
+      readonlyRootFilesystem = true,
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
         }
       ],
       environment = [
@@ -196,6 +212,9 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
   network_mode             = "awsvpc"
   cpu                      = var.service_cpu
   memory                   = var.service_memory
+  volume {
+    name = "tmp"
+  }
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
