@@ -2,8 +2,8 @@
 # to the backend service running in ECS Fargate.
 # Create target group, used by ALB to forward requests to ECS service
 resource "aws_lb_target_group" "frontend_tg" {
-  name        = "${var.service_subdomain}-front-farg-tg"
-  port        = var.frontend_port
+  name = "${var.service_subdomain}-front-farg-tg"
+  port = var.frontend_port
   # checkov:skip=CKV_AWS_378: HTTPS does not work
   protocol    = "HTTP"
   target_type = "ip"
@@ -25,8 +25,8 @@ resource "aws_lb_target_group" "frontend_tg" {
 
 # Backend target group
 resource "aws_lb_target_group" "backend_tg" {
-  name        = "${var.service_subdomain}-back-farg-tg"
-  port        = var.backend_port
+  name = "${var.service_subdomain}-back-farg-tg"
+  port = var.backend_port
   # checkov:skip=CKV_AWS_378: HTTPS does not work
   protocol    = "HTTP"
   target_type = "ip"
