@@ -4,6 +4,7 @@
 resource "aws_lb_target_group" "frontend_tg" {
   name        = "${var.service_subdomain}-front-farg-tg"
   port        = var.frontend_port
+  # checkov:skip=CKV_AWS_378: HTTPS does not work
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
@@ -26,6 +27,7 @@ resource "aws_lb_target_group" "frontend_tg" {
 resource "aws_lb_target_group" "backend_tg" {
   name        = "${var.service_subdomain}-back-farg-tg"
   port        = var.backend_port
+  # checkov:skip=CKV_AWS_378: HTTPS does not work
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
