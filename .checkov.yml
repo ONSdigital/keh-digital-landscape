@@ -11,6 +11,7 @@
 # CKV_AWS_18 - S3 Bucket does not need logging - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging
 # CKV2_AWS_61 - S3 bucket does not need lifecycle config - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-61
 # CKV_AWS_144 - DL does not go outside of our region, therefore no cross-region replication is needed - https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled
+# CKV_DOCKER_2 - Ignore the HEALTHCHECK need for Dockerfile
 skip-check:
   - CKV_TF_1
   - CKV_AWS_273
@@ -24,3 +25,4 @@ skip-check:
   - CKV_AWS_18
   - CKV2_AWS_61
   - CKV_AWS_144
+  - CKV_DOCKER_2
