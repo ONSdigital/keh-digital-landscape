@@ -25,7 +25,7 @@ env:
   # If the PAT secret is not present, the APPLY_FIXES environment variable is set to none.
   # Without a PAT token, commits/PRs will not trigger workflow runs.
   # This is a GitHub Actions limitation to prevent infinite loops.
-  # APPLY_FIXES: all
+  APPLY_FIXES: none
 
   # Decide which event triggers application of fixes in a commit or a PR
   # (pull_request, push, all)
