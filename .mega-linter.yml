@@ -22,6 +22,10 @@ DISABLE_LINTERS:
   - REPOSITORY_DEVSKIM
   - REPOSITORY_TRUFFLEHOG
   - REPOSITORY_GIT_DIFF
+  - REPOSITORY_KINGFISHER
+
+  # Trivy is more than enough for repository scanning
+  - REPOSITORY_GRYPE
 
   # Disabled due to false positives
   - MARKDOWN_MARKDOWN_LINK_CHECK
@@ -43,6 +47,7 @@ DISABLE_LINTERS:
   # Disable since we have our own markdown linting and formatting using prettier
   - MARKDOWN_MARKDOWN_TABLE_FORMATTER
   - MARKDOWN_MARKDOWNLINT
+  
 
 SHOW_ELAPSED_TIME: true
 
