@@ -47,7 +47,6 @@ DISABLE_LINTERS:
   # Disable since we have our own markdown linting and formatting using prettier
   - MARKDOWN_MARKDOWN_TABLE_FORMATTER
   - MARKDOWN_MARKDOWNLINT
-  
 
 SHOW_ELAPSED_TIME: true
 
