@@ -59,6 +59,10 @@ resource "aws_lb_target_group" "frontend_new_tg" {
     timeout             = 5
     matcher             = "200-399"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Backend target group
@@ -85,6 +89,10 @@ resource "aws_lb_target_group" "backend_tg" {
   }
 
   deregistration_delay = 60
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Use the module to get highest current priority
