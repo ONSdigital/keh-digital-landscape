@@ -14,9 +14,9 @@ on: # yamllint disable-line rule:truthy
 
 permissions:
   contents: write
-  issues: write
-  pull-requests: write
-  statuses: write
+  issues: read
+  pull-requests: read
+  statuses: read
 
 # Comment env block if you do not want to apply fixes
 env:
