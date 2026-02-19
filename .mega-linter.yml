@@ -1,0 +1,75 @@
+# Configuration file for MegaLinter
+---
+# all, none, or list of linter keys
+APPLY_FIXES: all
+
+FORMATTERS_DISABLE_ERRORS: false
+
+# If you use ENABLE variable, all other languages/formats/tooling-formats will
+# be disabled by default
+# ENABLE:
+
+# If you use ENABLE_LINTERS variable, all other linters will be disabled by
+# default
+# ENABLE_LINTERS:
+
+DISABLE:
+  - COPYPASTE
+  - EDITORCONFIG
+  - SPELL
+
+DISABLE_LINTERS:
+  - REPOSITORY_DEVSKIM
+  - REPOSITORY_TRUFFLEHOG
+  - REPOSITORY_GIT_DIFF
+  - REPOSITORY_KINGFISHER
+
+  # Trivy is more than enough for repository scanning
+  - REPOSITORY_GRYPE
+
+  # Disabled due to false positives
+  - MARKDOWN_MARKDOWN_LINK_CHECK
+
+  # Disabled due to unneeded linting. Checkov, Kics and Trivy are sufficient.
+  - TERRAFORM_TFLINT
+  - TERRAFORM_TERRASCAN
+
+  # Disable due to poor configuration options
+  - ACTION_ACTIONLINT
+
+  # Disable since Ruff is used more widely in our code
+  - PYTHON_FLAKE8
+  - PYTHON_PYRIGHT
+
+  # Disable as we have JavaScript linter and formatting already
+  - JAVASCRIPT_STANDARD
+
+  # Disable since we have our own markdown linting and formatting using prettier
+  - MARKDOWN_MARKDOWN_TABLE_FORMATTER
+  - MARKDOWN_MARKDOWNLINT
+
+SHOW_ELAPSED_TIME: true
+
+FILEIO_REPORTER: false
+# Uncomment if you want MegaLinter to detect errors but not block CI to pass
+# DISABLE_ERRORS: true
+
+# Ignore all file within Git Ignore for linting and security as these will not be pushed to GitHub
+IGNORE_GITIGNORED_FILES: true
+
+# Use yml file to allow the use of comments. Megalinter's default is .markdown-lint.json
+MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdown-lint.yml
+
+YAML_V8R_FILTER_REGEX_EXCLUDE: 'dependabot.yml'
+# Dependabot yaml in SchemaStore is currently not up to date. Dependabot is validated on push by GitHub by default.
+
+# Disabled Pylint import errors as import for request and pytest kept failing
+PYTHON_PYLINT_ARGUMENTS:
+  - --disable=import-error
+
+# Disabled Bandit B101 and B311 errors:
+# B101 - Made for using assert, not in test cases - https://bandit.readthedocs.io/en/latest/plugins/b101_assert_used.html
+# B311 - We do not use pseudo-random generators for security purposes - https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
+PYTHON_BANDIT_ARGUMENTS:
+  - --skip
+  - B101,B311

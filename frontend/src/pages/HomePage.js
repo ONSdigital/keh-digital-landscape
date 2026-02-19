@@ -39,7 +39,7 @@ function HomePage() {
         onSearchChange={() => {}}
         searchResults={[]}
         onSearchResultClick={() => {}}
-        hideSearch={true}
+        hideSearch
       />
       <div className="home-page">
         <div className="home-content">

@@ -250,7 +250,7 @@ const Projects = ({
           'Database_Technologies',
         ];
 
-        let mainFieldsString =
+        const mainFieldsString =
           `${project.Project || ''} ${project.Project_Short || ''} ${project.Project_Area || ''} ${project.Team || ''}`.toLowerCase();
         let techFieldsString = '';
 
@@ -477,8 +477,9 @@ const Projects = ({
    * @returns {number} - The number of unique programmes.
    */
   const uniqueProgrammesCount = useMemo(() => {
-    if (!filteredAndSortedProjects || filteredAndSortedProjects.length === 0)
+    if (!filteredAndSortedProjects || filteredAndSortedProjects.length === 0) {
       return 0;
+    }
 
     const uniqueProgrammes = new Set();
 
@@ -664,8 +665,8 @@ const Projects = ({
             projectsData={filteredAndSortedProjects}
             title="Architectures"
             categoryField="Architectures"
-            splitSemicolon={true}
-            cloudProvidersOnly={true}
+            splitSemicolon
+            cloudProvidersOnly
             categoryColours={CATEGORY_COLOURS}
           />
         </div>

@@ -3,9 +3,9 @@ import '../../../styles/components/SkeletonLoading.css';
 
 function SkeletonStatCard({ minWidth = '0' }) {
   return (
-    <div className="stat-card skeleton" style={{ minWidth: minWidth }}>
-      <div className="skeleton-title"></div>
-      <div className="skeleton-value"></div>
+    <div className="stat-card skeleton" style={{ minWidth }}>
+      <div className="skeleton-title" />
+      <div className="skeleton-value" />
     </div>
   );
 }

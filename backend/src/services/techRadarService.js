@@ -73,8 +73,9 @@ class TechRadarService {
         if (!validTimeline) return false;
 
         // Optional fields validation
-        if (entry.description && typeof entry.description !== 'string')
+        if (entry.description && typeof entry.description !== 'string') {
           return false;
+        }
         if (entry.key && typeof entry.key !== 'string') return false;
         if (entry.url && typeof entry.url !== 'string') return false;
         if (entry.links && !Array.isArray(entry.links)) return false;

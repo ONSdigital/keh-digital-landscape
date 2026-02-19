@@ -157,7 +157,7 @@ function RadarPage() {
    */
   const getFilteredTimeline = timeline => {
     let filteredTimeline = [];
-    let digitalServicesTimeline = [];
+    const digitalServicesTimeline = [];
 
     timeline.forEach(entry => {
       const directorate = entry.directorate || 'Digital Services (DS)';
@@ -754,16 +754,17 @@ function RadarPage() {
     }
   };
 
-  if (!data)
+  if (!data) {
     return (
       <div>
         <Header />
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner" />
           <p>Loading Radar...</p>
         </div>
       </div>
     );
+  }
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
     const quadrant = entry.quadrant;

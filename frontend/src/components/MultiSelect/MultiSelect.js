@@ -101,7 +101,7 @@ const MultiSelect = ({
   );
 
   return (
-    <div className={`multi-select`} ref={containerRef}>
+    <div className="multi-select" ref={containerRef}>
       <div
         className={`multi-select-control ${isOpen ? 'active' : ''}`}
         onClick={handleInputClick}

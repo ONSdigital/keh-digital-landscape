@@ -7,7 +7,7 @@
   background-color: hsl(var(--background));
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
   z-index: 1000;
   overflow: hidden;
   display: flex;
@@ -20,6 +20,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -178,7 +179,7 @@
 }
 
 /* For small screens */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .similarity-modal-container {
     width: calc(100% - 40px);
     bottom: 10px;

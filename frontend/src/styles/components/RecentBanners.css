@@ -54,15 +54,15 @@
 }
 
 .banner-icon.info {
-  color: hsl(210, 100%, 50%);
+  color: hsl(210deg 100% 50%);
 }
 
 .banner-icon.warning {
-  color: hsl(45, 100%, 50%);
+  color: hsl(45deg 100% 50%);
 }
 
 .banner-icon.error {
-  color: hsl(0, 100%, 65%);
+  color: hsl(0deg 100% 65%);
 }
 
 .recent-banner-header h3 {

@@ -13,10 +13,10 @@ const UserCard = ({ username, email, githubUrl, fullName, avatarUrl }) => {
 
   return (
     <article className="user-card" aria-label={`User card for ${displayName}`}>
-      <div className="user-card__avatar">
+      <div className="user-card-avatar">
         {avatarUrl ? (
           <img
-            className="user-card__avatar-img"
+            className="user-card-avatar-img"
             src={avatarUrl}
             alt=""
             decoding="async"
@@ -27,18 +27,18 @@ const UserCard = ({ username, email, githubUrl, fullName, avatarUrl }) => {
           <span>{initials}</span>
         )}
       </div>
-      <div className="user-card__body">
-        <div className="user-card__header">
-          <h3 className="user-card__name">{displayName}</h3>
+      <div className="user-card-body">
+        <div className="user-card-header">
+          <h3 className="user-card-name">{displayName}</h3>
           {username && displayName && username !== displayName && (
-            <span className="user-card__username">@{username}</span>
+            <span className="user-card-username">@{username}</span>
           )}
         </div>
-        <ul className="user-card__meta">
+        <ul className="user-card-meta">
           {email && (
             <li>
               <a
-                className="user-card__link"
+                className="user-card-link"
                 href={`mailto:${email}`}
                 title={`Email ${displayName}`}
               >
@@ -49,7 +49,7 @@ const UserCard = ({ username, email, githubUrl, fullName, avatarUrl }) => {
           {githubUrl && (
             <li>
               <a
-                className="user-card__link"
+                className="user-card-link"
                 href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"

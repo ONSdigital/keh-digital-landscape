@@ -50,7 +50,7 @@
   margin-right: 16px;
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
   .header-left h1 {
     display: none;
   }
@@ -143,8 +143,8 @@
 
 .search-input:focus-within + .search-container,
 .search-container:has(.search-input:focus) {
-  border-color: hsl(var(--primary) / 0.5);
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  border-color: hsl(var(--primary) / 50%);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 10%);
 }
 
 .search-results {
@@ -154,7 +154,7 @@
   width: 300px;
   background: hsl(var(--card));
   border-radius: var(--radius);
-  box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 0.1);
+  box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 10%);
   margin-top: 8px;
   max-height: 400px;
   overflow-y: auto;
@@ -175,7 +175,7 @@
 }
 
 .search-result-item:hover {
-  background: hsl(var(--muted) / 0.5);
+  background: hsl(var(--muted) / 50%);
 }
 
 .search-result-title {
@@ -195,7 +195,7 @@
   margin-top: 2px;
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
   .desktop-nav {
     display: flex;
     align-items: center;
@@ -206,7 +206,7 @@
   .desktop-nav a {
     background: none;
     border: none;
-    color: hsl(var(--foreground) / 0.75);
+    color: hsl(var(--foreground) / 75%);
     font-size: 14px;
     font-weight: 500;
     padding: 0;
@@ -218,7 +218,7 @@
 
   .desktop-nav button:hover,
   .desktop-nav a:hover {
-    color: hsl(var(--foreground) / 0.5);
+    color: hsl(var(--foreground) / 50%);
   }
 
   .desktop-nav button.active,
@@ -228,8 +228,7 @@
     text-underline-offset: 8px;
     text-decoration-style: solid;
     text-decoration-thickness: 2px;
-
-    text-decoration-color: hsl(var(--foreground) / 0.5);
+    text-decoration-color: hsl(var(--foreground) / 50%);
   }
 
   .mobile-menu {
@@ -237,14 +236,14 @@
   }
 }
 
-@media (max-width: 1023px) {
+@media (width <= 1023px) {
   .mobile-menu {
     display: flex;
     gap: 8px;
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .radar-header {
     gap: 0;
     padding: 0 12px;
@@ -275,7 +274,7 @@
   }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (width >= 769px) and (width <= 1024px) {
   .search-input {
     width: 250px;
   }

@@ -1,4 +1,4 @@
-.PHONY: dev dev-ci frontend backend install install-dev docker-build docker-up docker-down clean test logs ps setup lint lint-frontend lint-fix-frontend lint-backend lint-fix-backend format format-frontend format-backend format-check help
+.PHONY: dev dev-ci frontend backend install install-dev docker-build docker-up docker-down clean test logs ps setup lint lint-frontend lint-fix-frontend lint-backend lint-fix-backend format format-frontend format-backend format-check help megalint-check megalint-fix
 
 # Development environment
 dev:
@@ -79,6 +79,12 @@ lint-backend:
 lint-fix-backend:
 	cd backend && npm run lint:fix
 
+megalint-check:
+	npx mega-linter-runner --env APPLY_FIXES=none
+
+megalint-fix:
+	npx mega-linter-runner --env APPLY_FIXES=all
+
 format: format-frontend format-backend format-frontend-testing format-terraform
 
 format-frontend:
@@ -103,7 +109,7 @@ format-check:
 help:
 	@echo "Available commands:"
 	@echo "  make dev          			- Run in development mode (uses dev.sh)"
-	@echo "  make dev-ci         		- Run in ci development mode without shell trap"
+	@echo "  make dev-ci         			- Run in ci development mode without shell trap"
 	@echo "  make frontend     			- Run just the frontend"
 	@echo "  make backend      			- Run just the backend"
 	@echo " "
@@ -128,6 +134,9 @@ help:
 	@echo "  make lint-backend         		- Run linting for backend without fix"
 	@echo "  make lint-fix-backend     		- Fix linting for backend and fix"
 	@echo "  make format-backend        		- Format backend code"
+	@echo " "
+	@echo "  make megalint-check         		- Run Megalinter within repo, without fix" 
+	@echo "  make megalint-fix			- Run Megalinter within repo, using fix"
 	@echo " "
 	@echo "  make logs         			- View Docker logs"
 	@echo "  make ps           			- List running Docker containers"

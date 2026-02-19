@@ -139,7 +139,7 @@ async function performInteractiveTesting(page, testingElements, settings) {
     console.log(
       `Violations found: ${accessibilityScanResults.violations.length}`
     );
-    console.log(`Full report saved.`);
+    console.log('Full report saved.');
 
     if (accessibilityScanResults.violations.length > 0) {
       accessibilityScanResults.violations.forEach(({ id, help, impact }) =>
@@ -150,14 +150,14 @@ async function performInteractiveTesting(page, testingElements, settings) {
 
   // Generate and write combined HTML report
   const combinedHtml = generateCombinedHtmlReport(routeResults, tags);
-  const combinedHtmlFilename = `report.html`;
+  const combinedHtmlFilename = 'report.html';
   const combinedHtmlPath = path.join(REPORTS_DIR, combinedHtmlFilename);
   fs.writeFileSync(combinedHtmlPath, combinedHtml);
   console.log(`Combined HTML report saved to: ${combinedHtmlPath}`);
 
   // Generate and write combined Markdown report
   const combinedMarkdown = generateCombinedMarkdownReport(routeResults, tags);
-  const combinedMarkdownFilename = `report.md`;
+  const combinedMarkdownFilename = 'report.md';
   const combinedMarkdownPath = path.join(REPORTS_DIR, combinedMarkdownFilename);
   fs.writeFileSync(combinedMarkdownPath, combinedMarkdown);
   console.log(`Combined Markdown report saved to: ${combinedMarkdownPath}`);

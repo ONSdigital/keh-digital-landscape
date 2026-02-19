@@ -15,7 +15,7 @@ html.dark {
 [class*='ag-theme-'] .ag-picker-field-wrapper .ag-picker-field-display,
 [class*='ag-theme-'] .ag-picker-field-wrapper .ag-picker-field-icon .ag-icon {
   color: var(--picker-fg) !important;
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 [class*='ag-theme-'] {
@@ -39,22 +39,23 @@ html:not(.dark)
   .ag-picker-field-icon
   .ag-icon {
   color: #222 !important;
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 [class*='ag-theme-'] .ag-icon {
   color: var(--picker-fg) !important;
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 html:not(.dark) [class*='ag-theme-'] .ag-icon.ag-icon-filter {
   color: #222 !important;
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 :root {
   --picker-fg: #222;
 }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --picker-fg: #efeaea;
@@ -78,7 +79,7 @@ html:not(.dark) [class*='ag-theme-'] .ag-icon.ag-icon-filter {
 [class*='ag-theme-'] .ag-input-field-input:-webkit-autofill {
   -webkit-text-fill-color: var(--picker-fg) !important;
   caret-color: var(--picker-fg) !important;
-  box-shadow: 0 0 0px 1000px transparent inset !important;
+  box-shadow: 0 0 0 1000px transparent inset !important;
 }
 
 [class*='ag-theme-'] .ag-input-field-input.ag-disabled,
@@ -114,9 +115,9 @@ html:not(.dark)
 }
 
 .disclaimer-banner {
-  background-color: hsl(210, 100%, 97%);
-  border: 1px solid hsl(210, 100%, 50%);
-  color: hsl(210, 100%, 20%);
+  background-color: hsl(210deg 100% 97%);
+  border: 1px solid hsl(210deg 100% 50%);
+  color: hsl(210deg 100% 20%);
   padding: 8px 12px;
   border-radius: var(--radius);
   box-sizing: border-box;
@@ -124,8 +125,8 @@ html:not(.dark)
 }
 
 :root[class~='dark'] .disclaimer-banner {
-  background-color: hsl(210, 50%, 20%);
-  color: hsl(210, 100%, 90%);
+  background-color: hsl(210deg 50% 20%);
+  color: hsl(210deg 100% 90%);
 }
 
 .copilot-dashboard h1 {
@@ -192,14 +193,14 @@ html:not(.dark)
 }
 
 .inactivity-button:hover {
-  background: hsl(var(--muted-foreground) / 0.1);
+  background: hsl(var(--muted-foreground) / 10%);
   border-color: hsl(var(--ring));
 }
 
 .inactivity-button:focus {
   outline: 1px solid hsl(var(--primary));
   outline-offset: 2px;
-  background: hsl(var(--muted-foreground) / 0.1);
+  background: hsl(var(--muted-foreground) / 10%);
 }
 
 .inactivity-button:active {
@@ -255,7 +256,6 @@ html:not(.dark)
 :root {
   --ag-background-color: hsl(var(--background));
   --ag-text-color: hsl(var(--foreground));
-
   --ag-header-background-color: hsl(var(--muted));
   --ag-header-text-color: hsl(var(--muted-foreground));
 }
@@ -354,7 +354,7 @@ html:not(.dark)
 
 /* Ensure proper focus management for interactive elements */
 .ag-cell-focus {
-  background-color: hsl(var(--muted) / 0.5) !important;
+  background-color: hsl(var(--muted) / 50%) !important;
   border: 1px solid hsl(var(--primary)) !important;
 }
 
@@ -388,7 +388,7 @@ html:not(.dark)
 .ag-body-viewport:focus {
   outline: 1px solid hsl(var(--primary));
   outline-offset: -2px;
-  background-color: hsl(var(--muted) / 0.1);
+  background-color: hsl(var(--muted) / 10%);
 }
 
 .ag-body-viewport[tabindex='0'] {
@@ -398,7 +398,7 @@ html:not(.dark)
 .ag-body-viewport[tabindex='0']:focus {
   outline: 1px solid hsl(var(--primary));
   outline-offset: -2px;
-  background-color: hsl(var(--muted) / 0.1);
+  background-color: hsl(var(--muted) / 10%);
 }
 
 /* Ensure viewport is keyboard accessible */
@@ -410,7 +410,7 @@ html:not(.dark)
 .ag-body-viewport .ag-cell:focus {
   outline: 1px solid hsl(var(--primary));
   outline-offset: -1px;
-  background-color: hsl(var(--muted) / 0.3);
+  background-color: hsl(var(--muted) / 30%);
 }
 
 .custom-cell {
@@ -472,12 +472,12 @@ html:not(.dark)
   justify-content: space-between;
   min-height: 160px;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px 0 hsl(var(--border) / 0.1);
+  box-shadow: 0 1px 3px 0 hsl(var(--border) / 10%);
 }
 
 .team-card:hover {
-  box-shadow: 0 4px 12px 0 hsl(var(--border) / 0.15);
-  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 0 4px 12px 0 hsl(var(--border) / 15%);
+  border-color: hsl(var(--primary) / 30%);
 }
 
 .team-card-content {
@@ -510,7 +510,7 @@ html:not(.dark)
   color: hsl(var(--muted-foreground));
   font-size: 14px;
   line-height: 1.4;
-  margin: 0 0 12px 0;
+  margin: 0 0 12px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -526,7 +526,7 @@ html:not(.dark)
 }
 
 .team-card-link:hover {
-  color: hsl(var(--primary) / 0.8);
+  color: hsl(var(--primary) / 80%);
   text-decoration: underline;
 }
 
@@ -544,15 +544,15 @@ html:not(.dark)
 }
 
 .team-card-button:hover {
-  background: hsl(var(--primary) / 0.9);
+  background: hsl(var(--primary) / 90%);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px 0 hsl(var(--primary) / 0.25);
+  box-shadow: 0 2px 8px 0 hsl(var(--primary) / 25%);
 }
 
 .team-card-button:focus {
   outline: 1px solid hsl(var(--primary));
   outline-offset: 2px;
-  background: hsl(var(--primary) / 0.9);
+  background: hsl(var(--primary) / 90%);
 }
 
 .team-card-button:active {
@@ -570,7 +570,7 @@ html:not(.dark)
 .copilot-admin-badge {
   font-size: 14px;
   color: hsl(var(--primary));
-  margin: 4px 0 0 0;
+  margin: 4px 0 0;
   font-weight: 500;
 }
 
@@ -592,8 +592,8 @@ html:not(.dark)
 }
 
 .github-logout-button:hover {
-  background: hsl(var(--primary) / 0.9);
-  border-color: hsl(var(--primary) / 0.9);
+  background: hsl(var(--primary) / 90%);
+  border-color: hsl(var(--primary) / 90%);
 }
 
 .github-logout-button:focus {

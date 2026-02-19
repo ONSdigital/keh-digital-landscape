@@ -68,7 +68,7 @@ class GitHubService {
 
       const octokit = new Octokit({ auth: userToken });
 
-      const response = await octokit.request(`GET /user/teams`, {
+      const response = await octokit.request('GET /user/teams', {
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },

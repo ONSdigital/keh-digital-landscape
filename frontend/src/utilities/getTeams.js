@@ -6,7 +6,7 @@ import customFetch from './customFetch';
  */
 export const checkAuthStatus = async () => {
   try {
-    const response = await customFetch(`/copilot/api/auth/status`, {
+    const response = await customFetch('/copilot/api/auth/status', {
       credentials: 'include',
     });
 
@@ -30,7 +30,7 @@ export const checkAuthStatus = async () => {
  */
 export const fetchUserTeams = async () => {
   try {
-    const response = await customFetch(`/copilot/api/teams`, {
+    const response = await customFetch('/copilot/api/teams', {
       credentials: 'include',
     });
 
@@ -61,7 +61,7 @@ export const fetchUserTeams = async () => {
  */
 export const checkCopilotAdminStatus = async () => {
   try {
-    const response = await customFetch(`/copilot/api/admin/status`, {
+    const response = await customFetch('/copilot/api/admin/status', {
       credentials: 'include',
     });
 
@@ -92,7 +92,7 @@ export const checkCopilotAdminStatus = async () => {
  */
 export const exchangeCodeForToken = async code => {
   try {
-    const response = await customFetch(`/copilot/api/github/oauth/token`, {
+    const response = await customFetch('/copilot/api/github/oauth/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -119,7 +119,7 @@ export const exchangeCodeForToken = async code => {
  */
 export const logoutUser = async () => {
   try {
-    const response = await customFetch(`/copilot/api/github/oauth/logout`, {
+    const response = await customFetch('/copilot/api/github/oauth/logout', {
       method: 'POST',
       credentials: 'include',
     });

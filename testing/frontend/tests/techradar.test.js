@@ -249,7 +249,7 @@ test('Verify that highlighted technologies appear in the list for each directora
   //      'directorate-1',
   //      'directorate-2',
   //  ]
-  //}
+  // }
 
   const techPositionMap = {};
   for (const dir of Object.keys(reviewPositionCases)) {
@@ -312,8 +312,9 @@ test('Verify that blips on the radar get highlighted for directorate-specific po
     for (const ring of Object.keys(positions)) {
       for (const techId of positions[ring]) {
         if (!techPositionMap[techId]) techPositionMap[techId] = {};
-        if (!techPositionMap[techId][ring])
+        if (!techPositionMap[techId][ring]) {
           techPositionMap[techId][ring] = new Set();
+        }
         techPositionMap[techId][ring].add(dir);
       }
     }

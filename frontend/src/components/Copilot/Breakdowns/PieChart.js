@@ -67,7 +67,7 @@ const PieChart = ({ engagedUsers, title = 'User Engagement' }) => {
             cy="50%"
             outerRadius={100}
             labelLine={false}
-            isAnimationActive={true}
+            isAnimationActive
           >
             {data.map((entry, index) => (
               <Cell

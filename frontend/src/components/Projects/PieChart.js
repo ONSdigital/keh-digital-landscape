@@ -68,7 +68,7 @@ const PieChart = ({
     }
 
     // Initialise with empty counts
-    let categoryCounts = {};
+    const categoryCounts = {};
     let detectedCategories = [];
 
     // Handle cloud providers mode (special case for architecture field)
@@ -107,7 +107,7 @@ const PieChart = ({
 
           // If no match found, count as Other
           if (!matched) {
-            categoryCounts['Other'] += 1;
+            categoryCounts.Other += 1;
           }
         });
       });
@@ -124,8 +124,8 @@ const PieChart = ({
           return {
             name: categoryLabels[category] || category,
             value: parseFloat(percentage.toFixed(1)),
-            count: count,
-            category: category, // Store original category for colour mapping
+            count,
+            category, // Store original category for colour mapping
           };
         })
         .sort((a, b) => b.count - a.count); // Sort by count descending
@@ -139,7 +139,7 @@ const PieChart = ({
 
       // Collect all unique values
       projectsData.forEach(project => {
-        let fieldValue = project[categoryField];
+        const fieldValue = project[categoryField];
 
         if (!fieldValue) return;
 
@@ -161,7 +161,7 @@ const PieChart = ({
       // Sort by frequency before limiting
       const valueCounts = {};
       projectsData.forEach(project => {
-        let fieldValue = project[categoryField];
+        const fieldValue = project[categoryField];
         if (!fieldValue) return;
 
         if (splitSemicolon) {
@@ -213,7 +213,7 @@ const PieChart = ({
             }
             // If we're using dynamic categories with "Other" and this isn't a known category
             else if (finalCategories.includes('Other')) {
-              categoryCounts['Other'] += 1;
+              categoryCounts.Other += 1;
             }
           });
         });
@@ -227,7 +227,7 @@ const PieChart = ({
           }
           // If we have an "Other" category and this isn't a known category
           else if (finalCategories.includes('Other')) {
-            categoryCounts['Other'] += 1;
+            categoryCounts.Other += 1;
           }
         });
       }
@@ -244,8 +244,8 @@ const PieChart = ({
           return {
             name: categoryLabels[category] || category,
             value: parseFloat(percentage.toFixed(1)),
-            count: count,
-            category: category, // Store original category for colour mapping
+            count,
+            category, // Store original category for colour mapping
           };
         })
         .sort((a, b) => b.count - a.count); // Sort by count descending
@@ -287,7 +287,7 @@ const PieChart = ({
 
             // If no match and we have an "Other" category
             if (!matched && finalCategories.includes('Other')) {
-              categoryCounts['Other'] += 1;
+              categoryCounts.Other += 1;
             }
           });
         });
@@ -301,7 +301,7 @@ const PieChart = ({
           }
           // If we have an "Other" category and this isn't a known category
           else if (finalCategories.includes('Other')) {
-            categoryCounts['Other'] += 1;
+            categoryCounts.Other += 1;
           }
         });
       }
@@ -318,8 +318,8 @@ const PieChart = ({
           return {
             name: categoryLabels[category] || category,
             value: parseFloat(percentage.toFixed(1)),
-            count: count,
-            category: category, // Store original category for colour mapping
+            count,
+            category, // Store original category for colour mapping
           };
         })
         .sort((a, b) => b.count - a.count); // Sort by count descending

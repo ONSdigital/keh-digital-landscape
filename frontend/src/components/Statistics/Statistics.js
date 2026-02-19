@@ -151,7 +151,7 @@ function Statistics({
     const languageStats = getCurrentLanguageStats();
     if (!languageStats) return [];
 
-    let filtered = Object.entries(languageStats).filter(([language]) => {
+    const filtered = Object.entries(languageStats).filter(([language]) => {
       const matchesSearch = language
         .toLowerCase()
         .includes(searchTerm.toLowerCase());

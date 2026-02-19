@@ -7,22 +7,22 @@
   box-shadow: 0 1px 2px hsl(var(--card-foreground));
 }
 
-.addressbook-howto__title {
-  margin: 0 0 8px 0;
+.addressbook-howto-title {
+  margin: 0 0 8px;
   font-size: 1.125rem;
   line-height: 1.4;
 }
 
-.addressbook-howto__list {
+.addressbook-howto-list {
   margin: 0;
   padding-left: 1.25rem;
 }
 
-.addressbook-howto__list li {
+.addressbook-howto-list li {
   margin: 6px 0;
 }
 
-.addressbook-howto__example {
+.addressbook-howto-example {
   background: hsl(var(--secondary));
   border: 1px solid hsl(var(--border));
   border-radius: 4px;
@@ -30,16 +30,17 @@
   margin-left: 4px;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .addressbook-howto {
     margin: 12px 12px 8px;
     padding: 14px 16px;
   }
 
-  .addressbook-howto__title {
+  .addressbook-howto-title {
     font-size: 1rem;
   }
 }
+
 /* AddressBook page search styles */
 .addressbook-search {
   display: flex;
@@ -48,7 +49,7 @@
   padding: 12px 16px;
 }
 
-.addressbook-search__input {
+.addressbook-search-input {
   flex: 1 1 auto;
   height: 44px;
   padding: 0 14px;
@@ -62,16 +63,16 @@
     border-color 120ms ease;
 }
 
-.addressbook-search__input::placeholder {
+.addressbook-search-input::placeholder {
   color: hsl(var(--muted-foreground));
 }
 
-.addressbook-search__input:focus {
+.addressbook-search-input:focus {
   border-color: var(--color-assess);
   box-shadow: 0 0 0 1px var(--color-assess);
 }
 
-.addressbook-search__button {
+.addressbook-search-button {
   flex: 0 0 auto;
   height: 44px;
   padding: 0 16px;
@@ -88,22 +89,23 @@
     transform 120ms ease;
 }
 
-.addressbook-search__button:hover {
+.addressbook-search-button:hover {
   background: var(--color-review);
   box-shadow: 0 6px 16px hsl(var(--background));
 }
 
-.addressbook-search__button:active {
+.addressbook-search-button:active {
   transform: translateY(0.5px);
 }
 
-@media (max-width: 520px) {
+@media (width <= 520px) {
   .addressbook-search {
     padding: 10px 12px;
     gap: 10px;
   }
-  .addressbook-search__input,
-  .addressbook-search__button {
+
+  .addressbook-search-input,
+  .addressbook-search-button {
     height: 40px;
     border-radius: 10px;
   }

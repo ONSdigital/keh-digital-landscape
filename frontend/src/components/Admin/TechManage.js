@@ -350,8 +350,8 @@ const TechManage = () => {
             name: existingTech.name,
             source: existingTech.source,
             category: existingTech.category || existingTech.quadrant,
-            similarity: similarity,
-            isCaseMatch: isCaseMatch,
+            similarity,
+            isCaseMatch,
           });
         }
       }
@@ -966,8 +966,9 @@ const TechManage = () => {
         }
       } else if (sortConfig.key === 'location') {
         const getLocationValue = info => {
-          if (!info.status.inArrayData && !info.status.inRadarData)
+          if (!info.status.inArrayData && !info.status.inRadarData) {
             return 'Not tracked';
+          }
           return info.status.inRadarData ? 'Radar' : 'Ref. List';
         };
         const locA = getLocationValue(a[1]);
@@ -1106,7 +1107,7 @@ const TechManage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          category: category,
+          category,
           items: updatedTechs,
         }),
       });

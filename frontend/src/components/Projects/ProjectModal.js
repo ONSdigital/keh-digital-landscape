@@ -185,7 +185,7 @@ const ProjectModal = ({
             {otherRepoData && otherRepoData.length > 0 && (
               <>
                 {otherRepoData.map((repoUrl, index) => {
-                  let displayName = repoUrl;
+                  const displayName = repoUrl;
 
                   return (
                     <div key={index} className="repo-card">
@@ -213,12 +213,12 @@ const ProjectModal = ({
                       <div className="repo-languages">
                         <div className="language-bars">
                           <div
-                            className={`language-bar`}
+                            className="language-bar"
                             style={{
-                              width: `100%`,
+                              width: '100%',
                               backgroundColor: '#cccccc',
                             }}
-                            title={`Unknown`}
+                            title="Unknown"
                           />
                         </div>
                       </div>

@@ -1,3 +1,5 @@
+# Concourse pipeline configuration
+---
 resource_types:
   - name: key-value
     type: registry-image
@@ -11,13 +13,15 @@ resources:
     source:
       uri: https://github.com/ONSdigital/keh-digital-landscape
       username: ((github_access_token))
-      password: x-oauth-basic
+      # kics-scan ignore-line (This one alert is a false positive)
+      password: x-oauth-basic # checkov:skip=CKV_SECRET_6:This one alert is a false positive
       branch: ((branch))
   - name: github-release
     type: github-release
     source:
       owner: ONSdigital
       repository: keh-digital-landscape
+      # kics-scan ignore-line This one alert is a false positive
       access_token: ((github_access_token))
   - name: github-release-tag
     type: key-value
@@ -52,7 +56,9 @@ terraform-task: &terraform-task
       - name: resource-repo
       - name: github-release-tag
     params:
+      # kics-scan ignore-line (This one alert is a false positive)
       secrets: ((sdp_((env))_digital_landscape_secrets))
+      # kics-scan ignore-line (This one alert is a false positive)
       github_access_token: ((github_access_token))
       env: ((env))
       branch: ((branch))
@@ -229,22 +235,23 @@ jobs:
                     ./resource-repo/concourse/scripts/build_image.sh
             timeout: 15m
           - in_parallel:
-            - put: images-to-shared-ecr-frontend
-              inputs:
-                - built-images
-                - release-tag-output
-              params:
-                image: built-images/frontend.tar
-                additional_tags: release-tag-output/tag
-            - put: images-to-shared-ecr-backend
-              inputs:
-                - built-images
-                - release-tag-output
-              params:
-                image: built-images/backend.tar
-                additional_tags: release-tag-output/tag
+              - put: images-to-shared-ecr-frontend
+                inputs:
+                  - built-images
+                  - release-tag-output
+                params:
+                  image: built-images/frontend.tar
+                  additional_tags: release-tag-output/tag
+              - put: images-to-shared-ecr-backend
+                inputs:
+                  - built-images
+                  - release-tag-output
+                params:
+                  image: built-images/backend.tar
+                  additional_tags: release-tag-output/tag
           - <<: *terraform-task
             params:
+              # kics-scan ignore-line (This one alert is a false positive)
               github_access_token: ((github_access_token))
               env: dev
               secrets: ((sdp_dev_digital_landscape_secrets))
@@ -306,6 +313,7 @@ jobs:
             timeout: 10m
           - <<: *terraform-task
             params:
+              # kics-scan ignore-line (This one alert is a false positive)
               github_access_token: ((github_access_token))
               env: prod
               secrets: ((sdp_prod_digital_landscape_secrets))
@@ -315,4 +323,3 @@ jobs:
               <<: *notify-azure-webhook-task
               params:
                 env: prod
-            

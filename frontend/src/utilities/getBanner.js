@@ -7,7 +7,7 @@ import customFetch from './customFetch';
  */
 export const fetchBanners = async page => {
   try {
-    const baseUrl = `/api/banners`;
+    const baseUrl = '/api/banners';
 
     const response = await customFetch(baseUrl);
 

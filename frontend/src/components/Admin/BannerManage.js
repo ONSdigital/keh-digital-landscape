@@ -169,21 +169,21 @@ const BannerManage = () => {
                 className={`banner-type-option ${bannerType === 'info' ? 'selected' : ''}`}
                 onClick={() => setBannerType('info')}
               >
-                <span className="banner-type-indicator info"></span>
+                <span className="banner-type-indicator info" />
                 Info
               </div>
               <div
                 className={`banner-type-option ${bannerType === 'warning' ? 'selected' : ''}`}
                 onClick={() => setBannerType('warning')}
               >
-                <span className="banner-type-indicator warning"></span>
+                <span className="banner-type-indicator warning" />
                 Warning
               </div>
               <div
                 className={`banner-type-option ${bannerType === 'error' ? 'selected' : ''}`}
                 onClick={() => setBannerType('error')}
               >
-                <span className="banner-type-indicator error"></span>
+                <span className="banner-type-indicator error" />
                 Error
               </div>
             </div>
