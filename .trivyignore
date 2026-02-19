@@ -16,3 +16,7 @@ AVD-AWS-0089
 
 # S3 Buckets do not need further encryption as they carry nothing sensitive
 AVD-AWS-0132
+
+# Ignore need to create a Healthcheck
+AVD-DS-0026
+ 

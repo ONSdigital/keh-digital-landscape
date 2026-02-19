@@ -38,8 +38,6 @@ COPY --from=builder /app/build ./build
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-HEALTHCHECK NONE
-
 # Start the app
 CMD ["serve", "-s", "build", "-l", "3000"]
 
