@@ -484,7 +484,7 @@ text {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 16px;
   text-align: left;
   user-select: none;
   resize: both;
@@ -1367,6 +1367,23 @@ text {
 .timeline-sort-button:hover {
   color: hsl(var(--foreground));
   background: hsl(var(--muted));
+}
+
+.tooltip-content {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  white-space: nowrap;
+
+  border: 1px solid hsl(var(--border) / 0.15);
+  box-shadow: 0 4px 8px hsl(var(--border) / 0.1);
+  z-index: 9999999;
+}
+
+.tooltip-arrow {
+  fill: hsl(var(--accent));
 }
 
 /* Tech Radar Filters Styling */

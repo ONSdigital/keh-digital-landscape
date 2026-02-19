@@ -20,6 +20,7 @@ import {
   getDirectorateName,
 } from '../utilities/directorateUtils';
 import sendAlert from '../components/Alerts/Alerts';
+import Tooltip from '../components/Tooltip/Tooltip';
 
 /**
  * RadarPage component for displaying the radar page.
@@ -906,10 +907,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '4').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
@@ -1010,10 +1012,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '1').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
@@ -1298,10 +1301,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '3').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
@@ -1400,10 +1404,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '2').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
