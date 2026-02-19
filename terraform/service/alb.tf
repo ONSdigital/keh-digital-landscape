@@ -4,7 +4,7 @@
 resource "aws_lb_target_group" "frontend_tg" {
   name        = "${var.service_subdomain}-front-farg-tg"
   port        = var.frontend_port
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
 
@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "frontend_tg" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 }
 
@@ -26,7 +26,7 @@ resource "aws_lb_target_group" "frontend_tg" {
 resource "aws_lb_target_group" "backend_tg" {
   name        = "${var.service_subdomain}-back-farg-tg"
   port        = var.backend_port
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
 
@@ -48,7 +48,7 @@ resource "aws_lb_target_group" "backend_tg" {
   deregistration_delay = 60
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 }
 
