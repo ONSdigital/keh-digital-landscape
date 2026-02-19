@@ -69,6 +69,7 @@
     "vitest": "^3.2.4"
   },
   "overrides": {
+    "@aws-sdk/xml-builder": "3.972.5",
     "fast-xml-parser": "5.3.6"
   },
   "resolutions": {
