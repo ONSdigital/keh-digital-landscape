@@ -206,102 +206,102 @@ module "alb_listener_priority" {
 
 # Backend
 # Had to split these into two rules due to ALB limitations on number of path patterns per rule (5 max)
-# resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
-#   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-#   priority     = module.alb_listener_priority.highest_priority + 4
+resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
+  listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
+  priority     = module.alb_listener_priority.highest_priority + 4
 
-#   condition {
-#     host_header {
-#       values = ["${local.service_url}"]
-#     }
-#   }
+  condition {
+    host_header {
+      values = ["${local.service_url}"]
+    }
+  }
 
-#   condition {
-#     path_pattern {
-#       values = ["/api/*", "/copilot/api/*", "/addressbook/api/*"]
-#     }
-#   }
+  condition {
+    path_pattern {
+      values = ["/api/*", "/copilot/api/*", "/addressbook/api/*"]
+    }
+  }
 
-#   action {
-#     type = "authenticate-cognito"
+  action {
+    type = "authenticate-cognito"
 
-#     authenticate_cognito {
-#       user_pool_arn              = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_arn
-#       user_pool_client_id        = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_client_id
-#       user_pool_domain           = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_domain
-#       on_unauthenticated_request = "authenticate"
-#       session_timeout            = 3600
-#       session_cookie_name        = "AuthenticatedSession"
-#     }
-#   }
+    authenticate_cognito {
+      user_pool_arn              = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_arn
+      user_pool_client_id        = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_client_id
+      user_pool_domain           = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_domain
+      on_unauthenticated_request = "authenticate"
+      session_timeout            = 3600
+      session_cookie_name        = "AuthenticatedSession"
+    }
+  }
 
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_tg.arn
-#   }
-# }
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_tg.arn
+  }
+}
 
-# resource "aws_lb_listener_rule" "digital_landscape_backend_rule_2" {
-#   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-#   priority     = module.alb_listener_priority.highest_priority + 5
+resource "aws_lb_listener_rule" "digital_landscape_backend_rule_2" {
+  listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
+  priority     = module.alb_listener_priority.highest_priority + 5
 
-#   condition {
-#     host_header {
-#       values = ["${local.service_url}"]
-#     }
-#   }
+  condition {
+    host_header {
+      values = ["${local.service_url}"]
+    }
+  }
 
-#   condition {
-#     path_pattern {
-#       values = ["/review/api/*", "/admin/api/*", "/user/api/*"]
-#     }
-#   }
+  condition {
+    path_pattern {
+      values = ["/review/api/*", "/admin/api/*", "/user/api/*"]
+    }
+  }
 
-#   action {
-#     type = "authenticate-cognito"
+  action {
+    type = "authenticate-cognito"
 
-#     authenticate_cognito {
-#       user_pool_arn              = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_arn
-#       user_pool_client_id        = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_client_id
-#       user_pool_domain           = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_domain
-#       on_unauthenticated_request = "authenticate"
-#       session_timeout            = 3600
-#       session_cookie_name        = "AuthenticatedSession"
-#     }
-#   }
+    authenticate_cognito {
+      user_pool_arn              = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_arn
+      user_pool_client_id        = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_client_id
+      user_pool_domain           = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_domain
+      on_unauthenticated_request = "authenticate"
+      session_timeout            = 3600
+      session_cookie_name        = "AuthenticatedSession"
+    }
+  }
 
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_tg.arn
-#   }
-# }
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_tg.arn
+  }
+}
 
 # Frontend
-# resource "aws_lb_listener_rule" "digital_landscape_frontend_rule" {
-#   listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
-#   priority     = module.alb_listener_priority.highest_priority + 6
+resource "aws_lb_listener_rule" "digital_landscape_frontend_rule" {
+  listener_arn = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_https_listener_arn
+  priority     = module.alb_listener_priority.highest_priority + 6
 
-#   condition {
-#     host_header {
-#       values = ["${local.service_url}"]
-#     }
-#   }
+  condition {
+    host_header {
+      values = ["${local.service_url}"]
+    }
+  }
 
-#   action {
-#     type = "authenticate-cognito"
+  action {
+    type = "authenticate-cognito"
 
-#     authenticate_cognito {
-#       user_pool_arn              = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_arn
-#       user_pool_client_id        = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_client_id
-#       user_pool_domain           = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_domain
-#       on_unauthenticated_request = "authenticate"
-#       session_timeout            = 3600
-#       session_cookie_name        = "AuthenticatedSession"
-#     }
-#   }
+    authenticate_cognito {
+      user_pool_arn              = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_arn
+      user_pool_client_id        = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_client_id
+      user_pool_domain           = data.terraform_remote_state.ecs_auth.outputs.cognito_reviewer_user_pool_domain
+      on_unauthenticated_request = "authenticate"
+      session_timeout            = 3600
+      session_cookie_name        = "AuthenticatedSession"
+    }
+  }
 
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.frontend_tg.arn
-#   }
-# }
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
+  }
+}
