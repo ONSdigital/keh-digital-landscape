@@ -18,6 +18,7 @@ import {
   getDirectorateColour,
   getDirectorateName,
 } from '../utilities/directorateUtils';
+import Layout from '../components/Layout/Layout';
 
 const ReviewPage = () => {
   const { getUserData } = useData();
@@ -1041,445 +1042,456 @@ const ReviewPage = () => {
 
   return (
     <>
-      <Header
-        searchTerm={searchTerm}
-        onSearchChange={value => setSearchTerm(value)}
-        searchResults={[]}
-        onSearchResultClick={() => {}}
-        hideSearch={false}
-      />
-      <div className="admin-page">
-        <div className="admin-details">
-          <div
-            className="admin-header-left"
-            style={{
-              width: '100%',
-              background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background)) 55%, ${directorateColour})`,
-            }}
-          >
-            <div className="admin-review-title">
-              <h1>Reviewer Dashboard</h1>
-            </div>
-            <div className="admin-filter-search-flex">
-              <div className="admin-filter-section-container">
-                <div className="admin-filter-section">
-                  <h2>Filter by Category</h2>
-                  <MultiSelect
-                    options={categoryOptions}
-                    value={selectedCategories}
-                    onChange={setSelectedCategories}
-                    placeholder="Select categories..."
-                  />
+      <Layout
+        headerProps={{
+          searchTerm: searchTerm,
+          onSearchChange: value => setSearchTerm(value),
+          searchResults: [],
+          onSearchResultClick: () => {},
+          hideSearch: false,
+        }}
+      >
+        <div className="admin-page">
+          <div className="admin-details">
+            <div
+              className="admin-header-left"
+              style={{
+                width: '100%',
+                background: `linear-gradient(to right, hsl(var(--background)), hsl(var(--background)) 55%, ${directorateColour})`,
+              }}
+            >
+              <div className="admin-review-title">
+                <h1>Reviewer Dashboard</h1>
+              </div>
+              <div className="admin-filter-search-flex">
+                <div className="admin-filter-section-container">
+                  <div className="admin-filter-section">
+                    <h2>Filter by Category</h2>
+                    <MultiSelect
+                      options={categoryOptions}
+                      value={selectedCategories}
+                      onChange={setSelectedCategories}
+                      placeholder="Select categories..."
+                    />
+                  </div>
+                  <div className="admin-filter-section">
+                    <label
+                      htmlFor="directorate-select"
+                      style={{ minWidth: '200px' }}
+                    >
+                      <h2>Filter by Directorate</h2>
+                    </label>
+                    <select
+                      id="directorate-select"
+                      onChange={e => handleDirectorateChange(e.target.value)}
+                      className="multi-select-control"
+                      aria-label="Select Directorate"
+                    >
+                      {directorates.map(dir => (
+                        <option key={dir.name} value={dir.id}>
+                          {dir.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div className="admin-filter-section">
-                  <label
-                    htmlFor="directorate-select"
-                    style={{ minWidth: '200px' }}
+              </div>
+              <div className="admin-actions">
+                <div>
+                  <h2> Reviewer Actions</h2>
+                </div>
+                <div className="buttons">
+                  <button
+                    className="admin-button"
+                    onClick={() => setShowAddTechnologyModal(true)}
+                    disabled={isLoading}
+                    title="Add Technology"
+                    aria-label="Add Technology"
                   >
-                    <h2>Filter by Directorate</h2>
-                  </label>
+                    Add Technology
+                  </button>
+                  <button
+                    className="admin-button"
+                    onClick={toggleProjectCount}
+                    title="Toggle Project Count"
+                    aria-label="Toggle Project Count"
+                  >
+                    {showProjectCount
+                      ? 'Hide Project Count'
+                      : 'Show Project Count'}
+                  </button>
+                  <button
+                    className="admin-button"
+                    onClick={handleSaveClick}
+                    disabled={isLoading || changedTechnologies.length === 0}
+                    title="Save Changes"
+                    aria-label="Save Changes"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    className="admin-button"
+                    onClick={() => window.location.reload()}
+                    disabled={isLoading || changedTechnologies.length === 0}
+                    title="Revert Changes"
+                    aria-label="Revert Changes"
+                  >
+                    Revert Changes
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div
+                  id="directorate-title"
+                  style={{
+                    paddingRight: '16px',
+                    fontWeight: 'bold',
+                    fontSize: '1.6em',
+                    color: 'white',
+                    float: 'right',
+                    textShadow: '1px 1px 2px black',
+                  }}
+                >
+                  {getDirectorateName(selectedDirectorate, directorates)}
+                </div>
+                <p style={{ float: 'left' }}>
+                  <small>
+                    <b>Note:</b> Highlighted technologies have a
+                    directorate-specific position, for example if Python is in
+                    Adopt only for Data Science, it will be{' '}
+                    <span
+                      style={{
+                        border: `4px solid ${directorateColour}`,
+                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+                        backgroundColor: 'hsl(var(--background))',
+                        padding: '2px',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      highlighted
+                    </span>
+                    .
+                  </small>
+                </p>
+              </div>
+            </div>
+            <div className="admin-search-filter">
+              {isLoading ? (
+                <SkeletonStatCard minWidth="400px" />
+              ) : (
+                renderTimeline()
+              )}
+            </div>
+          </div>
+
+          <div className="admin-grid-container">
+            <div className="admin-grid">
+              {renderBox('Adopt', entries.adopt, 'adopt')}
+              {renderBox('Trial', entries.trial, 'trial')}
+              {renderBox('Assess', entries.assess, 'assess')}
+              {renderBox('Hold', entries.hold, 'hold')}
+            </div>
+            <div className="admin-divider"> </div>
+            <div className="admin-grid">
+              {renderBox('Review', entries.review, 'review')}
+              {renderBox('Ignore', entries.ignore, 'ignore')}
+            </div>
+          </div>
+        </div>
+        {showAddTechnologyModal && (
+          <div className="modal-overlay">
+            <div className="admin-modal">
+              <h3>Add New Technology</h3>
+              <div className="admin-modal-inputs">
+                <div className="admin-modal-field">
+                  <label>Technology Name</label>
+                  <input
+                    type="text"
+                    value={newTechnology}
+                    onChange={handleTechnologyInputChange}
+                    placeholder="Enter new technology"
+                    className="technology-input"
+                    aria-label="Enter Technology Name"
+                  />
+                  {isDuplicate && (
+                    <span className="error-message">
+                      Error: technology already exists in the{' '}
+                      <strong className={`${getDuplicateRing()}-box`}>
+                        {getDuplicateRing()}
+                      </strong>{' '}
+                      ring.
+                    </span>
+                  )}
+                </div>
+                <div className="admin-modal-field">
+                  <label>Category</label>
                   <select
-                    id="directorate-select"
-                    onChange={e => handleDirectorateChange(e.target.value)}
-                    className="multi-select-control"
-                    aria-label="Select Directorate"
+                    value={selectedCategory}
+                    onChange={e => setSelectedCategory(e.target.value)}
+                    className="category-select"
+                    aria-label="Select Category"
                   >
-                    {directorates.map(dir => (
-                      <option key={dir.name} value={dir.id}>
-                        {dir.name}
-                      </option>
-                    ))}
+                    <option value="">Select Category</option>
+                    <option value="Languages">Languages</option>
+                    <option value="Frameworks">Frameworks</option>
+                    <option value="Supporting Tools">Supporting Tools</option>
+                    <option value="Infrastructure">Infrastructure</option>
                   </select>
                 </div>
               </div>
-            </div>
-            <div className="admin-actions">
-              <div>
-                <h2> Reviewer Actions</h2>
-              </div>
-              <div className="buttons">
+              <div className="modal-buttons">
                 <button
-                  className="admin-button"
-                  onClick={() => setShowAddTechnologyModal(true)}
-                  disabled={isLoading}
+                  onClick={handleAddClick}
+                  disabled={
+                    !newTechnology.trim() || !selectedCategory || isDuplicate
+                  }
                   title="Add Technology"
                   aria-label="Add Technology"
                 >
-                  Add Technology
+                  Add
                 </button>
                 <button
-                  className="admin-button"
-                  onClick={toggleProjectCount}
-                  title="Toggle Project Count"
-                  aria-label="Toggle Project Count"
+                  onClick={() => setShowAddTechnologyModal(false)}
+                  title="Cancel"
+                  aria-label="Cancel"
                 >
-                  {showProjectCount
-                    ? 'Hide Project Count'
-                    : 'Show Project Count'}
-                </button>
-                <button
-                  className="admin-button"
-                  onClick={handleSaveClick}
-                  disabled={isLoading || changedTechnologies.length === 0}
-                  title="Save Changes"
-                  aria-label="Save Changes"
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="admin-button"
-                  onClick={() => window.location.reload()}
-                  disabled={isLoading || changedTechnologies.length === 0}
-                  title="Revert Changes"
-                  aria-label="Revert Changes"
-                >
-                  Revert Changes
+                  Cancel
                 </button>
               </div>
             </div>
-            <div>
-              <div
-                id="directorate-title"
-                style={{
-                  paddingRight: '16px',
-                  fontWeight: 'bold',
-                  fontSize: '1.6em',
-                  color: 'white',
-                  float: 'right',
-                  textShadow: '1px 1px 2px black',
-                }}
-              >
-                {getDirectorateName(selectedDirectorate, directorates)}
-              </div>
-              <p style={{ float: 'left' }}>
-                <small>
-                  <b>Note:</b> Highlighted technologies have a
-                  directorate-specific position, for example if Python is in
-                  Adopt only for Data Science, it will be{' '}
-                  <span
-                    style={{
-                      border: `4px solid ${directorateColour}`,
-                      boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-                      backgroundColor: 'hsl(var(--background))',
-                      padding: '2px',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    highlighted
-                  </span>
-                  .
-                </small>
+          </div>
+        )}
+        {showConfirmModal && (
+          <div className="modal-overlay">
+            <div className="admin-modal">
+              <h3>Confirm Changes</h3>
+              <p>Are you sure you want to update this technology?</p>
+              <p className="destructive">
+                From: {selectedItem.title} ({selectedItem.description})
               </p>
-            </div>
-          </div>
-          <div className="admin-search-filter">
-            {isLoading ? (
-              <SkeletonStatCard minWidth="400px" />
-            ) : (
-              renderTimeline()
-            )}
-          </div>
-        </div>
-
-        <div className="admin-grid-container">
-          <div className="admin-grid">
-            {renderBox('Adopt', entries.adopt, 'adopt')}
-            {renderBox('Trial', entries.trial, 'trial')}
-            {renderBox('Assess', entries.assess, 'assess')}
-            {renderBox('Hold', entries.hold, 'hold')}
-          </div>
-          <div className="admin-divider"> </div>
-          <div className="admin-grid">
-            {renderBox('Review', entries.review, 'review')}
-            {renderBox('Ignore', entries.ignore, 'ignore')}
-          </div>
-        </div>
-      </div>
-      {showAddTechnologyModal && (
-        <div className="modal-overlay">
-          <div className="admin-modal">
-            <h3>Add New Technology</h3>
-            <div className="admin-modal-inputs">
-              <div className="admin-modal-field">
-                <label>Technology Name</label>
-                <input
-                  type="text"
-                  value={newTechnology}
-                  onChange={handleTechnologyInputChange}
-                  placeholder="Enter new technology"
-                  className="technology-input"
-                  aria-label="Enter Technology Name"
-                />
-                {isDuplicate && (
-                  <span className="error-message">
-                    Error: technology already exists in the{' '}
-                    <strong className={`${getDuplicateRing()}-box`}>
-                      {getDuplicateRing()}
-                    </strong>{' '}
-                    ring.
-                  </span>
-                )}
-              </div>
-              <div className="admin-modal-field">
-                <label>Category</label>
-                <select
-                  value={selectedCategory}
-                  onChange={e => setSelectedCategory(e.target.value)}
-                  className="category-select"
-                  aria-label="Select Category"
+              <p className="constructive">
+                To: {editedTitle} ({editedCategory})
+              </p>
+              <div className="modal-buttons">
+                <button
+                  onClick={handleConfirmModalYes}
+                  title="Confirm"
+                  aria-label="Confirm"
                 >
-                  <option value="">Select Category</option>
-                  <option value="Languages">Languages</option>
-                  <option value="Frameworks">Frameworks</option>
-                  <option value="Supporting Tools">Supporting Tools</option>
-                  <option value="Infrastructure">Infrastructure</option>
-                </select>
+                  Yes
+                </button>
+                <button
+                  onClick={handleConfirmModalNo}
+                  title="No"
+                  aria-label="No"
+                >
+                  No
+                </button>
               </div>
             </div>
-            <div className="modal-buttons">
-              <button
-                onClick={handleAddClick}
-                disabled={
-                  !newTechnology.trim() || !selectedCategory || isDuplicate
-                }
-                title="Add Technology"
-                aria-label="Add Technology"
-              >
-                Add
-              </button>
-              <button
-                onClick={() => setShowAddTechnologyModal(false)}
-                title="Cancel"
-                aria-label="Cancel"
-              >
-                Cancel
-              </button>
+          </div>
+        )}
+        {showSaveConfirmModal && (
+          <div className="modal-overlay">
+            <div className="admin-modal">
+              <h3>WARNING</h3>
+              <p>
+                Are you sure you want to save all changes to the Tech Radar?
+              </p>
+              <p>This action cannot be undone.</p>
+              <h3>Changes:</h3>
+              {changedTechnologies.length === 0 ? (
+                <p>No changes made.</p>
+              ) : (
+                <ul className="change-list">
+                  {changedTechnologies.map((change, index) => (
+                    <li key={index}>
+                      {change.from === undefined &&
+                      change.to === undefined &&
+                      !change.edited ? (
+                        <>
+                          {change.technology} (
+                          <span style={{ color: 'green', fontWeight: 'bold' }}>
+                            New
+                          </span>
+                          )
+                        </>
+                      ) : change.edited && change.to === undefined ? (
+                        <>
+                          {change.from} &rarr; {change.technology} (
+                          <span style={{ color: 'blue', fontWeight: 'bold' }}>
+                            Edited
+                          </span>
+                          )
+                        </>
+                      ) : (
+                        <>
+                          {change.technology}: {change.from} &rarr; {change.to}{' '}
+                          (
+                          {getDirectorateName(change.directorate, directorates)}
+                          )
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="modal-buttons">
+                <button
+                  onClick={handleSaveConfirmModalYes}
+                  title="Yes"
+                  aria-label="Yes"
+                >
+                  Yes
+                </button>
+                <button onClick={handleSaveConfirmModalNo}>No</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {showConfirmModal && (
-        <div className="modal-overlay">
-          <div className="admin-modal">
-            <h3>Confirm Changes</h3>
-            <p>Are you sure you want to update this technology?</p>
-            <p className="destructive">
-              From: {selectedItem.title} ({selectedItem.description})
-            </p>
-            <p className="constructive">
-              To: {editedTitle} ({editedCategory})
-            </p>
-            <div className="modal-buttons">
-              <button
-                onClick={handleConfirmModalYes}
-                title="Confirm"
-                aria-label="Confirm"
-              >
-                Yes
-              </button>
-              <button onClick={handleConfirmModalNo} title="No" aria-label="No">
-                No
-              </button>
+        )}
+        {showAddConfirmModal && pendingNewTechnology && (
+          <div className="modal-overlay">
+            <div className="admin-modal tech-confirm-modal">
+              <h3>Add New Technology</h3>
+              <p>Are you sure you want to add this technology?</p>
+              <div>
+                <p>Name:</p>
+                <p>{pendingNewTechnology.title}</p>
+              </div>
+              <div className="modal-automatic">
+                <p>Ring:</p>
+                <p>
+                  <i>automatic</i> Review{' '}
+                </p>
+              </div>
+              <div>
+                <p>Quadrant:</p>
+                <p>{pendingNewTechnology.description}</p>
+              </div>
+              <div className="modal-buttons">
+                <button
+                  onClick={handleAddConfirmModalYes}
+                  title="Yes"
+                  aria-label="Yes"
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={handleAddConfirmModalNo}
+                  title="No"
+                  aria-label="No"
+                >
+                  No
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {showSaveConfirmModal && (
-        <div className="modal-overlay">
-          <div className="admin-modal">
-            <h3>WARNING</h3>
-            <p>Are you sure you want to save all changes to the Tech Radar?</p>
-            <p>This action cannot be undone.</p>
-            <h3>Changes:</h3>
-            {changedTechnologies.length === 0 ? (
-              <p>No changes made.</p>
-            ) : (
-              <ul className="change-list">
-                {changedTechnologies.map((change, index) => (
-                  <li key={index}>
-                    {change.from === undefined &&
-                    change.to === undefined &&
-                    !change.edited ? (
+        )}
+        {showMoveModal && pendingMove && (
+          <div className="modal-overlay">
+            <div className="admin-modal">
+              <h3>Move Technology</h3>
+              <p>Moving {pendingMove.item.title}</p>
+              <p>
+                From:{' '}
+                <span className={pendingMove.lastRing}>
+                  {pendingMove.lastRing}
+                </span>
+              </p>
+              <p>
+                To:{' '}
+                <span className={pendingMove.destList}>
+                  {pendingMove.destList}
+                </span>
+              </p>
+              <p>
+                For the Directorate: <strong>{directorateName}</strong>
+              </p>
+              <div className="admin-modal-field">
+                <label>Description</label>
+                <div className="markdown-editor">
+                  <div className="markdown-tabs">
+                    <button
+                      type="button"
+                      className={`markdown-tab ${activeTab === 'write' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('write')}
+                    >
+                      Write
+                    </button>
+                    <button
+                      type="button"
+                      className={`markdown-tab ${activeTab === 'preview' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('preview')}
+                    >
+                      Preview
+                    </button>
+                  </div>
+                  <div className="markdown-content">
+                    {activeTab === 'write' ? (
                       <>
-                        {change.technology} (
-                        <span style={{ color: 'green', fontWeight: 'bold' }}>
-                          New
-                        </span>
-                        )
-                      </>
-                    ) : change.edited && change.to === undefined ? (
-                      <>
-                        {change.from} &rarr; {change.technology} (
-                        <span style={{ color: 'blue', fontWeight: 'bold' }}>
-                          Edited
-                        </span>
-                        )
+                        <textarea
+                          value={moveDescription}
+                          onChange={e => setMoveDescription(e.target.value)}
+                          className="technology-input markdown-textarea"
+                          rows={5}
+                          placeholder="Enter move description. You can use # headers, *italic*, **bold**, and [links](url)"
+                        />
                       </>
                     ) : (
-                      <>
-                        {change.technology}: {change.from} &rarr; {change.to} (
-                        {getDirectorateName(change.directorate, directorates)})
-                      </>
+                      <div className="markdown-preview">
+                        {moveDescription.trim() ? (
+                          <MarkdownText text={moveDescription} />
+                        ) : (
+                          <span className="preview-placeholder">
+                            Nothing to preview
+                          </span>
+                        )}
+                      </div>
                     )}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className="modal-buttons">
-              <button
-                onClick={handleSaveConfirmModalYes}
-                title="Yes"
-                aria-label="Yes"
-              >
-                Yes
-              </button>
-              <button onClick={handleSaveConfirmModalNo}>No</button>
-            </div>
-          </div>
-        </div>
-      )}
-      {showAddConfirmModal && pendingNewTechnology && (
-        <div className="modal-overlay">
-          <div className="admin-modal tech-confirm-modal">
-            <h3>Add New Technology</h3>
-            <p>Are you sure you want to add this technology?</p>
-            <div>
-              <p>Name:</p>
-              <p>{pendingNewTechnology.title}</p>
-            </div>
-            <div className="modal-automatic">
-              <p>Ring:</p>
-              <p>
-                <i>automatic</i> Review{' '}
-              </p>
-            </div>
-            <div>
-              <p>Quadrant:</p>
-              <p>{pendingNewTechnology.description}</p>
-            </div>
-            <div className="modal-buttons">
-              <button
-                onClick={handleAddConfirmModalYes}
-                title="Yes"
-                aria-label="Yes"
-              >
-                Yes
-              </button>
-              <button
-                onClick={handleAddConfirmModalNo}
-                title="No"
-                aria-label="No"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {showMoveModal && pendingMove && (
-        <div className="modal-overlay">
-          <div className="admin-modal">
-            <h3>Move Technology</h3>
-            <p>Moving {pendingMove.item.title}</p>
-            <p>
-              From:{' '}
-              <span className={pendingMove.lastRing}>
-                {pendingMove.lastRing}
-              </span>
-            </p>
-            <p>
-              To:{' '}
-              <span className={pendingMove.destList}>
-                {pendingMove.destList}
-              </span>
-            </p>
-            <p>
-              For the Directorate: <strong>{directorateName}</strong>
-            </p>
-            <div className="admin-modal-field">
-              <label>Description</label>
-              <div className="markdown-editor">
-                <div className="markdown-tabs">
-                  <button
-                    type="button"
-                    className={`markdown-tab ${activeTab === 'write' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('write')}
-                  >
-                    Write
-                  </button>
-                  <button
-                    type="button"
-                    className={`markdown-tab ${activeTab === 'preview' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('preview')}
-                  >
-                    Preview
-                  </button>
+                  </div>
                 </div>
-                <div className="markdown-content">
-                  {activeTab === 'write' ? (
-                    <>
-                      <textarea
-                        value={moveDescription}
-                        onChange={e => setMoveDescription(e.target.value)}
-                        className="technology-input markdown-textarea"
-                        rows={5}
-                        placeholder="Enter move description. You can use # headers, *italic*, **bold**, and [links](url)"
-                      />
-                    </>
-                  ) : (
-                    <div className="markdown-preview">
-                      {moveDescription.trim() ? (
-                        <MarkdownText text={moveDescription} />
-                      ) : (
-                        <span className="preview-placeholder">
-                          Nothing to preview
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
+                <small className="markdown-hint">
+                  Supports: # h1, ## h2, *italic*, **bold**, [link text](url)
+                </small>
               </div>
-              <small className="markdown-hint">
-                Supports: # h1, ## h2, *italic*, **bold**, [link text](url)
-              </small>
-            </div>
-            <p>
-              <small>
-                <b>Please Note:</b> If a technology is moved for Digital
-                Services, it will be moved for all directorates unless they have
-                their own position.
-              </small>
-            </p>
-            <div className="modal-buttons">
-              <button
-                onClick={handleMoveConfirm}
-                disabled={moveDescription.length < 1}
-                title="Confirm"
-                aria-label="Confirm"
-              >
-                Confirm
-              </button>
-              <button
-                onClick={handleMoveCancel}
-                title="Cancel"
-                aria-label="Cancel"
-              >
-                Cancel
-              </button>
+              <p>
+                <small>
+                  <b>Please Note:</b> If a technology is moved for Digital
+                  Services, it will be moved for all directorates unless they
+                  have their own position.
+                </small>
+              </p>
+              <div className="modal-buttons">
+                <button
+                  onClick={handleMoveConfirm}
+                  disabled={moveDescription.length < 1}
+                  title="Confirm"
+                  aria-label="Confirm"
+                >
+                  Confirm
+                </button>
+                <button
+                  onClick={handleMoveCancel}
+                  title="Cancel"
+                  aria-label="Cancel"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {isProjectModalOpen && selectedProject && (
-        <ProjectModal
-          isOpen={isProjectModalOpen}
-          onClose={() => setIsProjectModalOpen(false)}
-          project={selectedProject}
-          renderTechnologyList={renderTechnologyList}
-          onTechClick={handleTechClick}
-          getTechnologyStatus={getTechnologyStatus}
-        />
-      )}
+        )}
+        {isProjectModalOpen && selectedProject && (
+          <ProjectModal
+            isOpen={isProjectModalOpen}
+            onClose={() => setIsProjectModalOpen(false)}
+            project={selectedProject}
+            renderTechnologyList={renderTechnologyList}
+            onTechClick={handleTechClick}
+            getTechnologyStatus={getTechnologyStatus}
+          />
+        )}
+      </Layout>
     </>
   );
 };

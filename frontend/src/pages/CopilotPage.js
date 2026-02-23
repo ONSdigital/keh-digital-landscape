@@ -23,6 +23,7 @@ import { TbLogout } from 'react-icons/tb';
 import '../styles/components/MultiSelect.css';
 import { BannerContainer } from '../components/Banner';
 import { toast } from 'react-hot-toast';
+import Layout from '../components/Layout/Layout';
 
 function CopilotDashboard() {
   const navigate = useNavigate();
@@ -351,287 +352,294 @@ function CopilotDashboard() {
 
   return (
     <>
-      <Header
-        hideSearch={!(scope === 'team' && isSelectingTeam && isAuthenticated)}
-        searchTerm={searchTerm}
-        onSearchChange={value => setSearchTerm(value)}
-      />
-      <div className="admin-page">
-        <PageBanner
-          title="Copilot Usage Dashboard"
-          description="Analyse Copilot usage statistics organisation-wide and by team"
-          tabs={[
-            { id: 'organisation', label: 'Organisation Usage' },
-            { id: 'team', label: 'Team Usage' },
-          ]}
-          activeTab={scope}
-          onTabChange={() => {
-            setScope(prevScope => {
-              const newScope =
-                prevScope === 'organisation' ? 'team' : 'organisation';
-              if (newScope === 'team') {
-                setIsSelectingTeam(true);
-                setTeamSlug(null);
-                navigate('/copilot/team', { replace: true });
-              } else {
-                navigate('/copilot/org/historic', { replace: true });
-              }
-              return newScope;
-            });
-          }}
-        />
-        <div className="admin-container" tabIndex="0">
-          {!isSelectingTeam && (
-            <>
-              {teamSlug && scope === 'team' && (
-                <div className="dashboard-header">
-                  <h2 style={{ margin: '0 0 16px 0' }}>Team: {teamSlug}</h2>
+      <Layout
+        headerProps={{
+          hideSearch: !(scope === 'team' && isSelectingTeam && isAuthenticated),
+          searchTerm,
+          onSearchChange: value => setSearchTerm(value),
+        }}
+      >
+        <div className="admin-page">
+          <PageBanner
+            title="Copilot Usage Dashboard"
+            description="Analyse Copilot usage statistics organisation-wide and by team"
+            tabs={[
+              { id: 'organisation', label: 'Organisation Usage' },
+              { id: 'team', label: 'Team Usage' },
+            ]}
+            activeTab={scope}
+            onTabChange={() => {
+              setScope(prevScope => {
+                const newScope =
+                  prevScope === 'organisation' ? 'team' : 'organisation';
+                if (newScope === 'team') {
+                  setIsSelectingTeam(true);
+                  setTeamSlug(null);
+                  navigate('/copilot/team', { replace: true });
+                } else {
+                  navigate('/copilot/org/historic', { replace: true });
+                }
+                return newScope;
+              });
+            }}
+          />
+          <div className="admin-container" tabIndex="0">
+            {!isSelectingTeam && (
+              <>
+                {teamSlug && scope === 'team' && (
+                  <div className="dashboard-header">
+                    <h2 style={{ margin: '0 0 16px 0' }}>Team: {teamSlug}</h2>
 
-                  <button
-                    className="view-data-button"
-                    onClick={() => {
-                      // Cancel any in-flight fetchTeamData
-                      fetchTeamDataCancelRef.current.cancelled = true;
-                      setIsSelectingTeam(true);
-                      setTeamSlug(null);
-                      navigate('/copilot/team', { replace: true });
-                      const { start, end } = initialiseDateRange(data.allUsage);
-                      setStartDate(start);
-                      setEndDate(end);
-                    }}
-                    aria-label="Return to team selection"
-                  >
-                    <FaArrowLeft size={10} />
-                    Return to Team Selection
-                  </button>
-                </div>
-              )}
-              <div className="dashboard-header">
-                {scope === 'team' ? (
-                  <div id="date-inputs">
-                    <p className="header-text">Filter Data Range</p>
-                    {isTeamLoading ? (
-                      <p>Loading dates...</p>
-                    ) : (
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '16px',
-                          alignItems: 'center',
-                        }}
-                      >
+                    <button
+                      className="view-data-button"
+                      onClick={() => {
+                        // Cancel any in-flight fetchTeamData
+                        fetchTeamDataCancelRef.current.cancelled = true;
+                        setIsSelectingTeam(true);
+                        setTeamSlug(null);
+                        navigate('/copilot/team', { replace: true });
+                        const { start, end } = initialiseDateRange(
+                          data.allUsage
+                        );
+                        setStartDate(start);
+                        setEndDate(end);
+                      }}
+                      aria-label="Return to team selection"
+                    >
+                      <FaArrowLeft size={10} />
+                      Return to Team Selection
+                    </button>
+                  </div>
+                )}
+                <div className="dashboard-header">
+                  {scope === 'team' ? (
+                    <div id="date-inputs">
+                      <p className="header-text">Filter Data Range</p>
+                      {isTeamLoading ? (
+                        <p>Loading dates...</p>
+                      ) : (
                         <div
                           style={{
                             display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px',
+                            gap: '16px',
+                            alignItems: 'center',
                           }}
                         >
-                          <label
-                            htmlFor="start-date"
-                            style={{ fontSize: '14px', fontWeight: '500' }}
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '4px',
+                            }}
                           >
-                            Start Date
-                          </label>
-                          <input
-                            id="start-date"
-                            type="date"
-                            value={startDate}
-                            onChange={e =>
-                              handleDateChange('start', e.target.value)
-                            }
-                            min={data?.allUsage?.[0]?.date}
-                            max={endDate}
-                            aria-label="Start date for data range"
-                          />
+                            <label
+                              htmlFor="start-date"
+                              style={{ fontSize: '14px', fontWeight: '500' }}
+                            >
+                              Start Date
+                            </label>
+                            <input
+                              id="start-date"
+                              type="date"
+                              value={startDate}
+                              onChange={e =>
+                                handleDateChange('start', e.target.value)
+                              }
+                              min={data?.allUsage?.[0]?.date}
+                              max={endDate}
+                              aria-label="Start date for data range"
+                            />
+                          </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '4px',
+                            }}
+                          >
+                            <label
+                              htmlFor="end-date"
+                              style={{ fontSize: '14px', fontWeight: '500' }}
+                            >
+                              End Date
+                            </label>
+                            <input
+                              id="end-date"
+                              type="date"
+                              value={endDate}
+                              onChange={e =>
+                                handleDateChange('end', e.target.value)
+                              }
+                              min={startDate}
+                              max={
+                                data?.allUsage?.[data.allUsage.length - 1]?.date
+                              }
+                              aria-label="End date for data range"
+                            />
+                          </div>
                         </div>
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px',
-                          }}
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="header-text">View Dates By</p>
+                      <div className="date-selector">
+                        <select
+                          value={viewDatesBy}
+                          onChange={e => setViewDatesBy(e.target.value)}
+                          disabled={isHistoricLoading}
+                          aria-label="View Dates By"
                         >
-                          <label
-                            htmlFor="end-date"
-                            style={{ fontSize: '14px', fontWeight: '500' }}
-                          >
-                            End Date
-                          </label>
-                          <input
-                            id="end-date"
-                            type="date"
-                            value={endDate}
-                            onChange={e =>
-                              handleDateChange('end', e.target.value)
-                            }
-                            min={startDate}
-                            max={
-                              data?.allUsage?.[data.allUsage.length - 1]?.date
-                            }
-                            aria-label="End date for data range"
-                          />
-                        </div>
+                          {dateOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+            <div />
+            {scope === 'team' && isSelectingTeam ? (
+              <>
+                <div className="team-selection-header">
+                  <div>
+                    <p className="header-text" style={{ margin: '0' }}>
+                      Select a Team to View
+                    </p>
+                    {isCopilotAdmin && (
+                      <p className="copilot-admin-badge">
+                        You are a Copilot Admin - you can view all configured
+                        teams. Teams with the{' '}
+                        <span
+                          className="member-team"
+                          style={{
+                            padding: '0 8px',
+                            borderRadius: '8px',
+                          }}
+                        >
+                          special border
+                        </span>{' '}
+                        are teams you are a member of.
+                      </p>
+                    )}
+                  </div>
+                  {isAuthenticated && (
+                    <button
+                      type="button"
+                      className="github-logout-button"
+                      onClick={handleLogout}
+                      aria-label="Logout from GitHub"
+                    >
+                      <TbLogout size={14} />
+                      Logout
+                    </button>
+                  )}
+                </div>
+                {isAuthenticated ? (
+                  <div>
+                    {isTeamsListLoading ? (
+                      <p>Loading teams...</p>
+                    ) : availableTeams && availableTeams.length > 0 ? (
+                      <div className="teams-grid">
+                        {filteredAvailableTeams.map(team => (
+                          <div
+                            key={team.slug}
+                            className={`team-card ${userTeamSlugs.includes(team.slug) ? 'member-team' : ''}`}
+                            aria-label={`Your team ${team.name}`}
+                            tabIndex="0"
+                          >
+                            <div className="team-card-content">
+                              <div className="team-name-container">
+                                <div
+                                  className="team-color-circle"
+                                  style={{
+                                    backgroundColor: stringToHexColor(
+                                      team.name
+                                    ),
+                                  }}
+                                />
+                                <h3 className="team-card-name">{team.name}</h3>
+                              </div>
+                              <p className="team-card-description">
+                                {team.description || 'No description available'}
+                              </p>
+                              <a
+                                href={team.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="team-card-link"
+                                aria-label={`View ${team.name} on GitHub`}
+                              >
+                                View on GitHub
+                              </a>
+                            </div>
+                            <button
+                              className="team-card-button"
+                              onClick={() => {
+                                fetchTeamData(team.slug);
+                                setTeamSlug(team.slug);
+                                setIsSelectingTeam(false);
+                                navigate(`/copilot/team/${team.slug}`, {
+                                  replace: true,
+                                });
+                              }}
+                              aria-label={`View data for ${team.name} team data`}
+                            >
+                              View Data
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>
+                        {isCopilotAdmin
+                          ? 'No teams available. Please ensure the teams_history.json file contains team data in S3.'
+                          : 'No teams available. Please ensure you are a member of at least one team in the organisation with more than 5 active Copilot licenses.'}
+                      </p>
                     )}
                   </div>
                 ) : (
                   <div>
-                    <p className="header-text">View Dates By</p>
-                    <div className="date-selector">
-                      <select
-                        value={viewDatesBy}
-                        onChange={e => setViewDatesBy(e.target.value)}
-                        disabled={isHistoricLoading}
-                        aria-label="View Dates By"
-                      >
-                        {dateOptions.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <button
+                      type="button"
+                      className="multi-select-control"
+                      onClick={loginWithGitHub}
+                    >
+                      Login with GitHub
+                    </button>
                   </div>
                 )}
-              </div>
-            </>
-          )}
-          <div />
-          {scope === 'team' && isSelectingTeam ? (
-            <>
-              <div className="team-selection-header">
-                <div>
-                  <p className="header-text" style={{ margin: '0' }}>
-                    Select a Team to View
-                  </p>
-                  {isCopilotAdmin && (
-                    <p className="copilot-admin-badge">
-                      You are a Copilot Admin - you can view all configured
-                      teams. Teams with the{' '}
-                      <span
-                        className="member-team"
-                        style={{
-                          padding: '0 8px',
-                          borderRadius: '8px',
-                        }}
-                      >
-                        special border
-                      </span>{' '}
-                      are teams you are a member of.
-                    </p>
-                  )}
-                </div>
-                {isAuthenticated && (
-                  <button
-                    type="button"
-                    className="github-logout-button"
-                    onClick={handleLogout}
-                    aria-label="Logout from GitHub"
-                  >
-                    <TbLogout size={14} />
-                    Logout
-                  </button>
-                )}
-              </div>
-              {isAuthenticated ? (
-                <div>
-                  {isTeamsListLoading ? (
-                    <p>Loading teams...</p>
-                  ) : availableTeams && availableTeams.length > 0 ? (
-                    <div className="teams-grid">
-                      {filteredAvailableTeams.map(team => (
-                        <div
-                          key={team.slug}
-                          className={`team-card ${userTeamSlugs.includes(team.slug) ? 'member-team' : ''}`}
-                          aria-label={`Your team ${team.name}`}
-                          tabIndex="0"
-                        >
-                          <div className="team-card-content">
-                            <div className="team-name-container">
-                              <div
-                                className="team-color-circle"
-                                style={{
-                                  backgroundColor: stringToHexColor(team.name),
-                                }}
-                              />
-                              <h3 className="team-card-name">{team.name}</h3>
-                            </div>
-                            <p className="team-card-description">
-                              {team.description || 'No description available'}
-                            </p>
-                            <a
-                              href={team.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="team-card-link"
-                              aria-label={`View ${team.name} on GitHub`}
-                            >
-                              View on GitHub
-                            </a>
-                          </div>
-                          <button
-                            className="team-card-button"
-                            onClick={() => {
-                              fetchTeamData(team.slug);
-                              setTeamSlug(team.slug);
-                              setIsSelectingTeam(false);
-                              navigate(`/copilot/team/${team.slug}`, {
-                                replace: true,
-                              });
-                            }}
-                            aria-label={`View data for ${team.name} team data`}
-                          >
-                            View Data
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>
-                      {isCopilotAdmin
-                        ? 'No teams available. Please ensure the teams_history.json file contains team data in S3.'
-                        : 'No teams available. Please ensure you are a member of at least one team in the organisation with more than 5 active Copilot licenses.'}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div>
-                  <button
-                    type="button"
-                    className="multi-select-control"
-                    onClick={loginWithGitHub}
-                  >
-                    Login with GitHub
-                  </button>
-                </div>
-              )}
-              <p className="disclaimer-banner">
-                {isCopilotAdmin
-                  ? 'As a Copilot Admin, you can view any valid team. The GitHub API does not return Copilot team usage data if there are fewer than 5 members with Copilot licenses.'
-                  : 'The GitHub API does not return Copilot team usage data if there are fewer than 5 members with Copilot licenses. This may result in only seat statistics being viewable on the dashboard.'}
-              </p>
-            </>
-          ) : scope === 'organisation' ? (
-            <HistoricDashboard
-              scope={scope}
-              data={getGroupedData()}
-              isLoading={isHistoricLoading}
-              viewDatesBy={viewDatesBy}
-            />
-          ) : (
-            <HistoricDashboard
-              scope={scope}
-              data={data.processedUsage}
-              isLoading={isTeamLoading}
-              viewDatesBy="Day"
-            />
-          )}
+                <p className="disclaimer-banner">
+                  {isCopilotAdmin
+                    ? 'As a Copilot Admin, you can view any valid team. The GitHub API does not return Copilot team usage data if there are fewer than 5 members with Copilot licenses.'
+                    : 'The GitHub API does not return Copilot team usage data if there are fewer than 5 members with Copilot licenses. This may result in only seat statistics being viewable on the dashboard.'}
+                </p>
+              </>
+            ) : scope === 'organisation' ? (
+              <HistoricDashboard
+                scope={scope}
+                data={getGroupedData()}
+                isLoading={isHistoricLoading}
+                viewDatesBy={viewDatesBy}
+              />
+            ) : (
+              <HistoricDashboard
+                scope={scope}
+                data={data.processedUsage}
+                isLoading={isTeamLoading}
+                viewDatesBy="Day"
+              />
+            )}
+          </div>
         </div>
-      </div>
-      <BannerContainer
-        page={scope === 'organisation' ? 'copilot/org' : 'copilot/team'}
-      />
+        <BannerContainer
+          page={scope === 'organisation' ? 'copilot/org' : 'copilot/team'}
+        />
+      </Layout>
     </>
   );
 }
