@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
@@ -45,6 +45,7 @@ const InfoBox = ({
     selectedItem?.description || ''
   );
   const [showProjects, setShowProjects] = useState(true);
+  const infoBoxRef = useRef(null);
 
   const handleMouseDown = e => {
     e.stopPropagation(); // Prevent event from bubbling to parent
@@ -83,10 +84,17 @@ const InfoBox = ({
 
   useEffect(() => {
     const handleMouseMove = e => {
-      if (isDragging) {
+      if (isDragging && infoBoxRef.current) {
+        const rect = infoBoxRef.current.getBoundingClientRect();
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+        const minX = 0;
+        const minY = 0;
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
         setDragPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y,
+          x: Math.max(minX, Math.min(newX, maxX)),
+          y: Math.max(minY, Math.min(newY, maxY)),
         });
       }
     };
@@ -143,6 +151,7 @@ const InfoBox = ({
   if (!selectedItem) {
     return (
       <div
+        ref={infoBoxRef}
         className="info-box"
         style={{
           position: 'fixed',
@@ -177,6 +186,7 @@ const InfoBox = ({
 
   return (
     <div
+      ref={infoBoxRef}
       className="info-box"
       style={{
         position: 'fixed',
