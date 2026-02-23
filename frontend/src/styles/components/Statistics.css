@@ -34,15 +34,15 @@
 .statistics-header-left {
   display: flex;
   align-items: flex-start;
-  flex-direction: column;
+  flex-flow: column wrap;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
+
   /* margin: 12px 0; */
 }
 
@@ -140,7 +140,7 @@
 .sort-options button.active {
   color: hsl(var(--primary-foreground));
   background: hsl(var(--primary));
-  border-color: hsl(var(--foreground) / 0.4);
+  border-color: hsl(var(--foreground) / 40%);
   box-shadow: none;
   transform: translateY(2px);
 }
@@ -153,7 +153,6 @@
   padding: 0 8px 8px 0;
   min-height: 0;
   -ms-overflow-style: none;
-
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-color);
   border-radius: var(--radius);
@@ -295,7 +294,7 @@
   margin-bottom: 8px;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .statistics-content {
     padding: 16px;
     width: 95%;
@@ -330,7 +329,7 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   color: hsl(var(--card-foreground));
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
   cursor: pointer;
   outline: none;
   min-width: 120px;
@@ -361,7 +360,7 @@
   outline: none;
   width: 150px;
   height: 18px;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 .custom-date-input::-webkit-calendar-picker-indicator {
@@ -382,6 +381,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -423,7 +423,7 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   color: hsl(var(--card-foreground));
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
   cursor: pointer;
   outline: none;
   min-width: 120px;

@@ -51,11 +51,11 @@ const ProtectedRoute = ({ children, requiredRoles, pageName }) => {
           onSearchChange={() => {}}
           searchResults={[]}
           onSearchResultClick={() => {}}
-          hideSearch={true}
+          hideSearch
         />
         {isLoading ? (
           <div className="loading-container">
-            <div className="loading-spinner"></div>
+            <div className="loading-spinner" />
           </div>
         ) : (
           <AccessDenied

@@ -38,7 +38,7 @@
 }
 
 .user-info-section {
-  background: hsl(var(--muted) / 0.3);
+  background: hsl(var(--muted) / 30%);
   border-radius: var(--radius);
   padding: 20px;
   margin-bottom: 16px;
@@ -102,7 +102,7 @@
 .guest-notice,
 .no-roles-notice,
 .insufficient-roles-notice {
-  background: hsl(var(--muted) / 0.5);
+  background: hsl(var(--muted) / 50%);
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   padding: 16px;
@@ -112,7 +112,7 @@
 .guest-notice p,
 .no-roles-notice p,
 .insufficient-roles-notice p {
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   font-size: 14px;
   color: hsl(var(--muted-foreground));
   line-height: 1.4;
@@ -146,7 +146,7 @@
 }
 
 .back-home-btn:hover {
-  background: hsl(var(--primary) / 0.9);
+  background: hsl(var(--primary) / 90%);
   color: hsl(var(--primary-foreground));
 }
 
@@ -161,7 +161,7 @@
   color: hsl(var(--muted-foreground));
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .access-denied-content {
     padding: 24px 20px;
     margin: 0 16px;

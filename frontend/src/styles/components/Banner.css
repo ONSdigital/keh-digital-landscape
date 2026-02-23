@@ -20,7 +20,7 @@
 }
 
 .banner-title {
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
   font-size: 16px;
   font-weight: 600;
 }
@@ -49,54 +49,54 @@
 }
 
 .banner-close-btn:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgb(0 0 0 / 10%);
 }
 
 .banner-info {
-  background-color: hsl(210, 100%, 97%);
-  border-top: 1px solid hsl(210, 100%, 50%);
-  color: hsl(210, 100%, 20%);
+  background-color: hsl(210deg 100% 97%);
+  border-top: 1px solid hsl(210deg 100% 50%);
+  color: hsl(210deg 100% 20%);
 }
 
 .banner-info .banner-close-btn {
-  color: hsl(210, 100%, 50%);
+  color: hsl(210deg 100% 50%);
 }
 
 .banner-warning {
-  background-color: hsl(45, 100%, 96%);
-  border-top: 1px solid hsl(45, 100%, 50%);
-  color: hsl(45, 100%, 20%);
+  background-color: hsl(45deg 100% 96%);
+  border-top: 1px solid hsl(45deg 100% 50%);
+  color: hsl(45deg 100% 20%);
 }
 
 .banner-warning .banner-close-btn {
-  color: hsl(45, 100%, 40%);
+  color: hsl(45deg 100% 40%);
 }
 
 .banner-error {
-  background-color: hsl(0, 100%, 97%);
-  border-top: 1px solid hsl(0, 100%, 65%);
-  color: hsl(0, 100%, 30%);
+  background-color: hsl(0deg 100% 97%);
+  border-top: 1px solid hsl(0deg 100% 65%);
+  color: hsl(0deg 100% 30%);
 }
 
 .banner-error .banner-close-btn {
-  color: hsl(0, 100%, 65%);
+  color: hsl(0deg 100% 65%);
 }
 
 :root[class~='dark'] .banner-info {
-  background-color: hsl(210, 50%, 20%);
-  color: hsl(210, 100%, 90%);
+  background-color: hsl(210deg 50% 20%);
+  color: hsl(210deg 100% 90%);
 }
 
 :root[class~='dark'] .banner-warning {
-  background-color: hsl(45, 50%, 20%);
-  color: hsl(45, 100%, 90%);
+  background-color: hsl(45deg 50% 20%);
+  color: hsl(45deg 100% 90%);
 }
 
 :root[class~='dark'] .banner-error {
-  background-color: hsl(0, 50%, 20%);
-  color: hsl(0, 100%, 90%);
+  background-color: hsl(0deg 50% 20%);
+  color: hsl(0deg 100% 90%);
 }
 
 :root[class~='dark'] .banner-close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgb(255 255 255 / 10%);
 }

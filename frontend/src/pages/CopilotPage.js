@@ -30,10 +30,10 @@ function CopilotDashboard() {
   const [searchParams] = useSearchParams();
 
   const initialiseDateRange = data => {
-    let end = data[data.length - 1]?.date
+    const end = data[data.length - 1]?.date
       ? new Date(data[data.length - 1].date)
       : new Date();
-    let start = data[0]?.date ? new Date(data[0].date) : new Date();
+    const start = data[0]?.date ? new Date(data[0].date) : new Date();
 
     return {
       start: start.toISOString().slice(0, 10),
@@ -316,7 +316,7 @@ function CopilotDashboard() {
       // Only set to true if we don't have a team slug
       setIsSelectingTeam(true);
     }
-    //Reset start and end dates when switching scopes
+    // Reset start and end dates when switching scopes
     const { start, end } = initialiseDateRange(data.allUsage);
     setStartDate(start);
     setEndDate(end);
@@ -399,7 +399,7 @@ function CopilotDashboard() {
                       setStartDate(start);
                       setEndDate(end);
                     }}
-                    aria-label={`Return to team selection`}
+                    aria-label="Return to team selection"
                   >
                     <FaArrowLeft size={10} />
                     Return to Team Selection
@@ -497,7 +497,7 @@ function CopilotDashboard() {
               </div>
             </>
           )}
-          <div></div>
+          <div />
           {scope === 'team' && isSelectingTeam ? (
             <>
               <div className="team-selection-header">
@@ -554,7 +554,7 @@ function CopilotDashboard() {
                                 style={{
                                   backgroundColor: stringToHexColor(team.name),
                                 }}
-                              ></div>
+                              />
                               <h3 className="team-card-name">{team.name}</h3>
                             </div>
                             <p className="team-card-description">
@@ -624,7 +624,7 @@ function CopilotDashboard() {
               scope={scope}
               data={data.processedUsage}
               isLoading={isTeamLoading}
-              viewDatesBy={'Day'}
+              viewDatesBy="Day"
             />
           )}
         </div>

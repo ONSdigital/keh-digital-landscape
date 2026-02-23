@@ -10,7 +10,7 @@ import customFetch from './customFetch';
  */
 export const fetchCSVFromS3 = async () => {
   try {
-    const response = await customFetch(`/api/csv`);
+    const response = await customFetch('/api/csv');
     if (!response.ok) {
       throw new Error('Failed to fetch CSV data');
     }

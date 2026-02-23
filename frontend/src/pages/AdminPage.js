@@ -19,7 +19,7 @@ const AdminPage = () => {
 
   return (
     <>
-      <Header hideSearch={true} />
+      <Header hideSearch />
       <div className="admin-page">
         <PageBanner
           title="Admin Dashboard"

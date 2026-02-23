@@ -3,6 +3,7 @@ This module contains the test cases for the backend API.
 """
 
 from datetime import datetime, timedelta
+
 import requests
 
 BASE_URL = "http://localhost:5001"
@@ -142,8 +143,9 @@ def test_json_endpoint_with_datetime():
         - Metadata containing the applied datetime filter
     """
     seven_days_ago = (datetime.now() - timedelta(days=7)).isoformat()
-    response = requests.get(f"{BASE_URL}/api/json",
-                            params={"datetime": seven_days_ago}, timeout=10)
+    response = requests.get(
+        f"{BASE_URL}/api/json", params={"datetime": seven_days_ago}, timeout=10
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["metadata"]["filter_date"] == seven_days_ago
@@ -166,12 +168,14 @@ def test_json_endpoint_with_archived():
         - 200 status code for both archived and non-archived queries
         - Filtered repository data based on archived status
     """
-    response = requests.get(f"{BASE_URL}/api/json",
-                            params={"archived": "true"}, timeout=10)
+    response = requests.get(
+        f"{BASE_URL}/api/json", params={"archived": "true"}, timeout=10
+    )
     assert response.status_code == 200
 
-    response = requests.get(f"{BASE_URL}/api/json",
-                            params={"archived": "false"}, timeout=10)
+    response = requests.get(
+        f"{BASE_URL}/api/json", params={"archived": "false"}, timeout=10
+    )
     assert response.status_code == 200
 
 
@@ -195,10 +199,7 @@ def test_json_endpoint_combined_params():
         - Metadata reflecting the applied datetime filter
     """
     seven_days_ago = (datetime.now() - timedelta(days=7)).isoformat()
-    params = {
-        "datetime": seven_days_ago,
-        "archived": "false"
-    }
+    params = {"datetime": seven_days_ago, "archived": "false"}
     response = requests.get(f"{BASE_URL}/api/json", params=params, timeout=10)
     assert response.status_code == 200
     data = response.json()
@@ -241,8 +242,9 @@ def test_json_endpoint_invalid_date():
         - Valid response with unfiltered stats
         - Complete language statistics
     """
-    response = requests.get(f"{BASE_URL}/api/json",
-                            params={"datetime": "invalid-date"}, timeout=10)
+    response = requests.get(
+        f"{BASE_URL}/api/json", params={"datetime": "invalid-date"}, timeout=10
+    )
     assert response.status_code == 200  # Backend handles invalid dates gracefully
     data = response.json()
     assert data["metadata"]["filter_date"] is None
@@ -262,8 +264,7 @@ def test_repository_project_json_no_params():
         - JSON response with error message
         - Error message indicating no repositories specified
     """
-    response = requests.get(
-        f"{BASE_URL}/api/repository/project/json", timeout=10)
+    response = requests.get(f"{BASE_URL}/api/repository/project/json", timeout=10)
     assert response.status_code == 400
     data = response.json()
     assert "error" in data
@@ -287,8 +288,11 @@ def test_repository_project_json_with_repos():
         - Correct metadata including requested repository names
         - Language statistics if available
     """
-    response = requests.get(f"{BASE_URL}/api/repository/project/json",
-                            params={"repositories": "tech-radar"}, timeout=10)
+    response = requests.get(
+        f"{BASE_URL}/api/repository/project/json",
+        params={"repositories": "tech-radar"},
+        timeout=10,
+    )
     assert response.status_code == 200
     data = response.json()
 
@@ -332,12 +336,10 @@ def test_repository_project_json_with_datetime():
         - Metadata containing the applied datetime filter
     """
     seven_days_ago = (datetime.now() - timedelta(days=7)).isoformat()
-    params = {
-        "repositories": "tech-radar",
-        "datetime": seven_days_ago
-    }
+    params = {"repositories": "tech-radar", "datetime": seven_days_ago}
     response = requests.get(
-        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10)
+        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["metadata"]["filter_date"] == seven_days_ago
@@ -362,17 +364,16 @@ def test_repository_project_json_with_archived():
         - Filtered repository data based on archived status
         - Metadata containing the applied archived filter
     """
-    params = {
-        "repositories": "tech-radar",
-        "archived": "true"
-    }
+    params = {"repositories": "tech-radar", "archived": "true"}
     response = requests.get(
-        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10)
+        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10
+    )
     assert response.status_code == 200
 
     params["archived"] = "false"
     response = requests.get(
-        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10)
+        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["metadata"]["filter_archived"] == "false"
@@ -397,11 +398,10 @@ def test_repository_project_json_multiple_repos():
         - Metadata containing all requested repository names
         - Aggregated statistics across all repositories
     """
-    params = {
-        "repositories": "tech-radar,another-repo"
-    }
+    params = {"repositories": "tech-radar,another-repo"}
     response = requests.get(
-        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10)
+        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10
+    )
     assert response.status_code == 200
     data = response.json()
 
@@ -436,10 +436,11 @@ def test_repository_project_json_combined_filters():
     params = {
         "repositories": "tech-radar",
         "datetime": seven_days_ago,
-        "archived": "false"
+        "archived": "false",
     }
     response = requests.get(
-        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10)
+        f"{BASE_URL}/api/repository/project/json", params=params, timeout=10
+    )
     assert response.status_code == 200
     data = response.json()
 
@@ -468,8 +469,11 @@ def test_repository_project_json_language_stats():
             - Total size in bytes
         - Valid numerical values for all statistics
     """
-    response = requests.get(f"{BASE_URL}/api/repository/project/json",
-                            params={"repositories": "tech-radar"}, timeout=10)
+    response = requests.get(
+        f"{BASE_URL}/api/repository/project/json",
+        params={"repositories": "tech-radar"},
+        timeout=10,
+    )
     assert response.status_code == 200
     data = response.json()
 

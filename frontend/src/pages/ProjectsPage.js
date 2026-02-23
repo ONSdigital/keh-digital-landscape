@@ -170,7 +170,7 @@ function ProjectsPage() {
       <BannerContainer page="projects" />
       <div className="projects-page">
         <Projects
-          isOpen={true}
+          isOpen
           onClose={() => {}}
           projectsData={filteredProjects}
           handleProjectClick={handleProjectClick}

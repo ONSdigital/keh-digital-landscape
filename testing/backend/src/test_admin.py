@@ -56,14 +56,12 @@ def test_admin_banner_update():
             "title": "Test Banner",
             "type": "info",
             "pages": ["radar", "statistics"],
-            "show": True
+            "show": True,
         }
     }
 
     response = requests.post(
-        f"{BASE_URL}/admin/api/banners/update",
-        json=test_data,
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/update", json=test_data, timeout=10
     )
     assert response.status_code == 200
     data = response.json()
@@ -77,7 +75,7 @@ def test_admin_banner_update():
     assert "messages" in get_data
 
     # Find the added banner by message - last message should be the one added
-    
+
     if get_data["messages"]:
         added_banner = get_data["messages"][-1]
     else:
@@ -112,7 +110,7 @@ def test_admin_banner_update_invalid():
     response = requests.post(
         f"{BASE_URL}/admin/api/banners/update",
         json={"banner": {"pages": ["radar"]}},
-        timeout=10
+        timeout=10,
     )
     assert response.status_code == 400
     assert response.json()["error"] == "Invalid banner data"
@@ -121,16 +119,14 @@ def test_admin_banner_update_invalid():
     response = requests.post(
         f"{BASE_URL}/admin/api/banners/update",
         json={"banner": {"message": "Test", "pages": []}},
-        timeout=10
+        timeout=10,
     )
     assert response.status_code == 400
     assert response.json()["error"] == "Invalid banner data"
 
     # Test with malformed request body
     response = requests.post(
-        f"{BASE_URL}/admin/api/banners/update",
-        json={"not_banner": {}},
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/update", json={"not_banner": {}}, timeout=10
     )
     assert response.status_code == 400
     assert response.json()["error"] == "Invalid banner data"
@@ -156,21 +152,14 @@ def test_admin_banner_toggle():
     """
     # First, add a test banner
     test_data = {
-        "banner": {
-            "message": "Toggle Test Banner",
-            "pages": ["radar"],
-            "show": True
-        }
+        "banner": {"message": "Toggle Test Banner", "pages": ["radar"], "show": True}
     }
 
     # Add the banner
     add_response = requests.post(
-        f"{BASE_URL}/admin/api/banners/update",
-        json=test_data,
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/update", json=test_data, timeout=10
     )
     assert add_response.status_code == 200
-
 
     # Get all banners
     get_response = requests.get(f"{BASE_URL}/admin/api/banners", timeout=10)
@@ -178,34 +167,39 @@ def test_admin_banner_toggle():
     banners = get_response.json()["messages"]
 
     # Find the index of our test banner
-    test_banner_index = next((i for i, banner in enumerate(banners)
-                             if banner["message"] == "Toggle Test Banner"), None)
+    test_banner_index = next(
+        (
+            i
+            for i, banner in enumerate(banners)
+            if banner["message"] == "Toggle Test Banner"
+        ),
+        None,
+    )
     assert test_banner_index is not None, "Test banner not found after adding"
 
     # Toggle the banner visibility
-    toggle_data = {
-        "index": test_banner_index,
-        "show": False
-    }
+    toggle_data = {"index": test_banner_index, "show": False}
 
     response = requests.post(
-        f"{BASE_URL}/admin/api/banners/toggle",
-        json=toggle_data,
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/toggle", json=toggle_data, timeout=10
     )
     assert response.status_code == 200
     data = response.json()
     assert data["message"] == "Banner visibility updated successfully"
 
     # Verify the banner was toggled
-    get_response_after_toggle = requests.get(f"{BASE_URL}/admin/api/banners", timeout=10)
+    get_response_after_toggle = requests.get(
+        f"{BASE_URL}/admin/api/banners", timeout=10
+    )
     assert get_response_after_toggle.status_code == 200
     updated_banners = get_response_after_toggle.json()["messages"]
     assert updated_banners[test_banner_index]["show"] is False
 
     # Clean up: delete the test banner
     delete_data = {"index": test_banner_index}
-    delete_response = requests.post(f"{BASE_URL}/admin/api/banners/delete", json=delete_data, timeout=10)
+    delete_response = requests.post(
+        f"{BASE_URL}/admin/api/banners/delete", json=delete_data, timeout=10
+    )
     assert delete_response.status_code == 200
 
 
@@ -231,16 +225,14 @@ def test_admin_banner_toggle_invalid():
     response = requests.post(
         f"{BASE_URL}/admin/api/banners/toggle",
         json={"index": "not-a-number", "show": True},
-        timeout=10
+        timeout=10,
     )
     assert response.status_code == 400
     assert "Invalid banner index" in response.json()["error"]
 
     # Test with missing index
     response = requests.post(
-        f"{BASE_URL}/admin/api/banners/toggle",
-        json={"show": True},
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/toggle", json={"show": True}, timeout=10
     )
     assert response.status_code == 400
     assert "Invalid banner index" in response.json()["error"]
@@ -252,8 +244,8 @@ def test_admin_banner_toggle_invalid():
 
     response = requests.post(
         f"{BASE_URL}/admin/api/banners/toggle",
-        json={"index": num_banners + 100, "show": True}, # A sufficiently large index
-        timeout=10
+        json={"index": num_banners + 100, "show": True},  # A sufficiently large index
+        timeout=10,
     )
     assert response.status_code == 400
     assert "Banner index out of range" in response.json()["error"]
@@ -277,21 +269,13 @@ def test_admin_banner_delete():
         - Banner should be removed in subsequent GET requests
     """
     # First, add a test banner to delete
-    test_data = {
-        "banner": {
-            "message": "Delete Test Banner",
-            "pages": ["radar"]
-        }
-    }
+    test_data = {"banner": {"message": "Delete Test Banner", "pages": ["radar"]}}
 
     # Add the banner
     add_response = requests.post(
-        f"{BASE_URL}/admin/api/banners/update",
-        json=test_data,
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/update", json=test_data, timeout=10
     )
     assert add_response.status_code == 200
-
 
     # Get all banners
     get_response = requests.get(f"{BASE_URL}/admin/api/banners", timeout=10)
@@ -299,32 +283,44 @@ def test_admin_banner_delete():
     banners = get_response.json()["messages"]
 
     # Find the index of our test banner
-    test_banner_index = next((i for i, banner in enumerate(banners)
-                             if banner["message"] == "Delete Test Banner"), None)
-    assert test_banner_index is not None, "Test banner for deletion not found after adding"
+    test_banner_index = next(
+        (
+            i
+            for i, banner in enumerate(banners)
+            if banner["message"] == "Delete Test Banner"
+        ),
+        None,
+    )
+    assert (
+        test_banner_index is not None
+    ), "Test banner for deletion not found after adding"
 
     # Delete the banner
-    delete_data = {
-        "index": test_banner_index
-    }
+    delete_data = {"index": test_banner_index}
 
     response = requests.post(
-        f"{BASE_URL}/admin/api/banners/delete",
-        json=delete_data,
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/delete", json=delete_data, timeout=10
     )
     assert response.status_code == 200
     data = response.json()
     assert data["message"] == "Banner deleted successfully"
 
     # Verify the banner was deleted
-    get_response_after_delete = requests.get(f"{BASE_URL}/admin/api/banners", timeout=10)
+    get_response_after_delete = requests.get(
+        f"{BASE_URL}/admin/api/banners", timeout=10
+    )
     assert get_response_after_delete.status_code == 200
     updated_banners = get_response_after_delete.json()["messages"]
 
     # The banner should no longer exist
-    deleted_banner = next((banner for banner in updated_banners
-                          if banner["message"] == "Delete Test Banner"), None)
+    deleted_banner = next(
+        (
+            banner
+            for banner in updated_banners
+            if banner["message"] == "Delete Test Banner"
+        ),
+        None,
+    )
     assert deleted_banner is None
 
 
@@ -349,15 +345,13 @@ def test_admin_banner_delete_invalid():
     response = requests.post(
         f"{BASE_URL}/admin/api/banners/delete",
         json={"index": "not-a-number"},
-        timeout=10
+        timeout=10,
     )
     assert response.status_code == 400
     assert "Invalid banner index" in response.json()["error"]
 
     response = requests.post(
-        f"{BASE_URL}/admin/api/banners/delete",
-        json={},
-        timeout=10
+        f"{BASE_URL}/admin/api/banners/delete", json={}, timeout=10
     )
     assert response.status_code == 400
     assert "Invalid banner index" in response.json()["error"]
@@ -370,10 +364,11 @@ def test_admin_banner_delete_invalid():
     response = requests.post(
         f"{BASE_URL}/admin/api/banners/delete",
         json={"index": num_banners + 100},
-        timeout=10
+        timeout=10,
     )
     assert response.status_code == 400
     assert "Banner index out of range" in response.json()["error"]
+
 
 # Helper functions for array data tests
 def _get_initial_array_data(base_url):
@@ -382,13 +377,13 @@ def _get_initial_array_data(base_url):
     response.raise_for_status()
     return response.json()
 
+
 def _restore_array_data(base_url, original_data):
     """Restores array_data.json to its original state."""
-    payload = {
-        "allCategories": True,
-        "items": original_data
-    }
-    response = requests.post(f"{base_url}/admin/api/array-data/update", json=payload, timeout=10)
+    payload = {"allCategories": True, "items": original_data}
+    response = requests.post(
+        f"{base_url}/admin/api/array-data/update", json=payload, timeout=10
+    )
     response.raise_for_status()
 
 
@@ -424,11 +419,16 @@ def test_admin_update_array_data_single_category():
         payload = {
             "allCategories": False,
             "category": category_to_update,
-            "items": new_items
+            "items": new_items,
         }
-        response = requests.post(f"{BASE_URL}/admin/api/array-data/update", json=payload, timeout=10)
+        response = requests.post(
+            f"{BASE_URL}/admin/api/array-data/update", json=payload, timeout=10
+        )
         assert response.status_code == 200
-        assert response.json()["message"] == f"Technology list for {category_to_update} updated successfully"
+        assert (
+            response.json()["message"]
+            == f"Technology list for {category_to_update} updated successfully"
+        )
 
         updated_data = _get_initial_array_data(BASE_URL)
         assert updated_data[category_to_update] == new_items
@@ -437,8 +437,8 @@ def test_admin_update_array_data_single_category():
         for key, value in original_data.items():
             if key != category_to_update:
                 assert updated_data.get(key) == value
-            elif category_to_update not in original_data: # if it was a new category
-                pass # no need to check original value
+            elif category_to_update not in original_data:  # if it was a new category
+                pass  # no need to check original value
 
     finally:
         _restore_array_data(BASE_URL, original_data)
@@ -458,13 +458,12 @@ def test_admin_update_array_data_all_categories():
     try:
         new_full_data = {
             "languages_updated": ["Go", "Rust"],
-            "frameworks_updated": ["Svelte", "Vue"]
+            "frameworks_updated": ["Svelte", "Vue"],
         }
-        payload = {
-            "allCategories": True,
-            "items": new_full_data
-        }
-        response = requests.post(f"{BASE_URL}/admin/api/array-data/update", json=payload, timeout=10)
+        payload = {"allCategories": True, "items": new_full_data}
+        response = requests.post(
+            f"{BASE_URL}/admin/api/array-data/update", json=payload, timeout=10
+        )
         assert response.status_code == 200
         assert response.json()["message"] == "All technology lists updated successfully"
 
@@ -484,27 +483,51 @@ def test_admin_update_array_data_invalid():
     """
     # Test allCategories: true, but items is not an object
     payload1 = {"allCategories": True, "items": "not_an_object"}
-    response1 = requests.post(f"{BASE_URL}/admin/api/array-data/update", json=payload1, timeout=10)
+    response1 = requests.post(
+        f"{BASE_URL}/admin/api/array-data/update", json=payload1, timeout=10
+    )
     assert response1.status_code == 400
-    assert response1.json()["error"] == "Invalid data format. Complete items object is required for all categories update."
+    assert (
+        response1.json()["error"]
+        == "Invalid data format. Complete items object is required for all categories update."
+    )
 
     # Test allCategories: false, but category is missing
     payload2 = {"allCategories": False, "items": ["item"]}
-    response2 = requests.post(f"{BASE_URL}/admin/api/array-data/update", json=payload2, timeout=10)
+    response2 = requests.post(
+        f"{BASE_URL}/admin/api/array-data/update", json=payload2, timeout=10
+    )
     assert response2.status_code == 400
-    assert response2.json()["error"] == "Invalid data format. Category and items array are required for single category update."
+    assert (
+        response2.json()["error"]
+        == "Invalid data format. Category and items array are required for single category update."
+    )
 
     # Test allCategories: false, but items is missing
     payload3 = {"allCategories": False, "category": "some_category"}
-    response3 = requests.post(f"{BASE_URL}/admin/api/array-data/update", json=payload3, timeout=10)
+    response3 = requests.post(
+        f"{BASE_URL}/admin/api/array-data/update", json=payload3, timeout=10
+    )
     assert response3.status_code == 400
-    assert response3.json()["error"] == "Invalid data format. Category and items array are required for single category update."
+    assert (
+        response3.json()["error"]
+        == "Invalid data format. Category and items array are required for single category update."
+    )
 
     # Test allCategories: false, but items is not an array
-    payload4 = {"allCategories": False, "category": "some_category", "items": "not_an_array"}
-    response4 = requests.post(f"{BASE_URL}/admin/api/array-data/update", json=payload4, timeout=10)
+    payload4 = {
+        "allCategories": False,
+        "category": "some_category",
+        "items": "not_an_array",
+    }
+    response4 = requests.post(
+        f"{BASE_URL}/admin/api/array-data/update", json=payload4, timeout=10
+    )
     assert response4.status_code == 400
-    assert response4.json()["error"] == "Invalid data format. Category and items array are required for single category update."
+    assert (
+        response4.json()["error"]
+        == "Invalid data format. Category and items array are required for single category update."
+    )
 
 
 def test_admin_get_tech_radar():
@@ -535,7 +558,9 @@ def test_admin_normalise_technology_positive():
     """
     # The API should succeed even if 'from_tech' is not found (updatedProjects will be 0).
     payload = {"from": "NonExistentTech123", "to": "SomeNewTechABC"}
-    response = requests.post(f"{BASE_URL}/admin/api/normalise-technology", json=payload, timeout=10)
+    response = requests.post(
+        f"{BASE_URL}/admin/api/normalise-technology", json=payload, timeout=10
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["message"] == "Technology names normalised successfully"
@@ -553,18 +578,24 @@ def test_admin_normalise_technology_invalid():
     """
     # 'from' missing
     payload1 = {"to": "NewTech"}
-    response1 = requests.post(f"{BASE_URL}/admin/api/normalise-technology", json=payload1, timeout=10)
+    response1 = requests.post(
+        f"{BASE_URL}/admin/api/normalise-technology", json=payload1, timeout=10
+    )
     assert response1.status_code == 400
     assert response1.json()["error"] == "Both 'from' and 'to' values are required"
 
     # 'to' missing
     payload2 = {"from": "OldTech"}
-    response2 = requests.post(f"{BASE_URL}/admin/api/normalise-technology", json=payload2, timeout=10)
+    response2 = requests.post(
+        f"{BASE_URL}/admin/api/normalise-technology", json=payload2, timeout=10
+    )
     assert response2.status_code == 400
     assert response2.json()["error"] == "Both 'from' and 'to' values are required"
 
     # Both missing
     payload3 = {}
-    response3 = requests.post(f"{BASE_URL}/admin/api/normalise-technology", json=payload3, timeout=10)
+    response3 = requests.post(
+        f"{BASE_URL}/admin/api/normalise-technology", json=payload3, timeout=10
+    )
     assert response3.status_code == 400
     assert response3.json()["error"] == "Both 'from' and 'to' values are required"

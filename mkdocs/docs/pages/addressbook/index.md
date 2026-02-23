@@ -40,7 +40,7 @@ The Address Book page allows users to resolve employee information from GitHub u
 
 ## Use Cases
 
-### All Employees:
+### All Employees
 
 - Find projects and see who created or maintains them
 - Discover colleagues’ GitHub profiles and related repositories

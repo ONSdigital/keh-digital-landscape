@@ -1,3 +1,5 @@
+# MkDocs CI workflow
+---
 name: MkDocs CI
 
 on:
@@ -9,6 +11,9 @@ on:
     branches: [main]
     paths:
       - 'mkdocs/**'
+
+permissions:
+  contents: read
 
 jobs:
   lint-docs:
@@ -45,8 +50,8 @@ jobs:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
       - run: |
-            cd mkdocs
-            pip install -r mkdocs_requirements.txt
+          cd mkdocs
+          pip install -r mkdocs_requirements.txt
       - name: Verify MkDocs Build
         id: build
         run: |

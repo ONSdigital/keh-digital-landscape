@@ -1,3 +1,5 @@
+# Local Docker Compose config
+---
 services:
   frontend:
     build:
@@ -7,7 +9,7 @@ services:
         VITE_BACKEND_URL: http://localhost:5001
         VITE_SUPPORT_MAIL: digital-landscape@ons.gov.uk
     ports:
-      - "3000:3000"
+      - '127.0.0.1:3000:3000'
     networks:
       - app-network
     depends_on:
@@ -15,11 +17,13 @@ services:
     user: appuser
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - all
 
   backend:
     build: ./backend
     ports:
-      - "5001:5001"
+      - '127.0.0.1:5001:5001'
     environment:
       - NODE_ENV=development
       - PORT=5001
@@ -30,6 +34,8 @@ services:
     user: appuser
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - all
 
 networks:
   app-network:

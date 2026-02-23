@@ -179,7 +179,7 @@ const ReviewPage = () => {
 
     radarEntries.forEach(entry => {
       let selectedDirectorateTimeline = [];
-      let defaultTimeline = [];
+      const defaultTimeline = [];
 
       // Consider selected directorate when categorising
       entry.timeline.forEach(t => {
@@ -830,7 +830,7 @@ const ReviewPage = () => {
 
     return (
       <InfoBox
-        isAdmin={true}
+        isAdmin
         selectedItem={selectedItem}
         initialPosition={{ x: 24, y: 80 }}
         onClose={() => setSelectedItem(null)}
@@ -1160,7 +1160,7 @@ const ReviewPage = () => {
                     style={{
                       border: `4px solid ${directorateColour}`,
                       boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-                      backgroundColor: `hsl(var(--background))`,
+                      backgroundColor: 'hsl(var(--background))',
                       padding: '2px',
                       borderRadius: '4px',
                     }}
@@ -1207,7 +1207,7 @@ const ReviewPage = () => {
                   value={newTechnology}
                   onChange={handleTechnologyInputChange}
                   placeholder="Enter new technology"
-                  className={`technology-input`}
+                  className="technology-input"
                   aria-label="Enter Technology Name"
                 />
                 {isDuplicate && (

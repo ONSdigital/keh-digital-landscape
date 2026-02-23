@@ -225,6 +225,22 @@ Run the linting for the backend:
 make lint-backend
 ```
 
+### Megalinter
+
+Megalinter is implemented as a secondary linting, formatting and security tool.
+
+Run Megalinter:
+
+```bash
+make megalint-check
+```
+
+Fix the issues caught by megalinter:
+
+```bash
+make megalint-fix
+```
+
 ## Terraform
 
 Follow these instructions in the central documenation to configure the Terraform:

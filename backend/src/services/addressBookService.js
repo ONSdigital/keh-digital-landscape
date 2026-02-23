@@ -18,7 +18,7 @@ class AddressBookService {
    */
   async getAddressBookData() {
     try {
-      let folder = 'AddressBook/';
+      const folder = 'AddressBook/';
 
       const [emailToUsernameRaw, usernameToEmailRaw, usernameToIdRaw] =
         await Promise.all([
@@ -66,7 +66,7 @@ class AddressBookService {
     const { emailToUsernameData, usernameToEmailData, usernameToIDData } =
       await this.getAddressBookData();
 
-    let output = [];
+    const output = [];
 
     input.forEach(userDetail => {
       const raw = String(userDetail).trim();

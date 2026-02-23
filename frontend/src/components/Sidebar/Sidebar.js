@@ -25,7 +25,7 @@ const Sidebar = () => {
   const [showBugReportModal, setShowBugReportModal] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebarCollapsed');
-    return saved === 'true' ? true : false;
+    return saved === 'true';
   });
 
   useEffect(() => {
