@@ -38,6 +38,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           protocol      = "tcp"
         }
       ],
+      readonlyRootFilesystem = true,
       logConfiguration = {
         logDriver = "awslogs",
         options = {
@@ -83,6 +84,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           protocol      = "tcp"
         }
       ],
+      readonlyRootFilesystem = true,
       environment = [
         {
           name  = "FRONTEND_URL",
