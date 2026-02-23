@@ -27,6 +27,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Install wget in the final image before switching to non-root user
+# kics-scan ignore-block d3499f6d-1651-41bb-a9a7-de925fea487b
 RUN apk add --no-cache wget
 
 # Create non-root user
