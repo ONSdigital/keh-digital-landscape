@@ -144,6 +144,7 @@ const InfoBox = ({
   if (!selectedItem) {
     return (
       <div
+        ref={infoBoxRef}
         className="info-box"
         style={{
           position: 'fixed',
@@ -178,6 +179,7 @@ const InfoBox = ({
 
   return (
     <div
+      ref={infoBoxRef}
       className="info-box"
       style={{
         position: 'fixed',
