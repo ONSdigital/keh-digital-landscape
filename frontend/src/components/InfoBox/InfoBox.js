@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
@@ -45,6 +45,7 @@ const InfoBox = ({
     selectedItem?.description || ''
   );
   const [showProjects, setShowProjects] = useState(true);
+  const infoBoxRef = useRef(null);
 
   const handleMouseDown = e => {
     e.stopPropagation(); // Prevent event from bubbling to parent
