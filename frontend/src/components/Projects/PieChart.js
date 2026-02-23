@@ -454,7 +454,7 @@ const PieChart = ({
             </Pie>
             <Tooltip
               content={<CustomTooltip />}
-              // wrapperStyle={{ zIndex: 9999999 }}
+              wrapperStyle={{ zIndex: 9999999 }}
             />
             <Legend
               iconType="circle"
