@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../styles/App.css';
 import Header from '../components/Header/Header';
@@ -19,6 +19,8 @@ import {
   getDirectorateColour,
   getDirectorateName,
 } from '../utilities/directorateUtils';
+import sendAlert from '../components/Alerts/Alerts';
+import Tooltip from '../components/Tooltip/Tooltip';
 
 /**
  * RadarPage component for displaying the radar page.
@@ -26,6 +28,8 @@ import {
  * @returns {JSX.Element} - The RadarPage component.
  */
 function RadarPage() {
+  const fetchedOnce = useRef(false);
+  const projectsFetchedOnce = useRef(false);
   const [data, setData] = useState(null);
   const [selectedBlip, setSelectedBlip] = useState(null);
   const [lockedBlip, setLockedBlip] = useState(null);
@@ -107,16 +111,36 @@ function RadarPage() {
    * useEffect hook to fetch the tech radar data from S3.
    */
   useEffect(() => {
-    getTechRadarData().then(data => setData(data));
+    if (fetchedOnce.current) return;
+    fetchedOnce.current = true;
+    getTechRadarData()
+      .then(data => setData(data))
+      .catch(err =>
+        sendAlert(
+          'Error on the Radar Page',
+          err,
+          'Failed to fetch data for the radar data'
+        )
+      );
   }, [getTechRadarData]);
 
   /**
    * useEffect hook to fetch the projects data from S3.
    */
   useEffect(() => {
+    if (projectsFetchedOnce.current) return;
+    projectsFetchedOnce.current = true;
     const fetchData = async () => {
-      const data = await getCsvData();
-      setProjectsData(data);
+      try {
+        const data = await getCsvData();
+        setProjectsData(data);
+      } catch (err) {
+        sendAlert(
+          'Error 🚨',
+          err.message,
+          'Failed to fetch data for the projects data in the Radar page.'
+        );
+      }
     };
 
     fetchData();
@@ -133,7 +157,7 @@ function RadarPage() {
    */
   const getFilteredTimeline = timeline => {
     let filteredTimeline = [];
-    let digitalServicesTimeline = [];
+    const digitalServicesTimeline = [];
 
     timeline.forEach(entry => {
       const directorate = entry.directorate || 'Digital Services (DS)';
@@ -730,16 +754,17 @@ function RadarPage() {
     }
   };
 
-  if (!data)
+  if (!data) {
     return (
       <div>
         <Header />
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <div className="loading-spinner" />
           <p>Loading Radar...</p>
         </div>
       </div>
     );
+  }
 
   const groupedEntries = data.entries.reduce((acc, entry) => {
     const quadrant = entry.quadrant;
@@ -882,10 +907,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '4').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
@@ -986,10 +1012,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '1').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
@@ -1274,10 +1301,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '3').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${
@@ -1376,10 +1404,11 @@ function RadarPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <h2>{data.quadrants.find(q => q.id === '2').name}</h2>
-                  <span className="info-icon">
-                    <IoInformationCircle size={18} />
-                    <span className="tooltip">Click to view more details</span>
-                  </span>
+                  <Tooltip title="Click to view more details">
+                    <span className="info-icon">
+                      <IoInformationCircle size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
                 <span
                   className={`accordion-arrow ${

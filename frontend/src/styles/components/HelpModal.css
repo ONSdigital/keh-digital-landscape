@@ -126,7 +126,7 @@
   margin-right: 4px;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .help-modal-overlay {
     right: 0;
     left: 0;

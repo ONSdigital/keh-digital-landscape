@@ -11,33 +11,6 @@ class GitHubService {
     this.org = process.env.GITHUB_ORG || 'ONSdigital';
   }
 
-  // TODO: Remove this method once we refactor organisation usage page
-  /**
-   * Get GitHub Copilot organisation metrics
-   * @returns {Promise<Object>} Organisation metrics data
-   */
-  async getCopilotOrgMetrics() {
-    try {
-      const octokit = await getAppAndInstallation();
-
-      const response = await octokit.request(
-        `GET /orgs/${this.org}/copilot/metrics`,
-        {
-          headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-          },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      logger.error('GitHub API error while fetching Copilot org metrics:', {
-        error: error.message,
-      });
-      throw error;
-    }
-  }
-
   /**
    * Get team members for a specific team in the organisation
    * @param {string} teamSlug - The slug of the team to fetch members for
@@ -72,6 +45,7 @@ class GitHubService {
           per_page: 100,
         }
       );
+      logger.info('Successfully fetched GitHub team members');
 
       // Only return login, name, and url for each member
       return response.data || [];
@@ -94,12 +68,13 @@ class GitHubService {
 
       const octokit = new Octokit({ auth: userToken });
 
-      const response = await octokit.request(`GET /user/teams`, {
+      const response = await octokit.request('GET /user/teams', {
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
         per_page: 100,
       });
+      logger.info('Successfully fetched GitHub teams');
 
       // Only return slug, name, description, and url for each team
       return (response.data || []).map(team => ({
@@ -134,10 +109,11 @@ class GitHubService {
           per_page: 100,
         }
       );
+      logger.info('Successfully fetched GitHub team members');
 
       return response.data || [];
     } catch (error) {
-      logger.error('GitHub API error while fetching team members as admin:', {
+      logger.error('GitHub API error while fetching team members:', {
         error: error.message,
       });
       throw error;

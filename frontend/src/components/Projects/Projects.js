@@ -27,6 +27,7 @@ import {
   ARCHITECTURE_CATEGORIES,
   CATEGORY_COLOURS,
 } from '../../constants/projectConstants';
+import Tooltip from '../Tooltip/Tooltip';
 
 /**
  * Projects component for displaying a list of projects.
@@ -249,7 +250,7 @@ const Projects = ({
           'Database_Technologies',
         ];
 
-        let mainFieldsString =
+        const mainFieldsString =
           `${project.Project || ''} ${project.Project_Short || ''} ${project.Project_Area || ''} ${project.Team || ''}`.toLowerCase();
         let techFieldsString = '';
 
@@ -476,8 +477,9 @@ const Projects = ({
    * @returns {number} - The number of unique programmes.
    */
   const uniqueProgrammesCount = useMemo(() => {
-    if (!filteredAndSortedProjects || filteredAndSortedProjects.length === 0)
+    if (!filteredAndSortedProjects || filteredAndSortedProjects.length === 0) {
       return 0;
+    }
 
     const uniqueProgrammes = new Set();
 
@@ -663,8 +665,8 @@ const Projects = ({
             projectsData={filteredAndSortedProjects}
             title="Architectures"
             categoryField="Architectures"
-            splitSemicolon={true}
-            cloudProvidersOnly={true}
+            splitSemicolon
+            cloudProvidersOnly
             categoryColours={CATEGORY_COLOURS}
           />
         </div>
@@ -1060,81 +1062,79 @@ const Projects = ({
                       {distribution.total > 0 ? (
                         <>
                           {distribution.adopt > 0 && (
-                            <div
-                              className="distribution-segment adopt"
-                              style={{
-                                width: `${(distribution.adopt / total) * 100}%`,
-                              }}
+                            <Tooltip
                               title={`Adopt (${distribution.adopt}/${total})`}
                             >
-                              <span className="segment-tooltip">
-                                Adopt ({distribution.adopt}/{total})
-                              </span>
-                            </div>
+                              <div
+                                className="distribution-segment adopt"
+                                style={{
+                                  width: `${(distribution.adopt / total) * 100}%`,
+                                }}
+                                aria-label={`Adopt (${distribution.adopt}/${total})`}
+                              ></div>
+                            </Tooltip>
                           )}
                           {distribution.trial > 0 && (
-                            <div
-                              className="distribution-segment trial"
-                              style={{
-                                width: `${(distribution.trial / total) * 100}%`,
-                              }}
+                            <Tooltip
                               title={`Trial (${distribution.trial}/${total})`}
                             >
-                              <span className="segment-tooltip">
-                                Trial ({distribution.trial}/{total})
-                              </span>
-                            </div>
+                              <div
+                                className="distribution-segment trial"
+                                style={{
+                                  width: `${(distribution.trial / total) * 100}%`,
+                                }}
+                                aria-label={`Trial (${distribution.trial}/${total})`}
+                              ></div>
+                            </Tooltip>
                           )}
                           {distribution.assess > 0 && (
-                            <div
-                              className="distribution-segment assess"
-                              style={{
-                                width: `${(distribution.assess / total) * 100}%`,
-                              }}
+                            <Tooltip
                               title={`Assess (${distribution.assess}/${total})`}
                             >
-                              <span className="segment-tooltip">
-                                Assess ({distribution.assess}/{total})
-                              </span>
-                            </div>
+                              <div
+                                className="distribution-segment assess"
+                                style={{
+                                  width: `${(distribution.assess / total) * 100}%`,
+                                }}
+                                aria-label={`Assess (${distribution.assess}/${total})`}
+                              ></div>
+                            </Tooltip>
                           )}
                           {distribution.hold > 0 && (
-                            <div
-                              className="distribution-segment hold"
-                              style={{
-                                width: `${(distribution.hold / total) * 100}%`,
-                              }}
+                            <Tooltip
                               title={`Hold (${distribution.hold}/${total})`}
                             >
-                              <span className="segment-tooltip">
-                                Hold ({distribution.hold}/{total})
-                              </span>
-                            </div>
+                              <div
+                                className="distribution-segment hold"
+                                style={{
+                                  width: `${(distribution.hold / total) * 100}%`,
+                                }}
+                                aria-label={`Hold (${distribution.hold}/${total})`}
+                              ></div>
+                            </Tooltip>
                           )}
                           {distribution.unknown > 0 && (
-                            <div
-                              className="distribution-segment unknown"
-                              style={{
-                                width: `${(distribution.unknown / total) * 100}%`,
-                              }}
+                            <Tooltip
                               title={`Unknown (${distribution.unknown}/${total})`}
                             >
-                              <span className="segment-tooltip">
-                                Unknown ({distribution.unknown}/{total})
-                              </span>
-                            </div>
+                              <div
+                                className="distribution-segment unknown"
+                                style={{
+                                  width: `${(distribution.unknown / total) * 100}%`,
+                                }}
+                                aria-label={`Unknown (${distribution.unknown}/${total})`}
+                              ></div>
+                            </Tooltip>
                           )}
                         </>
                       ) : (
-                        <div
-                          className="distribution-segment unknown"
-                          style={{ width: '100%' }}
-                          title="No technologies found"
-                        >
-                          <span className="segment-tooltip">
-                            No technologies found
-                          </span>
-                        </div>
+                        <Tooltip title="No technologies found">
+                          <div
+                            className="distribution-segment unknown"
+                            style={{ width: '100%' }}
+                            aria-label="No technologies found"
+                          ></div>
+                        </Tooltip>
                       )}
                     </div>
                   </div>

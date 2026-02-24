@@ -29,14 +29,6 @@ const AcceptanceGraph = ({ data }) => {
             tickLine={false}
             axisLine={{ stroke: '#f5f5f5' }}
           />
-          <Tooltip
-            wrapperStyle={{ color: 'black' }}
-            formatter={(value, name) =>
-              name === 'Acceptance Rate'
-                ? `${value.toFixed(2)}%`
-                : formatNumberWithCommas(value)
-            }
-          />
           <Legend verticalAlign="top" align="left" height={36} />
           <Bar
             radius={[10, 10, 0, 0]}
@@ -75,6 +67,14 @@ const AcceptanceGraph = ({ data }) => {
             domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
             tickFormatter={value => `${value.toFixed(0)}%`}
             tickCount={5}
+          />
+          <Tooltip
+            wrapperStyle={{ color: 'black' }}
+            formatter={(value, name) =>
+              name === 'Acceptance Rate'
+                ? `${value.toFixed(2)}%`
+                : formatNumberWithCommas(value)
+            }
           />
         </ComposedChart>
       </ResponsiveContainer>

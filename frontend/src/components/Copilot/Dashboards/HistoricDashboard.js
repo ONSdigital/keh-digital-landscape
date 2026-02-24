@@ -18,11 +18,13 @@ function HistoricDashboard({ scope, data, isLoading, viewDatesBy }) {
 
   return (
     <div className="copilot-dashboard">
-      <p className="disclaimer-banner">
-        If grouping by day, engagement graphs will show the number of unique
-        users per day. If grouping by week, month or year, the graphs will
-        display the sum of those unique users for the period.
-      </p>
+      {scope === 'organisation' && (
+        <p className="disclaimer-banner">
+          If grouping by day, engagement graphs will show the number of unique
+          users per day. If grouping by week, month or year, the graphs will
+          display the sum of those unique users for the period.
+        </p>
+      )}
       <h1 className="title">IDE Code Completions</h1>
       {isLoading ? (
         <div className="copilot-grid">
@@ -35,13 +37,13 @@ function HistoricDashboard({ scope, data, isLoading, viewDatesBy }) {
         </div>
       ) : (
         <div>
-          <CompletionsCards completions={completions} prefix={'Total'} />
+          <CompletionsCards completions={completions} prefix="Total" />
           {viewDatesBy !== 'Day' && (
             <div>
               <h3>Averages per {viewDatesBy}</h3>
               <CompletionsCards
                 completions={completions}
-                prefix={'Average'}
+                prefix="Average"
                 divider={completions.perGroupedPeriod.length}
               />
             </div>
@@ -59,11 +61,11 @@ function HistoricDashboard({ scope, data, isLoading, viewDatesBy }) {
           <div className="copilot-charts-container">
             <PieChart
               engagedUsers={completions?.engagedUsersByLanguage ?? 0}
-              title={'Engaged Users by Language'}
+              title="Engaged Users by Language"
             />
             <PieChart
               engagedUsers={completions?.engagedUsersByEditor ?? 0}
-              title={'Engaged Users by Editor'}
+              title="Engaged Users by Editor"
             />
           </div>
           <h3>Language Breakdown</h3>
@@ -111,13 +113,13 @@ function HistoricDashboard({ scope, data, isLoading, viewDatesBy }) {
         </div>
       ) : (
         <div>
-          <ChatCards chats={chats} prefix={'Total'} />
+          <ChatCards chats={chats} prefix="Total" />
           {viewDatesBy !== 'Day' && (
             <div>
               <h3>Averages per {viewDatesBy}</h3>
               <ChatCards
                 chats={chats}
-                prefix={'Average'}
+                prefix="Average"
                 divider={chats.perGroupedPeriod.length}
               />
             </div>
@@ -133,7 +135,7 @@ function HistoricDashboard({ scope, data, isLoading, viewDatesBy }) {
           <div className="copilot-charts-container">
             <PieChart
               engagedUsers={chats?.engagedUsersByEditor ?? 0}
-              title={'Engaged Users by Editor'}
+              title="Engaged Users by Editor"
             />
           </div>
           <h3>Editor Breakdown</h3>

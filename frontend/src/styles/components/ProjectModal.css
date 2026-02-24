@@ -1,10 +1,7 @@
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: hsl(var(--background) / 0.8);
+  inset: 0;
+  background: hsl(var(--background) / 80%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,7 +15,7 @@
   padding: 24px;
   position: relative;
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 0.1);
+  box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 10%);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -42,6 +39,7 @@
 
 .modal-content h5 {
   margin: 0;
+
   /* margin-top: 16px; */
   font-size: 18px;
   font-weight: bold;
@@ -102,13 +100,15 @@
 
 .project-link {
   color: hsl(var(--muted-foreground));
-  text-decoration: none;
   font-size: 14px;
+
   /* padding: 4px 12px; */
   border-radius: var(--radius);
+
   /* background: hsl(var(--muted)); */
   transition: all 0.2s ease;
   border: 1px solid transparent;
+
   /* box-shadow: 0 2px 0 hsl(var(--border)); */
   position: relative;
   text-decoration: underline;
@@ -202,6 +202,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+
   /* padding-bottom: 8px; */
 }
 
@@ -239,7 +240,7 @@
 }
 
 .detail-item a {
-  margin: 4px 0 0 0;
+  margin: 4px 0 0;
   font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
@@ -255,14 +256,14 @@
 }
 
 /* Responsive styles */
-@media (max-width: 1400px) {
+@media (width <= 1400px) {
   .project-modal {
     width: 90vw;
     max-height: 90vh;
   }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .modal-content {
     width: 100vw;
     border-left: none;
@@ -291,12 +292,12 @@
 }
 
 .project-details::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: hsl(var(--muted-foreground) / 30%);
   border-radius: 4px;
 }
 
 .project-details::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: hsl(var(--muted-foreground) / 50%);
 }
 
 .repo-grid {
@@ -323,12 +324,12 @@
   text-transform: capitalize;
   border: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
-  background-color: hsl(var(--muted-foreground) / 0.1);
+  background-color: hsl(var(--muted-foreground) / 10%);
 }
 
 .repo-last-commit {
   font-size: 14px !important;
-  background: hsl(var(--muted-foreground) / 0.1);
+  background: hsl(var(--muted-foreground) / 10%);
   margin: 0;
   padding: 2px 10px;
   border-radius: var(--radius);
@@ -336,7 +337,7 @@
 }
 
 .last-commit-threshold {
-  background: hsl(var(--destructive) / 0.75) !important;
+  background: hsl(var(--destructive) / 75%) !important;
   color: hsl(var(--destructive-foreground)) !important;
 }
 
@@ -361,7 +362,7 @@
 }
 
 .repo-stats-left a:hover {
-  color: hsl(var(--foreground) / 0.8);
+  color: hsl(var(--foreground) / 80%);
 }
 
 .repo-stats-left a svg {
@@ -374,7 +375,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 12px 0 12px;
+  padding: 12px 12px 0;
 }
 
 .repo-stats-left {
@@ -397,7 +398,6 @@
 }
 
 .language-bar {
-  height: 100%;
   transition: all 0.3s ease;
   opacity: 0.7;
   background-color: hsl(var(--muted-foreground));
@@ -466,7 +466,7 @@
 }
 
 .accordion-header:hover {
-  background-color: hsl(var(--muted) / 0.6);
+  background-color: hsl(var(--muted) / 60%);
 }
 
 .accordion-header h3 {
@@ -519,7 +519,6 @@
 
 .project-link {
   color: hsl(var(--foreground));
-  text-decoration: none;
   word-break: break-all;
   text-decoration: underline;
   text-decoration-style: dotted;

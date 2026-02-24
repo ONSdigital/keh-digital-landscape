@@ -1,6 +1,18 @@
 const s3Service = require('../services/s3Service');
 const githubService = require('../services/githubService');
 const logger = require('../config/logger');
+const { getTeamsHistoricDataWithCache } = require('./teamsHistoricCache');
+
+/**
+ * Get Copilot team slugs extracted from cached historic data
+ * @param {string} bucketName - The S3 bucket name
+ * @returns {Promise<Array>} Array of team metadata objects
+ */
+async function getCopilotTeamsWithCache(bucketName) {
+  const teamsHistoricData = await getTeamsHistoricDataWithCache(bucketName);
+  // Extract just the team metadata (name, slug, url, description)
+  return teamsHistoricData.map(entry => entry.team);
+}
 
 /**
  * Check if a user is a copilot admin by comparing their teams with admin teams
@@ -29,7 +41,7 @@ async function checkCopilotAdminStatus(userToken) {
       return {
         isAdmin: false,
         teams: userTeams,
-        userTeamSlugs: userTeamSlugs,
+        userTeamSlugs,
       };
     }
 
@@ -39,17 +51,14 @@ async function checkCopilotAdminStatus(userToken) {
     );
 
     if (isAdmin) {
-      // User is admin, get copilot teams
+      // User is admin, get copilot teams from teams_history.json
       let copilotTeams = [];
       try {
         const copilotBucketName =
           process.env.COPILOT_BUCKET_NAME || 'sdp-dev-copilot-usage-dashboard';
-        copilotTeams = await s3Service.getObject(
-          copilotBucketName,
-          'copilot_teams.json'
-        );
+        copilotTeams = await getCopilotTeamsWithCache(copilotBucketName);
       } catch (error) {
-        logger.warn('Could not fetch copilot_teams.json from S3:', {
+        logger.warn('Could not fetch teams_history.json from S3:', {
           error: error.message,
         });
         // Fallback to user teams
@@ -59,14 +68,14 @@ async function checkCopilotAdminStatus(userToken) {
       return {
         isAdmin: true,
         teams: copilotTeams,
-        userTeamSlugs: userTeamSlugs,
+        userTeamSlugs,
       };
     } else {
       // User is not admin, return their regular teams
       return {
         isAdmin: false,
         teams: userTeams,
-        userTeamSlugs: userTeamSlugs,
+        userTeamSlugs,
       };
     }
   } catch (error) {

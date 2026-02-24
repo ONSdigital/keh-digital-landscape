@@ -118,7 +118,7 @@ test('Check technologies appear in the correct areas for different directorates'
 
       // Get the technologies in this position
       const technologyContainer = page.locator(`.${position}-box`);
-      const technologyElements = technologyContainer.locator(`.draggable-item`);
+      const technologyElements = technologyContainer.locator('.draggable-item');
       const technologyIds = await technologyElements.evaluateAll(elements =>
         elements.map(el => el.id)
       );
@@ -141,7 +141,7 @@ test('Technology cards show coloured border for directorate-specific positions',
   //      'directorate-1',
   //      'directorate-2',
   //  ]
-  //}
+  // }
 
   const techPositionMap = {};
   for (const dir of Object.keys(reviewPositionCases)) {

@@ -64,11 +64,14 @@ const ReviewPage = () => {
   const [selectedDirectorate, setSelectedDirectorate] = useState(null);
   const [defaultDirectorate, setDefaultDirectorate] = useState(null);
   const [directorateColour, setDirectorateColour] = useState('var(--accent)');
-  const [directorateName, setDirectorateName] = useState('Unknown Directorate');
+  const [directorateName, setDirectorateName] = useState(
+    'Digital Services (DS)'
+  );
   const [directorates, setDirectorates] = useState([]);
 
   const [highlightedTechnologies, setHighlightedTechnologies] = useState([]);
   const [changedTechnologies, setChangedTechnologies] = useState([]);
+  const [editedItem, setEditedItem] = useState(null);
 
   const [stashedDefaultTimeline, setStashedDefaultTimeline] = useState({});
 
@@ -176,7 +179,7 @@ const ReviewPage = () => {
 
     radarEntries.forEach(entry => {
       let selectedDirectorateTimeline = [];
-      let defaultTimeline = [];
+      const defaultTimeline = [];
 
       // Consider selected directorate when categorising
       entry.timeline.forEach(t => {
@@ -642,6 +645,42 @@ const ReviewPage = () => {
     setShowConfirmModal(false);
     setEditedTitle('');
     setEditedCategory('');
+    setEditedItem(null);
+
+    // Track the edit as a change so Save button becomes enabled
+    const existingChangeIndex = changedTechnologies.findIndex(
+      change =>
+        change.technology === selectedItem.title ||
+        change.technology === editedTitle
+    );
+    if (existingChangeIndex === -1) {
+      setChangedTechnologies(prev => [
+        ...prev,
+        {
+          technology: editedTitle,
+          edited: true,
+          from: selectedItem.title,
+          category: editedCategory,
+          directorate: selectedDirectorate,
+        },
+      ]);
+    } else {
+      // Update existing change entry
+      setChangedTechnologies(prev =>
+        prev.map((change, index) =>
+          index === existingChangeIndex
+            ? {
+                ...change,
+                technology: editedTitle,
+                edited: true,
+                category: editedCategory,
+                directorate: selectedDirectorate,
+              }
+            : change
+        )
+      );
+    }
+
     toast.success('Technology updated successfully');
   };
 
@@ -791,7 +830,7 @@ const ReviewPage = () => {
 
     return (
       <InfoBox
-        isAdmin={true}
+        isAdmin
         selectedItem={selectedItem}
         initialPosition={{ x: 24, y: 80 }}
         onClose={() => setSelectedItem(null)}
@@ -1010,6 +1049,7 @@ const ReviewPage = () => {
         hideSearch={false}
       />
       <div className="admin-page">
+        {renderTimeline()}
         <div className="admin-details">
           <div
             className="admin-header-left"
@@ -1121,7 +1161,7 @@ const ReviewPage = () => {
                     style={{
                       border: `4px solid ${directorateColour}`,
                       boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-                      backgroundColor: `hsl(var(--background))`,
+                      backgroundColor: 'hsl(var(--background))',
                       padding: '2px',
                       borderRadius: '4px',
                     }}
@@ -1134,11 +1174,7 @@ const ReviewPage = () => {
             </div>
           </div>
           <div className="admin-search-filter">
-            {isLoading ? (
-              <SkeletonStatCard minWidth="400px" />
-            ) : (
-              renderTimeline()
-            )}
+            {isLoading && <SkeletonStatCard minWidth="400px" />}
           </div>
         </div>
 
@@ -1168,7 +1204,7 @@ const ReviewPage = () => {
                   value={newTechnology}
                   onChange={handleTechnologyInputChange}
                   placeholder="Enter new technology"
-                  className={`technology-input`}
+                  className="technology-input"
                   aria-label="Enter Technology Name"
                 />
                 {isDuplicate && (
@@ -1258,11 +1294,21 @@ const ReviewPage = () => {
               <ul className="change-list">
                 {changedTechnologies.map((change, index) => (
                   <li key={index}>
-                    {change.from === undefined && change.to === undefined ? (
+                    {change.from === undefined &&
+                    change.to === undefined &&
+                    !change.edited ? (
                       <>
                         {change.technology} (
                         <span style={{ color: 'green', fontWeight: 'bold' }}>
                           New
+                        </span>
+                        )
+                      </>
+                    ) : change.edited && change.to === undefined ? (
+                      <>
+                        {change.from} &rarr; {change.technology} (
+                        <span style={{ color: 'blue', fontWeight: 'bold' }}>
+                          Edited
                         </span>
                         )
                       </>

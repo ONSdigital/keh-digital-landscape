@@ -49,7 +49,7 @@ function HelpModal({ show, onClose }) {
           To view more detailed information about the Digital Landscape, view
           this{' '}
           <a
-            href="https://ons-innovation.github.io/keh-digital-landscape/"
+            href="https://onsdigital.github.io/keh-digital-landscape/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -74,7 +74,7 @@ function HelpModal({ show, onClose }) {
           {' '}
           To learn how to submit a technology to the Tech Radar, view this{' '}
           <a
-            href="https://github.com/ONSdigital/software-engineer-community/tree/62ed0cce1175ab1874041bae9a3ccf4aa67a096d/Software%20Engineering%20Principles_Policies_Guidelines_Templates_Plans%20and%20more/tech-radar-submissions"
+            href="https://github.com/ONSdigital/software-engineer-community/tree/master/Software%20Engineering%20Principles_Policies_Guidelines_Templates_Plans%20and%20more/tech-radar-submissions"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -99,21 +99,18 @@ function HelpModal({ show, onClose }) {
         <ul className="help-modal-list">
           <li>
             Click &quot;Organisation Usage&quot; to view Copilot usage across
-            the ONS Digital organisation. You can view live and historic data.
+            the ONS Digital organisation. You can view historic data grouped by
+            day, week, month, or year.
           </li>
           <li>
             Click &quot;Team Usage&quot; to view Copilot usage for a specific
             team within ONS Digital. You must have permissions to view this
-            team. You can view only live data.
+            team. You can filter the data by date range.
           </li>
         </ul>
         <ul className="help-modal-list">
           <li>
-            On the live page you can slide the slider to change the start and
-            end date of the data.
-          </li>
-          <li>
-            On the historic page you can view dates by certain time ranges.
+            On the Organisation page you can view dates by certain time ranges.
             These are:
             <ul className="help-modal-list">
               <li>By day</li>
@@ -121,8 +118,6 @@ function HelpModal({ show, onClose }) {
               <li>By month</li>
               <li>By year</li>
             </ul>
-            The data only backdates for up to 100 days prior due to GitHub API
-            limits.
           </li>
         </ul>
         <span>
@@ -250,19 +245,17 @@ function HelpModal({ show, onClose }) {
                   When should you use the technology in the 4 rings?
                   <ul className="help-modal-sublist">
                     <li>
-                      <strong>Adopt:</strong> use these technologies as the
-                      foundation for core applications and infrastructure.
+                      <strong>Adopt:</strong> use these technologies for all
+                      projects including mission-critical, customer-facing and
+                      high-risk systems.
                     </li>
                     <li>
-                      <strong>Trial:</strong> conduct pilot projects,
-                      proof-of-concepts, or small-scale deployments with a low
-                      risk to evaluate their suitability before adopting them
-                      widely.
+                      <strong>Trial:</strong> use these technologies in low-risk
+                      projects in production, with security approval.
                     </li>
                     <li>
-                      <strong>Assess:</strong> experiment with these
-                      technologies in non-critical environments, such as
-                      research projects, internal tools or sandbox deployments.
+                      <strong>Assess:</strong> use these technologies in
+                      research spikes, hackathons and proof-of-concepts.
                     </li>
                     <li>
                       <strong>Hold:</strong> avoid using these technologies
@@ -490,7 +483,6 @@ function HelpModal({ show, onClose }) {
             </div>
           ),
         };
-      case '/copilot/org/live':
       case '/copilot/org/historic':
         return {
           title: 'Copilot Dashboard',
@@ -498,6 +490,39 @@ function HelpModal({ show, onClose }) {
             <div className="help-modal-body">
               {githubPagesLink()}
               {copilotPage()}
+            </div>
+          ),
+        };
+      case '/addressbook':
+        return {
+          title: 'Address Book Help',
+          content: (
+            <div className="help-modal-body">
+              {githubPagesLink()}
+              <h1>Guide</h1>
+              <span>
+                The Address Book page allows you to resolve employee information
+                from GitHub usernames and ONS email addresses. Here&apos;s how
+                to use it:
+              </span>
+              <ul className="help-modal-list">
+                <li>
+                  Enter a GitHub username (e.g., username) or an ONS email
+                  address (e.g., firstname.lastname@ons.gov.uk)
+                </li>
+                <li>Inputs are case-insensitive and automatically trimmed</li>
+                <li>
+                  Search for multiple users by separating inputs with commas
+                </li>
+                <li>
+                  Use mixed input types; if both inputs refer to the same
+                  employee, only one result is returned
+                </li>
+                <li>
+                  Results include full name, ONS email address, GitHub username,
+                  profile URL, and profile picture
+                </li>
+              </ul>
             </div>
           ),
         };

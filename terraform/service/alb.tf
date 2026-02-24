@@ -2,8 +2,9 @@
 # to the backend service running in ECS Fargate.
 # Create target group, used by ALB to forward requests to ECS service
 resource "aws_lb_target_group" "frontend_tg" {
-  name        = "${var.service_subdomain}-frontend-tg"
-  port        = var.frontend_port
+  name = "${var.service_subdomain}-front-farg-tg"
+  port = var.frontend_port
+  # checkov:skip=CKV_AWS_378: HTTPS does not work
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
@@ -15,13 +16,18 @@ resource "aws_lb_target_group" "frontend_tg" {
     interval            = 30
     timeout             = 5
     matcher             = "200-399"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
 # Backend target group
 resource "aws_lb_target_group" "backend_tg" {
-  name        = "${var.service_subdomain}-backend-tg"
-  port        = var.backend_port
+  name = "${var.service_subdomain}-back-farg-tg"
+  port = var.backend_port
+  # checkov:skip=CKV_AWS_378: HTTPS does not work
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
@@ -42,49 +48,10 @@ resource "aws_lb_target_group" "backend_tg" {
   }
 
   deregistration_delay = 60
-}
 
-resource "aws_lb_target_group" "frontend_new_tg" {
-  name        = "${var.service_subdomain}-front-farg-tg"
-  port        = var.frontend_port
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
-
-  health_check {
-    path                = "/"
-    healthy_threshold   = 2
-    unhealthy_threshold = 10
-    interval            = 30
-    timeout             = 5
-    matcher             = "200-399"
+  lifecycle {
+    create_before_destroy = true
   }
-}
-
-# Backend target group
-resource "aws_lb_target_group" "backend_new_tg" {
-  name        = "${var.service_subdomain}-back-farg-tg"
-  port        = var.backend_port
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = data.terraform_remote_state.ecs_infrastructure.outputs.vpc_id
-
-  health_check {
-    path                = "/api/health"
-    healthy_threshold   = 2
-    unhealthy_threshold = 3
-    interval            = 60
-    timeout             = 30
-    matcher             = "200"
-  }
-
-  stickiness {
-    type            = "lb_cookie"
-    cookie_duration = 86400
-    enabled         = true
-  }
-
-  deregistration_delay = 60
 }
 
 # Use the module to get highest current priority
@@ -128,7 +95,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.frontend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.frontend_tg.arn
 #   }
 # }
 
@@ -164,7 +131,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.backend_tg.arn
 #   }
 # }
 
@@ -186,7 +153,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.backend_tg.arn
 #   }
 # }
 
@@ -209,7 +176,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.backend_tg.arn
 #   }
 # }
 
@@ -232,7 +199,7 @@ module "alb_listener_priority" {
 
 #   action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.frontend_new_tg.arn
+#     target_group_arn = aws_lb_target_group.frontend_tg.arn
 #   }
 # }
 
@@ -253,7 +220,7 @@ resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
 
   condition {
     path_pattern {
-      values = ["/api/*", "/copilot/api/*"]
+      values = ["/api/*", "/copilot/api/*", "/addressbook/api/*"]
     }
   }
 
@@ -272,7 +239,7 @@ resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_new_tg.arn
+    target_group_arn = aws_lb_target_group.backend_tg.arn
   }
 }
 
@@ -307,7 +274,7 @@ resource "aws_lb_listener_rule" "digital_landscape_backend_rule_2" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_new_tg.arn
+    target_group_arn = aws_lb_target_group.backend_tg.arn
   }
 }
 
@@ -337,6 +304,6 @@ resource "aws_lb_listener_rule" "digital_landscape_frontend_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend_new_tg.arn
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
   }
 }

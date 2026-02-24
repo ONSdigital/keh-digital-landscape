@@ -17,6 +17,7 @@ import {
   TbBug,
 } from 'react-icons/tb';
 import { VscCopilot } from 'react-icons/vsc';
+import { FaRegAddressBook } from 'react-icons/fa';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -24,7 +25,7 @@ const Sidebar = () => {
   const [showBugReportModal, setShowBugReportModal] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem('sidebarCollapsed');
-    return saved === 'true' ? true : false;
+    return saved === 'true';
   });
 
   useEffect(() => {
@@ -64,6 +65,12 @@ const Sidebar = () => {
       icon: <VscCopilot />,
       isLink: true,
       hasChildren: true,
+    },
+    {
+      path: '/addressbook',
+      label: 'Address Book',
+      icon: <FaRegAddressBook />,
+      isLink: true,
     },
   ];
 

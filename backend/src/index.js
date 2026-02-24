@@ -21,6 +21,8 @@ const adminRoutes = require('./routes/admin');
 const reviewRoutes = require('./routes/review');
 const copilotRoutes = require('./routes/copilot');
 const userRoutes = require('./routes/user');
+const addressbookRoutes = require('./routes/addressBook');
+const alertsRoutes = require('./routes/alerts');
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -84,6 +86,8 @@ app.use('/admin/api', adminApiLimiter, adminRoutes);
 app.use('/review/api', adminApiLimiter, reviewRoutes);
 app.use('/copilot/api', externalApiLimiter, copilotRoutes);
 app.use('/user/api', userApiLimiter, userRoutes);
+app.use('/addressbook/api', userApiLimiter, addressbookRoutes);
+app.use('/alerts/api', externalApiLimiter, alertsRoutes);
 
 // Error handling
 process.on('uncaughtException', error => {

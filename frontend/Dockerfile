@@ -5,8 +5,10 @@ WORKDIR /app
 # Add arguments for environment variables
 ARG VITE_BACKEND_URL 
 ARG VITE_SUPPORT_MAIL
+ARG VITE_ALERTS_CHANNEL_ID
 ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 ENV VITE_SUPPORT_MAIL=$VITE_SUPPORT_MAIL
+ENV VITE_ALERTS_CHANNEL_ID=$VITE_ALERTS_CHANNEL_ID
 
 # Copy package files first
 COPY package*.json ./
@@ -27,6 +29,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV VITE_SUPPORT_MAIL=$VITE_SUPPORT_MAIL
 # Install serve for production
+# kics-scan ignore-block d3499f6d-1651-41bb-a9a7-de925fea487b
+# hadolint ignore=DL3016
 RUN npm install -g serve
 
 # Copy only the built app from the builder stage

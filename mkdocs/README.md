@@ -18,16 +18,16 @@ cd mkdocs
 
 1. Create a virtual environment (recommended but not required):
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
 2. Install dependencies:
 
-```bash
-make setup
-```
+   ```bash
+   make setup
+   ```
 
 ## Running locally
 
@@ -44,6 +44,31 @@ Ensure you are running locally.
 To make changes to the documentation, edit the `mkdocs.yml` file to add a new page and add markdown (.md) files or directories to the `docs` directory.
 
 Your changes will be reflected live locally.
+
+## Testing the build
+
+Before merging a PR into `main`, it is important that we double check that MkDocs builds successfully.
+
+### Manually Testing Build
+
+To do this, run the following (assuming you are already in the `./mkdocs` directory):
+
+```bash
+PYTHONPATH=. mkdocs build
+```
+
+This will create a `./site` directory containing the source files for the documentation site.
+If the build is successful, MkDocs will provide a success message:
+
+```bash
+INFO    -  Documentation built in 2.62 seconds
+```
+
+### GitHub Action Build Testing
+
+A GitHub Action is available in `.github/workflows/ci_mkdocs.yml`.
+
+This action will run on pull request to the `main` branch and simply follows the above process to catch build errors (it also handles automated linting - see below).
 
 ## Deploying to GitHub Pages
 

@@ -1,10 +1,10 @@
 # Digital Landscape
 
-![Linting Status](https://github.com/ONS-innovation/keh-digital-landscape/actions/workflows/ci.yml/badge.svg)
-![CodeQL Status](https://github.com/ONS-innovation/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
-![Dependabot Status](https://github.com/ONS-Innovation/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
-[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONS-innovation/keh-digital-landscape/blob/main/LICENSE)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONS-innovation/keh-digital-landscape.svg)](https://github.com/ONS-innovation/keh-digital-landscape/pulls)
+![Linting Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci.yml/badge.svg)
+![CodeQL Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
+![Dependabot Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
+[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONSdigital/keh-digital-landscape/blob/main/LICENSE)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONSDigital/keh-digital-landscape.svg)](https://github.com/ONSdigital/keh-digital-landscape/pulls)
 
 This tool aims to provide a visual representation of the digital landscape at ONS. This consists of the following main pages:
 
@@ -44,7 +44,7 @@ Technology management - manage new technologies and the autocomplete list to ens
 **Copilot
 Page**
 
-Displays both live and historical statistics on Copilot usage within ONS.
+Displays historical statistics on Copilot usage within ONS.
 
 - Statistics can be viewed organisation-wide or for a specific team.
 - On Team Usage view, it is possible to search for teams using the "Search teams" input within the header.
@@ -59,7 +59,7 @@ This is the homepage of the tool. It provides a brief overview of the tool and i
 Clone the repository:
 
 ```bash
-git clone https://github.com/ONS-innovation/keh-digital-landscape.git
+git clone https://github.com/ONSdigital/keh-digital-landscape.git
 ```
 
 Install both backend and frontend dependencies:
@@ -225,6 +225,22 @@ Run the linting for the backend:
 make lint-backend
 ```
 
+### Megalinter
+
+Megalinter is implemented as a secondary linting, formatting and security tool.
+
+Run Megalinter:
+
+```bash
+make megalint-check
+```
+
+Fix the issues caught by megalinter:
+
+```bash
+make megalint-fix
+```
+
 ## Terraform
 
 Follow these instructions in the central documenation to configure the Terraform:
@@ -342,3 +358,64 @@ The project documentation is located in the `mkdocs/docs` directory. To build an
 pip install -r mkdocs_requirements.txt
 mkdocs serve
 ```
+
+## Alerts (Azure Webhook)
+
+The application supports sending alerts from the frontend to the backend, which then authenticates to Azure and forwards the alert payload to an Azure webhook.
+
+### Backend endpoint
+
+**POST** `/alerts/api/alert`
+
+- **Content-Type:** `application/json`
+- **Body:** JSON object. The backend forwards this object to the Azure webhook as JSON.
+
+Example request:
+
+```bash
+curl -X POST http://localhost:5001/alerts/api/alert \
+  -H "Content-Type: application/json" \
+  -d '{"channel":"<channel-id>","message":"Radar page failed to load"}'
+```
+
+### Backend configuration (environment variables)
+
+The backend needs Azure credentials and the webhook target.
+
+The required variables:
+
+- `AZURE_TENANT_ID`
+- `AZURE_CLIENT_ID`
+- `AZURE_CLIENT_SECRET`
+- `WEBHOOK_SCOPE`
+- `WEBHOOK_URL` (the URL of the Azure webhook endpoint)
+
+Set these in `backend/.env` (see `backend/.env.example`). **Security reminder to not commit secrets.**
+
+### Frontend usage
+
+Frontend pages call the alert endpoint using the helper:
+
+`frontend/src/components/Alerts/Alerts.js`
+
+Example:
+
+```js
+import sendAlert from '../components/Alerts/Alerts';
+
+// ...
+try {
+  // ...
+} catch (err) {
+  await sendAlert(
+    'Error 🚨',
+    err?.message || String(err),
+    'Failed to fetch data for the Radar page'
+  );
+}
+```
+
+Frontend environment variables:
+
+- `VITE_BACKEND_URL` (local: `http://localhost:5001`)
+- `VITE_ALERTS_CHANNEL_ID` (channel identifier used by the webhook)

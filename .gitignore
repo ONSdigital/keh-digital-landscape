@@ -80,3 +80,6 @@ terraform/service/highest_alb_listener_priority.txt
 /testing/frontend/reports
 /testing/frontend/test-results
 /testing/backend/venv
+
+# Megalinter
+megalinter-reports/

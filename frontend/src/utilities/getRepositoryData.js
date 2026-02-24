@@ -15,7 +15,7 @@ export const fetchRepositoryStats = async (date = null, archived = null) => {
     if (date && date !== 'all') params.append('datetime', date);
     if (archived !== null) params.append('archived', archived);
 
-    const baseUrl = `/api/json`;
+    const baseUrl = '/api/json';
 
     const url = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
 

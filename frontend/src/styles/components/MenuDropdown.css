@@ -5,7 +5,6 @@
 
 .menu-button {
   background: transparent;
-  border: 1px solid transparent;
   color: hsl(var(--foreground));
   padding: 8px;
   border-radius: var(--radius);
@@ -30,7 +29,7 @@
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   min-width: 200px;
-  box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 0.1);
+  box-shadow: 0 4px 10px 0 hsl(var(--foreground) / 10%);
   z-index: 1000;
   overflow: hidden;
 }
@@ -79,11 +78,11 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 8px 16px 4px;
-  background: hsl(var(--muted) / 0.3);
+  background: hsl(var(--muted) / 30%);
 }
 
 .restricted-section {
-  background: hsl(var(--muted) / 0.1);
+  background: hsl(var(--muted) / 10%);
 }
 
 .home-button-container {

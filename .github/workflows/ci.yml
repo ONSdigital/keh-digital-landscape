@@ -1,3 +1,5 @@
+# GitHub Actions lint workflow
+---
 name: Linting and Formatting
 
 on:
@@ -5,6 +7,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   lint:
@@ -30,9 +35,9 @@ jobs:
         run: npm install -g prettier
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        uses: hashicorp/setup-terraform@v3 # Pin to latest version 3 of terraform
         with:
-          terraform_version: '1.14.3'          
+          terraform_version: '1.14.3'
 
       - name: Run Linting
         run: make lint

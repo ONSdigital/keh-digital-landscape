@@ -78,9 +78,12 @@ variable "token_validity_values" {
     id_token      = number
   })
   default = {
+    # kics-scan ignore-line (This one alert is a false positive)
     refresh_token = 30 # 30 days
-    access_token  = 3  # 3 hours
-    id_token      = 3  # 3 hours
+    # kics-scan ignore-line (This one alert is a false positive)
+    access_token = 3 # 3 hours
+    # kics-scan ignore-line (This one alert is a false positive)
+    id_token = 3 # 3 hours
 
   }
 }
@@ -89,6 +92,24 @@ variable "sign_out_urls" {
   description = "List of allowed sign out URLs for the identity providers"
   type        = list(string)
   default     = []
+}
+
+variable "enable_azuread_saml" {
+  type        = bool
+  default     = false
+  description = "Indicating whether to enable Azure AD SAML authentication (defaults to false)"
+}
+
+variable "azuread_provider_name" {
+  type        = string
+  default     = "ONS"
+  description = "Identify the Azure AD provider in Cognito (defaults to 'ONS')"
+}
+
+variable "azure_ad_metadata_url" {
+  type        = string
+  default     = null
+  description = "Azure AD Federation Metadata URL (preferred)."
 }
 
 locals {

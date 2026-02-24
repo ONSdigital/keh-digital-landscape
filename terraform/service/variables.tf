@@ -115,7 +115,7 @@ variable "log_retention_days" {
 variable "github_org" {
   description = "Github Organisation"
   type        = string
-  default     = "ONS-Innovation"
+  default     = "ONSDigital"
 }
 
 variable "project_tag" {
@@ -205,6 +205,11 @@ variable "healthcheck_start_period" {
 
 variable "support_mail" {
   description = "Support email"
+  type        = string
+}
+
+variable "alerts_channel_id" {
+  description = "AZURE Webhook Alerts Channel ID"
   type        = string
 }
 

@@ -11,6 +11,7 @@ import {
   TbUsers,
   TbChartBar,
   TbHelp,
+  TbAddressBook,
 } from 'react-icons/tb';
 import { MdOutlineRadar } from 'react-icons/md';
 import { VscCopilot } from 'react-icons/vsc';
@@ -38,7 +39,7 @@ function HomePage() {
         onSearchChange={() => {}}
         searchResults={[]}
         onSearchResultClick={() => {}}
-        hideSearch={true}
+        hideSearch
       />
       <div className="home-page">
         <div className="home-content">
@@ -104,6 +105,13 @@ function HomePage() {
                 Analyse GitHub Copilot usage statistics organisation-wide and by
                 team.
               </p>
+            </a>
+            <a className="nav-card" href="/addressbook">
+              <div className="nav-card-header">
+                <TbAddressBook />
+                <h2>GitHub Address Book</h2>
+              </div>
+              <p>Translate GitHub Usernames to ONS Staff or vice versa.</p>
             </a>
           </div>
 

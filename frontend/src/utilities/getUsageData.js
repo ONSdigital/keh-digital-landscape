@@ -1,33 +1,13 @@
 import customFetch from './customFetch';
 
 /**
- * Fetch organisation live usage data from Github API
- *
- * @returns {Promise<Object>} - The live usage data
- */
-export const fetchOrgLiveUsageData = async () => {
-  try {
-    const response = await customFetch(`/copilot/api/org/live`);
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching usage data:', error);
-    return null;
-  }
-};
-
-/**
  * Fetch organisation historic usage data from AWS S3
  *
  * @returns {Promise<Object>} - The historic usage data
  */
 export const fetchOrgHistoricUsageData = async () => {
   try {
-    const response = await customFetch(`/copilot/api/org/historic`);
+    const response = await customFetch('/copilot/api/org/historic');
     if (!response.ok) {
       return null;
     }
@@ -47,7 +27,7 @@ export const fetchOrgHistoricUsageData = async () => {
  */
 export const fetchTeamsHistoricData = async () => {
   try {
-    const response = await customFetch(`/copilot/api/teams/historic`);
+    const response = await customFetch('/copilot/api/teams/historic');
     if (!response.ok) {
       return null;
     }

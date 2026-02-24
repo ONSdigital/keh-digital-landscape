@@ -101,7 +101,7 @@ function TableBreakdown({
         rowData={rowData}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
-        pagination={true}
+        pagination
         paginationPageSize={20}
         onFirstDataRendered={params => {
           params.api.ensureIndexVisible(0);

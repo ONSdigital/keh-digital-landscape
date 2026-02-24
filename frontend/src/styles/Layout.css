@@ -21,13 +21,13 @@
   background: hsl(var(--background));
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .layout-content {
     flex-direction: column;
   }
 
   .main-content {
-    padding: 0px;
+    padding: 0;
   }
 }
 
@@ -50,12 +50,12 @@
   justify-content: center;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .projects-page {
     padding: 12px 8px;
   }
 
   .statistics-page {
-    padding: 0px;
+    padding: 0;
   }
 }
