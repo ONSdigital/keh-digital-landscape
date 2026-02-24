@@ -242,6 +242,9 @@ function Statistics({
     return formatNumberWithCommas(repoCount);
   };
 
+  const getLanguageDisplayName = language =>
+    language?.trim().toLowerCase() === 'hcl' ? 'HCL (Terraform)' : language;
+
   const projectOptions = useMemo(() => {
     if (!projectsData) return [];
     return projectsData
@@ -566,7 +569,7 @@ function Statistics({
                     onMouseEnter={() => setHoveredLanguage(language)}
                     onMouseLeave={() => setHoveredLanguage(null)}
                   >
-                    <h2>{language}</h2>
+                    <h2>{getLanguageDisplayName(language)}</h2>
                     <div className="language-stats">
                       <p>
                         <strong>
