@@ -11,6 +11,7 @@ import {
   TbChartBar,
   TbHelp,
   TbBug,
+  TbAddressBook,
 } from 'react-icons/tb';
 import { VscCopilot } from 'react-icons/vsc';
 import { IoMenu } from 'react-icons/io5';
@@ -119,8 +120,8 @@ function MenuDropdown({ setShowHelpModal }) {
               onClick={() => handleNavClick('/addressbook')}
               className={location.pathname === '/addressbook' ? 'active' : ''}
             >
-              <FaRegAddressBook size={16} />
-              Address Book
+              <TbAddressBook size={16} />
+              Github Address Book
             </button>
           </div>
 
