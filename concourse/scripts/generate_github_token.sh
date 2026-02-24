@@ -1,0 +1,101 @@
+#!/bin/sh
+
+set -eo pipefail
+
+# This script is used to generate a GitHub token for a given GitHub App
+# It retrieves the App ID and Private Key from the environment and
+# then uses them to generate a token which is printed to the console
+
+# Get App ID from environment variable
+if [[ -z "${GITHUB_APP_ID}" ]]; then
+    echo "GITHUB_APP_ID environment variable is not set. Please set it and try again."
+    exit 1
+fi
+
+# Get the Private Key name from environment variable
+if [[ -z "${GITHUB_APP_PRIVATE_KEY_SECRET_NAME}" ]]; then
+    echo "GITHUB_APP_PRIVATE_KEY_SECRET_NAME environment variable is not set. Please set it and try again."
+    exit 1
+fi
+
+# Get the App Organisation from environment variable
+if [[ -z "${GITHUB_APP_ORG}" ]]; then
+    echo "GITHUB_APP_ORG environment variable is not set. Please set it and try again."
+    exit 1
+fi
+
+app_id="${GITHUB_APP_ID}"
+private_key_secret_name="${GITHUB_APP_PRIVATE_KEY_SECRET_NAME}"
+github_org="${GITHUB_APP_ORG}"
+
+# Check the AWS credentials are set
+if [[ -z "${AWS_ACCESS_KEY_ID}" || -z "${AWS_SECRET_ACCESS_KEY}" ]]; then
+    echo "AWS credentials are not set. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables and try again."
+    exit 1
+fi
+
+# Get the private key from AWS Secrets Manager
+private_key=$(aws secretsmanager get-secret-value --secret-id "${private_key_secret_name}" --query SecretString --output text)
+
+echo "Retrieved private key from AWS Secrets Manager successfully."
+
+# Generate the GitHub token using the App ID and Private Key
+
+# GitHub provide docs for this:
+# https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app#generating-an-installation-access-token
+
+## 1. Make a JWT
+
+now=$(date +%s)
+iat=$((${now} - 60)) # Issues 60 seconds in the past
+exp=$((${now} + 600)) # Expires 10 minutes in the future
+
+b64enc() { openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n'; }
+
+header_json='{
+    "typ":"JWT",
+    "alg":"RS256"
+}'
+# Header encode
+header=$( echo -n "${header_json}" | b64enc )
+
+payload_json="{
+    \"iat\":${iat},
+    \"exp\":${exp},
+    \"iss\":\"${client_id}\"
+}"
+# Payload encode
+payload=$( echo -n "${payload_json}" | b64enc )
+
+# Signature
+header_payload="${header}"."${payload}"
+signature=$(
+    openssl dgst -sha256 -sign <(echo -n "${pem}") \
+    <(echo -n "${header_payload}") | b64enc
+)
+
+# Create JWT
+JWT="${header_payload}"."${signature}"
+printf '%s\n' "JWT: $JWT"
+
+## 2. Get Installation ID
+
+curl -L \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer ${JWT}" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/orgs/${github_org}/installations | jq -r '.id' > installation_id.txt
+
+## 3. Get Access Token
+
+curl --request POST \
+--url "https://api.github.com/app/installations/$(cat installation_id.txt)/access_tokens" \
+--header "Accept: application/vnd.github+json" \
+--header "Authorization: Bearer ${JWT}" \
+--header "X-GitHub-Api-Version: 2022-11-28" | jq -r '.token' > token.txt
+
+token=$(cat token.txt)
+
+## 4. Output the token so it can be used by the Concourse pipeline
+
+echo "${token}"

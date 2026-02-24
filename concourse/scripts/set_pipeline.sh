@@ -24,6 +24,26 @@ else
 	pipeline_name=${repo_name}-${sanitized_branch}
 fi
 
-fly -t aws-sdp set-pipeline -c concourse/ci.yml -p "${pipeline_name}" -v branch="${branch}" -v repo_name="${repo_name}" -v env=dev
+# Get GitHub App stuff
+
+## Get App ID from environment variable
+
+if [[ -z "${GITHUB_APP_ID}" ]]; then
+	echo "GITHUB_APP_ID environment variable is not set. Please set it and try again."
+	exit 1
+fi
+app_id="${GITHUB_APP_ID}"
+
+## Get the Private Key from AWS Secrets Manager
+
+### Check if the environment variable for the secret name is set
+
+if [[ -z "${GITHUB_APP_PRIVATE_KEY_SECRET_NAME}" ]]; then
+	echo "GITHUB_APP_PRIVATE_KEY_SECRET_NAME environment variable is not set. Please set it and try again."
+	exit 1
+fi
+private_key_secret_name="${GITHUB_APP_PRIVATE_KEY_SECRET_NAME}"
+
+fly -t aws-sdp set-pipeline -c concourse/ci.yml -p "${pipeline_name}" -v branch="${branch}" -v repo_name="${repo_name}" -v env=dev -v github_app_id="${app_id}" -v github_app_private_key_secret_name="${private_key_secret_name}" -v github_app_org="ONSdigital"
 
 echo "Pipeline \"${pipeline_name}\" set successfully."

@@ -306,6 +306,22 @@ changes to Concourse instance itself. Make sure to export all necessary environm
 When setting up our pipelines, we use ecs-infra-user on sdp-dev to be able to interact with our infrastructure on AWS. The credentials for this are stored on
 AWS Secrets Manager so you do not need to set up anything yourself.
 
+A GitHub App is used in the pipeline to interact with GitHub organisations that the Concourse instance itself is not authenticated to. Because of this, you will need to export the following environment variables in order to set the pipeline:
+
+```bash
+export GITHUB_APP_ID = <your_github_app_id>
+export GITHUB_APP_PRIVATE_KEY_SECRET_NAME = <your_github_app_private_key_secret_name>
+```
+
+The pipeline makes use of the passed GitHub App credentials to generate a token that allows it to interact with other GitHub organsations.
+
+The GitHub exports are defined as follows:
+
+- `GITHUB_APP_ID` is the ID of the GitHub App created to allow Concourse to interact with GitHub. 
+- `GITHUB_APP_PRIVATE_KEY_SECRET_NAME` is the name of the secret in AWS Secrets Manager that contains the private key for the GitHub App. 
+
+You can ask a member of the team for these values. If any of the environment variables are not set, the script will not run and will prompt you to set the missing variables.
+
 To set the pipeline, run the following script:
 
 ```bash

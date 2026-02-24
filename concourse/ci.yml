@@ -6,11 +6,6 @@ resource_types:
     source:
       repository: gstack/keyval-resource
 
-  - name: github-token-resource
-    type: registry-image
-    source:
-      repository: tenjaa/concourse-github-app-token
-
 resources:
   - name: resource-repo
     type: git
@@ -32,26 +27,20 @@ resources:
     type: key-value
     source:
       file: tag-output/tag
-  - name: images-to-shared-ecr-frontend
-    type: registry-image
-    source:
-      repository: keh-digital-landscape-frontend
-      aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
-      aws_account_id: ((aws_account_ecr_shared_account))
-      aws_region: eu-west-2
-  - name: images-to-shared-ecr-backend
-    type: registry-image
-    source:
-      repository: keh-digital-landscape-backend
-      aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
-      aws_account_id: ((aws_account_ecr_shared_account))
-      aws_region: eu-west-2
-  - name: github-token-onsdigital
-    type: github-token-resource
-    source:
-      appId: ((github_app_id))
-      privateKey: ((github_app_private_key))
-      org: ONSdigital
+  # - name: images-to-shared-ecr-frontend
+  #   type: registry-image
+  #   source:
+  #     repository: keh-digital-landscape-frontend
+  #     aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
+  #     aws_account_id: ((aws_account_ecr_shared_account))
+  #     aws_region: eu-west-2
+  # - name: images-to-shared-ecr-backend
+  #   type: registry-image
+  #   source:
+  #     repository: keh-digital-landscape-backend
+  #     aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
+  #     aws_account_id: ((aws_account_ecr_shared_account))
+  #     aws_region: eu-west-2
 
 # Define the common terraform task as an anchor
 terraform-task: &terraform-task
@@ -208,9 +197,26 @@ jobs:
             trigger: true
           - get: resource-repo
             trigger: false
-          - put: github-token-onsdigital  # Ensure the token is available and refreshed on each build
-          - load_var: token               # Load the token into a variable for use in the task
-            file: github-token-onsdigital/token
+          - task: generate-github-access-token
+            config:
+              platform: linux
+              params:
+                app_id: ((github_app_id))
+                private_key_secret_name: ((github_app_private_key_secret_name))
+                github_app_org: ((github_app_org))
+              outputs:
+                - name: github-access-token-output
+              run:
+                path: sh
+                args:
+                  - -cx
+                  - |
+                    echo "Generating GitHub access token..."
+                    export app_id="${app_id}"
+                    export private_key_secret_name="${private_key_secret_name}"
+                    export github_app_org="${github_app_org}"
+                    chmod u+x ./resource-repo/concourse/scripts/generate_github_token.sh
+                    ./resource-repo/concourse/scripts/generate_github_token.sh > github-access-token-output/token
           - task: deploy-release
             privileged: true
             config:
