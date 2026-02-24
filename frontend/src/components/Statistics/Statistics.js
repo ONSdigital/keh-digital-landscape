@@ -149,15 +149,23 @@ function Statistics({
    */
   const sortedAndFilteredLanguages = useMemo(() => {
     const originalLanguageStats = getCurrentLanguageStats();
-    if (!originalLanguageStats) {
-      return [];
-    }
+    if (!originalLanguageStats) return [];
 
     let filtered = Object.entries(originalLanguageStats).filter(
       ([language]) => {
         const matchesSearch = language
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
+
+        if (showTechRadarOnly) {
+        const status = getTechnologyStatus(mapLanguageToTechRadar(language));
+        return (
+          matchesSearch &&
+          status !== null &&
+          status !== 'review' &&
+          status !== 'ignore'
+        );
+      }
 
         return matchesSearch;
       }
@@ -421,8 +429,8 @@ function Statistics({
                 <h2>Language Statistics</h2>
               </div>
               <p className="helpful-hint-text">
-                Tracked projects are recorded on Tech Audit Tool and shown on
-                Tech Radar.
+                Tracked projects are recorded on the Tech Audit Tool and shown on
+                the Tech Radar.
               </p>
             </div>
             <div className="language-grid" tabIndex="0">
@@ -524,6 +532,13 @@ function Statistics({
                 disabled={isLoading}
               >
                 {showTotalSize ? 'Total Size' : 'Avg Size'}
+              </button>
+              <button
+                className={`${showTechRadarOnly ? 'active' : ''}`}
+                onClick={() => setShowTechRadarOnly(!showTechRadarOnly)}
+                disabled={isLoading}
+              >
+                Tech Radar Only
               </button>
             </div>
 
