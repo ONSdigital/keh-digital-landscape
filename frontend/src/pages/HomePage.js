@@ -96,7 +96,7 @@ function HomePage() {
             <a className="nav-card" href="/addressbook">
               <div className="nav-card-header">
                 <TbAddressBook />
-                <h2>Address Book</h2>
+                <h2>Github Address Book</h2>
               </div>
               <p>Translate GitHub Usernames to ONS Staff or vice versa.</p>
             </a>
