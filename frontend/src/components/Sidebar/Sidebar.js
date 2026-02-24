@@ -68,7 +68,7 @@ const Sidebar = () => {
     },
     {
       path: '/addressbook',
-      label: 'Github Address Book',
+      label: 'GitHub Address Book',
       icon: <TbAddressBook />,
       isLink: true,
     },
