@@ -158,14 +158,14 @@ function Statistics({
           .includes(searchTerm.toLowerCase());
 
         if (showTechRadarOnly) {
-        const status = getTechnologyStatus(mapLanguageToTechRadar(language));
-        return (
-          matchesSearch &&
-          status !== null &&
-          status !== 'review' &&
-          status !== 'ignore'
-        );
-      }
+          const status = getTechnologyStatus(mapLanguageToTechRadar(language));
+          return (
+            matchesSearch &&
+            status !== null &&
+            status !== 'review' &&
+            status !== 'ignore'
+          );
+        }
 
         return matchesSearch;
       }
@@ -429,8 +429,8 @@ function Statistics({
                 <h2>Language Statistics</h2>
               </div>
               <p className="helpful-hint-text">
-                Tracked projects are recorded on the Tech Audit Tool and shown on
-                the Tech Radar.
+                Tracked projects are recorded on the Tech Audit Tool and shown
+                on the Tech Radar.
               </p>
             </div>
             <div className="language-grid" tabIndex="0">
