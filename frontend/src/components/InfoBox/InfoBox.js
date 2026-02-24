@@ -319,26 +319,32 @@ const InfoBox = ({
                   {timelineItem.moved < 0 && <IoArrowDownOutline size={10} />}
                 </span>
 
-              {(() => {
-              const isMostRecent = timelineAscending ? index === array.length - 1 : index === 0;
+                {(() => {
+                  const isMostRecent = timelineAscending
+                    ? index === array.length - 1
+                    : index === 0;
 
-              return (
-                <Tooltip
-                  title={isMostRecent ? 'Last Updated Date' : 'Historical Date'}
-                  side="bottom"
-                >
-                  <div
-                    className="timeline-date"
-                    aria-label={
-                      (isMostRecent ? 'Last Updated Date: ' : 'Historical Date: ') +
-                      formatTimelineDate(timelineItem.date)
-                    }
-                  >
-                    {formatTimelineDate(timelineItem.date)}
-                  </div>
-                </Tooltip>
-              );
-              })()}
+                  return (
+                    <Tooltip
+                      title={
+                        isMostRecent ? 'Last Updated Date' : 'Historical Date'
+                      }
+                      side="bottom"
+                    >
+                      <div
+                        className="timeline-date"
+                        aria-label={
+                          (isMostRecent
+                            ? 'Last Updated Date: '
+                            : 'Historical Date: ') +
+                          formatTimelineDate(timelineItem.date)
+                        }
+                      >
+                        {formatTimelineDate(timelineItem.date)}
+                      </div>
+                    </Tooltip>
+                  );
+                })()}
               </div>
               {index < array.length - 1 && (
                 <div className="timeline-connector" />
