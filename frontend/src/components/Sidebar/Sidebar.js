@@ -15,9 +15,9 @@ import {
   TbChartBar,
   TbHelp,
   TbBug,
+  TbAddressBook
 } from 'react-icons/tb';
 import { VscCopilot } from 'react-icons/vsc';
-import { TbAddressBook } from 'react-icons/tb';
 
 const Sidebar = () => {
   const location = useLocation();
