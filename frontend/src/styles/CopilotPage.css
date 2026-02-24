@@ -609,3 +609,7 @@ html:not(.dark)
   border: 1px solid hsl(var(--primary));
   box-shadow: 0 0 4px hsl(var(--primary));
 }
+
+.recharts-tooltip-wrapper {
+  z-index: 1000;
+}
