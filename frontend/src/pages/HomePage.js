@@ -115,7 +115,6 @@ function HomePage() {
               </div>
               <p>Manage system-wide settings and configurations.</p>
             </a>
-
           </div>
 
           <RecentBanners />

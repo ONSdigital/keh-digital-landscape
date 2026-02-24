@@ -15,7 +15,7 @@ import {
   TbChartBar,
   TbHelp,
   TbBug,
-  TbAddressBook
+  TbAddressBook,
 } from 'react-icons/tb';
 import { VscCopilot } from 'react-icons/vsc';
 
