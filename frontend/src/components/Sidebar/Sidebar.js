@@ -17,7 +17,7 @@ import {
   TbBug,
 } from 'react-icons/tb';
 import { VscCopilot } from 'react-icons/vsc';
-import { FaRegAddressBook } from 'react-icons/fa';
+import { TbAddressBook } from 'react-icons/tb';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -69,7 +69,7 @@ const Sidebar = () => {
     {
       path: '/addressbook',
       label: 'Address Book',
-      icon: <FaRegAddressBook />,
+      icon: <TbAddressBook />,
       isLink: true,
     },
   ];
