@@ -30,6 +30,7 @@ ENV NODE_ENV=production
 ENV VITE_SUPPORT_MAIL=$VITE_SUPPORT_MAIL
 # Install serve for production
 # kics-scan ignore-block d3499f6d-1651-41bb-a9a7-de925fea487b
+# hadolint ignore=DL3018
 RUN npm install -g serve
 
 # Copy only the built app from the builder stage
