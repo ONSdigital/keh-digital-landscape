@@ -353,7 +353,6 @@ function Statistics({
                 disabled={isLoading}
                 aria-label="Select a date range"
               >
-                ß
                 {dateOptions.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}
