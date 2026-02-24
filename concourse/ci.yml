@@ -6,6 +6,11 @@ resource_types:
     source:
       repository: gstack/keyval-resource
 
+  - name: github-token-resource
+    type: registry-image
+    source:
+      repository: tenjaa/concourse-github-app-token
+
 resources:
   - name: resource-repo
     type: git
@@ -41,6 +46,12 @@ resources:
       aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
       aws_account_id: ((aws_account_ecr_shared_account))
       aws_region: eu-west-2
+  - name: github-token-onsdigital
+    type: github-token-resource
+    source:
+      appId: ((github_app_id))
+      privateKey: ((github_app_private_key))
+      org: ONSdigital
 
 # Define the common terraform task as an anchor
 terraform-task: &terraform-task
@@ -197,6 +208,9 @@ jobs:
             trigger: true
           - get: resource-repo
             trigger: false
+          - put: github-token-onsdigital  # Ensure the token is available and refreshed on each build
+          - load_var: token               # Load the token into a variable for use in the task
+            file: github-token-onsdigital/token
           - task: deploy-release
             privileged: true
             config:
@@ -229,38 +243,39 @@ jobs:
                     # Write the tag to a file for output
                     echo "${tag}" > release-tag-output/tag
                     echo "Using tag: ${tag}"
-                    chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
-                    chmod u+x ./resource-repo/concourse/scripts/build_image.sh
-                    source ./resource-repo/concourse/scripts/assume_role.sh
-                    ./resource-repo/concourse/scripts/build_image.sh
+                    echo "Access Token: ${token}" # This is just to check if the token works, will be removed later
+                    # chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
+                    # chmod u+x ./resource-repo/concourse/scripts/build_image.sh
+                    # source ./resource-repo/concourse/scripts/assume_role.sh
+                    # ./resource-repo/concourse/scripts/build_image.sh
             timeout: 15m
-          - in_parallel:
-              - put: images-to-shared-ecr-frontend
-                inputs:
-                  - built-images
-                  - release-tag-output
-                params:
-                  image: built-images/frontend.tar
-                  additional_tags: release-tag-output/tag
-              - put: images-to-shared-ecr-backend
-                inputs:
-                  - built-images
-                  - release-tag-output
-                params:
-                  image: built-images/backend.tar
-                  additional_tags: release-tag-output/tag
-          - <<: *terraform-task
-            params:
-              # kics-scan ignore-line (This one alert is a false positive)
-              github_access_token: ((github_access_token))
-              env: dev
-              secrets: ((sdp_dev_digital_landscape_secrets))
-        on_failure:
-          do:
-            - task: notify-azure-webhook
-              <<: *notify-azure-webhook-task
-              params:
-                env: dev
+        #   - in_parallel:
+        #       - put: images-to-shared-ecr-frontend
+        #         inputs:
+        #           - built-images
+        #           - release-tag-output
+        #         params:
+        #           image: built-images/frontend.tar
+        #           additional_tags: release-tag-output/tag
+        #       - put: images-to-shared-ecr-backend
+        #         inputs:
+        #           - built-images
+        #           - release-tag-output
+        #         params:
+        #           image: built-images/backend.tar
+        #           additional_tags: release-tag-output/tag
+        #   - <<: *terraform-task
+        #     params:
+        #       # kics-scan ignore-line (This one alert is a false positive)
+        #       github_access_token: ((github_access_token))
+        #       env: dev
+        #       secrets: ((sdp_dev_digital_landscape_secrets))
+        # on_failure:
+        #   do:
+        #     - task: notify-azure-webhook
+        #       <<: *notify-azure-webhook-task
+        #       params:
+        #         env: dev
 
   - name: release-build-and-push-prod
     public: true
