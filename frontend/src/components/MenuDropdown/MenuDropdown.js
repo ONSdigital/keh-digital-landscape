@@ -121,7 +121,7 @@ function MenuDropdown({ setShowHelpModal }) {
               className={location.pathname === '/addressbook' ? 'active' : ''}
             >
               <TbAddressBook size={16} />
-              Github Address Book
+              GitHub Address Book
             </button>
           </div>
 
