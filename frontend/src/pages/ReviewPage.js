@@ -1052,6 +1052,8 @@ const ReviewPage = () => {
         }}
       >
         <div className="admin-page">
+          {renderTimeline()}
+
           <div className="admin-details">
             <div
               className="admin-header-left"
@@ -1176,11 +1178,7 @@ const ReviewPage = () => {
               </div>
             </div>
             <div className="admin-search-filter">
-              {isLoading ? (
-                <SkeletonStatCard minWidth="400px" />
-              ) : (
-                renderTimeline()
-              )}
+              {isLoading && <SkeletonStatCard minWidth="400px" />}
             </div>
           </div>
 
