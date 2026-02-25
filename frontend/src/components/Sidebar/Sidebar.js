@@ -15,9 +15,9 @@ import {
   TbChartBar,
   TbHelp,
   TbBug,
+  TbAddressBook,
 } from 'react-icons/tb';
 import { VscCopilot } from 'react-icons/vsc';
-import { FaRegAddressBook } from 'react-icons/fa';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -68,8 +68,8 @@ const Sidebar = () => {
     },
     {
       path: '/addressbook',
-      label: 'Address Book',
-      icon: <FaRegAddressBook />,
+      label: 'GitHub Address Book',
+      icon: <TbAddressBook />,
       isLink: true,
     },
   ];
