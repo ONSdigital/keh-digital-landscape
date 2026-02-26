@@ -451,8 +451,3 @@
   color: hsl(var(--accent-foreground));
   border-color: transparent;
 }
-
-.helpful-hint-text {
-  color: gray;
-  opacity: 80%;
-}

@@ -430,7 +430,7 @@ function Statistics({
               <div className="language-header-left">
                 <h2>Language Statistics</h2>
               </div>
-              <p className="helpful-hint-text">
+              <p className="metadata">
                 Tracked projects are recorded on the Tech Audit Tool and shown
                 on the Tech Radar.
               </p>
@@ -483,7 +483,7 @@ function Statistics({
               <div className="language-header-left">
                 <h2>Language Statistics</h2>
               </div>
-              <p className="helpful-hint-text">
+              <p className="metadata">
                 Tracked projects are recorded on Tech Audit Tool and shown on
                 Tech Radar.
               </p>
