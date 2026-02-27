@@ -242,6 +242,7 @@ function Statistics({
     return formatNumberWithCommas(repoCount);
   };
 
+  // Special case for HCL (Terraform), this is because GitHub notes HCL alone
   const getLanguageDisplayName = language =>
     language?.trim().toLowerCase() === 'hcl' ? 'HCL (Terraform)' : language;
 
