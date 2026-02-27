@@ -6,7 +6,6 @@ import Home from './pages/HomePage';
 import Projects from './pages/ProjectsPage';
 import ReviewDashboard from './pages/ReviewPage';
 import AdminPage from './pages/AdminPage';
-import Layout from './components/Layout/Layout';
 import AddressBookPage from './pages/AddressBookPage';
 import CopilotDashboard from './pages/CopilotPage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';

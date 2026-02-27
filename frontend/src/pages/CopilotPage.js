@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import Header from '../components/Header/Header';
 import HistoricDashboard from '../components/Copilot/Dashboards/HistoricDashboard';
 import {
   filterUsageData,

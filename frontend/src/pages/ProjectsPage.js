@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header/Header';
 import Projects from '../components/Projects/Projects';
 import ProjectModal from '../components/Projects/ProjectModal';
 import { useData } from '../contexts/dataContext';

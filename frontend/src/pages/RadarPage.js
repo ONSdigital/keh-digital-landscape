@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../styles/App.css';
-import Header from '../components/Header/Header';
 import { useData } from '../contexts/dataContext';
 import {
   IoInformationCircle,

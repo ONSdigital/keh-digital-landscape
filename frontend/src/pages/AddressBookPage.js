@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from '../components/Header/Header';
 import PageBanner from '../components/PageBanner/PageBanner';
 import UserCard from '../components/AddressBook/UserCard';
 import '../styles/components/PageBanner.css';
