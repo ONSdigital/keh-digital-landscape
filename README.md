@@ -317,7 +317,7 @@ The pipeline makes use of the passed GitHub App credentials to generate a token 
 
 The GitHub exports are defined as follows:
 
-- `GITHUB_APP_ID` is the ID of the GitHub App created to allow Concourse to interact with GitHub. 
+- `GITHUB_CLIENT_ID` is the client ID of the GitHub App created to allow Concourse to interact with GitHub. 
 - `GITHUB_APP_PRIVATE_KEY_SECRET_NAME` is the name of the secret in AWS Secrets Manager that contains the private key for the GitHub App. 
 
 You can ask a member of the team for these values. If any of the environment variables are not set, the script will not run and will prompt you to set the missing variables.
