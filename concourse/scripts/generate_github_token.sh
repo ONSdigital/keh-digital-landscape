@@ -1,10 +1,6 @@
-#!/bin/bash
-
-## Note: This MUST be a bash script, not sh, as it uses bash-specific features such as arrays and process substitution.
+#!/bin/sh
 
 set -eu
-
-echo "Generating GitHub access token... (Running generate_github_token.bash)"
 
 # This script is used to generate a GitHub token for a given GitHub App
 # It retrieves the App ID and Private Key from the environment and
@@ -62,7 +58,7 @@ header_json='{
     "alg":"RS256"
 }'
 # Header encode
-header=$(echo -n "${header_json}" | b64enc)
+header=$(printf '%s' "${header_json}" | b64enc)
 
 payload_json="{
     \"iat\":${iat},
@@ -70,14 +66,16 @@ payload_json="{
     \"iss\":\"${client_id}\"
 }"
 # Payload encode
-payload=$(echo -n "${payload_json}" | b64enc)
+payload=$(printf '%s' "${payload_json}" | b64enc)
 
 # Signature
 header_payload="${header}"."${payload}"
-signature=$(
-	openssl dgst -sha256 -sign <(echo -n "${pem}") \
-		<(echo -n "${header_payload}") | b64enc
-)
+tmp_key="$(mktemp)"
+trap 'rm -f "$tmp_key"' EXIT
+
+printf '%s' "${pem}" > "${tmp_key}"
+
+signature=$(printf '%s' "${header_payload}" | openssl dgst -sha256 -sign "${tmp_key}" | b64enc)
 
 # Create JWT
 JWT="${header_payload}"."${signature}"

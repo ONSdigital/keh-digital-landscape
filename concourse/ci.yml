@@ -218,12 +218,11 @@ jobs:
                   - -cx
                   - |
                     echo "Generating GitHub access token..."
-                    apk add --no-cache bash
                     export github_client_id="${github_client_id}"
                     export private_key_secret_name="${private_key_secret_name}"
                     export github_app_org="${github_app_org}"
-                    chmod u+x ./resource-repo/concourse/scripts/generate_github_token.bash
-                    bash ./resource-repo/concourse/scripts/generate_github_token.bash > github-access-token-output/token
+                    chmod u+x ./resource-repo/concourse/scripts/generate_github_token.sh
+                    ./resource-repo/concourse/scripts/generate_github_token.sh > github-access-token-output/token
           - task: deploy-release
             privileged: true
             config:
