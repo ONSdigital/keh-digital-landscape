@@ -220,7 +220,7 @@ jobs:
                     export private_key_secret_name="${private_key_secret_name}"
                     export github_app_org="${github_app_org}"
                     chmod u+x ./resource-repo/concourse/scripts/generate_github_token.bash
-                    ./resource-repo/concourse/scripts/generate_github_token.bash > github-access-token-output/token
+                    bash ./resource-repo/concourse/scripts/generate_github_token.bash > github-access-token-output/token
           - task: deploy-release
             privileged: true
             config:

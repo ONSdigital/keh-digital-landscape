@@ -10,20 +10,20 @@ set -eu
 
 # Get App ID from environment variable
 if [ -z "${GITHUB_CLIENT_ID:-}" ]; then
-    echo "GITHUB_CLIENT_ID environment variable is not set. Please set it and try again."
-    exit 1
+	echo "GITHUB_CLIENT_ID environment variable is not set. Please set it and try again."
+	exit 1
 fi
 
 # Get the Private Key name from environment variable
 if [ -z "${GITHUB_APP_PRIVATE_KEY_SECRET_NAME:-}" ]; then
-    echo "GITHUB_APP_PRIVATE_KEY_SECRET_NAME environment variable is not set. Please set it and try again."
-    exit 1
+	echo "GITHUB_APP_PRIVATE_KEY_SECRET_NAME environment variable is not set. Please set it and try again."
+	exit 1
 fi
 
 # Get the App Organisation from environment variable
 if [ -z "${GITHUB_APP_ORG:-}" ]; then
-    echo "GITHUB_APP_ORG environment variable is not set. Please set it and try again."
-    exit 1
+	echo "GITHUB_APP_ORG environment variable is not set. Please set it and try again."
+	exit 1
 fi
 
 client_id="${GITHUB_CLIENT_ID}"
@@ -32,8 +32,8 @@ github_org="${GITHUB_APP_ORG}"
 
 # Check the AWS credentials are set
 if [ -z "${AWS_ACCESS_KEY_ID:-}" ] || [ -z "${AWS_SECRET_ACCESS_KEY:-}" ]; then
-    echo "AWS credentials are not set. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables and try again."
-    exit 1
+	echo "AWS credentials are not set. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables and try again."
+	exit 1
 fi
 
 # Get the private key from AWS Secrets Manager
@@ -50,8 +50,8 @@ echo "Retrieved private key from AWS Secrets Manager successfully."
 ## 1. Make a JWT
 
 now=$(date +%s)
-iat=$((${now} - 60)) # Issues 60 seconds in the past
-exp=$((${now} + 600)) # Expires 10 minutes in the future
+iat=$((now - 60))  # Issues 60 seconds in the past
+exp=$((now + 600)) # Expires 10 minutes in the future
 
 b64enc() { openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n'; }
 
@@ -60,7 +60,7 @@ header_json='{
     "alg":"RS256"
 }'
 # Header encode
-header=$( echo -n "${header_json}" | b64enc )
+header=$(echo -n "${header_json}" | b64enc)
 
 payload_json="{
     \"iat\":${iat},
@@ -68,13 +68,13 @@ payload_json="{
     \"iss\":\"${client_id}\"
 }"
 # Payload encode
-payload=$( echo -n "${payload_json}" | b64enc )
+payload=$(echo -n "${payload_json}" | b64enc)
 
 # Signature
 header_payload="${header}"."${payload}"
 signature=$(
-    openssl dgst -sha256 -sign <(echo -n "${pem}") \
-    <(echo -n "${header_payload}") | b64enc
+	openssl dgst -sha256 -sign <(echo -n "${pem}") \
+		<(echo -n "${header_payload}") | b64enc
 )
 
 # Create JWT
@@ -84,20 +84,20 @@ printf '%s\n' "JWT: $JWT"
 ## 2. Get Installation ID
 
 installation_id_response=$(curl -L \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer ${JWT}" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "https://api.github.com/orgs/${github_org}/installation")
+	-H "Accept: application/vnd.github+json" \
+	-H "Authorization: Bearer ${JWT}" \
+	-H "X-GitHub-Api-Version: 2022-11-28" \
+	"https://api.github.com/orgs/${github_org}/installation")
 
 installation_id=$(echo "${installation_id_response}" | jq -r '.id')
 
 ## 3. Get Access Token
 
 token_response=$(curl --request POST \
---url "https://api.github.com/app/installations/${installation_id}/access_tokens" \
---header "Accept: application/vnd.github+json" \
---header "Authorization: Bearer ${JWT}" \
---header "X-GitHub-Api-Version: 2022-11-28")
+	--url "https://api.github.com/app/installations/${installation_id}/access_tokens" \
+	--header "Accept: application/vnd.github+json" \
+	--header "Authorization: Bearer ${JWT}" \
+	--header "X-GitHub-Api-Version: 2022-11-28")
 
 token=$(echo "${token_response}" | jq -r '.token')
 
