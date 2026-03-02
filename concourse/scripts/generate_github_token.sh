@@ -38,8 +38,6 @@ fi
 private_key=$(aws secretsmanager get-secret-value --secret-id "${private_key_secret_name}" --query SecretString --output text)
 pem=$(printf '%b' "${private_key}")
 
-echo "Retrieved private key from AWS Secrets Manager successfully."
-
 # Generate the GitHub token using the App ID and Private Key
 
 # GitHub provide docs for this:
@@ -79,7 +77,6 @@ signature=$(printf '%s' "${header_payload}" | openssl dgst -sha256 -sign "${tmp_
 
 # Create JWT
 JWT="${header_payload}"."${signature}"
-printf '%s\n' "JWT: $JWT"
 
 ## 2. Get Installation ID
 
