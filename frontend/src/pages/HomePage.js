@@ -119,23 +119,6 @@ function HomePage() {
                 </div>
                 <p>Manage system-wide settings and configurations.</p>
               </a>
-              <a className="nav-card" href="/copilot">
-                <div className="nav-card-header">
-                  <VscCopilot />
-                  <h2>GitHub Copilot</h2>
-                </div>
-                <p>
-                  Analyse GitHub Copilot usage statistics organisation-wide and
-                  by team.
-                </p>
-              </a>
-              <a className="nav-card" href="/addressbook">
-                <div className="nav-card-header">
-                  <TbAddressBook />
-                  <h2>GitHub Address Book</h2>
-                </div>
-                <p>Translate GitHub Usernames to ONS Staff or vice versa.</p>
-              </a>
             </div>
 
             <RecentBanners />
