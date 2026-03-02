@@ -4,6 +4,8 @@
 
 set -eu
 
+echo "Generating GitHub access token... (Running generate_github_token.bash)"
+
 # This script is used to generate a GitHub token for a given GitHub App
 # It retrieves the App ID and Private Key from the environment and
 # then uses them to generate a token which is printed to the console
