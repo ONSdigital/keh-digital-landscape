@@ -253,7 +253,8 @@ jobs:
                 env: dev
                 tag: github-release-tag/tag # Use the release tag from the resource
                 repo_name: ((repo_name))
-                token: github-access-token-output/token # Use the generated GitHub token
+                # kics-scan ignore-line (This one alert is a false positive)
+                token: github-access-token-output/token # checkov:skip=CKV_SECRET_6:This one alert is a false positive
               run:
                 path: sh
                 args:
