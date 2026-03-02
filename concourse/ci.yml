@@ -208,6 +208,7 @@ jobs:
                 github_client_id: ((github_client_id))
                 private_key_secret_name: ((github_app_private_key_secret_name))
                 github_app_org: ((github_app_org))
+                secrets: ((sdp_dev_digital_landscape_secrets))
               inputs:
                 - name: resource-repo
               outputs:
@@ -217,10 +218,17 @@ jobs:
                 args:
                   - -cx
                   - |
+                    echo "Installing dependencies for GitHub token generation..."
+                    apk add --no-cache aws-cli curl jq openssl
+                    echo "Exporting AWS credentials for GitHub token generation..."
+                    export AWS_ACCESS_KEY_ID=$(echo "$secrets" | jq -r .aws_access_key_id)
+                    export AWS_SECRET_ACCESS_KEY=$(echo "$secrets" | jq -r .aws_secret_access_key)
+                    export AWS_DEFAULT_REGION=eu-west-2
+                    echo "Exporting GitHub App variables for GitHub token generation..."
+                    export GITHUB_CLIENT_ID="${github_client_id}"
+                    export GITHUB_APP_PRIVATE_KEY_SECRET_NAME="${private_key_secret_name}"
+                    export GITHUB_APP_ORG="${github_app_org}"
                     echo "Generating GitHub access token..."
-                    export github_client_id="${github_client_id}"
-                    export private_key_secret_name="${private_key_secret_name}"
-                    export github_app_org="${github_app_org}"
                     chmod u+x ./resource-repo/concourse/scripts/generate_github_token.sh
                     ./resource-repo/concourse/scripts/generate_github_token.sh > github-access-token-output/token
           - task: deploy-release
@@ -234,6 +242,7 @@ jobs:
               inputs:
                 - name: resource-repo
                 - name: github-release-tag
+                - name: github-access-token-output
               outputs:
                 - name: built-images
                 - name: release-tag-output
@@ -244,6 +253,7 @@ jobs:
                 env: dev
                 tag: github-release-tag/tag # Use the release tag from the resource
                 repo_name: ((repo_name))
+                token: github-access-token-output/token # Use the generated GitHub token
               run:
                 path: sh
                 args:
@@ -255,7 +265,7 @@ jobs:
                     # Write the tag to a file for output
                     echo "${tag}" > release-tag-output/tag
                     echo "Using tag: ${tag}"
-                    echo "Access Token: ${token}" # This is just to check if the token works, will be removed later
+                    echo "Access Token: $(cat github-access-token-output/token)" # This is just to check if the token works, will be removed later
                     # chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
                     # chmod u+x ./resource-repo/concourse/scripts/build_image.sh
                     # source ./resource-repo/concourse/scripts/assume_role.sh
