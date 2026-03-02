@@ -71,7 +71,7 @@ header_payload="${header}"."${payload}"
 tmp_key="$(mktemp)"
 trap 'rm -f "$tmp_key"' EXIT
 
-printf '%s' "${pem}" > "${tmp_key}"
+printf '%s' "${pem}" >"${tmp_key}"
 
 signature=$(printf '%s' "${header_payload}" | openssl dgst -sha256 -sign "${tmp_key}" | b64enc)
 
