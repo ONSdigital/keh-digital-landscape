@@ -3,6 +3,13 @@ set -eu
 
 apk add --no-cache jq
 
+# Check if GitHub Access Token is set (it should be set within ci.yml and passed as an environment variable)
+if [ -z "${token:-}" ]; then
+	echo "Error: Token is not set."
+	echo "This is needed to clone repositories from other organisations."
+	exit 1
+fi
+
 aws_account_id=$(echo "$secrets" | jq -r .aws_account_id)
 aws_access_key_id=$(echo "$secrets" | jq -r .aws_access_key_id)
 
@@ -86,7 +93,8 @@ terraform apply \
 echo "Set the Digital Landscape service"
 cd ../service
 
-# cd resource-repo/terraform/service
+# Update git to use other GitHub Token
+git config --global url."https://x-access-token:${token}@github.com/".insteadOf "https://github.com/"
 
 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
