@@ -96,7 +96,9 @@ echo "Set the Digital Landscape service"
 cd ../service
 
 # Update git to use other GitHub Token
+git config --list
 git config --global url."https://x-access-token:${token}@github.com/".insteadOf "https://github.com/"
+git config --list
 
 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
