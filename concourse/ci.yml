@@ -27,20 +27,20 @@ resources:
     type: key-value
     source:
       file: tag-output/tag
-  - name: images-to-shared-ecr-frontend
-    type: registry-image
-    source:
-      repository: keh-digital-landscape-frontend
-      aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
-      aws_account_id: ((aws_account_ecr_shared_account))
-      aws_region: eu-west-2
-  - name: images-to-shared-ecr-backend
-    type: registry-image
-    source:
-      repository: keh-digital-landscape-backend
-      aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
-      aws_account_id: ((aws_account_ecr_shared_account))
-      aws_region: eu-west-2
+  # - name: images-to-shared-ecr-frontend
+  #   type: registry-image
+  #   source:
+  #     repository: keh-digital-landscape-frontend
+  #     aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
+  #     aws_account_id: ((aws_account_ecr_shared_account))
+  #     aws_region: eu-west-2
+  # - name: images-to-shared-ecr-backend
+  #   type: registry-image
+  #   source:
+  #     repository: keh-digital-landscape-backend
+  #     aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
+  #     aws_account_id: ((aws_account_ecr_shared_account))
+  #     aws_region: eu-west-2
 
 # Define the common terraform task as an anchor
 terraform-task: &terraform-task
@@ -55,6 +55,7 @@ terraform-task: &terraform-task
     inputs:
       - name: resource-repo
       - name: github-release-tag
+      - name: github-access-token-output
     params:
       # kics-scan ignore-line (This one alert is a false positive)
       secrets: ((sdp_((env))_digital_landscape_secrets))
@@ -62,6 +63,8 @@ terraform-task: &terraform-task
       github_access_token: ((github_access_token))
       env: ((env))
       branch: ((branch))
+      # kics-scan ignore-line (This one alert is a false positive)
+      token: github-access-token-output/token # checkov:skip=CKV_SECRET_6:This one alert is a false positive
     run:
       path: sh
       args:
@@ -82,6 +85,45 @@ terraform-task: &terraform-task
           chmod u+x ./resource-repo/concourse/scripts/terraform_infra.sh
           ./resource-repo/concourse/scripts/terraform_infra.sh
     timeout: 30m
+
+# Define the common GitHub access token generation task as an anchor
+# This outputs the token to github-access-token-output/token for use in subsequent tasks
+# This token can be used to authenticate with ONSdigital since the Concourse instance itself isn't
+generate-github-access-token-task: &generate-github-access-token-task
+  task: generate-github-access-token
+  config:
+    platform: linux
+    image_resource:
+      type: docker-image
+      source:
+        repository: alpine
+    params:
+      github_client_id: ((github_client_id))
+      private_key_secret_name: ((github_app_private_key_secret_name))
+      github_app_org: ((github_app_org))
+      secrets: ((sdp_dev_digital_landscape_secrets))
+    inputs:
+      - name: resource-repo
+    outputs:
+      - name: github-access-token-output
+    run:
+      path: sh
+      args:
+        - -cx
+        - |
+          echo "Installing dependencies for GitHub token generation..."
+          apk add --no-cache aws-cli curl jq openssl
+          echo "Exporting AWS credentials for GitHub token generation..."
+          export AWS_ACCESS_KEY_ID=$(echo "$secrets" | jq -r .aws_access_key_id)
+          export AWS_SECRET_ACCESS_KEY=$(echo "$secrets" | jq -r .aws_secret_access_key)
+          export AWS_DEFAULT_REGION=eu-west-2
+          echo "Exporting GitHub App variables for GitHub token generation..."
+          export GITHUB_CLIENT_ID="${github_client_id}"
+          export GITHUB_APP_PRIVATE_KEY_SECRET_NAME="${private_key_secret_name}"
+          export GITHUB_APP_ORG="${github_app_org}"
+          echo "Generating GitHub access token..."
+          chmod u+x ./resource-repo/concourse/scripts/generate_github_token.sh
+          ./resource-repo/concourse/scripts/generate_github_token.sh > github-access-token-output/token
 
 notify-azure-webhook-task: &notify-azure-webhook-task
   config:
@@ -197,101 +239,72 @@ jobs:
             trigger: true
           - get: resource-repo
             trigger: false
-          - task: generate-github-access-token
-            config:
-              platform: linux
-              image_resource:
-                type: docker-image
-                source:
-                  repository: alpine
-              params:
-                github_client_id: ((github_client_id))
-                private_key_secret_name: ((github_app_private_key_secret_name))
-                github_app_org: ((github_app_org))
-                secrets: ((sdp_dev_digital_landscape_secrets))
-              inputs:
-                - name: resource-repo
-              outputs:
-                - name: github-access-token-output
-              run:
-                path: sh
-                args:
-                  - -cx
-                  - |
-                    echo "Installing dependencies for GitHub token generation..."
-                    apk add --no-cache aws-cli curl jq openssl
-                    echo "Exporting AWS credentials for GitHub token generation..."
-                    export AWS_ACCESS_KEY_ID=$(echo "$secrets" | jq -r .aws_access_key_id)
-                    export AWS_SECRET_ACCESS_KEY=$(echo "$secrets" | jq -r .aws_secret_access_key)
-                    export AWS_DEFAULT_REGION=eu-west-2
-                    echo "Exporting GitHub App variables for GitHub token generation..."
-                    export GITHUB_CLIENT_ID="${github_client_id}"
-                    export GITHUB_APP_PRIVATE_KEY_SECRET_NAME="${private_key_secret_name}"
-                    export GITHUB_APP_ORG="${github_app_org}"
-                    echo "Generating GitHub access token..."
-                    chmod u+x ./resource-repo/concourse/scripts/generate_github_token.sh
-                    ./resource-repo/concourse/scripts/generate_github_token.sh > github-access-token-output/token
-          - task: deploy-release
-            privileged: true
-            config:
-              platform: linux
-              image_resource:
-                type: docker-image
-                source:
-                  repository: hashicorp/terraform
-              inputs:
-                - name: resource-repo
-                - name: github-release-tag
-                - name: github-access-token-output
-              outputs:
-                - name: built-images
-                - name: release-tag-output
-              params:
-                aws_account_id: ((aws_account_sdp_dev))
-                aws_role_arn: arn:aws:iam::((aws_account_sdp_dev)):role/sdp-concourse-dev
-                secrets: ((sdp_dev_digital_landscape_secrets))
-                env: dev
-                tag: github-release-tag/tag # Use the release tag from the resource
-                repo_name: ((repo_name))
-                # kics-scan ignore-line (This one alert is a false positive)
-                token: github-access-token-output/token # checkov:skip=CKV_SECRET_6:This one alert is a false positive
-              run:
-                path: sh
-                args:
-                  - -cx
-                  - |
-                    apk add --no-cache aws-cli podman jq iptables curl
-                    export repo_name=((repo_name))
-                    export tag=$(cat github-release-tag/tag)
-                    # Write the tag to a file for output
-                    echo "${tag}" > release-tag-output/tag
-                    echo "Using tag: ${tag}"
-                    chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
-                    chmod u+x ./resource-repo/concourse/scripts/build_image.sh
-                    source ./resource-repo/concourse/scripts/assume_role.sh
-                    ./resource-repo/concourse/scripts/build_image.sh
-            timeout: 15m
-          - in_parallel:
-              - put: images-to-shared-ecr-frontend
-                inputs:
-                  - built-images
-                  - release-tag-output
-                params:
-                  image: built-images/frontend.tar
-                  additional_tags: release-tag-output/tag
-              - put: images-to-shared-ecr-backend
-                inputs:
-                  - built-images
-                  - release-tag-output
-                params:
-                  image: built-images/backend.tar
-                  additional_tags: release-tag-output/tag
+          # - task: deploy-release
+          #   privileged: true
+          #   config:
+          #     platform: linux
+          #     image_resource:
+          #       type: docker-image
+          #       source:
+          #         repository: hashicorp/terraform
+          #     inputs:
+          #       - name: resource-repo
+          #       - name: github-release-tag
+          #     outputs:
+          #       - name: built-images
+          #       - name: release-tag-output
+          #     params:
+          #       aws_account_id: ((aws_account_sdp_dev))
+          #       aws_role_arn: arn:aws:iam::((aws_account_sdp_dev)):role/sdp-concourse-dev
+          #       secrets: ((sdp_dev_digital_landscape_secrets))
+          #       env: dev
+          #       tag: github-release-tag/tag # Use the release tag from the resource
+          #       repo_name: ((repo_name))
+          #     run:
+          #       path: sh
+          #       args:
+          #         - -cx
+          #         - |
+          #           apk add --no-cache aws-cli podman jq iptables curl
+          #           export repo_name=((repo_name))
+          #           export tag=$(cat github-release-tag/tag)
+          #           # Write the tag to a file for output
+          #           echo "${tag}" > release-tag-output/tag
+          #           echo "Using tag: ${tag}"
+          #           chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
+          #           chmod u+x ./resource-repo/concourse/scripts/build_image.sh
+          #           source ./resource-repo/concourse/scripts/assume_role.sh
+          #           ./resource-repo/concourse/scripts/build_image.sh
+          #   timeout: 15m
+          # - in_parallel:
+          #     - put: images-to-shared-ecr-frontend
+          #       inputs:
+          #         - built-images
+          #         - release-tag-output
+          #       params:
+          #         image: built-images/frontend.tar
+          #         additional_tags: release-tag-output/tag
+          #     - put: images-to-shared-ecr-backend
+          #       inputs:
+          #         - built-images
+          #         - release-tag-output
+          #       params:
+          #         image: built-images/backend.tar
+          #         additional_tags: release-tag-output/tag
+          - <<: *generate-github-access-token-task
+            params:
+              github_client_id: ((github_client_id))
+              private_key_secret_name: ((github_app_private_key_secret_name))
+              github_app_org: ((github_app_org))
+              secrets: ((sdp_dev_digital_landscape_secrets))
           - <<: *terraform-task
             params:
               # kics-scan ignore-line (This one alert is a false positive)
               github_access_token: ((github_access_token))
               env: dev
               secrets: ((sdp_dev_digital_landscape_secrets))
+              # kics-scan ignore-line (This one alert is a false positive)
+              token: github-access-token-output/token # checkov:skip=CKV_SECRET_6:This one alert is a false positive
         on_failure:
           do:
             - task: notify-azure-webhook
