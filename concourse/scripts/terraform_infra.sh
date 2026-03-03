@@ -96,6 +96,10 @@ echo "Set the Digital Landscape service"
 cd ../service
 
 # Update git to use other GitHub Token
+
+## TODO: This is a bit of a problem. terraform init needs to clone the repo to get the modules using a token. ATM, we can only use one token but need access to multiple
+## organisations. Need to figure out a way of having a single token for both orgs.
+
 git config --global --unset url."https://x-access-token:${github_access_token}@github.com/".insteadOf
 git config --global url."https://x-access-token:${token}@github.com/".insteadOf "https://github.com/"
 

@@ -71,8 +71,10 @@ terraform-task: &terraform-task
         - -cx
         - |
           echo "DEBUG: Environment is ${env}"
-          echo "DEBUG: Tag is ${tag}"
           export tag=$(cat github-release-tag/tag)
+          echo "DEBUG: Tag is ${tag}"
+          export token=$(cat github-access-token-output/token)
+          echo "DEBUG: GitHub Access Token is ${token}"
           if [[ "$env" == "prod" ]] && [[ "$branch" != "main" && "$branch" != "master" ]]; then
             echo "Not on main branch, skipping terraform for prod."
             exit 0
