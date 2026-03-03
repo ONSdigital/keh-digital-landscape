@@ -10,6 +10,8 @@ if [ -z "${token:-}" ]; then
 	exit 1
 fi
 
+echo "DEBUG: Token is $token" # This is for debugging and will be removed once we confirm the token is being passed correctly.
+
 aws_account_id=$(echo "$secrets" | jq -r .aws_account_id)
 aws_access_key_id=$(echo "$secrets" | jq -r .aws_access_key_id)
 
