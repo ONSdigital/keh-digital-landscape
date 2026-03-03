@@ -27,20 +27,20 @@ resources:
     type: key-value
     source:
       file: tag-output/tag
-  # - name: images-to-shared-ecr-frontend
-  #   type: registry-image
-  #   source:
-  #     repository: keh-digital-landscape-frontend
-  #     aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
-  #     aws_account_id: ((aws_account_ecr_shared_account))
-  #     aws_region: eu-west-2
-  # - name: images-to-shared-ecr-backend
-  #   type: registry-image
-  #   source:
-  #     repository: keh-digital-landscape-backend
-  #     aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
-  #     aws_account_id: ((aws_account_ecr_shared_account))
-  #     aws_region: eu-west-2
+  - name: images-to-shared-ecr-frontend
+    type: registry-image
+    source:
+      repository: keh-digital-landscape-frontend
+      aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
+      aws_account_id: ((aws_account_ecr_shared_account))
+      aws_region: eu-west-2
+  - name: images-to-shared-ecr-backend
+    type: registry-image
+    source:
+      repository: keh-digital-landscape-backend
+      aws_role_arn: arn:aws:iam::((aws_account_sdp_((env)))):role/sdp-concourse-((env))
+      aws_account_id: ((aws_account_ecr_shared_account))
+      aws_region: eu-west-2
 
 # Define the common terraform task as an anchor
 terraform-task: &terraform-task
@@ -266,39 +266,38 @@ jobs:
                     # Write the tag to a file for output
                     echo "${tag}" > release-tag-output/tag
                     echo "Using tag: ${tag}"
-                    echo "Access Token: $(cat github-access-token-output/token)" # This is just to check if the token works, will be removed later
-                    # chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
-                    # chmod u+x ./resource-repo/concourse/scripts/build_image.sh
-                    # source ./resource-repo/concourse/scripts/assume_role.sh
-                    # ./resource-repo/concourse/scripts/build_image.sh
+                    chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
+                    chmod u+x ./resource-repo/concourse/scripts/build_image.sh
+                    source ./resource-repo/concourse/scripts/assume_role.sh
+                    ./resource-repo/concourse/scripts/build_image.sh
             timeout: 15m
-        #   - in_parallel:
-        #       - put: images-to-shared-ecr-frontend
-        #         inputs:
-        #           - built-images
-        #           - release-tag-output
-        #         params:
-        #           image: built-images/frontend.tar
-        #           additional_tags: release-tag-output/tag
-        #       - put: images-to-shared-ecr-backend
-        #         inputs:
-        #           - built-images
-        #           - release-tag-output
-        #         params:
-        #           image: built-images/backend.tar
-        #           additional_tags: release-tag-output/tag
-        #   - <<: *terraform-task
-        #     params:
-        #       # kics-scan ignore-line (This one alert is a false positive)
-        #       github_access_token: ((github_access_token))
-        #       env: dev
-        #       secrets: ((sdp_dev_digital_landscape_secrets))
-        # on_failure:
-        #   do:
-        #     - task: notify-azure-webhook
-        #       <<: *notify-azure-webhook-task
-        #       params:
-        #         env: dev
+          - in_parallel:
+              - put: images-to-shared-ecr-frontend
+                inputs:
+                  - built-images
+                  - release-tag-output
+                params:
+                  image: built-images/frontend.tar
+                  additional_tags: release-tag-output/tag
+              - put: images-to-shared-ecr-backend
+                inputs:
+                  - built-images
+                  - release-tag-output
+                params:
+                  image: built-images/backend.tar
+                  additional_tags: release-tag-output/tag
+          - <<: *terraform-task
+            params:
+              # kics-scan ignore-line (This one alert is a false positive)
+              github_access_token: ((github_access_token))
+              env: dev
+              secrets: ((sdp_dev_digital_landscape_secrets))
+        on_failure:
+          do:
+            - task: notify-azure-webhook
+              <<: *notify-azure-webhook-task
+              params:
+                env: dev
 
   - name: release-build-and-push-prod
     public: true
