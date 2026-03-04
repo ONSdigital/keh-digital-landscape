@@ -4,7 +4,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import '../../styles/Layout.css';
 import { Toaster } from 'react-hot-toast';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, headerProps = {} }) => {
   return (
     <div className="layout">
       <Toaster
@@ -26,7 +26,7 @@ const Layout = ({ children }) => {
           },
         }}
       />{' '}
-      <Header />
+      <Header {...headerProps} />
       <div className="layout-content">
         <Sidebar />
         <main className="main-content">{children}</main>

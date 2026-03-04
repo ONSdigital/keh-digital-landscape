@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Statistics from '../components/Statistics/Statistics';
-import Header from '../components/Header/Header';
 import { toast } from 'react-hot-toast';
 import { useData } from '../contexts/dataContext';
 import { BannerContainer } from '../components/Banner';
+import Layout from '../components/Layout/Layout';
 
 /**
  * StatisticsPage component for displaying the statistics page.
@@ -216,22 +216,25 @@ function StatisticsPage() {
 
   return (
     <>
-      <Header
-        searchTerm={searchTerm}
-        onSearchChange={value => setSearchTerm(value)}
-      />
-      <BannerContainer page="statistics" />
-      <div className="statistics-page">
-        <Statistics
-          data={statsData}
-          onTechClick={handleTechClick}
-          onDateChange={handleDateChange}
-          isLoading={isLoading}
-          projectsData={projectsData}
-          onProjectsChange={handleProjectsChange}
-          searchTerm={searchTerm}
-        />
-      </div>
+      <Layout
+        headerProps={{
+          searchTerm,
+          onSearchChange: value => setSearchTerm(value),
+        }}
+      >
+        <BannerContainer page="statistics" />
+        <div className="statistics-page">
+          <Statistics
+            data={statsData}
+            onTechClick={handleTechClick}
+            onDateChange={handleDateChange}
+            isLoading={isLoading}
+            projectsData={projectsData}
+            onProjectsChange={handleProjectsChange}
+            searchTerm={searchTerm}
+          />
+        </div>
+      </Layout>
     </>
   );
 }

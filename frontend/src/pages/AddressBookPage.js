@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Header from '../components/Header/Header';
 import PageBanner from '../components/PageBanner/PageBanner';
 import UserCard from '../components/AddressBook/UserCard';
 import '../styles/components/PageBanner.css';
 import '../styles/AddressBookPage.css';
+import Layout from '../components/Layout/Layout';
 
 const AddressBookPage = () => {
   const [users, setUsers] = useState([]);
@@ -51,84 +51,84 @@ const AddressBookPage = () => {
 
   return (
     <div>
-      <Header hideSearch />
+      <Layout headerProps={{ hideSearch: true }}>
+        <PageBanner
+          title="GitHub Address Book"
+          description="Search for colleague information using a GitHub username or ONS email address"
+          tabs={[]}
+        />
 
-      <PageBanner
-        title="GitHub Address Book"
-        description="Search for colleague information using a GitHub username or ONS email address"
-        tabs={[]}
-      />
-
-      <section
-        className="addressbook-howto"
-        aria-labelledby="addressbook-howto-title"
-      >
-        <h2 id="addressbook-howto-title" className="addressbook-howto-title">
-          How to use
-        </h2>
-        <ol className="addressbook-howto-list">
-          <li>
-            Enter a colleague’s GitHub username or ONS email. You’ll see their
-            name, work email, GitHub Profile URL and username in the results.
-          </li>
-          <li>
-            You can enter multiple values separated by commas, e.g.
-            <span className="addressbook-howto-example">
-              username-1, username-2
-            </span>
-            .
-          </li>
-          <li>Click Search or press Enter to submit.</li>
-          <li>Incorrect or duplicate entries will be ignored.</li>
-        </ol>
-      </section>
-
-      <div>
-        <form
-          onSubmit={handleSubmit}
-          className="addressbook-search"
-          role="search"
+        <section
+          className="addressbook-howto"
+          aria-labelledby="addressbook-howto-title"
         >
-          <input
-            className="addressbook-search-input"
-            type="search"
-            id="q"
-            name="q"
-            placeholder="Enter email or GitHub username"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            aria-label="Address book search"
-            autoComplete="off"
-          />
-          <button
-            className="addressbook-search-button"
-            type="submit"
-            disabled={loading}
-            aria-label="Submit search"
-          >
-            {loading ? 'Searching…' : 'Search'}
-          </button>
-        </form>
+          <h2 id="addressbook-howto-title" className="addressbook-howto-title">
+            How to use
+          </h2>
+          <ol className="addressbook-howto-list">
+            <li>
+              Enter a colleague’s GitHub username or ONS email. You’ll see their
+              name, work email, GitHub Profile URL and username in the results.
+            </li>
+            <li>
+              You can enter multiple values separated by commas, e.g.
+              <span className="addressbook-howto-example">
+                username-1, username-2
+              </span>
+              .
+            </li>
+            <li>Click Search or press Enter to submit.</li>
+            <li>Incorrect or duplicate entries will be ignored.</li>
+          </ol>
+        </section>
 
-        <div style={{ padding: '1rem' }}>
-          {hasSearched && users.length === 0 && !loading && !error && (
-            <div aria-label="No result text">No results.</div>
-          )}
-          {users.map((userInfo, index) => (
-            <div className="singular-card" key={index}>
-              <UserCard
-                key={index}
-                username={userInfo.username}
-                email={userInfo.email}
-                avatarUrl={userInfo.avatarUrl}
-                githubUrl={userInfo.url}
-                fullName={userInfo.fullname}
-                aria-label={`User Card ${index + 1}`}
-              />
-            </div>
-          ))}
+        <div>
+          <form
+            onSubmit={handleSubmit}
+            className="addressbook-search"
+            role="search"
+          >
+            <input
+              className="addressbook-search-input"
+              type="search"
+              id="q"
+              name="q"
+              placeholder="Enter email or GitHub username"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              aria-label="Address book search"
+              autoComplete="off"
+            />
+            <button
+              className="addressbook-search-button"
+              type="submit"
+              disabled={loading}
+              aria-label="Submit search"
+            >
+              {loading ? 'Searching…' : 'Search'}
+            </button>
+          </form>
+
+          <div style={{ padding: '1rem' }}>
+            {hasSearched && users.length === 0 && !loading && !error && (
+              <div aria-label="No result text">No results.</div>
+            )}
+            {users.map((userInfo, index) => (
+              <div className="singular-card" key={index}>
+                <UserCard
+                  key={index}
+                  username={userInfo.username}
+                  email={userInfo.email}
+                  avatarUrl={userInfo.avatarUrl}
+                  githubUrl={userInfo.url}
+                  fullName={userInfo.fullname}
+                  aria-label={`User Card ${index + 1}`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </Layout>
     </div>
   );
 };

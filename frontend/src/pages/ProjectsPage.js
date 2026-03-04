@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header/Header';
 import Projects from '../components/Projects/Projects';
 import ProjectModal from '../components/Projects/ProjectModal';
 import { useData } from '../contexts/dataContext';
@@ -8,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
 import { BannerContainer } from '../components/Banner';
 import sendAlert from '../components/Alerts/Alerts';
+import Layout from '../components/Layout/Layout';
 
 /**
  * ProjectsPage component for displaying the projects page.
@@ -161,40 +161,43 @@ function ProjectsPage() {
 
   return (
     <>
-      <Header
-        searchTerm={searchTerm}
-        onSearchChange={value => setSearchTerm(value)}
-        searchResults={[]}
-        onSearchResultClick={handleProjectClick}
-      />
-      <BannerContainer page="projects" />
-      <div className="projects-page">
-        <Projects
-          isOpen
-          onClose={() => {}}
-          projectsData={filteredProjects}
-          handleProjectClick={handleProjectClick}
-          onRefresh={handleRefresh}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          getTechnologyStatus={getTechnologyStatus}
-          selectedProject={selectedProject}
-          isModalOpen={isProjectModalOpen}
-          onModalClose={() => setIsProjectModalOpen(false)}
-          onTechOrProjectClick={handleDependencyClick}
-          renderTechnologyList={renderTechnologyList}
-        />
-        {isProjectModalOpen && (
-          <ProjectModal
-            isOpen={isProjectModalOpen}
-            onClose={() => setIsProjectModalOpen(false)}
-            project={selectedProject}
-            renderTechnologyList={renderTechnologyList}
-            onTechClick={handleDependencyClick}
+      <Layout
+        headerProps={{
+          searchTerm: searchTerm,
+          onSearchChange: value => setSearchTerm(value),
+          searchResults: [],
+          onSearchResultClick: handleProjectClick,
+        }}
+      >
+        <BannerContainer page="projects" />
+        <div className="projects-page">
+          <Projects
+            isOpen
+            onClose={() => {}}
+            projectsData={filteredProjects}
+            handleProjectClick={handleProjectClick}
+            onRefresh={handleRefresh}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
             getTechnologyStatus={getTechnologyStatus}
+            selectedProject={selectedProject}
+            isModalOpen={isProjectModalOpen}
+            onModalClose={() => setIsProjectModalOpen(false)}
+            onTechOrProjectClick={handleDependencyClick}
+            renderTechnologyList={renderTechnologyList}
           />
-        )}
-      </div>
+          {isProjectModalOpen && (
+            <ProjectModal
+              isOpen={isProjectModalOpen}
+              onClose={() => setIsProjectModalOpen(false)}
+              project={selectedProject}
+              renderTechnologyList={renderTechnologyList}
+              onTechClick={handleDependencyClick}
+              getTechnologyStatus={getTechnologyStatus}
+            />
+          )}
+        </div>
+      </Layout>
     </>
   );
 }
