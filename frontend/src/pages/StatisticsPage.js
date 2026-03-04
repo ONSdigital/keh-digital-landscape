@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Statistics from '../components/Statistics/Statistics';
 import { toast } from 'react-hot-toast';
 import { useData } from '../contexts/dataContext';
-import { BannerContainer } from '../components/Banner';
 import Layout from '../components/Layout/Layout';
 
 /**
@@ -221,8 +220,8 @@ function StatisticsPage() {
           searchTerm,
           onSearchChange: value => setSearchTerm(value),
         }}
+        bannerProps={{ page: 'statistics' }}
       >
-        <BannerContainer page="statistics" />
         <div className="statistics-page">
           <Statistics
             data={statsData}

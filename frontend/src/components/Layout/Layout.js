@@ -3,8 +3,9 @@ import Header from '../Header/Header';
 import Sidebar from '../Sidebar/Sidebar';
 import '../../styles/Layout.css';
 import { Toaster } from 'react-hot-toast';
+import { BannerContainer } from '../Banner';
 
-const Layout = ({ children, headerProps = {} }) => {
+const Layout = ({ children, headerProps = {}, bannerProps = {} }) => {
   return (
     <div className="layout">
       <Toaster
@@ -29,7 +30,10 @@ const Layout = ({ children, headerProps = {} }) => {
       <Header {...headerProps} />
       <div className="layout-content">
         <Sidebar />
-        <main className="main-content">{children}</main>
+        <main className="main-content">
+          {bannerProps?.page ? <BannerContainer {...bannerProps} /> : null}
+          {children}
+        </main>
       </div>
     </div>
   );

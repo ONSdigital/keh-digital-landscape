@@ -20,7 +20,6 @@ import {
 import { FaArrowLeft } from 'react-icons/fa';
 import { TbLogout } from 'react-icons/tb';
 import '../styles/components/MultiSelect.css';
-import { BannerContainer } from '../components/Banner';
 import { toast } from 'react-hot-toast';
 import Layout from '../components/Layout/Layout';
 
@@ -357,6 +356,9 @@ function CopilotDashboard() {
           searchTerm,
           onSearchChange: value => setSearchTerm(value),
         }}
+        bannerProps={{
+          page: scope === 'organisation' ? 'copilot/org' : 'copilot/team',
+        }}
       >
         <div className="admin-page">
           <PageBanner
@@ -635,9 +637,6 @@ function CopilotDashboard() {
             )}
           </div>
         </div>
-        <BannerContainer
-          page={scope === 'organisation' ? 'copilot/org' : 'copilot/team'}
-        />
       </Layout>
     </>
   );

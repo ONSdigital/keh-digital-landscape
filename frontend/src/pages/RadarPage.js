@@ -11,7 +11,6 @@ import {
 import ProjectModal from '../components/Projects/ProjectModal';
 import InfoBox from '../components/InfoBox/InfoBox';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
-import { BannerContainer } from '../components/Banner';
 import { getDirectorates } from '../utilities/getDirectorates';
 import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
 import {
@@ -811,8 +810,8 @@ function RadarPage() {
           onOpenProjects: () => setIsProjectsModalOpen(true),
           onStatsTechClick: handleStatsTechClick,
         }}
+        bannerProps={{ page: 'radar' }}
       >
-        <BannerContainer page="radar" />
         <div className="radar-page">
           {isInfoBoxVisible && (
             <InfoBox

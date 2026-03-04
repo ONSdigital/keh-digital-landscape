@@ -5,7 +5,6 @@ import ProjectModal from '../components/Projects/ProjectModal';
 import { useData } from '../contexts/dataContext';
 import toast from 'react-hot-toast';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
-import { BannerContainer } from '../components/Banner';
 import sendAlert from '../components/Alerts/Alerts';
 import Layout from '../components/Layout/Layout';
 
@@ -168,8 +167,8 @@ function ProjectsPage() {
           searchResults: [],
           onSearchResultClick: handleProjectClick,
         }}
+        bannerProps={{ page: 'projects' }}
       >
-        <BannerContainer page="projects" />
         <div className="projects-page">
           <Projects
             isOpen
