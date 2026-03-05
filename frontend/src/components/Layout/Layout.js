@@ -66,7 +66,10 @@ const Layout = ({ children, headerProps = {}, bannerProps = {} }) => {
 
     if (typeof MutationObserverImpl !== 'undefined') {
       mutationObserver = new MutationObserverImpl(update);
-      mutationObserver.observe(document.body, { childList: true, subtree: true });
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
     }
 
     return () => {
