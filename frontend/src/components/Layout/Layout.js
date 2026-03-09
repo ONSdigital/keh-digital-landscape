@@ -5,7 +5,7 @@ import '../../styles/Layout.css';
 import { Toaster } from 'react-hot-toast';
 import { BannerContainer } from '../Banner';
 
-const Layout = ({ children, headerProps = {}, bannerProps = {}}) => {
+const Layout = ({ children, headerProps = {}, bannerProps = {} }) => {
   return (
     <div className="layout">
       <Toaster
