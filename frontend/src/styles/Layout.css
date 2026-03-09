@@ -8,14 +8,14 @@
 .layout-content {
   display: flex;
   flex: 1;
-  max-height: calc(100vh - var(--banner-offset, 0px));
+  max-height: 100vh;
 }
 
 .main-content {
   flex: 1;
   padding-top: var(--header-height);
   box-sizing: border-box;
-  max-height: calc(100vh - var(--banner-offset, 0px));
+  max-height: 100vh;
   overflow-y: auto;
   background: hsl(var(--background));
 }
