@@ -68,6 +68,9 @@
     "prettier": "^3.2.5",
     "vitest": "^3.2.4"
   },
+  "overrides": {
+    "rollup": "4.59.0"
+  },
   "resolutions": {
     "nth-check": "^2.0.1"
   },

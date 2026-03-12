@@ -208,7 +208,7 @@
   border: 1px solid hsl(var(--border));
   box-shadow: 0 4px 0 hsl(var(--border));
   transition: all 0.2s ease;
-  max-height: 100px;
+  max-height: 120px;
   display: flex;
   flex-direction: column;
   justify-content: center;
