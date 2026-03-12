@@ -561,6 +561,12 @@ function Statistics({
                     : repoView === 'unarchived'
                       ? unarchivedCount
                       : projectCount;
+                const trackedProjectType =
+                  repoView === 'unarchived'
+                    ? 'Active'
+                    : repoView === 'archived'
+                      ? 'Archived'
+                      : '';
                 return (
                   <div
                     key={language}
@@ -581,7 +587,7 @@ function Statistics({
                         <strong>
                           {formatNumberWithCommas(totalTrackedProjects)}
                         </strong>{' '}
-                        Tracked Projects
+                        Tracked {trackedProjectType} Projects
                       </p>
                       <p>
                         <strong>{stats.average_percentage.toFixed(1)}%</strong>{' '}
