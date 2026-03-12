@@ -247,7 +247,9 @@ function Statistics({
     const languageKey = language;
     const isHcl = language?.trim().toLowerCase() === 'hcl';
     const languageLabel = isHcl ? 'HCL (Terraform)' : language;
-    const projectKey = isHcl ? mapLanguageToTechRadar(languageKey) : languageKey;
+    const projectKey = isHcl
+      ? mapLanguageToTechRadar(languageKey)
+      : languageKey;
     return { languageKey, languageLabel, projectKey };
   };
 
