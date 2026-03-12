@@ -243,8 +243,13 @@ function Statistics({
   };
 
   // Special case for HCL (Terraform), this is because GitHub notes HCL alone
-  const getLanguageDisplayName = language =>
-    language?.trim().toLowerCase() === 'hcl' ? 'HCL (Terraform)' : language;
+  const getLanguageMeta = language => {
+    const languageKey = language;
+    const isHcl = language?.trim().toLowerCase() === 'hcl';
+    const languageLabel = isHcl ? 'HCL (Terraform)' : language;
+    const projectKey = isHcl ? mapLanguageToTechRadar(languageKey) : languageKey;
+    return { languageKey, languageLabel, projectKey };
+  };
 
   const projectOptions = useMemo(() => {
     if (!projectsData) return [];
@@ -547,14 +552,13 @@ function Statistics({
 
             <div className="language-grid" tabIndex="0">
               {sortedAndFilteredLanguages.map(([language, stats]) => {
+                const { languageKey, languageLabel, projectKey } =
+                  getLanguageMeta(language);
                 const status = getTechnologyStatus(
-                  mapLanguageToTechRadar(language)
+                  mapLanguageToTechRadar(languageKey)
                 );
-                const mappedName = showTechRadarOnly
-                  ? language
-                  : mapLanguageToTechRadar(language);
                 const [projectCount, archivedCount, unarchivedCount] =
-                  countProjectsForTech(mappedName);
+                  countProjectsForTech(projectKey);
                 const totalTrackedProjects =
                   repoView === 'archived'
                     ? archivedCount
@@ -569,13 +573,13 @@ function Statistics({
                       : '';
                 return (
                   <div
-                    key={language}
+                    key={languageKey}
                     className={`language-card ${status && status !== 'review' && status !== 'ignore' ? status : ''} ${status && status !== 'review' && status !== 'ignore' ? 'clickable' : ''}`}
-                    onClick={() => handleLanguageClick(language)}
-                    onMouseEnter={() => setHoveredLanguage(language)}
+                    onClick={() => handleLanguageClick(languageKey)}
+                    onMouseEnter={() => setHoveredLanguage(languageKey)}
                     onMouseLeave={() => setHoveredLanguage(null)}
                   >
-                    <h2>{getLanguageDisplayName(language)}</h2>
+                    <h2>{languageLabel}</h2>
                     <div className="language-stats">
                       <p>
                         <strong>
