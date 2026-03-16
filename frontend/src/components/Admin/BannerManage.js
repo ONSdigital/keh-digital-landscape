@@ -25,6 +25,7 @@ const BannerManage = () => {
     { label: 'Projects', value: 'projects' },
     { label: 'Copilot Team', value: 'copilot/team' },
     { label: 'Copilot Org', value: 'copilot/org' },
+    { label: 'Address Book', value: 'addressbook' },
   ];
 
   /**

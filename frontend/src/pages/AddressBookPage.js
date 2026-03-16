@@ -51,7 +51,10 @@ const AddressBookPage = () => {
 
   return (
     <div>
-      <Layout headerProps={{ hideSearch: true }}>
+      <Layout
+        headerProps={{ hideSearch: true }}
+        bannerProps={{ page: 'addressbook' }}
+      >
         <PageBanner
           title="GitHub Address Book"
           description="Search for colleague information using a GitHub username or ONS email address"
