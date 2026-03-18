@@ -147,7 +147,7 @@
 
 .language-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
   overflow-y: auto;
   padding: 0 8px 8px 0;
