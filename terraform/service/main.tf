@@ -251,12 +251,9 @@ resource "aws_ecs_service" "application" {
   # and also the load balancer so we wait until the listener creation
   # is complete first
   network_configuration {
-    subnets         = data.terraform_remote_state.ecs_infrastructure.outputs.private_subnets
-    security_groups = [aws_security_group.allow_rules_service.id]
-
-    # TODO: The container fails to launch unless a public IP is assigned
-    # For a private ip, you would need to use a NAT Gateway?
-    assign_public_ip = true
+    subnets          = data.terraform_remote_state.ecs_infrastructure.outputs.private_subnets
+    security_groups  = [aws_security_group.allow_rules_service.id]
+    assign_public_ip = false
   }
 
 }
