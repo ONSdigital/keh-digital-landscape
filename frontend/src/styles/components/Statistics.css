@@ -452,7 +452,7 @@
   border-color: transparent;
 }
 
-.colour-key button {
+.colour-help button {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -466,12 +466,12 @@
   transition: all 0.2s ease;
 }
 
-.colour-key button:hover {
+.colour-help button:hover {
   background: hsl(var(--secondary));
   border-color: hsl(var(--border));
 }
 
-.colour-key-description {
+.colour-help-description {
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
