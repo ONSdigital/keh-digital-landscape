@@ -451,3 +451,30 @@
   color: hsl(var(--accent-foreground));
   border-color: transparent;
 }
+
+.colour-key button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 16px;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colour-key button:hover {
+  background: hsl(var(--secondary));
+  border-color: hsl(var(--border));
+}
+
+.colour-key-description {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 8px;
+}
