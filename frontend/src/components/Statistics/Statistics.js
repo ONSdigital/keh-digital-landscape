@@ -599,7 +599,7 @@ function Statistics({
                     </div>
                   </div>
                   
-                  <button onClick={handleColourHelpClick} aria-label="A button to close the colour coding help information.">Close</button>
+                  <button id="close-colour-key-button" onClick={handleColourHelpClick} aria-label="A button to close the colour coding help information.">Close</button>
               </div>
             </div>
 
