@@ -398,7 +398,7 @@ const InfoBox = ({
           {showProjects && (
             <>
               <p>Click a project to view more details</p>
-              <ul>
+              <ul tabIndex={0}>
                 {projectsForTech.map((project, index) => (
                   <li
                     key={index}

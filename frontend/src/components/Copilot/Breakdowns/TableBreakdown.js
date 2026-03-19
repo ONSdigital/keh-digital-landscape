@@ -80,6 +80,10 @@ function TableBreakdown({
     });
   }, [rowData, idField, idHeader, columns, headerMap, cellRenderers]);
 
+  if (!rowData.length) {
+    return <p>No data available.</p>;
+  }
+
   // Generate unique aria-label based on context
   const generateAriaLabel = () => {
     if (tableContext) {
