@@ -899,7 +899,7 @@ const Projects = ({
           </div>
         </div>
 
-        <div className="projects-list" tabIndex={0}>
+        <div className="projects-list">
           {!projectsData ? (
             <div className="projects-loading-skeleton">
               {[...Array(6)].map((_, index) => (
