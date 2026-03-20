@@ -141,6 +141,7 @@ async function performInteractiveTesting(page, testingElements, settings) {
     );
     console.log('Full report saved.');
 
+    var hasViolations = false;
     if (accessibilityScanResults.violations.length > 0) {
       hasViolations = true;
       accessibilityScanResults.violations.forEach(({ id, help, impact }) =>
