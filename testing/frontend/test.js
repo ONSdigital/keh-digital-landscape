@@ -142,6 +142,7 @@ async function performInteractiveTesting(page, testingElements, settings) {
     console.log('Full report saved.');
 
     if (accessibilityScanResults.violations.length > 0) {
+      hasViolations = true;
       accessibilityScanResults.violations.forEach(({ id, help, impact }) =>
         console.log(`- ${id}: ${help} (${impact} impact)`)
       );
@@ -161,6 +162,11 @@ async function performInteractiveTesting(page, testingElements, settings) {
   const combinedMarkdownPath = path.join(REPORTS_DIR, combinedMarkdownFilename);
   fs.writeFileSync(combinedMarkdownPath, combinedMarkdown);
   console.log(`Combined Markdown report saved to: ${combinedMarkdownPath}`);
+
+  if (hasViolations) {
+    console.error('Accessibility violations found.');
+    process.exit(2);
+  }
 
   await browser.close();
 })().catch(error => {
