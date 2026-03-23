@@ -98,6 +98,8 @@ async function performInteractiveTesting(page, testingElements, settings) {
   const pages = Object.values(config.pages);
   const settings = config.global_settings;
 
+  let hasViolations = false;
+
   for (const pageConfig of pages) {
     const { name, url, testing } = pageConfig;
     console.log(`Testing ${url}`);
@@ -142,6 +144,7 @@ async function performInteractiveTesting(page, testingElements, settings) {
     console.log('Full report saved.');
 
     if (accessibilityScanResults.violations.length > 0) {
+      hasViolations = true;
       accessibilityScanResults.violations.forEach(({ id, help, impact }) =>
         console.log(`- ${id}: ${help} (${impact} impact)`)
       );
@@ -161,6 +164,11 @@ async function performInteractiveTesting(page, testingElements, settings) {
   const combinedMarkdownPath = path.join(REPORTS_DIR, combinedMarkdownFilename);
   fs.writeFileSync(combinedMarkdownPath, combinedMarkdown);
   console.log(`Combined Markdown report saved to: ${combinedMarkdownPath}`);
+
+  if (hasViolations) {
+    console.error('Accessibility violations found.');
+    process.exit(2);
+  }
 
   await browser.close();
 })().catch(error => {
