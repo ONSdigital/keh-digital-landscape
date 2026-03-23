@@ -899,7 +899,7 @@ const Projects = ({
           </div>
         </div>
 
-        <div className="projects-list">
+        <div className="projects-list" tabIndex={0}>
           {!projectsData ? (
             <div className="projects-loading-skeleton">
               {[...Array(6)].map((_, index) => (
@@ -1070,7 +1070,6 @@ const Projects = ({
                                 style={{
                                   width: `${(distribution.adopt / total) * 100}%`,
                                 }}
-                                aria-label={`Adopt (${distribution.adopt}/${total})`}
                               ></div>
                             </Tooltip>
                           )}
@@ -1083,7 +1082,6 @@ const Projects = ({
                                 style={{
                                   width: `${(distribution.trial / total) * 100}%`,
                                 }}
-                                aria-label={`Trial (${distribution.trial}/${total})`}
                               ></div>
                             </Tooltip>
                           )}
@@ -1096,7 +1094,6 @@ const Projects = ({
                                 style={{
                                   width: `${(distribution.assess / total) * 100}%`,
                                 }}
-                                aria-label={`Assess (${distribution.assess}/${total})`}
                               ></div>
                             </Tooltip>
                           )}
@@ -1109,7 +1106,6 @@ const Projects = ({
                                 style={{
                                   width: `${(distribution.hold / total) * 100}%`,
                                 }}
-                                aria-label={`Hold (${distribution.hold}/${total})`}
                               ></div>
                             </Tooltip>
                           )}
@@ -1122,7 +1118,6 @@ const Projects = ({
                                 style={{
                                   width: `${(distribution.unknown / total) * 100}%`,
                                 }}
-                                aria-label={`Unknown (${distribution.unknown}/${total})`}
                               ></div>
                             </Tooltip>
                           )}
@@ -1132,7 +1127,6 @@ const Projects = ({
                           <div
                             className="distribution-segment unknown"
                             style={{ width: '100%' }}
-                            aria-label="No technologies found"
                           ></div>
                         </Tooltip>
                       )}

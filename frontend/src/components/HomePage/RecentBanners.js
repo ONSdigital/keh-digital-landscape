@@ -95,7 +95,7 @@ const RecentBanners = () => {
         These announcements are shown as banners at the bottom of different
         pages across the Digital Landscape.
       </span>
-      <div className="recent-banners-list">
+      <div className="recent-banners-list" tabIndex={0}>
         {banners.map((banner, index) => (
           <div
             key={index}

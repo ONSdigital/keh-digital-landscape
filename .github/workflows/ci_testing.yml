@@ -61,6 +61,31 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: cd testing/frontend && make setup && make test-ui
+  axe-test:
+    name: Axe Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: |
+          make install-dev
+          npx playwright install-deps
+      - name: Start app and run tests
+        run: |
+          make dev-ci &
+          echo "Waiting for app to start..."
+          sleep 10
+          echo "CI=true" >> $GITHUB_ENV
+          echo "Running tests..."
+          cd testing/frontend
+          make setup
+          make test
   unit-testing:
     name: Unit Tests
     permissions:
