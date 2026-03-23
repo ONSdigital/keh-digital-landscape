@@ -7,6 +7,8 @@ import MultiSelect from '../MultiSelect/MultiSelect';
 import { useTechnologyStatus } from '../../utilities/getTechnologyStatus';
 import { specialTechMatchers } from '../../utilities/getSpecialTechMatchers';
 import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
+import * as Accordion from '@radix-ui/react-accordion';
+import { IoHelpCircleSharp } from 'react-icons/io5';
 
 /**
  * Statistics component for displaying repository statistics.
@@ -551,6 +553,70 @@ function Statistics({
                 Tech Radar Only
               </button>
             </div>
+
+            <Accordion.Root
+              type="single"
+              collapsible
+              className="stats-accordion-root"
+            >
+              <Accordion.Item
+                value="colour-help"
+                className="stats-accordion-item"
+              >
+                <Accordion.Trigger
+                  id="colour-help-trigger"
+                  className="stats-accordion-trigger"
+                >
+                  <h3 style={{ margin: 0 }}>
+                    <IoHelpCircleSharp
+                      style={{ verticalAlign: 'middle', fontSize: '1.2em' }}
+                    />{' '}
+                    What do the colours mean?
+                  </h3>
+                </Accordion.Trigger>
+                <Accordion.Content
+                  id="colour-help-content"
+                  className="stats-accordion-content"
+                  aria-labelledby="colour-help-trigger"
+                >
+                  <p aria-label="A paragraph explaining the colour coding for the tech radar status of each language.">
+                    The colours at the bottom of each language card indicate the
+                    technology status of that language on the Tech Radar.
+                  </p>
+
+                  <div
+                    className="language-grid"
+                    style={{ margin: 'auto', maxWidth: '60%' }}
+                    aria-label="A grid showing example cards for each technology status with their corresponding colours."
+                  >
+                    <div
+                      className="language-card adopt"
+                      aria-label="An example card showing the colour for Adopt status on the tech radar."
+                    >
+                      <h2>Adopt</h2>
+                    </div>
+                    <div
+                      className="language-card trial"
+                      aria-label="An example card showing the colour for Trial status on the tech radar."
+                    >
+                      <h2>Trial</h2>
+                    </div>
+                    <div
+                      className="language-card assess"
+                      aria-label="An example card showing the colour for Assess status on the tech radar."
+                    >
+                      <h2>Assess</h2>
+                    </div>
+                    <div
+                      className="language-card hold"
+                      aria-label="An example card showing the colour for Hold status on the tech radar."
+                    >
+                      <h2>Hold</h2>
+                    </div>
+                  </div>
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion.Root>
 
             <div className="language-grid" tabIndex="0">
               {sortedAndFilteredLanguages.map(([language, stats]) => {
