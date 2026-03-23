@@ -458,9 +458,10 @@
   gap: 4px;
   background: transparent;
   border: 1px solid hsl(var(--border));
-  border-radius: 4px;
-  padding: 2px 8px;
-  font-size: 16px;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 0 hsl(var(--border));
+  padding: 4px;
+  font-size: 14px;
   color: hsl(var(--foreground));
   cursor: pointer;
   transition: all 0.2s ease;
@@ -469,6 +470,8 @@
 .colour-help button:hover {
   background: hsl(var(--secondary));
   border-color: hsl(var(--border));
+  box-shadow: none;
+  transform: translateY(2px);
 }
 
 .colour-help-description {
