@@ -8,9 +8,7 @@ import { useTechnologyStatus } from '../../utilities/getTechnologyStatus';
 import { specialTechMatchers } from '../../utilities/getSpecialTechMatchers';
 import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
 import * as Accordion from '@radix-ui/react-accordion';
-import {
-  IoHelpCircleSharp
-} from 'react-icons/io5';
+import { IoHelpCircleSharp } from 'react-icons/io5';
 
 /**
  * Statistics component for displaying repository statistics.
@@ -561,13 +559,26 @@ function Statistics({
               collapsible
               className="stats-accordion-root"
             >
-              <Accordion.Item value="colour-help" className="stats-accordion-item">
-                <Accordion.Trigger id="colour-help-trigger" className="stats-accordion-trigger">
+              <Accordion.Item
+                value="colour-help"
+                className="stats-accordion-item"
+              >
+                <Accordion.Trigger
+                  id="colour-help-trigger"
+                  className="stats-accordion-trigger"
+                >
                   <h3 style={{ margin: 0 }}>
-                    <IoHelpCircleSharp style={{ verticalAlign: 'middle', fontSize: '1.2em' }} /> What do the colours mean?
+                    <IoHelpCircleSharp
+                      style={{ verticalAlign: 'middle', fontSize: '1.2em' }}
+                    />{' '}
+                    What do the colours mean?
                   </h3>
                 </Accordion.Trigger>
-                <Accordion.Content id="colour-help-content" className="stats-accordion-content" aria-labelledby="colour-help-trigger">
+                <Accordion.Content
+                  id="colour-help-content"
+                  className="stats-accordion-content"
+                  aria-labelledby="colour-help-trigger"
+                >
                   <p aria-label="A paragraph explaining the colour coding for the tech radar status of each language.">
                     The colours at the bottom of each language card indicate the
                     technology status of that language on the Tech Radar.

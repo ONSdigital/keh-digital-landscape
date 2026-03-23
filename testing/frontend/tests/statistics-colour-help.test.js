@@ -53,7 +53,9 @@ const interceptAPICall = async ({ page }) => {
 test.describe('Test the colour help accordion on the statistics page', () => {
   test.beforeEach(interceptAPICall);
 
-  test('should open and close the colour help accordion when the trigger is clicked', async ({ page }) => {
+  test('should open and close the colour help accordion when the trigger is clicked', async ({
+    page,
+  }) => {
     // Click the colour help accordion trigger
     await page.click('#colour-help-trigger');
 
@@ -66,13 +68,17 @@ test.describe('Test the colour help accordion on the statistics page', () => {
     await expect(content).not.toBeVisible();
   });
 
-  test('should have the correct content in the colour help accordion', async ({ page }) => {
+  test('should have the correct content in the colour help accordion', async ({
+    page,
+  }) => {
     // Click the colour help accordion trigger
     await page.click('#colour-help-trigger');
 
     // Assert that the colour help content contains the expected text
     const content = await page.locator('#colour-help-content');
-    await expect(content).toContainText('The colours at the bottom of each language card indicate the technology status of that language on the Tech Radar.');
+    await expect(content).toContainText(
+      'The colours at the bottom of each language card indicate the technology status of that language on the Tech Radar.'
+    );
 
     // Assert that there are 4 language cards within the content
     const languageCards = await content.locator('.language-card');
