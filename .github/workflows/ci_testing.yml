@@ -61,8 +61,8 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: cd testing/frontend && make setup && make test-ui
-  accessibility-test:
-    name: Accessibility Tests
+  axe-test:
+    name: Axe Tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
