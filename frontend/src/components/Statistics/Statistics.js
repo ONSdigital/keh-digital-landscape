@@ -586,7 +586,7 @@ function Statistics({
 
                   <div
                     className="language-grid"
-                    style={{ margin: '1em' }}
+                    style={{margin: 'auto', maxWidth: '60%'}}
                     aria-label="A grid showing example cards for each technology status with their corresponding colours."
                   >
                     <div
