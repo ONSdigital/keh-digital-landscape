@@ -1,10 +1,60 @@
 import { test, expect } from 'playwright/test';
+import { radarData } from './data/radarData';
+import { csvData } from './data/csvData';
+
+// Function to intercept and mock the API call
+const interceptAPICall = async ({ page }) => {
+  // Function to intercept and mock the API radarData call
+  const interceptAPIJsonCall = async ({ page }) => {
+    // Intercept and mock the teams API response with teamsDummyData
+    await page.route('**/api/tech-radar/json', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(radarData),
+      });
+    });
+  };
+
+  // Function to intercept and mock the API csvData call
+  const interceptAPICSVCall = async ({ page }) => {
+    // Intercept and mock the teams API response with teamsDummyData
+    await page.route('**/api/csv', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(csvData),
+      });
+    });
+  };
+
+  await interceptAPIJsonCall({ page });
+  await interceptAPICSVCall({ page });
+  await page.goto('http://localhost:3000/statistics');
+
+  // Clear all cookies
+  await page.context().clearCookies();
+
+  // Set a dummy authentication cookie to simulate logged-in user
+  await page.context().addCookies([
+    {
+      name: 'githubUserToken',
+      value: 'dummy-token',
+      domain: 'localhost',
+      path: '/',
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+    },
+  ]);
+  await page.reload();
+};
 
 test.describe('Test the colour help button on the statistics page', () => {
   test('should show the colour help modal when the button is clicked', async ({
     page,
   }) => {
-    await page.goto('http://localhost:3000/statistics');
+    await interceptAPICall({ page });
 
     const colourHelpButton = await page.locator('#colour-help-button');
     const colourHelpDescription = await page.locator(
@@ -22,17 +72,7 @@ test.describe('Test the colour help button on the statistics page', () => {
   test('should hide the colour help modal when the close button is clicked', async ({
     page,
   }) => {
-    await page.goto('http://localhost:3000/statistics');
-
-    // If there is a banner on the page, close it to ensure it does not interfere with the test
-    // Once we mock the API responses, we can remove this as the banner will not be shown
-    // TODO: Mock API Calls so that synthetic data is used for these tests
-    const banner = await page.locator('.banner');
-
-    if (banner) {
-      const closeBannerButton = await banner.locator('.banner-close-btn');
-      await closeBannerButton.click();
-    }
+    await interceptAPICall({ page });
 
     const colourHelpButton = await page.locator('#colour-help-button');
     const colourHelpDescription = await page.locator(
@@ -51,7 +91,7 @@ test.describe('Test the colour help button on the statistics page', () => {
   });
 
   test('description should contain 4 examples of colours', async ({ page }) => {
-    await page.goto('http://localhost:3000/statistics');
+    await interceptAPICall({ page });
 
     const colourHelpButton = await page.locator('#colour-help-button');
     const colourHelpDescription = await page.locator(
