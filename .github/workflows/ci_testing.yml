@@ -79,7 +79,6 @@ jobs:
       - name: Start app and run tests
         run: |
           make dev-ci &
-
           echo "Waiting for app to start..."
           sleep 10
           echo "CI=true" >> $GITHUB_ENV
@@ -87,7 +86,6 @@ jobs:
           cd testing/frontend
           make setup
           make test
-
   unit-testing:
     name: Unit Tests
     permissions:
