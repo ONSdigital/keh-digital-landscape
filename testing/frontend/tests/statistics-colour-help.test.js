@@ -50,58 +50,32 @@ const interceptAPICall = async ({ page }) => {
   await page.reload();
 };
 
-test.describe('Test the colour help button on the statistics page', () => {
-  test('should show the colour help modal when the button is clicked', async ({
-    page,
-  }) => {
-    await interceptAPICall({ page });
+test.describe('Test the colour help accordion on the statistics page', () => {
+  test.beforeEach(interceptAPICall);
 
-    const colourHelpButton = await page.locator('#colour-help-button');
-    const colourHelpDescription = await page.locator(
-      '#colour-help-description'
-    );
+  test('should open and close the colour help accordion when the trigger is clicked', async ({ page }) => {
+    // Click the colour help accordion trigger
+    await page.click('#colour-help-trigger');
 
-    await expect(colourHelpDescription).toBeHidden();
+    // Assert that the colour help content is visible
+    const content = await page.locator('#colour-help-content');
+    await expect(content).toBeVisible();
 
-    await colourHelpButton.click();
-
-    await expect(colourHelpDescription).toBeVisible();
-    await expect(colourHelpButton).toBeHidden();
+    // Assert that the contents are hidden when the trigger is clicked again
+    await page.click('#colour-help-trigger');
+    await expect(content).not.toBeVisible();
   });
 
-  test('should hide the colour help modal when the close button is clicked', async ({
-    page,
-  }) => {
-    await interceptAPICall({ page });
+  test('should have the correct content in the colour help accordion', async ({ page }) => {
+    // Click the colour help accordion trigger
+    await page.click('#colour-help-trigger');
 
-    const colourHelpButton = await page.locator('#colour-help-button');
-    const colourHelpDescription = await page.locator(
-      '#colour-help-description'
-    );
-    const closeButton = await page.locator('#close-colour-help-button');
+    // Assert that the colour help content contains the expected text
+    const content = await page.locator('#colour-help-content');
+    await expect(content).toContainText('The colours at the bottom of each language card indicate the technology status of that language on the Tech Radar.');
 
-    await colourHelpButton.click();
-    await expect(colourHelpDescription).toBeVisible();
-
-    await page.waitForTimeout(500); // Wait for the modal to be fully visible before clicking close
-
-    await closeButton.click();
-    await expect(colourHelpDescription).toBeHidden();
-    await expect(colourHelpButton).toBeVisible();
-  });
-
-  test('description should contain 4 examples of colours', async ({ page }) => {
-    await interceptAPICall({ page });
-
-    const colourHelpButton = await page.locator('#colour-help-button');
-    const colourHelpDescription = await page.locator(
-      '#colour-help-description'
-    );
-
-    await colourHelpButton.click();
-    await expect(colourHelpDescription).toBeVisible();
-
-    const examples = await colourHelpDescription.locator('.language-card');
-    await expect(examples).toHaveCount(4);
+    // Assert that there are 4 language cards within the content
+    const languageCards = await content.locator('.language-card');
+    await expect(languageCards).toHaveCount(4);
   });
 });

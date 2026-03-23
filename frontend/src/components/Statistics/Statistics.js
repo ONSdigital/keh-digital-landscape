@@ -7,6 +7,10 @@ import MultiSelect from '../MultiSelect/MultiSelect';
 import { useTechnologyStatus } from '../../utilities/getTechnologyStatus';
 import { specialTechMatchers } from '../../utilities/getSpecialTechMatchers';
 import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
+import * as Accordion from '@radix-ui/react-accordion';
+import {
+  IoHelpCircleSharp
+} from 'react-icons/io5';
 
 /**
  * Statistics component for displaying repository statistics.
@@ -348,26 +352,6 @@ function Statistics({
     [projectsData]
   );
 
-  /**
-   * handleColourHelpClick function handles the click event for the colour key help button, toggling the visibility of the colour key description.
-   *
-   * @returns {void}
-   */
-  const handleColourHelpClick = () => {
-    const button = document.getElementById('colour-help-button');
-    const description = document.getElementById('colour-help-description');
-    if (description) {
-      const isHidden = description.hasAttribute('hidden');
-      if (isHidden) {
-        button.style.display = 'none';
-        description.hidden = false;
-      } else {
-        description.hidden = true;
-        button.style.display = '';
-      }
-    }
-  };
-
   return (
     <div className="statistics-content">
       <div className="statistics-header">
@@ -572,90 +556,56 @@ function Statistics({
               </button>
             </div>
 
-            <div
-              className="colour-help"
-              aria-label="A div containing the colour information for the tech radar status of each language."
+            <Accordion.Root
+              type="single"
+              collapsible
+              className="stats-accordion-root"
             >
-              <button
-                id="colour-help-button"
-                onClick={handleColourHelpClick}
-                aria-label="A button to open the help menu explaining the colour coding for the tech radar status of each language."
-              >
-                <svg
-                  stroke="currentColor"
-                  fill="none"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  height="1em"
-                  width="1em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                  <path d="M12 17l0 .01"></path>
-                  <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4"></path>
-                </svg>
-                <span>What do the colours mean?</span>
-              </button>
+              <Accordion.Item value="colour-help" className="stats-accordion-item">
+                <Accordion.Trigger id="colour-help-trigger" className="stats-accordion-trigger">
+                  <h3 style={{ margin: 0 }}>
+                    <IoHelpCircleSharp style={{ verticalAlign: 'middle', fontSize: '1.2em' }} /> What do the colours mean?
+                  </h3>
+                </Accordion.Trigger>
+                <Accordion.Content id="colour-help-content" className="stats-accordion-content" aria-labelledby="colour-help-trigger">
+                  <p aria-label="A paragraph explaining the colour coding for the tech radar status of each language.">
+                    The colours at the bottom of each language card indicate the
+                    technology status of that language on the Tech Radar.
+                  </p>
 
-              <div
-                id="colour-help-description"
-                className="colour-help-description"
-                aria-label="A div you can toggle to show or hide colour coding help information."
-                hidden
-              >
-                <h3
-                  style={{ marginTop: 0 }}
-                  aria-label="Heading for the help information."
-                >
-                  What do the Colours Mean?
-                </h3>
-                <p aria-label="A paragraph explaining the colour coding for the tech radar status of each language.">
-                  The colours at the bottom of each language card indicate the
-                  technology status of that language on the Tech Radar.
-                </p>
-
-                <div
-                  className="language-grid"
-                  style={{ margin: '1em' }}
-                  aria-label="A grid showing example cards for each technology status with their corresponding colours."
-                >
                   <div
-                    className="language-card adopt"
-                    aria-label="An example card showing the colour for Adopt status on the tech radar."
+                    className="language-grid"
+                    style={{ margin: '1em' }}
+                    aria-label="A grid showing example cards for each technology status with their corresponding colours."
                   >
-                    <h2>Adopt</h2>
+                    <div
+                      className="language-card adopt"
+                      aria-label="An example card showing the colour for Adopt status on the tech radar."
+                    >
+                      <h2>Adopt</h2>
+                    </div>
+                    <div
+                      className="language-card trial"
+                      aria-label="An example card showing the colour for Trial status on the tech radar."
+                    >
+                      <h2>Trial</h2>
+                    </div>
+                    <div
+                      className="language-card assess"
+                      aria-label="An example card showing the colour for Assess status on the tech radar."
+                    >
+                      <h2>Assess</h2>
+                    </div>
+                    <div
+                      className="language-card hold"
+                      aria-label="An example card showing the colour for Hold status on the tech radar."
+                    >
+                      <h2>Hold</h2>
+                    </div>
                   </div>
-                  <div
-                    className="language-card trial"
-                    aria-label="An example card showing the colour for Trial status on the tech radar."
-                  >
-                    <h2>Trial</h2>
-                  </div>
-                  <div
-                    className="language-card assess"
-                    aria-label="An example card showing the colour for Assess status on the tech radar."
-                  >
-                    <h2>Assess</h2>
-                  </div>
-                  <div
-                    className="language-card hold"
-                    aria-label="An example card showing the colour for Hold status on the tech radar."
-                  >
-                    <h2>Hold</h2>
-                  </div>
-                </div>
-
-                <button
-                  id="close-colour-help-button"
-                  onClick={handleColourHelpClick}
-                  aria-label="A button to close the colour coding help information."
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion.Root>
 
             <div className="language-grid" tabIndex="0">
               {sortedAndFilteredLanguages.map(([language, stats]) => {
