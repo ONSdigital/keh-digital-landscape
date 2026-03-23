@@ -98,6 +98,8 @@ async function performInteractiveTesting(page, testingElements, settings) {
   const pages = Object.values(config.pages);
   const settings = config.global_settings;
 
+  let hasViolations = false;
+
   for (const pageConfig of pages) {
     const { name, url, testing } = pageConfig;
     console.log(`Testing ${url}`);
@@ -141,7 +143,6 @@ async function performInteractiveTesting(page, testingElements, settings) {
     );
     console.log('Full report saved.');
 
-    var hasViolations = false;
     if (accessibilityScanResults.violations.length > 0) {
       hasViolations = true;
       accessibilityScanResults.violations.forEach(({ id, help, impact }) =>
