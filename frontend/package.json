@@ -71,7 +71,7 @@
   },
   "overrides": {
     "rollup": "4.59.0",
-    "fast-xml-parser": "5.3.8"
+    "fast-xml-parser": "^5.5.7"
   },
   "resolutions": {
     "nth-check": "^2.0.1"
