@@ -1,38 +1,37 @@
-## What type of PR is this? (check all applicable)
+# [PR Title]
 
-- [ ] Refactor
-- [ ] Feature
-- [ ] Bug Fix
-- [ ] Optimization
-- [ ] Documentation Update
+## Overview
 
-### What
+<!-- Provide an overview of the changes in this pull request -->
 
-Describe what you have changed and why.
+## Related Issues
 
-### Testing
+<!-- List any related issues or pull requests here -->
+<!-- This can include issues from Jira but make sure *not* to link them -->
 
-Have any new tests been added as part of this issue? If not, try to explain why test coverage is not needed here.
+## Testing
 
-- [ ] Yes
-- [ ] No
-Please write a brief description of why test coverage is not necessary here.
-- [ ] Not as part of this ticket. (Could be done at a later point)
+<!-- Describe how to test the changes in this pull request -->
 
-### Documentation
+## Checklist
 
-Has any new documentation been written as part of this issue? We should try to keep documentation up to date
-as new code is added, rather than leaving it for the future.
+<!-- Please check off the following items before submitting this pull request -->
+<!-- If anything is not applicable, please explain why in the exemptions section -->
 
-- [ ] Yes
-- [ ] No
-Please write a brief description of why documentation is not necessary here.
-- [ ] Not as part of this ticket. (Could be done at a later point)
+- [ ] I have reviewed the changes in this pull request
+- [ ] I have tested the changes locally
+- [ ] I have updated/created any relevant documentation
+- [ ] I have updated/created any relevant tests
+- [ ] All CI checks have passed
+- [ ] I have used a development Concourse pipeline to test the changes within a development environment
+- [ ] I have added any necessary labels to this pull request
+- [ ] I have assigned myself to this pull request
+- [ ] I have assigned the appropriate reviewers to this pull request
 
-### Related issues
+### Exemptions
 
-Provide links to any related issues.
+<!-- If any of the above checklist items are not applicable, please explain why here -->
 
-### How to review
+## Additional Notes
 
-Describe the steps required to test the changes.
+<!-- Add any additional notes or comments here -->
