@@ -29,28 +29,24 @@ This provides a collection of statistics about the language breakdown within the
 
 This displays the project data collected from the Tech Audit Tool. Multiple features such as alphabetically, most/least tech and tech radar ring ratio per project are available.
 
-**Review
-Page**
+**Review Page**
 
 On the deployed version, this page is only available to users from the Cognito user pool. The permissions grant a user the ability to move, edit and bring new technology on to the Radar.
 
-**Admin
-Page**
+**Admin Page**
 
 Banner management - create and manage different banners to be displayed on different pages within the Digital Landscape.
 
 Technology management - manage new technologies and the autocomplete list to ensure conformity between platforms.
 
-**Copilot
-Page**
+**Copilot Page**
 
 Displays historical statistics on Copilot usage within ONS.
 
 - Statistics can be viewed organisation-wide or for a specific team.
 - On Team Usage view, it is possible to search for teams using the "Search teams" input within the header.
 
-**Home
-Page:**
+**Home Page:**
 
 This is the homepage of the tool. It provides a brief overview of the tool and its purpose. Recent announcements (banners) and recent updates (github release changelog) are shown on the homepage.
 

@@ -1,47 +1,19 @@
-# Testing CI workflow
 ---
-name: CI Testing
-
+name: Testing
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   pull_request:
-    branches: ['**']
-
+    branches: [main]
 concurrency:
   group: '${{ github.head_ref || github.ref }}-${{ github.workflow }}'
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
-  test:
-    permissions:
-      contents: read
-    name: Backend Lint
-    runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: testing/backend
-    strategy:
-      matrix:
-        python-version: ['3.12']
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: testing/backend/req_dev.txt
-      - name: Display Python version
-        run: python -c "import sys; print(sys.version)"
-      - name: Install dependencies
-        run: make setup-dev
-      - name: Run linting
-        run: make lint
-  ui-frontend-test:
-    name: Frontend Tests
+  ui-tests:
+    name: UI Tests (Playwright)
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -60,12 +32,12 @@ jobs:
       - name: Run Playwright tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-        run: cd testing/frontend && make setup && make test-ui
-  axe-test:
-    name: Axe Tests
-    runs-on: ubuntu-latest
+        run: cd testing/ui && make setup && make test-ui
+  accessibility-tests:
+    name: Accessibility Tests (Axe Core / Playwright)
     permissions:
       contents: read
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -73,21 +45,17 @@ jobs:
         with:
           node-version: '24'
       - name: Install dependencies
-        run: |
-          make install-dev
-          npx playwright install-deps
-      - name: Start app and run tests
-        run: |
-          make dev-ci &
-          echo "Waiting for app to start..."
-          sleep 10
-          echo "CI=true" >> $GITHUB_ENV
-          echo "Running tests..."
-          cd testing/frontend
-          make setup
-          make test
-  unit-testing:
-    name: Unit Tests
+        run: make install-dev
+      - name: Start app in background
+        run: make dev-ci &
+      - name: Export CI variable to enable Playwright config tweaks
+        run: echo "CI=true" >> $GITHUB_ENV
+      - name: Run Playwright tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: cd testing/accessibility && make setup && make test-accessibility
+  unit-tests:
+    name: Unit Tests (Vitest)
     permissions:
       contents: read
     runs-on: ubuntu-latest
