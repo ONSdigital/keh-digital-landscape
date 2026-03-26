@@ -124,13 +124,13 @@ format: 		## Run formatters for both frontend, backend and testing code
 	cd testing/accessibility && npm run format
 	cd testing/ui && npm run format
 
-.PHONY: format-fix
-format-fix: 		## Run formatters with auto-fix for both frontend, backend and testing code
-	cd backend && npm run format:fix
-	cd frontend && npm run format:fix
-	cd testing/accessibility && npm run format:fix
-	cd testing/ui && npm run format:fix
-
+.PHONY: format-check
+format-check: 		## Run formatters to check for formatting issues across the repository without making any changes
+	cd backend && npm run format:check
+	cd frontend && npm run format:check
+	cd testing/accessibility && npm run format:check
+	cd testing/ui && npm run format:check
+	
 ## 
 
 .PHONY: megalint-check

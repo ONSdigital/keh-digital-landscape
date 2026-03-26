@@ -24,21 +24,21 @@ For example:
 
 ```json
 {
-  'pages': [
+  "pages": [
     {
-      'name': 'Homepage',
-      'url': '/',
-      'authentication': []
+      "name": "Homepage",
+      "url": "/",
+      "authentication": []
     },
     {
-      'name': 'Tech Radar',
-      'url': '/radar',
-      'authentication': []
+      "name": "Tech Radar",
+      "url": "/radar",
+      "authentication": []
     },
     {
-      'name': 'GitHub Copilot Team Usage',
-      'url': '/copilot/team',
-      'authentication': ['githubUserToken']
+      "name": "GitHub Copilot Team Usage",
+      "url": "/copilot/team",
+      "authentication": ["githubUserToken"]
     }
   ]
 }
@@ -57,8 +57,8 @@ Axe-core tests are enabled for the following pages:
 - Statistics (`/statistics`)
 - Projects (`/projects`)
 - GitHub Copilot:
-    - Organisation Usage (`/copilot/org/historic`)
-    - Team Usage (`/copilot/team`) - requires authentication
+  - Organisation Usage (`/copilot/org/historic`)
+  - Team Usage (`/copilot/team`) - requires authentication
 - GitHub Address Book (`/addressbook`)
 - Review Dashboard (`/review/dashboard`)
 - Admin Dashboard (`/admin/dashboard`)
@@ -92,9 +92,9 @@ To get this token, follow these steps:
 
 1. Go to the GitHub Copilot team page:
 
-    ```http
-    http://localhost:3000/copilot/team
-    ```
+   ```http
+   http://localhost:3000/copilot/team
+   ```
 
 2. Click the "Login with GitHub" button.
 3. You will be redirected to the GitHub login page. Login with your GitHub account.
@@ -104,25 +104,25 @@ To get this token, follow these steps:
 7. Copy the `value` of the cookie, beginning with `ghu_`.
 8. Set the environment variable before running tests:
 
-    ```bash
-    export TEST_GITHUBUSERTOKEN="your-generated-token"
-    export TEST_GITHUBTEAM="your-team-slug"
-    ```
+   ```bash
+   export TEST_GITHUBUSERTOKEN="your-generated-token"
+   export TEST_GITHUBTEAM="your-team-slug"
+   ```
 
-    Alternatively, you can create a `.env` file in the `testing/axe-core` directory with:
+   Alternatively, you can create a `.env` file in the `testing/axe-core` directory with:
 
-    ```bash
-    TEST_GITHUBUSERTOKEN=your-generated-token
-    TEST_GITHUBTEAM=your-team-slug
-    ```
+   ```bash
+   TEST_GITHUBUSERTOKEN=your-generated-token
+   TEST_GITHUBTEAM=your-team-slug
+   ```
 
-    **Note:** An example is available in `.env.example`.
+   **Note:** An example is available in `.env.example`.
 
 9. Finally, run the tests:
 
-    ```bash
-    make test-accessibility
-    ```
+   ```bash
+   make test-accessibility
+   ```
 
 **Note:** If the environment variable is not set, the tests will output a warning.
 
