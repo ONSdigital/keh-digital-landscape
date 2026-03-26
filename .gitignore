@@ -60,9 +60,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-site/*
-
-*/.env
 .env
 
 .pytest_cache
@@ -78,4 +75,4 @@ site
 test-results
 
 # Megalinter
-megalinter-reports/
+megalinter-reports
