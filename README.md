@@ -75,7 +75,7 @@ For more information about the project, please refer to our documentation site: 
 This repository uses a Makefile to simplify common tasks. To see the available commands, run the following command:
 
 ```bash
-make all
+make help
 ```
 
 ## Running the Project
