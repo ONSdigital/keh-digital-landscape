@@ -45,9 +45,9 @@ jobs:
       - name: Check code formatting with Prettier
         run: |
           cd frontend && npx prettier --check .
-          cd ..backend && npx prettier --check .
-          cd ..testing/ui && npx prettier --check .
-          cd ..testing/accessibility && npx prettier --check .
+          cd ../backend && npx prettier --check .
+          cd ../testing/ui && npx prettier --check .
+          cd ../testing/accessibility && npx prettier --check .
       - name: Check Terraform formatting
         run: |
           terraform fmt -check -recursive
