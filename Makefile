@@ -131,6 +131,22 @@ format-check: 		## Run formatters to check for formatting issues across the repo
 	
 ## 
 
+.PHONY: terraform-fmt
+terraform-fmt: 		## Run `terraform fmt` to format Terraform code in the `terraform` directory
+	cd terraform && terraform fmt -recursive
+
+.PHONY: terraform-fmt-check
+terraform-fmt-check: 	## Run `terraform fmt` in check mode to identify any formatting issues in the Terraform code without making changes
+	cd terraform && terraform fmt -recursive -check
+
+.PHONY: terraform-validate
+terraform-validate: 	## Run `terraform validate` to validate the Terraform configuration files in the `terraform` directory
+	cd terraform/authentication && terraform init -backend=false && terraform validate
+	cd terraform/service && terraform init -backend=false && terraform validate
+	cd terraform/storage && terraform init -backend=false && terraform validate
+
+## 
+
 .PHONY: megalint-check
 megalint-check: 	## Run MegaLinter to check for linting and formatting issues across the repository without making any changes
 	npx mega-linter-runner --env APPLY_FIXES=none
