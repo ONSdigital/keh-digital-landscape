@@ -6,17 +6,28 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-concurrency:
-  group: '${{ github.head_ref || github.ref }}-${{ github.workflow }}'
-  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
-  ui-tests:
-    name: UI Tests (Playwright)
+  unit-test:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: make install-dev
+      - name: Run unit tests
+        run: make test-unit
+
+  ui-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -33,8 +44,8 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: cd testing/ui && make setup && make test-ui
-  accessibility-tests:
-    name: Accessibility Tests (Axe Core / Playwright)
+
+  accessibility-test:
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -54,18 +65,3 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: cd testing/accessibility && make setup && make test-accessibility
-  unit-tests:
-    name: Unit Tests (Vitest)
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-      - name: Install dependencies
-        run: make install-dev
-      - name: Run unit tests
-        run: make test
