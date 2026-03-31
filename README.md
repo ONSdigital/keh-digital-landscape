@@ -386,9 +386,13 @@ To run the documentation locally:
 
 ### GitHub Actions
 
-This repository has GitHub Actions workflows setup for linting and testing. The workflows are located at:
+This repository has GitHub Actions workflows setup for linting, testing and other CI jobs. The workflows are located at:
 
-- TODO: Add workflows here
+- `.github/workflows/ci-docs.yml`: For documentation linting and build checks.
+- `.github/workflows/ci-fmt.yml`: For code formatting checks using Prettier (and `terraform fmt` for Terraform).
+- `.github/workflows/ci-lint.yml`: For code linting checks using ESLint.
+- `.github/workflows/deploy-docs.yml`: For deploying the documentation to GitHub Pages.
+- `.github/workflows/mega-linter.yml`: For running MegaLinter checks across the repository.
 
 ### Running Tests and Linters Locally
 
