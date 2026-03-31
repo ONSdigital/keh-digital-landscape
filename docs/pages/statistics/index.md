@@ -17,7 +17,7 @@ The Statistics section provides detailed analytics and insights into repository 
 - Active/archived/all filter
 - Project filter using multi-select
 
-#### How to use
+#### How to use the filters
 
 - Click on the filter buttons under the 'Repository Statistics' heading
 - Select the filters you want to apply
@@ -33,7 +33,7 @@ The Statistics section provides detailed analytics and insights into repository 
 - Toggles:
   - Show Average Size or Total Size on each language card
 
-#### How to use
+#### How to use the sorting and toggles
 
 - Click on the sort/toggle buttons under the 'Language Statistics' heading
 - Select the filters you want to apply

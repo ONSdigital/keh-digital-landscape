@@ -15,7 +15,7 @@ The backend is organised into the following key directories:
 
 The backend uses AWS Cognito for authentication and role-based access control through the `aws-jwt-verify` library. The system utilises a single Cognito User Pool with group-based permissions.
 
-### Cognito Service (`services/cognitoService.js`)
+### Cognito Service Summary (`services/cognitoService.js`)
 
 The authentication system provides:
 
@@ -44,7 +44,7 @@ The service provides three main middleware functions:
 
 In development environments (`NODE_ENV=development`), authentication is bypassed and a default developer user is provided with both admin and reviewer permissions.
 
-### Frontend Integration
+### Frontend Integration Summary
 
 The authentication system integrates seamlessly with the frontend:
 

@@ -35,7 +35,7 @@ The `useTheme` hook provides access to the current theme state and functionality
 - `theme`: The current theme value ('light' or 'dark')
 - `toggleTheme`: A function to switch between light and dark themes
 
-#### Usage
+#### Hook Usage
 
 ```jsx
 import { useTheme } from '../contexts/ThemeContext';

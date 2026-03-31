@@ -73,21 +73,12 @@ function ProjectsPage() {
 
 The Projects component includes several pie charts that provide statistical breakdowns of the project data:
 
-### Project Stages
-
-Displays the distribution of projects across different stages (Active Support, Development, Unsupported)
-
-### Development Type
-
-Shows the distribution of development approaches (In House, Partner, Outsourced)
-
-### Hosting Platform
-
-Illustrates the distribution of hosting environments (Cloud, On-premises, Hybrid)
-
-### Architectures
-
-Visualises the distribution of cloud providers and other architectures (AWS, GCP, Azure, Other)
+| Chart              | Description                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| Project Stages     | Distribution of projects across different stages (Active Support, Development, Unsupported) |
+| Development Type   | Distribution of development approaches (In House, Partner, Outsourced)                      |
+| Hosting Platform   | Distribution of hosting environments (Cloud, On-premises, Hybrid)                           |
+| Architectures      | Distribution of cloud providers and other architectures (AWS, GCP, Azure, Other)            |
 
 Each pie chart is interactive with tooltips showing exact counts and percentages.
 
@@ -95,25 +86,13 @@ Each pie chart is interactive with tooltips showing exact counts and percentages
 
 The component includes an advanced filtering system allowing users to filter projects by multiple criteria. The filtering interface utilises the reusable [FilterGroup](filterGroup.md) component to create consistent, collapsible filter sections for each category:
 
-### Project Stage
-
-Filter by development stages (Active Support, Development, Unsupported)
-
-### Development Type
-
-Filter by development approaches (In House, Partner, Outsourced)
-
-### Hosting
-
-Filter by hosting environments (Cloud, On-premises, Hybrid)
-
-### Architectures
-
-Filter by cloud providers and architectures (AWS, GCP, Azure, Other)
-
-### Programme
-
-Filter by specific programmes using a multi-select dropdown
+| Filter Category    | Description                                                             |
+| ------------------ | ----------------------------------------------------------------------- |
+| Project Stage      | Filter by development stages (Active Support, Development, Unsupported) |
+| Development Type   | Filter by development approaches (In House, Partner, Outsourced)        |
+| Hosting            | Filter by hosting environments (Cloud, On-premises, Hybrid)             |
+| Architectures      | Filter by cloud providers and architectures (AWS, GCP, Azure, Other)    |
+| Programme          | Filter by specific programmes using a multi-select dropdown             |
 
 The filtering system maintains a count of active filters and provides a clear all option for easy reset. All filter categories and options are defined centrally in the [projectConstants](../../constants/projectConstants.md) file to ensure consistency throughout the application.
 

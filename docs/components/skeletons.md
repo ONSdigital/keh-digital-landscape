@@ -18,7 +18,7 @@ The `SkeletonStatCard` component renders a placeholder for statistical cards tha
 | ---------- | ------ | ------- | ---------------------------------- |
 | `minWidth` | string | `"0"`   | Minimum width of the skeleton card |
 
-#### Usage
+#### Stat Card Usage
 
 ```jsx
 import SkeletonStatCard from '../components/Statistics/Skeletons/SkeletonStatCard';
@@ -49,7 +49,7 @@ function StatisticsPanel() {
 
 The `SkeletonLanguageCard` component renders a placeholder for language cards that display programming language statistics.
 
-#### Usage
+#### Language Card Usage
 
 ```jsx
 import SkeletonLanguageCard from '../components/Statistics/Skeletons/SkeletonLanguageCard';

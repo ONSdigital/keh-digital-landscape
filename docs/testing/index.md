@@ -62,7 +62,7 @@ This README also includes information on the coverage of the accessibility tests
 ## Playwright Usage
 
 Additional information on using Playwright for both UI and accessibility tests can be found in the respective documentation (See: [`testing > playwright`](./playwright.md)).
-This can be useful when debugging or writing new tests, as it includes information on running tests in headed mode and running specific test files. 
+This can be useful when debugging or writing new tests, as it includes information on running tests in headed mode and running specific test files.
 
 ## Testing in CI (GitHub Actions)
 

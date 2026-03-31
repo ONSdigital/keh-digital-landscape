@@ -29,7 +29,7 @@ Retrieves members of a specific team.
 
 **GitHub API Response:**
 
-More information on the response structure can be found [here](https://docs.github.com/en/rest/teams/members?apiVersion=2022-11-28#list-team-members).
+More information on the response structure can be found within the GitHub API Docs: [List team members](https://docs.github.com/en/rest/teams/members?apiVersion=2022-11-28#list-team-members).
 
 **Example:**
 
@@ -53,7 +53,7 @@ Retrieves teams the authenticated user is a member of in the organisation.
 
 **GitHub API Response:**
 
-More information on the response structure can be found [here](https://docs.github.com/en/rest/teams/teams?apiVersion=2022-11-28#list-teams-for-the-authenticated-user).
+More information on the response structure can be found within the GitHub API Docs: [List teams for the authenticated user](https://docs.github.com/en/rest/teams/teams?apiVersion=2022-11-28#list-teams-for-the-authenticated-user).
 
 **Example:**
 
@@ -76,7 +76,7 @@ Retrieves detailed information about all GitHub Copilot seats in the organisatio
 
 **GitHub API Response:**
 
-More information on the response structure can be found [here](https://docs.github.com/en/rest/copilot/copilot-user-management?apiVersion=2022-11-28#list-all-copilot-seat-assignments-for-an-organization).
+More information on the response structure can be found within the GitHub API Docs: [List all copilot seat assignments for an organization](https://docs.github.com/en/rest/copilot/copilot-user-management?apiVersion=2022-11-28#list-all-copilot-seat-assignments-for-an-organization).
 
 ```javascript
 [
