@@ -361,15 +361,22 @@ This workflow is located at `.github/workflows/ci-docs.yml`.
 
 To run the documentation locally:
 
-1. Install the required dependencies:
+1. Create and activate a Python virtual environment __(optional but recommended)__:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+
+2. Install the required dependencies:
 
    ```bash
    make install-docs
    ```
 
-   **Note:** This will setup and activate a Python virtual environment and install the dependencies within it via Poetry.
+  **Note:** This will install the dependencies for MkDocs and any MkDocs plugins we use. If a virtual environment is not activated, poetry will configure its own virtual environment.
 
-2. Run the MkDocs development server.
+3. Run the MkDocs development server.
 
    ```bash
    make serve-docs

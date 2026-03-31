@@ -1,7 +1,7 @@
 # MkDocs site configuration
 ---
 site_name: Digital Landscape
-repo_url: https://github.com/ONS-innovation/keh-digital-landscape
+repo_url: https://github.com/ONSdigital/keh-digital-landscape
 repo_name: Digital Landscape
 
 nav:
@@ -125,9 +125,7 @@ markdown_extensions:
 plugins:
   - search
   - mkdocstrings:
-      handlers:
-        python:
-          paths: ['..']
+      default_handler: python
 
 extra_css:
   - stylesheets/extra.css

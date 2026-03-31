@@ -1,11 +1,9 @@
-# A GitHub Actions workflow to deploy MkDocs documentation to GitHub Pages on push to the master or main branch.
 ---
-name: Deploy MkDocs
+name: Deploy Documentation (MkDocs)
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [main]
+    paths: [docs/**]
 permissions:
   contents: write
 jobs:
@@ -27,7 +25,7 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material
-      - run: pip install -r ./mkdocs/mkdocs_requirements.txt
-      - run: |
-          PYTHONPATH=. mkdocs gh-deploy --force -f mkdocs/mkdocs.yml
+      - run: pip install poetry
+      - run: poetry config virtualenvs.create false
+      - run: poetry install --only docs
+      - run: mkdocs gh-deploy --force

@@ -62,9 +62,7 @@ install-dev: 		## Install all dependencies (including dev) for both frontend and
 
 .PHONY: install-docs
 install-docs: 		## Install documentation dependencies via Poetry
-	@echo "Setting up Python virtual environment and installing documentation dependencies via Poetry..."
-	python3 -m venv venv
-	source venv/bin/activate
+	@echo "Installing documentation dependencies via Poetry..."
 	pip install poetry
 	poetry install
 
@@ -77,13 +75,13 @@ serve-docs: 		## Serve the documentation locally via MkDocs
 lint-docs: 		## Lint the documentation Markdown files
 	@echo "Linting documentation Markdown files..."
 	npm install -g markdownlint-cli
-	cd docs && markdownlint .
+	cd docs && markdownlint . --config ../.markdownlint.yaml
 
 .PHONY: lint-docs-fix
 lint-docs-fix: 		## Lint the documentation Markdown files and attempt to fix any issues
 	@echo "Linting documentation Markdown files and attempting to fix any issues..."
 	npm install -g markdownlint-cli
-	cd docs && markdownlint . --fix
+	cd docs && markdownlint . --fix --config ../.markdownlint.yaml
 
 .PHONY: build-docs
 build-docs: 		## Build the documentation site via MkDocs
