@@ -25,7 +25,7 @@ jobs:
         run: make install-dev
       - name: Run ESLint
         run: make lint
-        
+
   format-check:
     runs-on: ubuntu-latest
     permissions:
