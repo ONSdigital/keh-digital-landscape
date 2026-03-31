@@ -15,48 +15,39 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
-      - name: Install Eslint
-        run: npm install eslint
-
-      - name: Run Eslint
-        run: |
-          cd frontend && npx eslint .
-          cd backend && npx eslint .
-          cd testing/ui && npx eslint .
-          cd testing/accessibility && npx eslint .
+      # TODO: Think about how we can only install the dependencies needed for linting, rather than the full dev dependencies
+      - name: Install Dependencies
+        run: make install-dev
+      - name: Run ESLint
+        run: make lint
+        
   format-check:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-
       - name: Install Prettier
         run: npm install prettier
-      
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3 # Pin to latest version 3 of terraform
         with:
           terraform_version: '1.14.3'
-
       - name: Check code formatting with Prettier
         run: |
           cd frontend && npx prettier --check .
-          cd backend && npx prettier --check .
-          cd testing/ui && npx prettier --check .
-          cd testing/accessibility && npx prettier --check .
-
+          cd ..backend && npx prettier --check .
+          cd ..testing/ui && npx prettier --check .
+          cd ..testing/accessibility && npx prettier --check .
       - name: Check Terraform formatting
         run: |
           terraform fmt -check -recursive
