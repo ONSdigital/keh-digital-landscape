@@ -22,10 +22,15 @@ The Landscape provides a range of utilities including:
 
 For more information about the project, please refer to our documentation site: [Digital Landscape Documentation](https://onsdigital.github.io/keh-digital-landscape/).
 
+## Tech Radar Submissions
+
+To submit a technology to be changed or added to the Tech Radar, please visit the [Tech Radar Submissions](https://github.com/ONSdigital/keh-tech-radar-submissions) repository (_internal only_).
+
 ## Contents
 
 - [Digital Landscape](#digital-landscape)
   - [Overview](#overview)
+  - [Tech Radar Submissions](#tech-radar-submissions)
   - [Contents](#contents)
   - [Prerequisites](#prerequisites)
   - [Makefile](#makefile)
