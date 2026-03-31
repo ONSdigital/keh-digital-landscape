@@ -1,6 +1,6 @@
 # ThemeToggle
 
-The ThemeToggle component provides a simple button that allows users to switch between light and dark themes throughout the application. It integrates with the [ThemeContext](/contexts/themeContext) to maintain consistent theme state across all components and is used in the [Header](/components/header) component.
+The ThemeToggle component provides a simple button that allows users to switch between light and dark themes throughout the application. It integrates with the [ThemeContext](../contexts/themeContext.md) to maintain consistent theme state across all components and is used in the [Header](./header/index.md) component.
 
 ## Features
 

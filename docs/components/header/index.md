@@ -89,4 +89,4 @@ The Header implements accessibility features including:
 
 ## Theme Integration
 
-The Header integrates with the application's theme system through the [ThemeToggle](/components/themeToggle) component, allowing users to switch between light and dark modes.
+The Header integrates with the application's theme system through the [ThemeToggle](../themeToggle.md) component, allowing users to switch between light and dark modes.

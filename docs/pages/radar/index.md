@@ -29,7 +29,7 @@ Each technology is placed in one of four rings:
 
 ### Technology Details
 
-- Using the [Info Box](/components/infoBox) component, you can view:
+- Using the [Info Box](../../components/infoBox.md) component, you can view:
   - Current adoption status
   - Timeline of changes
   - Related projects

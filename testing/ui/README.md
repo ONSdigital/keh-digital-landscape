@@ -29,7 +29,7 @@ The UI tests are written using [Playwright](https://playwright.dev/). These test
 
 ## Test Coverage
 
-To see the coverage of the UI tests, please refer to the MkDocs documentation (See: [`testing > frontend`](../../mkdocs/docs/testing/frontend.md)) which includes detailed information on the specific tests implemented and their coverage across the application.
+To see the coverage of the UI tests, please refer to the MkDocs documentation (See: [`testing > frontend`](../../docs/testing/ui.md)) which includes detailed information on the specific tests implemented and their coverage across the application.
 
 ## Running the Tests
 
@@ -47,4 +47,4 @@ Run the following to execute the tests:
 make test-ui
 ```
 
-Additional commands such as running specific test files or running in headed mode can be found in the MkDocs documentation (See: [`testing > frontend`](../../mkdocs/docs/testing/frontend.md)).
+Additional commands such as running specific test files or running in headed mode can be found in the MkDocs documentation (See: [`testing > frontend`](../../docs/testing/playwright.md)).

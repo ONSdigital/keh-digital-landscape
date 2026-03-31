@@ -232,15 +232,15 @@ To help users quickly identify which technologies are or have been moved specifi
 
 - On the Tech Radar page, technologies that have **any** timeline entries for the selected directorate are highlighted with a small margin on the left side of the technology card.
 
-  ![Tech Radar Highlight Example](../../assets/multipleDirectorateSupport/radar-highlight.png)
+  ![Tech Radar Highlight Example](../assets/multipleDirectorateSupport/radar-highlight.png))
 
 - On the Review page, technologies that are in a position **specifically for the selected directorate** are highlighted with a border around the technology card.
 
-  ![Review Page Highlight Example](../../assets/multipleDirectorateSupport/review-highlight.png)
+  ![Review Page Highlight Example](../assets/multipleDirectorateSupport/review-highlight.png)
 
 - On both pages, a gradient background is applied to the top of the page to indicate which directorate is currently selected.
 
-  ![Gradient Background Example](../../assets/multipleDirectorateSupport/gradient-background.png)
+  ![Gradient Background Example](../assets/multipleDirectorateSupport/gradient-background.png)
 
 **Note:** The colours used in these visuals correspond to the `colour` attribute defined for each directorate in `directorates.json`. This allows us to easily change the colours associated with each directorate by simply updating the JSON file - i.e. if accessibility requirements change.
 

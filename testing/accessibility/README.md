@@ -82,7 +82,7 @@ Run the following to execute the tests:
 make test-accessibility
 ```
 
-Additional commands such as running specific test files or running in headed mode can be found in the MkDocs documentation (See: [`testing > frontend`](../../mkdocs/docs/testing/frontend.md)).
+Additional commands such as running specific test files or running in headed mode can be found in the MkDocs documentation (See: [`testing > frontend`](../../docs/testing/playwright.md)).
 
 ## Testing Authenticated Routes
 

@@ -461,8 +461,8 @@ backend/
 
 Further information on how to run the UI and Accessibility tests can be found in the README files within the respective directories:
 
-- UI Tests: `./testing/ui/README.md`
-- Accessibility Tests: `./testing/accessibility/README.md`
+- UI Tests: [`./testing/ui/README.md`](./testing/ui/README.md)
+- Accessibility Tests: [`./testing/accessibility/README.md`](./testing/accessibility/README.md)
 
 #### Application Linting and Formatting
 

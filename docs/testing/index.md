@@ -1,195 +1,71 @@
-# Testing Documentation
+# Testing
 
-## Overview
+## Testing Structure
 
-The Digital Landscape application includes a comprehensive testing framework to ensure API endpoints function correctly and reliably. The testing suite focuses primarily on backend API validation, verifying that data is correctly retrieved, filtered, and processed according to specifications.
+The Digital Landscape uses the following for testing:
 
-## Testing Architecture
+- Vitest (Frontend and Backend unit tests)
+- Playwright (UI tests)
+- Axe Core (via Playwright for accessibility tests)
 
-The testing framework is built using Python with pytest and follows these key principles:
+### Unit Tests
 
-- **Isolated Tests**: Each test function validates a specific endpoint or functionality
-- **Comprehensive Coverage**: Tests cover all API endpoints and their various parameters
-- **Clear Documentation**: Each test includes detailed docstrings explaining purpose and expectations
-- **Error Handling Validation**: Tests verify proper error responses for invalid inputs
-- **Organized Structure**: Tests are grouped by API type across multiple files
+Unit tests are written using [Vitest](https://vitest.dev/). These tests are designed to verify the functionality of individual components and functions in both the frontend and backend.
 
-## Test Structure
+Unit tests are located in the `src` directory, alongside the code they are testing. Test files are named with a `.test.js` suffix (e.g., `component.test.js`).
 
-The tests are organized into four main files:
-
-| Test File         | Endpoint Group  | Description                                        |
-| ----------------- | --------------- | -------------------------------------------------- |
-| `test_main.py`    | `/api/*`        | Core API endpoints (health, CSV, JSON, repository) |
-| `test_admin.py`   | `/admin/api/*`  | Admin API endpoints for banner management          |
-| `test_review.py`  | `/review/api/*` | Review API endpoints for tech radar updates        |
-| `test_copilot.py` | `/api/*`        | Copilot API endpoints                              |
-
-## Test Setup
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Make (for using Makefile commands)
-- Backend server running on localhost:5001
-
-### Installation
+A common pattern you will see:
 
 ```bash
-# Navigate to the testing directory
-cd testing
-
-# Create a virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-make setup
+frontend
+├── src
+│   ├── components
+│   │   ├── MyComponent.js
+│   │   └── MyComponent.test.js
+│   └── utils
+│       ├── myUtil.js
+│       └── myUtil.test.js
+backend
+├── src
+│   ├── services
+│   │   ├── myService.js
+│   │   └── myService.test.js
+│   └── utils
+│       ├── myUtil.js
+│       └── myUtil.test.js
 ```
 
-## Running Tests
+Having tests located alongside the code they test gives the following benefits:
 
-The testing framework provides several commands for running tests:
+- **Context:** Tests are close to the code they are testing, making it easier to understand the context and purpose of the tests.
+- **Maintenance:** When code is updated, it's easier to find and update the corresponding tests.
+- **Organisation:** It keeps the project organised by feature or component, rather than having a separate test directory that may become cluttered.
+- **Testing Gaps:** It makes it easy to identify areas of the codebase that are not covered by tests, as you can see at a glance which files have corresponding test files.
 
-```bash
-# Run all tests
-make test
+Instructions for running unit tests can be found within the repository's main README file at the root of the project.
 
-# Run only core API tests
-make test-main
+### UI Tests
 
-# Run only admin API tests
-make test-admin
+UI tests are written using [Playwright](https://playwright.dev/). These tests are designed to verify the application's user interface and user flows.
+These also test the functionality of the application as a whole, including the backend, and are therefore considered end-to-end tests (sort of).
 
-# Run only review API tests
-make test-review
+Tests can be found within the `testing/ui` directory, with instructions for running the tests and details on the test structure available in the `README.md` file.
+This README also includes information on the coverage of the UI tests (i.e. which pages / features are currently tested).
 
-# Run only Copilot API tests
-make test-copilot
+### Accessibility Tests
 
-# Run a specific test
-python3 -m pytest backend/test_main.py::test_name -v
+Accessibility tests are run using [Playwright](https://playwright.dev/docs/accessibility-testing) which makes use of [Axe Core](https://www.deque.com/axe/). These tests are designed to identify and report accessibility issues in the application, ensuring that it meets accessibility standards and provides an inclusive experience for all users.
 
-# Example: Run only the health check test
-python3 -m pytest backend/test_main.py::test_health_check -v
-```
+Tests can be found within the `testing/accessibility` directory, with instructions for running the tests and details on the test structure available in the `README.md` file.
+This README also includes information on the coverage of the accessibility tests, which pages are currently tested, how authenticated routes are tested, and what standards the tests follow.
 
-## Test Categories
+## Playwright Usage
 
-The test suite covers the following API endpoints:
+Additional information on using Playwright for both UI and accessibility tests can be found in the respective documentation (See: [`testing > playwright`](./playwright.md)).
+This can be useful when debugging or writing new tests, as it includes information on running tests in headed mode and running specific test files. 
 
-### Health Check Endpoint
+## Testing in CI (GitHub Actions)
 
-Tests the `/api/health` endpoint to verify server status and health metrics.
+All tests are run in the CI pipeline on GitHub Actions. This ensures that tests are run consistently and that any issues are identified early in the development process.
 
-::: testing.backend.src.test_main.test_health_check
-
-### Project Data Endpoint
-
-Tests the `/api/csv` endpoint that provides project data from CSV sources.
-
-::: testing.backend.src.test_main.test_csv_endpoint
-
-### Tech Radar Data Endpoint
-
-Tests the `/api/tech-radar/json` endpoint that provides Tech Radar configuration data.
-
-::: testing.backend.src.test_main.test_tech_radar_json_endpoint
-
-### Repository Statistics Endpoints
-
-Tests the `/api/json` endpoint with various filtering parameters:
-
-- No parameters (default behavior)
-- Date filtering
-- Archived status filtering
-- Combined parameter filtering
-- Invalid parameter handling
-
-::: testing.backend.src.test_main.test_json_endpoint_no_params
-
-::: testing.backend.src.test_main.test_json_endpoint_with_datetime
-
-### Repository Project Endpoints
-
-Tests the `/api/repository/project/json` endpoint with various parameters:
-
-- Missing parameters (error handling)
-- Single repository filtering
-- Multiple repository filtering
-- Date filtering
-- Archived status filtering
-- Combined parameter filtering
-- Language statistics validation
-
-::: testing.backend.src.test_main.test_repository_project_json_with_repos
-
-::: testing.backend.src.test_main.test_repository_project_json_multiple_repos
-
-### Tech Radar Update Endpoints
-
-Tests the endpoints for updating Tech Radar data:
-
-- Empty update handling
-- Partial updates
-- Invalid entry handling
-- Structure validation
-- Reference validation
-
-::: testing.backend.src.test_review.test_tech_radar_update_valid_structure
-
-::: testing.backend.src.test_review.test_tech_radar_update_invalid_structure
-
-### Admin Banner Management Endpoints
-
-Tests the endpoints for managing banner messages:
-
-- Banner retrieval
-- Banner creation
-- Banner visibility toggling
-- Banner deletion
-- Validation of requests
-
-::: testing.backend.src.test_admin.test_admin_banner_get
-
-::: testing.backend.src.test_admin.test_admin_banner_update
-
-## Error Handling Tests
-
-The test suite includes specific tests for error conditions:
-
-- Invalid endpoints
-- Invalid date parameters
-- Missing required parameters
-- Invalid data structures
-
-::: testing.backend.src.test_main.test_invalid_endpoint
-
-::: testing.backend.src.test_main.test_json_endpoint_invalid_date
-
-## Code Quality
-
-The testing framework includes tools for maintaining code quality:
-
-```bash
-# Run linting checks
-make lint
-
-# Run specific linters
-make ruff
-make pylint
-
-# Clean up cache files
-make clean
-```
-
-## Integration with Utilities
-
-The tests validate the same endpoints used by the frontend utilities:
-
-- **Project Data Utility**: Tests the `/api/csv` endpoint used by `fetchCSVFromS3()`
-- **Repository Data Utility**: Tests the `/api/repository/project/json` endpoint used by `fetchRepositoryData()`
-- **Tech Radar Data Utility**: Tests the `/api/tech-radar/json` endpoint used by `fetchTechRadarJSONFromS3()`
-- **Admin Utilities**: Tests the `/admin/api/banners*` endpoints used by the admin interface for banner management
-
-This ensures that the data providers for the DataContext are functioning correctly and returning the expected data structures.
+For more information on the use of GitHub Actions for testing, please refer to the repository's main README file at the root of the project.

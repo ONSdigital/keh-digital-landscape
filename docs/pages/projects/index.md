@@ -7,8 +7,8 @@ The Projects section provides a comprehensive view of all projects and their tec
 The Projects interface enables you to:
 
 - View all projects recorded by the Tech Audit tool in a sortable, filterable list
-- Examine project details using the [Project Modal](/components/projects/projectModal) component
-- Analyse project distributions through interactive [pie charts](/components/projects/pieChart)
+- Examine project details using the [Project Modal](../../components/projects/projectModal.md) component
+- Analyse project distributions through interactive [pie charts](../../components/projects/pieChart.md)
 - Filter projects by multiple criteria including stage, development type, and architecture
 - Sort projects using various criteria including alphabetical order and technology distribution
 - Search across project metadata and technology stacks
