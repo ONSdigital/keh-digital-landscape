@@ -2,12 +2,20 @@
 
 ![Digital Landscape Thumbnail](./assets/readme-thumbnail.png)
 
-<!-- TODO: Rework Badges -->
-![Linting Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci.yml/badge.svg)
-![CodeQL Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)
-![Dependabot Status](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
-[![LICENSE.](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/ONSdigital/keh-digital-landscape/blob/main/LICENSE)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/ONSDigital/keh-digital-landscape.svg)](https://github.com/ONSdigital/keh-digital-landscape/pulls)
+![GitHub License](https://img.shields.io/github/license/ONSdigital/keh-digital-landscape)
+![GitHub Release](https://img.shields.io/github/v/release/ONSdigital/keh-digital-landscape)
+
+[![Testing](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-test.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-test.yml)
+[![Linting and Formatting](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-fmt.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-fmt.yml)
+[![Documentation CI](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-docs.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-docs.yml)
+[![Deploy Documentation](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/deploy-docs.yml)
+[![MegaLinter](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/mega-linter.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/mega-linter.yml)
+
+[![CodeQL](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql)
+![Dependabot](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
+
+![GitHub Issues](https://img.shields.io/github/issues/ONSdigital/keh-digital-landscape)
+![GitHub Requests](https://img.shields.io/github/issues-pr/ONSdigital/keh-digital-landscape)
 
 ## Overview
 
@@ -467,6 +475,15 @@ Further information on how to run the UI and Accessibility tests can be found in
 
 - UI Tests: [`./testing/ui/README.md`](./testing/ui/README.md)
 - Accessibility Tests: [`./testing/accessibility/README.md`](./testing/accessibility/README.md)
+
+Both can be run from the root of the repository with the following commands:
+
+```bash
+make test-ui
+make test-accessibility
+```
+
+This will simply run the setup and test commands for both UI and Accessibility tests respectively, as defined in their own Makefiles.
 
 #### Application Linting and Formatting
 
