@@ -105,6 +105,16 @@ test-unit-backend:	## Run unit tests for the backend only
 
 ## 
 
+.PHONY: test-ui
+test-ui: 		## Run UI tests using Playwright
+	cd testing/ui && make setup && make test-ui
+
+.PHONY: test-accessibility
+test-accessibility: 	## Run accessibility tests using Axe
+	cd testing/accessibility && make setup && make test-accessibility
+
+## 
+
 .PHONY: lint
 lint: 			## Run linters for both frontend and backend
 	cd backend && npm run lint
