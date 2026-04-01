@@ -7,15 +7,13 @@
 
 [![Testing](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-test.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-test.yml)
 [![Linting and Formatting](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-fmt.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-fmt.yml)
+[![MegaLinter](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/mega-linter.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/mega-linter.yml)
+
 [![Documentation CI](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-docs.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/ci-docs.yml)
 [![Deploy Documentation](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/deploy-docs.yml)
-[![MegaLinter](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/mega-linter.yml/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/mega-linter.yml)
 
 [![CodeQL](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/github-code-scanning/codeql)
 ![Dependabot](https://github.com/ONSdigital/keh-digital-landscape/actions/workflows/dependabot/dependabot-updates/badge.svg)
-
-![GitHub Issues](https://img.shields.io/github/issues/ONSdigital/keh-digital-landscape)
-![GitHub Requests](https://img.shields.io/github/issues-pr/ONSdigital/keh-digital-landscape)
 
 ## Overview
 
