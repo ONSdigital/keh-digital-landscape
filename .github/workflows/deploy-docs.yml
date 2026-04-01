@@ -28,5 +28,5 @@ jobs:
             mkdocs-material-
       - run: pip install poetry
       - run: poetry config virtualenvs.create false
-      - run: poetry install --only docs
+      - run: poetry install
       - run: mkdocs gh-deploy --force
