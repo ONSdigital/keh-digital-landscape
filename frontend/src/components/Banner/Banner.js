@@ -36,6 +36,16 @@ const Banner = ({ title, description, type = 'info', onClose }) => {
     }
   };
 
+  // If the banner does not have a title, description, or type, we consider it invalid and
+  // do not render it. The UI has logic to disallow creating banners without at least a
+  // title, description, or type, but this is a safeguard.
+  if (!(title || description || type)) {
+    console.log(
+      `Banner not rendered because it lacks title, description, and type.`
+    );
+    return null;
+  }
+
   return (
     <div className={`banner banner-${type}`}>
       <div className="banner-content">
