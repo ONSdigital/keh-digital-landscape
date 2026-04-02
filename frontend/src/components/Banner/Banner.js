@@ -20,18 +20,6 @@ const Banner = ({ title, description, type = 'info', onClose }) => {
     '_'
   );
 
-  useEffect(() => {
-    // Check localStorage to see if this banner was previously dismissed
-    const isDismissed = localStorage.getItem(bannerId);
-    if (isDismissed) {
-      setIsVisible(false);
-    }
-  }, [bannerId]);
-
-  if (!isVisible) {
-    return null;
-  }
-
   const handleClose = () => {
     setIsVisible(false);
 
