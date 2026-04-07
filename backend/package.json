@@ -45,6 +45,6 @@
     "globals": "^16.4.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.2.5",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.0"
   }
 }
