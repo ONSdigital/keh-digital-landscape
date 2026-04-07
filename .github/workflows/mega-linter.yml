@@ -26,7 +26,6 @@ env:
   # Without a PAT token, commits/PRs will not trigger workflow runs.
   # This is a GitHub Actions limitation to prevent infinite loops.
   APPLY_FIXES: none
-  ENABLE_LINTERS: REPOSITORY_CHECKOV
   DISABLE_LINTERS: REPOSITORY_TRIVY
 
   # Decide which event triggers application of fixes in a commit or a PR
