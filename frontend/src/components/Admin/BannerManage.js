@@ -232,7 +232,9 @@ const BannerManage = () => {
               {existingBanners.map((banner, index) => (
                 <div id={`banner-${index}`} className="banner-item" key={index}>
                   <div className="banner-content">
-                    <h2 id={`banner-title-${index}`}>{banner.title || banner.message}</h2>
+                    <h2 id={`banner-title-${index}`}>
+                      {banner.title || banner.message}
+                    </h2>
                     <p id={`banner-message-${index}`}>{banner.message}</p>
                     <div className="banner-actions">
                       <div className="banner-meta">
@@ -242,7 +244,10 @@ const BannerManage = () => {
                         >
                           {banner.type || 'info'}
                         </span>
-                        <span id={`banner-pages-${index}`} className="banner-pages">
+                        <span
+                          id={`banner-pages-${index}`}
+                          className="banner-pages"
+                        >
                           {/* TODO: For some reason, this gets capitalised via CSS. This should happen in the data instead. */}
                           Pages:{' '}
                           {Array.isArray(banner.pages)
@@ -293,8 +298,18 @@ const BannerManage = () => {
             <h1>Confirm Banner Changes</h1>
             <p>Are you sure you want to save these changes?</p>
             <div className="modal-buttons">
-              <button id="confirm-banner-button" onClick={handleSaveBannerConfirm}>Yes</button>
-              <button id="cancel-banner-button" onClick={handleSaveBannerCancel}>No</button>
+              <button
+                id="confirm-banner-button"
+                onClick={handleSaveBannerConfirm}
+              >
+                Yes
+              </button>
+              <button
+                id="cancel-banner-button"
+                onClick={handleSaveBannerCancel}
+              >
+                No
+              </button>
             </div>
           </div>
         </div>
