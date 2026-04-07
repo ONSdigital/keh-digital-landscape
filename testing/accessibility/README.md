@@ -70,6 +70,12 @@ Also, additional Axe Core tags can be included in the tests by modifying the Axe
 
 Before running the tests, ensure that the application is running locally.
 
+Move into the `testing/accessibility` directory:
+
+```bash
+cd testing/accessibility
+```
+
 Install the dependencies:
 
 ```bash
