@@ -271,7 +271,7 @@ resource "aws_cloudwatch_metric_alarm" "application_elb_5xx_alarm" {
   alarm_description         = "Alarm when Application ELB produces 5xx Errors"
   insufficient_data_actions = []
   treat_missing_data        = "notBreaching"
-  dimensions                = { LoadBalancer = "${var.domain}-service-lb" }
+  dimensions                = { LoadBalancer = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_arn_suffix }
 }
 
 
