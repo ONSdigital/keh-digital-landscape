@@ -15,9 +15,15 @@ describe('fetchBanners', () => {
       let store = {};
       return {
         getItem: vi.fn(key => store[key] || null),
-        setItem: vi.fn((key, value) => { store[key] = value.toString(); }),
-        removeItem: vi.fn(key => { delete store[key]; }),
-        clear: vi.fn(() => { store = {}; }),
+        setItem: vi.fn((key, value) => {
+          store[key] = value.toString();
+        }),
+        removeItem: vi.fn(key => {
+          delete store[key];
+        }),
+        clear: vi.fn(() => {
+          store = {};
+        }),
       };
     })();
     global.localStorage = localStorageMock;
@@ -33,8 +39,20 @@ describe('fetchBanners', () => {
       ok: true,
       json: async () => ({
         messages: [
-          { show: true, page: 'radar', title: 'Radar Banner', description: 'Radar Desc', type: 'warning' },
-          { show: true, page: 'statistics', title: 'Stats Banner', description: 'Stats Desc', type: 'info' },
+          {
+            show: true,
+            page: 'radar',
+            title: 'Radar Banner',
+            description: 'Radar Desc',
+            type: 'warning',
+          },
+          {
+            show: true,
+            page: 'statistics',
+            title: 'Stats Banner',
+            description: 'Stats Desc',
+            type: 'info',
+          },
         ],
       }),
     });
@@ -54,8 +72,18 @@ describe('fetchBanners', () => {
       ok: true,
       json: async () => ({
         messages: [
-          { show: false, page: 'radar', title: 'Hidden Banner', description: 'Should not show' },
-          { show: true, page: 'radar', title: 'Visible Banner', description: 'Should show' },
+          {
+            show: false,
+            page: 'radar',
+            title: 'Hidden Banner',
+            description: 'Should not show',
+          },
+          {
+            show: true,
+            page: 'radar',
+            title: 'Visible Banner',
+            description: 'Should show',
+          },
         ],
       }),
     });
@@ -70,7 +98,12 @@ describe('fetchBanners', () => {
       ok: true,
       json: async () => ({
         messages: [
-          { show: true, pages: ['radar', 'statistics'], title: 'Multi Banner', description: 'Multi Desc' },
+          {
+            show: true,
+            pages: ['radar', 'statistics'],
+            title: 'Multi Banner',
+            description: 'Multi Desc',
+          },
         ],
       }),
     });
@@ -110,8 +143,18 @@ describe('fetchBanners', () => {
       ok: true,
       json: async () => ({
         messages: [
-          { show: true, page: 'radar', title: 'First', description: 'First Desc' },
-          { show: true, page: 'radar', title: 'Second', description: 'Second Desc' },
+          {
+            show: true,
+            page: 'radar',
+            title: 'First',
+            description: 'First Desc',
+          },
+          {
+            show: true,
+            page: 'radar',
+            title: 'Second',
+            description: 'Second Desc',
+          },
         ],
       }),
     });
@@ -122,8 +165,16 @@ describe('fetchBanners', () => {
   });
 
   it('does not show dismissed banners', async () => {
-    const banner = { show: true, page: 'radar', title: 'Dismissed', description: 'Dismissed Desc' };
-    const bannerId = `dismissed_banner_Dismissed_Dismissed_Desc`.replace(/\s+/g, '_');
+    const banner = {
+      show: true,
+      page: 'radar',
+      title: 'Dismissed',
+      description: 'Dismissed Desc',
+    };
+    const bannerId = `dismissed_banner_Dismissed_Dismissed_Desc`.replace(
+      /\s+/g,
+      '_'
+    );
     localStorageMock.getItem.mockImplementation(key => {
       if (key === bannerId) {
         return JSON.stringify({ dismissedAt: Date.now() });
@@ -141,8 +192,14 @@ describe('fetchBanners', () => {
   });
 
   it('shows banners that have not been dismissed', async () => {
-    const banner = { show: true, page: 'radar', title: 'Not Dismissed', description: 'Not Dismissed Desc' };
-    const bannerId = `dismissed_banner_Not_Dismissed_Not_Dismissed_Desc`.replace(/\s+/g, '_');
+    const banner = {
+      show: true,
+      page: 'radar',
+      title: 'Not Dismissed',
+      description: 'Not Dismissed Desc',
+    };
+    const bannerId =
+      `dismissed_banner_Not_Dismissed_Not_Dismissed_Desc`.replace(/\s+/g, '_');
     localStorageMock.getItem.mockImplementation(key => {
       if (key === bannerId) {
         return null; // Not dismissed
@@ -161,9 +218,17 @@ describe('fetchBanners', () => {
 
   it('shows banners again if dismissed more than 7 days ago', async () => {
     const now = Date.now();
-    const dismissedAt = now - (8 * 24 * 60 * 60 * 1000); // 8 days ago
-    const banner = { show: true, page: 'radar', title: 'Old Dismissed', description: 'Old Desc' };
-    const bannerId = `dismissed_banner_Old_Dismissed_Old_Desc`.replace(/\s+/g, '_');
+    const dismissedAt = now - 8 * 24 * 60 * 60 * 1000; // 8 days ago
+    const banner = {
+      show: true,
+      page: 'radar',
+      title: 'Old Dismissed',
+      description: 'Old Desc',
+    };
+    const bannerId = `dismissed_banner_Old_Dismissed_Old_Desc`.replace(
+      /\s+/g,
+      '_'
+    );
     localStorageMock.getItem.mockImplementation(key => {
       if (key === bannerId) {
         return JSON.stringify({ dismissedAt });
