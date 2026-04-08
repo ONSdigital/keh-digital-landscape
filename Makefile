@@ -158,9 +158,16 @@ terraform-validate: 	## Run `terraform validate` to validate the Terraform confi
 ## 
 
 .PHONY: megalint-check
-megalint-check: 	## Run MegaLinter to check for linting and formatting issues across the repository without making any changes
+megalint-check: assert-docker 	## Run MegaLinter to check for linting and formatting issues across the repository without making any changes
 	npx mega-linter-runner --env APPLY_FIXES=none
 
 .PHONY: megalint-fix
-megalint-fix: 		## Run MegaLinter to attempt to fix any linting and formatting issues across the repository where possible
+megalint-fix: assert-docker 	## Run MegaLinter to attempt to fix any linting and formatting issues across the repository where possible
 	npx mega-linter-runner --env APPLY_FIXES=all
+
+# This target is uncommented so it stays hidden from the default `make` output.
+# It is used to check that docker is installed and accessible before running the Megalinter commands above
+# which rely on Docker to run the MegaLinter container. This'll provide a clearer error message if Docker is not available.
+.PHONY: asset-docker
+assert-docker:
+	@docker --version > /dev/null 2>&1 || (echo "Docker is not installed or not accessible. Please install Docker and ensure it's running before using the megalint targets." && exit 1)
