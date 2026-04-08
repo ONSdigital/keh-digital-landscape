@@ -60,9 +60,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-site/*
-
-*/.env
 .env
 
 .pytest_cache
@@ -72,14 +69,10 @@ terraform/service/highest_alb_listener_priority.txt
 
 .vscode
 
-/venv
+venv
+site
 
-/mkdocs/venv
-/mkdocs/site
-
-/testing/frontend/reports
-/testing/frontend/test-results
-/testing/backend/venv
+test-results
 
 # Megalinter
-megalinter-reports/
+megalinter-reports

@@ -1,0 +1,75 @@
+---
+name: Testing
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'testing/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'testing/**'
+permissions:
+  contents: read
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: make install-dev
+      - name: Run unit tests
+        run: make test-unit
+
+  ui-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: make install-dev
+      - name: Start app in background
+        run: make dev-ci &
+      - name: Export CI variable to enable Playwright config tweaks
+        run: echo "CI=true" >> $GITHUB_ENV
+      - name: Run Playwright tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: cd testing/ui && make setup && make test-ui
+
+  accessibility-test:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: make install-dev
+      - name: Start app in background
+        run: make dev-ci &
+      - name: Export CI variable to enable Playwright config tweaks
+        run: echo "CI=true" >> $GITHUB_ENV
+      - name: Run Playwright tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: cd testing/accessibility && make setup && make test-accessibility

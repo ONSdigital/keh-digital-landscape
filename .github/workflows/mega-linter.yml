@@ -1,6 +1,3 @@
-# MegaLinter workflow
-# MegaLinter GitHub Action configuration file
-# More info at https://megalinter.io
 ---
 name: MegaLinter
 
@@ -11,10 +8,8 @@ on: # yamllint disable-line rule:truthy
     branches: [main]
   pull_request:
     branches: [main]
-
 permissions:
   contents: read
-
 # Comment env block if you do not want to apply fixes
 env:
   # Apply linter fixes configuration
@@ -43,11 +38,9 @@ env:
 
   # Set to simple to avoid external images in generated markdown
   REPORTERS_MARKDOWN_TYPE: simple
-
 concurrency:
-  group: '${{ github.head_ref || github.ref }}-${{ github.workflow }}'
+  group: ${{ github.head_ref || github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
-
 jobs:
   lint:
     name: MegaLinter
@@ -60,7 +53,6 @@ jobs:
       issues: read
       pull-requests: read
       statuses: read
-
     steps:
       # Git Checkout
       - name: Checkout Code
@@ -84,7 +76,6 @@ jobs:
         # You can override MegaLinter flavor used to have faster performances
         # More info at https://megalinter.io/latest/flavors/
         uses: oxsecurity/megalinter@v9
-
         id: ml
 
         # All available variables are described in documentation
@@ -103,7 +94,6 @@ jobs:
           #     github.ref == 'refs/heads/main'
           #   }}
           VALIDATE_ALL_CODEBASE: true
-
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           # ADD YOUR CUSTOM ENV VARIABLES HERE TO OVERRIDE VALUES OF
@@ -159,8 +149,8 @@ jobs:
       #     echo "PR Number - ${{ steps.cpr.outputs.pull-request-number }}"
       #     echo "PR URL - ${{ steps.cpr.outputs.pull-request-url }}"
 
-      # # Push new commit if applicable
-      # # (for now works only on PR from same repository, not from forks)
+      #  # Push new commit if applicable
+      #  # (for now works only on PR from same repository, not from forks)
       # - name: Prepare commit
       #   if: >-
       #     steps.ml.outputs.has_updated_sources == 1 &&

@@ -1,146 +1,173 @@
-.PHONY: dev dev-ci frontend backend install install-dev docker-build docker-up docker-down clean test logs ps setup lint lint-frontend lint-fix-frontend lint-backend lint-fix-backend format format-frontend format-backend format-check help megalint-check megalint-fix
+.DEFAULT_GOAL := help
 
-# Development environment
-dev:
+# The spacing and comments in this Makefile are intentionally formatted to
+# allow the `make` command to display a nicely formatted list of available
+# targets and their descriptions.
+
+# Single hash symbols (#) are used for comments that are not displayed in
+# the `make` output, while double hash symbols (##) are used for comments
+# that are displayed when running `make` without any arguments or with the
+# `make help` command.
+
+# To add breaks between sections in the `make` output, simply add a comment line with
+# double hash symbols and some spacing, as shown below.
+
+## 
+## -----------------------------------------------
+## Makefile for KEH Digital Landscape
+## -----------------------------------------------
+## 
+
+.PHONY: help
+help: 			## This help message.
+	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
+
+## 
+
+.PHONY: dev
+dev: 			## Run the application
 	@echo "Starting frontend and backend in development mode..."
 	@trap 'kill %1 %2' SIGINT; \
 	make frontend & make backend & wait
 
-dev-ci:
+.PHONY: dev-ci
+dev-ci: 		## Run the application in CI mode (without traps)
 	make frontend & make backend & wait
 
-frontend:
+.PHONY: frontend
+frontend: 		## Start the frontend development server
 	cd frontend && npm start
 
-backend:
+.PHONY: backend
+backend: 		## Start the backend development server
 	cd backend && export NODE_ENV=development && npm run dev
 
-# Install dependencies
-install:
+## 
+
+.PHONY: install
+install: 		## Install production dependencies for both frontend and backend
 	@echo "Installing backend production dependencies..."
 	cd backend && npm ci --only=production
 	@echo "Installing frontend production dependencies..."
 	cd frontend && npm ci --only=production
 
-install-dev:
+.PHONY: install-dev
+install-dev: 		## Install all dependencies (including dev) for both frontend and backend
 	@echo "Installing backend dependencies (including dev)..."
 	cd backend && npm install
 	@echo "Installing frontend dependencies (including dev)..."
 	cd frontend && npm install
 
-# Docker commands
-docker-build:
-	docker-compose build
+## 
 
-docker-up:
-	docker-compose up
+.PHONY: install-docs
+install-docs: 		## Install documentation dependencies via Poetry
+	@echo "Installing documentation dependencies via Poetry..."
+	pip install poetry
+	poetry install
 
+.PHONY: serve-docs
+serve-docs: 		## Serve the documentation locally via MkDocs
+	@echo "Serving documentation locally via MkDocs..."
+	poetry run mkdocs serve
 
-docker-down:
-	docker-compose down
+.PHONY: lint-docs
+lint-docs: 		## Lint the documentation Markdown files
+	@echo "Linting documentation Markdown files..."
+	npm install -g markdownlint-cli
+	cd docs && markdownlint . --config ../.markdownlint.yaml
 
-# Clean up
-clean:
-	@echo "Cleaning up node_modules..."
-	rm -rf backend/node_modules
-	rm -rf frontend/node_modules
-	@echo "Cleaning up build artifacts..."
-	rm -rf frontend/build
-	@echo "Cleaning up Docker containers and images..."
-	docker-compose down --rmi all
+.PHONY: lint-docs-fix
+lint-docs-fix: 		## Lint the documentation Markdown files and attempt to fix any issues
+	@echo "Linting documentation Markdown files and attempting to fix any issues..."
+	npm install -g markdownlint-cli
+	cd docs && markdownlint . --fix --config ../.markdownlint.yaml
 
-# Run tests (add when you have tests)
-test:
+.PHONY: build-docs
+build-docs: 		## Build the documentation site via MkDocs
+	@echo "Building documentation site via MkDocs..."
+	poetry run mkdocs build
+
+## 
+
+.PHONY: test-unit
+test-unit: 		## Run unit tests for both frontend and backend
 	cd backend && npm test
 	cd frontend && npm test
 
-# Helper commands
-logs:
-	docker-compose logs -f
+.PHONY: test-unit-frontend
+test-unit-frontend: 	## Run unit tests for the frontend only
+	cd frontend && npm test
 
-ps:
-	docker-compose ps
+.PHONY: test-unit-backend
+test-unit-backend:	## Run unit tests for the backend only
+	cd backend && npm test
 
-setup: install docker-build
+## 
 
-lint: lint-frontend lint-backend
+.PHONY: test-ui
+test-ui: 		## Run UI tests using Playwright
+	cd testing/ui && make setup && make test-ui
 
-lint-fix: lint-fix-frontend lint-fix-backend
+.PHONY: test-accessibility
+test-accessibility: 	## Run accessibility tests using Axe
+	cd testing/accessibility && make setup && make test-accessibility
 
-lint-frontend:
+## 
+
+.PHONY: lint
+lint: 			## Run linters for both frontend and backend
+	cd backend && npm run lint
 	cd frontend && npm run lint
 
-lint-fix-frontend:
+.PHONY: lint-fix
+lint-fix: 		## Run linters with auto-fix for both frontend and backend
+	cd backend && npm run lint:fix
 	cd frontend && npm run lint:fix
 
-lint-backend:
-	cd backend && npm run lint
+.PHONY: format
+format: 		## Run formatters for both frontend, backend and testing code
+	cd backend && npm run format
+	cd frontend && npm run format
+	cd testing/accessibility && npm run format
+	cd testing/ui && npm run format
 
-lint-fix-backend:
-	cd backend && npm run lint:fix
+.PHONY: format-check
+format-check: 		## Run formatters to check for formatting issues across the repository without making any changes
+	cd backend && npm run format:check
+	cd frontend && npm run format:check
+	cd testing/accessibility && npm run format:check
+	cd testing/ui && npm run format:check
+	
+## 
 
-megalint-check:
-	npx mega-linter-runner --env APPLY_FIXES=none
-
-megalint-fix:
-	npx mega-linter-runner --env APPLY_FIXES=all
-
-format: format-frontend format-backend format-frontend-testing format-terraform
-
-format-frontend:
-	cd frontend && npm run format ./src
-
-format-backend:
-	cd backend && npm run format ./src
-
-format-frontend-testing:
-	cd testing/frontend && npm run format ./tests
-
-format-terraform:
+.PHONY: terraform-fmt
+terraform-fmt: 		## Run `terraform fmt` to format Terraform code in the `terraform` directory
 	cd terraform && terraform fmt -recursive
 
-format-check:
-	cd frontend && npm run format:check .
-	cd backend && npm run format:check .
-	cd testing/frontend && npm run format:check ./tests
-	cd terraform && terraform fmt -check -recursive
+.PHONY: terraform-fmt-check
+terraform-fmt-check: 	## Run `terraform fmt` in check mode to identify any formatting issues in the Terraform code without making changes
+	cd terraform && terraform fmt -recursive -check
 
-# Default help command
-help:
-	@echo "Available commands:"
-	@echo "  make dev          			- Run in development mode (uses dev.sh)"
-	@echo "  make dev-ci         			- Run in ci development mode without shell trap"
-	@echo "  make frontend     			- Run just the frontend"
-	@echo "  make backend      			- Run just the backend"
-	@echo " "
-	@echo "  make install      			- Install production dependencies only"
-	@echo "  make install-dev  			- Install all dependencies (including dev)"
-	@echo " "
-	@echo "  make docker-build 			- Build Docker images"
-	@echo "  make docker-up    			- Start Docker containers"
-	@echo "  make docker-down  			- Stop Docker containers"
-	@echo " "
-	@echo "  make clean        			- Clean up node_modules, build artifacts, and Docker resources"
-	@echo "  make test         			- Run tests"
-	@echo "  make lint         			- Run linting for both frontend and backend"
-	@echo "  make lint-fix     			- Fix linting issues for both frontend and backend"
-	@echo "  make format       			- Format code for both frontend and backend"
-	@echo "  make format-check 			- Check formatting for both frontend and backend"
-	@echo " "
-	@echo "  make lint-frontend         		- Run linting for frontend without fix"
-	@echo "  make lint-fix-frontend     		- Fix linting for frontend and fix"
-	@echo "  make format-frontend       		- Format frontend code"
-	@echo " "
-	@echo "  make lint-backend         		- Run linting for backend without fix"
-	@echo "  make lint-fix-backend     		- Fix linting for backend and fix"
-	@echo "  make format-backend        		- Format backend code"
-	@echo " "
-	@echo "  make megalint-check         		- Run Megalinter within repo, without fix" 
-	@echo "  make megalint-fix			- Run Megalinter within repo, using fix"
-	@echo " "
-	@echo "  make logs         			- View Docker logs"
-	@echo "  make ps           			- List running Docker containers"
-	@echo "  make setup        			- Install dependencies and build Docker images"
+.PHONY: terraform-validate
+terraform-validate: 	## Run `terraform validate` to validate the Terraform configuration files in the `terraform` directory
+	cd terraform/authentication && terraform init -backend=false && terraform validate
+	cd terraform/service && terraform init -backend=false && terraform validate
+	cd terraform/storage && terraform init -backend=false && terraform validate
 
-# Default target
-.DEFAULT_GOAL := help
+## 
+
+.PHONY: megalint-check
+megalint-check: assert-docker 	## Run MegaLinter to check for linting and formatting issues across the repository without making any changes
+	npx mega-linter-runner --env APPLY_FIXES=none
+
+.PHONY: megalint-fix
+megalint-fix: assert-docker 	## Run MegaLinter to attempt to fix any linting and formatting issues across the repository where possible
+	npx mega-linter-runner --env APPLY_FIXES=all
+
+# This target is uncommented so it stays hidden from the default `make` output.
+# It is used to check that docker is installed and accessible before running the Megalinter commands above
+# which rely on Docker to run the MegaLinter container. This'll provide a clearer error message if Docker is not available.
+.PHONY: asset-docker
+assert-docker:
+	@docker --version > /dev/null 2>&1 || (echo "Docker is not installed or not accessible. Please install Docker and ensure it's running before using the megalint targets." && exit 1)

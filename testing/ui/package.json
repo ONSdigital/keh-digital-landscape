@@ -1,0 +1,21 @@
+{
+  "name": "ui-tests",
+  "version": "1.0.0",
+  "description": "UI tests using Playwright for the Digital Landscape",
+  "license": "MIT",
+  "author": "",
+  "type": "commonjs",
+  "main": "playwright.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "make setup && make test-ui",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "playwright": "^1.58.2",
+    "prettier": "^3.8.1"
+  }
+}
