@@ -35,6 +35,12 @@ To see the coverage of the UI tests, please refer to the MkDocs documentation (S
 
 Before running the tests, ensure that the application is running locally.
 
+Move into the `testing/ui` directory:
+
+```bash
+cd testing/ui
+```
+
 Install the dependencies:
 
 ```bash
