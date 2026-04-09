@@ -43,6 +43,7 @@ function CopilotDashboard() {
   // Cancellation ref for fetchTeamData
   const fetchTeamDataCancelRef = React.useRef({ cancelled: false });
 
+  // Currently not used due to team-level Copilot usage being deactivated 
   const fetchTeamData = async slug => {
     fetchTeamDataCancelRef.current.cancelled = false;
     setIsTeamLoading(true);
@@ -199,6 +200,7 @@ function CopilotDashboard() {
 
     const fetchTeamsHistoric = async () => {
       try {
+        // Returns an empty array until aggregated teams usage data is collected again
         const teamsData = await fetchTeamsHistoricData();
         if (teamsData) {
           setTeamsHistoricData(teamsData);
@@ -364,10 +366,7 @@ function CopilotDashboard() {
           <PageBanner
             title="Copilot Usage Dashboard"
             description="Analyse Copilot usage statistics organisation-wide and by team"
-            tabs={[
-              { id: 'organisation', label: 'Organisation Usage' },
-              { id: 'team', label: 'Team Usage' },
-            ]}
+            tabs={[]}
             activeTab={scope}
             onTabChange={() => {
               setScope(prevScope => {

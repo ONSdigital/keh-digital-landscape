@@ -26,10 +26,8 @@ async function getTeamsHistoricDataWithCache(bucketName) {
   }
 
   // Fetch and cache the full data
-  teamsHistoricDataCache = await s3Service.getObject(
-    bucketName,
-    'teams_history.json'
-  );
+  // TODO: Implement S3 call to get teams historic data once aggregated teams usage data is collected again
+  teamsHistoricDataCache = {}
   teamsHistoricDataCacheTimestamp = now;
   logger.info('Cached ${teamsHistoricDataCache.length} teams');
 

@@ -40,21 +40,12 @@ export const fetchTeamsHistoricData = async () => {
   }
 };
 
-/**
- * Extract specific team's usage data from the teams historic data array
- *
- * @param {Array} teamsData - Array of all team objects
- * @param {string} teamSlug - The slug of the team to extract
- * @returns {Array|null} - Array of daily usage data for the specified team, or null if not found
- */
-export const extractTeamData = (teamsData, teamSlug) => {
-  if (!teamsData || !Array.isArray(teamsData) || !teamSlug) {
-    return null;
-  }
-
-  const teamObject = teamsData.find(team => team.team?.slug === teamSlug);
-  return teamObject?.data || null;
-};
+// TODO: Implement function to extract a team's usage data from aggregated teams usage data.
+// To be displayed in the frontend. Implementation of this function will depend on the format of the data 
+// returned from S3.
+export const extractTeamData = () => {
+  return null;
+}
 
 /**
  * Filter usage data based on start and end date
