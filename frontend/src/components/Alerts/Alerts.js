@@ -6,8 +6,6 @@
  * @param {string} moreInfo - Additional context or description of the error to help with troubleshooting.
  */
 const sendAlert = async (statusInfo, errorInfo, moreInfo) => {
-  console.log(import.meta.env);
-
   const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
   const baseUrl = `${backendUrl}/alerts/api/alert`;
   const payload = {
