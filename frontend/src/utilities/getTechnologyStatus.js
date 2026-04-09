@@ -49,8 +49,22 @@ export const useTechnologyStatus = () => {
           return null;
         }
 
+        // Get the default directorate's ID from localStorage
+        const defaultDirectorateId = localStorage.getItem(
+          'defaultDirectorateId'
+        );
+
+        // Filter timeline entries to only include those relevant to the default directorate
+        // If a timeline entry does not specify a directorate, we assume it applies to all directorates and include it
+        const filteredTimeline = entry.timeline.filter(timelineEntry => {
+          return (
+            timelineEntry.directorate === defaultDirectorateId ||
+            !timelineEntry.directorate
+          );
+        });
+
         const lastTimelineEntry =
-          entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
+          filteredTimeline[filteredTimeline.length - 1].ringId.toLowerCase();
         if (lastTimelineEntry === 'review' || lastTimelineEntry === 'ignore') {
           continue;
         }

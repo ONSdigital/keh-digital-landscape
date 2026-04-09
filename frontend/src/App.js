@@ -10,6 +10,21 @@ import AddressBookPage from './pages/AddressBookPage';
 import CopilotDashboard from './pages/CopilotPage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
+import { getDirectorates } from './utilities/getDirectorates';
+
+// Get the default directorate from the directorates data
+const directorates = await getDirectorates();
+const defaultDirectorate = directorates.find(d => d.default);
+
+// Set the default directorate in localStorage so it can be used across the app (namely in utilities/getTechnologyStatus)
+if (defaultDirectorate) {
+  localStorage.setItem(
+    'defaultDirectorate',
+    JSON.stringify(defaultDirectorate)
+  );
+  localStorage.setItem('defaultDirectorateId', defaultDirectorate.id);
+}
+
 const App = () => {
   return (
     <Routes>
