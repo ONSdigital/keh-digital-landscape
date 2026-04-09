@@ -47,5 +47,8 @@ class LocalStorageMock {
 }
 
 Object.defineProperty(window, 'localStorage', {
+  writable: true,
+  configurable: true,
+  enumerable: true,
   value: new LocalStorageMock(),
 });

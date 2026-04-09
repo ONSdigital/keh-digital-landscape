@@ -77,9 +77,6 @@ To submit a technology to be changed or added to the Tech Radar, please visit th
 
 - Node.js (v24.1.0 recommended)
   - It is recommended to use Node Version Manager (nvm) to manage Node.js versions
-  - `nvm install 24.1.0` to install the recommended version
-  - `nvm use 24.1.0` to switch to the recommended version
-  - If v24.x.x is not used, there may be issues with running the tests due to Vitest compatibility issues with newer versions of Node.js
 - Python (v3.10 or higher recommended)
   - It is recommended to use Python's built-in venv module to manage virtual environments alongside Poetry for dependency management
 - Fly CLI (for Concourse deployments)
@@ -424,8 +421,6 @@ The application has the following tests:
 ##### Unit Tests
 
 Unit tests for both the frontend and backend are written using Vitest. To run the unit tests, do the following:
-
-**Note:** It is very important that Node.js version 24.x.x is used when running the tests, as there are some issues with Vitest and newer versions of Node.js. It is recommended to use Node Version Manager (nvm) to manage Node.js versions (See [Prerequisites](#prerequisites) for more information).
 
 1. Ensure you have installed the development dependencies:
 
