@@ -142,6 +142,7 @@ const BannerManage = () => {
           <div className="admin-modal-field">
             <label>Title</label>
             <input
+              id="banner-title-input"
               type="text"
               value={bannerTitle}
               onChange={e => setBannerTitle(e.target.value)}
@@ -154,6 +155,7 @@ const BannerManage = () => {
           <div className="admin-modal-field">
             <label>Message</label>
             <textarea
+              id="banner-message-input"
               value={bannerMessage}
               onChange={e => setBannerMessage(e.target.value)}
               placeholder="Enter banner message"
@@ -167,6 +169,7 @@ const BannerManage = () => {
             <label>Type</label>
             <div className="banner-type-selector">
               <div
+                id="info-type-option"
                 className={`banner-type-option ${bannerType === 'info' ? 'selected' : ''}`}
                 onClick={() => setBannerType('info')}
               >
@@ -174,6 +177,7 @@ const BannerManage = () => {
                 Info
               </div>
               <div
+                id="warning-type-option"
                 className={`banner-type-option ${bannerType === 'warning' ? 'selected' : ''}`}
                 onClick={() => setBannerType('warning')}
               >
@@ -181,6 +185,7 @@ const BannerManage = () => {
                 Warning
               </div>
               <div
+                id="error-type-option"
                 className={`banner-type-option ${bannerType === 'error' ? 'selected' : ''}`}
                 onClick={() => setBannerType('error')}
               >
@@ -200,6 +205,7 @@ const BannerManage = () => {
                 placeholder="Select pages..."
               />
               <button
+                id="save-banner-button"
                 className="admin-button"
                 onClick={handleSaveBanner}
                 disabled={
@@ -220,20 +226,26 @@ const BannerManage = () => {
           {existingBanners.length === 0 ? (
             <p>No banners have been created yet.</p>
           ) : (
-            <div className="existing-banners">
+            <div id="banner-list" className="existing-banners">
               {existingBanners.map((banner, index) => (
-                <div className="banner-item" key={index}>
+                <div id={`banner-${index}`} className="banner-item" key={index}>
                   <div className="banner-content">
-                    <h2>{banner.title || banner.message}</h2>
-                    <p>{banner.message}</p>
+                    <h2 id={`banner-title-${index}`}>
+                      {banner.title || banner.message}
+                    </h2>
+                    <p id={`banner-message-${index}`}>{banner.message}</p>
                     <div className="banner-actions">
                       <div className="banner-meta">
                         <span
+                          id={`banner-type-${index}`}
                           className={`banner-type ${banner.type || 'info'}`}
                         >
                           {banner.type || 'info'}
                         </span>
-                        <span className="banner-pages">
+                        <span
+                          id={`banner-pages-${index}`}
+                          className="banner-pages"
+                        >
                           Pages:{' '}
                           {Array.isArray(banner.pages)
                             ? banner.pages.join(', ')
@@ -247,6 +259,7 @@ const BannerManage = () => {
                       </div>
                       <div className="banner-actions">
                         <button
+                          id={`toggle-banner-${index}`}
                           className="banner-toggle-btn"
                           onClick={() =>
                             handleToggleBanner(index, !banner.show)
@@ -257,6 +270,7 @@ const BannerManage = () => {
                           {banner.show ? 'Hide' : 'Show'}
                         </button>
                         <button
+                          id={`delete-banner-${index}`}
                           className="banner-delete-btn"
                           onClick={() => handleDeleteBanner(index)}
                           title="Delete banner"
@@ -281,8 +295,18 @@ const BannerManage = () => {
             <h1>Confirm Banner Changes</h1>
             <p>Are you sure you want to save these changes?</p>
             <div className="modal-buttons">
-              <button onClick={handleSaveBannerConfirm}>Yes</button>
-              <button onClick={handleSaveBannerCancel}>No</button>
+              <button
+                id="confirm-banner-button"
+                onClick={handleSaveBannerConfirm}
+              >
+                Yes
+              </button>
+              <button
+                id="cancel-banner-button"
+                onClick={handleSaveBannerCancel}
+              >
+                No
+              </button>
             </div>
           </div>
         </div>

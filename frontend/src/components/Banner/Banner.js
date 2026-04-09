@@ -20,18 +20,6 @@ const Banner = ({ title, description, type = 'info', onClose }) => {
     '_'
   );
 
-  useEffect(() => {
-    // Check localStorage to see if this banner was previously dismissed
-    const isDismissed = localStorage.getItem(bannerId);
-    if (isDismissed) {
-      setIsVisible(false);
-    }
-  }, [bannerId]);
-
-  if (!isVisible) {
-    return null;
-  }
-
   const handleClose = () => {
     setIsVisible(false);
 
@@ -47,6 +35,16 @@ const Banner = ({ title, description, type = 'info', onClose }) => {
       onClose();
     }
   };
+
+  // If the banner does not have a title, description, or type, we consider it invalid and
+  // do not render it. The UI has logic to disallow creating banners without at least a
+  // title, description, or type, but this is a safeguard.
+  if (!(title || description || type)) {
+    console.log(
+      `Banner not rendered because it lacks title, description, and type.`
+    );
+    return null;
+  }
 
   return (
     <div className={`banner banner-${type}`}>
