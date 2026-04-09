@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Banner from './Banner';
 import { useData } from '../../contexts/dataContext';
+import sendAlert from '../Alerts/Alerts';
 
 /**
  * Container component that fetches and displays banners for a specific page.
@@ -21,7 +22,11 @@ const BannerContainer = ({ page }) => {
         const pageBanners = await getPageBanners(page);
         setBanners(pageBanners);
       } catch (error) {
-        console.error(`Error fetching banners for ${page}:`, error);
+        sendAlert(
+          `Error fetching banners for page "${page}"`,
+          error.message,
+          `Error raised from BannerContainer.js while fetching banners for page "${page}". Please investigate the issue.`
+        );
       } finally {
         setLoading(false);
       }
@@ -39,8 +44,10 @@ const BannerContainer = ({ page }) => {
   // If the backend ever returns multiple banners for a page, log a warning and only render the first one
   // This should never happen due to backend filtering, but we want to handle it gracefully just in case
   if (banners.length > 1) {
-    console.warn(
-      `Multiple banners found for page "${page}". Backend should only ever return one banner per page. Rendering the first banner.`
+    sendAlert(
+      `Warning: Multiple banners for page "${page}"`,
+      `Received ${banners.length} banners from backend for page "${page}"`,
+      `This should never happen. Please investigate the backend filtering logic (See BannerContainer.js).`
     );
 
     // Only render the first banner if multiple are returned

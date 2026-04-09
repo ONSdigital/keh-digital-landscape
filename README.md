@@ -45,6 +45,7 @@ To submit a technology to be changed or added to the Tech Radar, please visit th
     - [Alerts (Azure Webhook) _(Optional)_](#alerts-azure-webhook-optional)
       - [Backend endpoint](#backend-endpoint)
       - [Backend configuration (environment variables)](#backend-configuration-environment-variables)
+      - [Frontend configuration (environment variables)](#frontend-configuration-environment-variables)
       - [Frontend usage](#frontend-usage)
   - [Deployment](#deployment)
     - [Deployment with Concourse](#deployment-with-concourse)
@@ -153,6 +154,7 @@ export DEV_USER_GROUPS=group1,group2
 ### Alerts (Azure Webhook) _(Optional)_
 
 The application supports sending alerts from the frontend to the backend, which then authenticates to Azure and forwards the alert payload to an Azure webhook.
+Additional information can be found in the alerts documentation: [Alerts Documentation](./docs/functionality/alerts.md).
 
 **Note:** These are _optional_ to setup when running the project locally.
 
@@ -185,6 +187,17 @@ The required variables:
 
 Set these in `backend/.env` (see `backend/.env.example`). **Security reminder to not commit secrets.**
 
+#### Frontend configuration (environment variables)
+
+The frontend needs to know which channel to send the alert to, and the URL of the backend to send the alert to.
+
+The required variables:
+
+- `VITE_BACKEND_URL` (i.e. `http://localhost:5001` for local development)
+- `VITE_ALERTS_CHANNEL_ID` (the channel identifier used by the Azure webhook to route the alert to the correct channel)
+
+Set these in `frontend/.env` (see `frontend/.env.example`). **Security reminder to not commit secrets.**
+
 #### Frontend usage
 
 Frontend pages call the alert endpoint using the helper:
@@ -207,11 +220,6 @@ try {
   );
 }
 ```
-
-Frontend environment variables:
-
-- `VITE_BACKEND_URL` (local: `http://localhost:5001`)
-- `VITE_ALERTS_CHANNEL_ID` (channel identifier used by the webhook)
 
 ## Deployment
 

@@ -3,6 +3,10 @@ import { vi } from 'vitest';
 import BannerContainer from './BannerContainer';
 import React from 'react';
 
+const { mockSendAlert } = vi.hoisted(() => ({
+  mockSendAlert: vi.fn(),
+}));
+
 // Mock Banner component
 vi.mock('./Banner', () => ({
   __esModule: true,
@@ -22,6 +26,14 @@ vi.mock('../../contexts/dataContext', () => ({
   useData: () => ({
     getPageBanners: mockGetPageBanners,
   }),
+}));
+
+// Mock sendAlert function
+vi.mock('../Alerts/Alerts', () => ({
+  __esModule: true,
+  default: mockSendAlert,
+  sendAlert: mockSendAlert,
+  sendLog: vi.fn(),
 }));
 
 describe('BannerContainer', () => {
@@ -55,10 +67,7 @@ describe('BannerContainer', () => {
     });
   });
 
-  it('renders only the first banner and logs a warning if multiple banners are returned', async () => {
-    const consoleWarnSpy = vi
-      .spyOn(console, 'warn')
-      .mockImplementation(() => {});
+  it('renders only the first banner and calls sendAlert if multiple banners are returned', async () => {
     const banners = [
       { title: 'Banner 1', description: 'Desc 1', type: 'info' },
       { title: 'Banner 2', description: 'Desc 2', type: 'warning' },
@@ -68,11 +77,12 @@ describe('BannerContainer', () => {
     await waitFor(() => {
       expect(screen.getAllByTestId('banner')).toHaveLength(1);
       expect(screen.getByText('Banner 1')).toBeInTheDocument();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Multiple banners found for page "radar". Backend should only ever return one banner per page. Rendering the first banner.'
+      expect(mockSendAlert).toHaveBeenCalledWith(
+        `Warning: Multiple banners for page "radar"`,
+        `Received 2 banners from backend for page "radar"`,
+        `This should never happen. Please investigate the backend filtering logic (See BannerContainer.js).`
       );
     });
-    consoleWarnSpy.mockRestore();
   });
 
   it('removes banners when onClose is clicked', async () => {
@@ -96,15 +106,14 @@ describe('BannerContainer', () => {
   });
 
   it('logs error if getPageBanners throws', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     mockGetPageBanners.mockRejectedValue(new Error('fail'));
     render(<BannerContainer page="radar" />);
     await waitFor(() => {
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Error fetching banners for radar:',
-        expect.any(Error)
+      expect(mockSendAlert).toHaveBeenCalledWith(
+        'Error fetching banners for page "radar"',
+        'fail',
+        'Error raised from BannerContainer.js while fetching banners for page "radar". Please investigate the issue.'
       );
     });
-    errorSpy.mockRestore();
   });
 });

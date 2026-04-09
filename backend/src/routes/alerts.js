@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const postToWebhook = require('../services/alertService');
+const logger = require('../config/logger');
 
 /**
  * Endpoint for fetching token and posting alert.
@@ -18,6 +19,44 @@ router.post('/alert', async (req, res) => {
     res.send(result);
   } catch (err) {
     res.status(500).send(err?.message ?? 'Token/Webhook error');
+  }
+});
+
+router.post('/log', async (req, res) => {
+  try {
+    if (!req.body || typeof req.body !== 'object') {
+      return res.status(400).send('Invalid payload: expected JSON object');
+    }
+
+    const logType = req.body.type;
+
+    if (!['error', 'warning', 'info'].includes(logType)) {
+      return res
+        .status(400)
+        .send(
+          `Invalid log type: ${logType}. Must be one of 'error', 'warning', or 'info'.`
+        );
+    }
+
+    const statusInfo = req.body.status;
+    const eventInfo = req.body.event;
+    const description = req.body.description;
+
+    switch (logType) {
+      case 'error':
+        logger.error({ status: statusInfo, event: eventInfo, description });
+        break;
+      case 'warning':
+        logger.warn({ status: statusInfo, event: eventInfo, description });
+        break;
+      case 'info':
+        logger.info({ status: statusInfo, event: eventInfo, description });
+        break;
+    }
+
+    res.send('Log recorded successfully');
+  } catch (err) {
+    res.status(500).send(err?.message ?? 'Logging error');
   }
 });
 

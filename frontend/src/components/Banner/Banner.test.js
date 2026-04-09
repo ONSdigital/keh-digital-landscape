@@ -69,7 +69,9 @@ describe('Banner', () => {
   bannerTypes.forEach(type => {
     it(`renders the correct class for type: ${type}`, () => {
       render(<Banner title={title} description={description} type={type} />);
-      expect(screen.getByText(title).closest('.banner')).toHaveClass(`banner-${type}`);
+      expect(screen.getByText(title).closest('.banner')).toHaveClass(
+        `banner-${type}`
+      );
     });
   });
 });
