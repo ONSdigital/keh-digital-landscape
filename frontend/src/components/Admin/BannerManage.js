@@ -165,7 +165,6 @@ const BannerManage = () => {
             />
           </div>
 
-          {/* TODO: This should use radios or be a select dropdown */}
           <div className="admin-modal-field">
             <label>Type</label>
             <div className="banner-type-selector">
@@ -199,7 +198,6 @@ const BannerManage = () => {
           <div className="admin-modal-field">
             <label>Display on Pages</label>
             <div className="admin-buttons">
-              {/* TODO: This multiselect isn't actually a <select> element. It's a bunch of divs? */}
               <MultiSelect
                 options={pageOptions}
                 value={selectedPages}
@@ -248,7 +246,6 @@ const BannerManage = () => {
                           id={`banner-pages-${index}`}
                           className="banner-pages"
                         >
-                          {/* TODO: For some reason, this gets capitalised via CSS. This should happen in the data instead. */}
                           Pages:{' '}
                           {Array.isArray(banner.pages)
                             ? banner.pages.join(', ')

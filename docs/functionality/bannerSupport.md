@@ -7,8 +7,6 @@ Banners can be created, shown and hidden, and deleted by users via the admin pag
 
 ### Frontend
 
-<!-- TODO: Should we slim this down? Get Banner and Admin Banner seems to overlap a lot -->
-
 There are 5 main components to the banner system:
 
 1. **Banner Container**: This component is responsible for rendering the banner on the screen. It collects all active banners using the Admin Banner utility and creates a banner for each one.
@@ -51,8 +49,6 @@ The backend of the banner system is responsible for storing and managing the ban
 #### Data Structure
 
 All banners are stored in AWS S3 as a JSON file (`messages.json`). Each banner is represented as an object with the following properties:
-
-<!-- TODO: Why does banner have a description field that is the same as the message? -->
 
 ```json
 {
