@@ -1,4 +1,5 @@
 import { useData } from '../contexts/dataContext';
+import { specialTechMatchers } from './getSpecialTechMatchers';
 
 /**
  * A React hook that returns a function to get the technology status.
@@ -41,8 +42,12 @@ export const useTechnologyStatus = () => {
     }
 
     for (let i = 0; i < radarData.entries.length; i++) {
+      const radarTitle = radarData.entries[i].title;
+
       if (
-        radarData.entries[i].title.toLowerCase() === tech.trim().toLowerCase()
+        radarTitle.toLowerCase() === tech.trim().toLowerCase() ||
+        (specialTechMatchers[radarTitle] &&
+          specialTechMatchers[radarTitle](tech))
       ) {
         const entry = radarData.entries[i];
         if (!entry.timeline || entry.timeline.length === 0) {
