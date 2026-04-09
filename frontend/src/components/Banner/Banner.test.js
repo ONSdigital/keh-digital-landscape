@@ -4,6 +4,7 @@ import Banner from './Banner';
 describe('Banner', () => {
   const title = 'Test Title';
   const description = 'Test Description';
+  const bannerTypes = ['info', 'warning', 'error'];
 
   beforeEach(() => {
     localStorage.clear();
@@ -59,9 +60,16 @@ describe('Banner', () => {
   // Therefore, we can only test that the onClose callback is called and that
   // localStorage is updated.
 
-  it('does not render without title or description', () => {
+  it('does not render without title, description or type', () => {
     render(<Banner />);
     expect(screen.queryByText(title)).not.toBeInTheDocument();
     expect(screen.queryByText(description)).not.toBeInTheDocument();
+  });
+
+  bannerTypes.forEach(type => {
+    it(`renders the correct class for type: ${type}`, () => {
+      render(<Banner title={title} description={description} type={type} />);
+      expect(screen.getByText(title).closest('.banner')).toHaveClass(`banner-${type}`);
+    });
   });
 });
