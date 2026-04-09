@@ -13,7 +13,7 @@ async function getCopilotTeamsWithCache(bucketName) {
 
   // TODO: Implement this once aggregated teams usage data is collected again
   // Returns array of team slugs ideally with metadata
-  return {};
+  return teamsHistoricData;
 }
 
 /**

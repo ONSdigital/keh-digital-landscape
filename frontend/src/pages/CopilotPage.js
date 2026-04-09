@@ -43,7 +43,7 @@ function CopilotDashboard() {
   // Cancellation ref for fetchTeamData
   const fetchTeamDataCancelRef = React.useRef({ cancelled: false });
 
-  // Currently not used due to team-level Copilot usage being deactivated 
+  // Currently not used due to team-level Copilot usage being deactivated
   const fetchTeamData = async slug => {
     fetchTeamDataCancelRef.current.cancelled = false;
     setIsTeamLoading(true);

@@ -41,11 +41,11 @@ export const fetchTeamsHistoricData = async () => {
 };
 
 // TODO: Implement function to extract a team's usage data from aggregated teams usage data.
-// To be displayed in the frontend. Implementation of this function will depend on the format of the data 
+// To be displayed in the frontend. Implementation of this function will depend on the format of the data
 // returned from S3.
 export const extractTeamData = () => {
   return null;
-}
+};
 
 /**
  * Filter usage data based on start and end date
