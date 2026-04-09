@@ -59,6 +59,7 @@ nav:
       - Project Constants: constants/projectConstants.md
   - Functionality:
       - Banner Support: functionality/bannerSupport.md
+      - Alerts: functionality/alerts.md
   - Testing:
       - Overview: testing/index.md
       - Playwright: testing/playwright.md
