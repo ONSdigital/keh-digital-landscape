@@ -873,10 +873,11 @@ function RadarPage() {
               {directorateName}
             </div>
             <div className="help-modal-body" style={{ marginTop: '16px' }}>
-              Want to suggest a technology change on the radar? View this {' '}
-              <a href="https://github.com/ONSdigital/keh-tech-radar-submissions" 
-              target="_blank"
-              rel="noopener noreferrer"
+              Want to suggest a technology change on the radar? View this{' '}
+              <a
+                href="https://github.com/ONSdigital/keh-tech-radar-submissions"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 repository
               </a>
