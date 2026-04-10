@@ -1,4 +1,5 @@
 import { useData } from '../contexts/dataContext';
+import { specialTechMatchers } from './getSpecialTechMatchers';
 
 /**
  * A React hook that returns a function to get the technology status.
@@ -41,16 +42,34 @@ export const useTechnologyStatus = () => {
     }
 
     for (let i = 0; i < radarData.entries.length; i++) {
+      const radarTitle = radarData.entries[i].title;
+
       if (
-        radarData.entries[i].title.toLowerCase() === tech.trim().toLowerCase()
+        radarTitle.toLowerCase() === tech.trim().toLowerCase() ||
+        (specialTechMatchers[radarTitle] &&
+          specialTechMatchers[radarTitle](tech))
       ) {
         const entry = radarData.entries[i];
         if (!entry.timeline || entry.timeline.length === 0) {
           return null;
         }
 
+        // Get the default directorate's ID from localStorage
+        const defaultDirectorateId = localStorage.getItem(
+          'defaultDirectorateId'
+        );
+
+        // Filter timeline entries to only include those relevant to the default directorate
+        // If a timeline entry does not specify a directorate, we assume it applies to all directorates and include it
+        const filteredTimeline = entry.timeline.filter(timelineEntry => {
+          return (
+            timelineEntry.directorate === defaultDirectorateId ||
+            !timelineEntry.directorate
+          );
+        });
+
         const lastTimelineEntry =
-          entry.timeline[entry.timeline.length - 1].ringId.toLowerCase();
+          filteredTimeline[filteredTimeline.length - 1].ringId.toLowerCase();
         if (lastTimelineEntry === 'review' || lastTimelineEntry === 'ignore') {
           continue;
         }

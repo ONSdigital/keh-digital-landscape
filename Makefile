@@ -91,29 +91,17 @@ build-docs: 		## Build the documentation site via MkDocs
 ## 
 
 .PHONY: test-unit
-test-unit: assert-node-version			## Run unit tests for both frontend and backend
+test-unit:		## Run unit tests for both frontend and backend
 	cd backend && npm test
 	cd frontend && npm test
 
 .PHONY: test-unit-frontend
-test-unit-frontend: assert-node-version		## Run unit tests for the frontend only
+test-unit-frontend:	## Run unit tests for the frontend only
 	cd frontend && npm test
 
 .PHONY: test-unit-backend
-test-unit-backend: assert-node-version		## Run unit tests for the backend only
+test-unit-backend:	## Run unit tests for the backend only
 	cd backend && npm test
-
-# This target is uncommented so it stays hidden from the default `make` output.
-# This command is used to help the unit test suites check for the correct Node.js
-# version is used so tests do not fail due to version incompatibilities.
-.PHONY: assert-node-version
-assert-node-version:
-	@echo "Current Node.js version: $$(node -v)"
-	@if [ "$$(node -v | cut -c1-3)" != "v24" ]; then \
-		echo "Error: Node.js version 24 is required. Please install the correct version." >&2; \
-		echo "Instructions can be found in the README.md file under Prerequisites." >&2; \
-		exit 1; \
-	fi
 
 ## 
 
