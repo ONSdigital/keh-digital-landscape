@@ -293,8 +293,8 @@ const InfoBox = ({
           </button>
         </div>
         <p>
-          Click a date box below to read reasoning behind status
-          changes over time
+          Click a date box below to read reasoning behind status changes over
+          time
         </p>
       </div>
 
