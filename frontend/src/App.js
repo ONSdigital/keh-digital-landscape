@@ -32,6 +32,10 @@ const App = () => {
       <Route path="/radar" element={<Radar />} />
       <Route path="/statistics" element={<Statistics />} />
       <Route path="/projects" element={<Projects />} />
+      <Route
+        path="/copilot/team"
+        element={<Navigate to="/copilot/org/historic" replace />}
+      />
       <Route path="/addressbook" element={<AddressBookPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
       <Route

@@ -1,4 +1,3 @@
-const s3Service = require('../services/s3Service');
 const logger = require('../config/logger');
 
 // Cache the FULL teams_history.json data
@@ -11,7 +10,7 @@ const TEAMS_CACHE_TTL = 60 * 60 * 1000; // 1 hour
  * @param {string} bucketName - The S3 bucket name
  * @returns {Promise<Array>} Full teams historic data array
  */
-async function getTeamsHistoricDataWithCache(bucketName) {
+async function getTeamsHistoricDataWithCache() {
   const now = Date.now();
 
   if (teamsHistoricDataCache && teamsHistoricDataCacheTimestamp) {
@@ -26,10 +25,8 @@ async function getTeamsHistoricDataWithCache(bucketName) {
   }
 
   // Fetch and cache the full data
-  teamsHistoricDataCache = await s3Service.getObject(
-    bucketName,
-    'teams_history.json'
-  );
+  // TODO: Implement S3 call to get teams historic data once aggregated teams usage data is collected again
+  teamsHistoricDataCache = {};
   teamsHistoricDataCacheTimestamp = now;
   logger.info('Cached ${teamsHistoricDataCache.length} teams');
 

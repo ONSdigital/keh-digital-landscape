@@ -10,8 +10,10 @@ const { getTeamsHistoricDataWithCache } = require('./teamsHistoricCache');
  */
 async function getCopilotTeamsWithCache(bucketName) {
   const teamsHistoricData = await getTeamsHistoricDataWithCache(bucketName);
-  // Extract just the team metadata (name, slug, url, description)
-  return teamsHistoricData.map(entry => entry.team);
+
+  // TODO: Implement this once aggregated teams usage data is collected again
+  // Returns array of team slugs ideally with metadata
+  return teamsHistoricData;
 }
 
 /**

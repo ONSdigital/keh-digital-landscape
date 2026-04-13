@@ -78,10 +78,7 @@ router.get('/teams/historic', async (req, res) => {
       filteredData = fullData;
     } else {
       // Non-admin can only see data for their own teams
-      const userTeamSlugs = adminStatus.userTeamSlugs;
-      filteredData = fullData.filter(teamEntry =>
-        userTeamSlugs.includes(teamEntry.team?.slug)
-      );
+      // TODO: Implement this section once aggregated teams usage data is collected again
     }
 
     res.json(filteredData);
