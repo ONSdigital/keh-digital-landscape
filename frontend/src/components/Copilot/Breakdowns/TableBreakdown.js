@@ -1,21 +1,7 @@
 import React, { useMemo, useRef } from 'react';
-import {
-  ClientSideRowModelModule,
-  PaginationModule,
-  TextFilterModule,
-  NumberFilterModule,
-  ModuleRegistry,
-} from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import { getCellRenderers } from '../../../utilities/getCellRenderers';
-
-ModuleRegistry.registerModules([
-  ClientSideRowModelModule,
-  PaginationModule,
-  TextFilterModule,
-  NumberFilterModule,
-]);
 
 function TableBreakdown({
   data,
@@ -70,7 +56,6 @@ function TableBreakdown({
           headerName: headerMap[key] || key,
           sortable: true,
           valueFormatter: params => {
-            // Find corresponding display value
             return params.data.lastActivityDisplay;
           },
         };
@@ -95,7 +80,6 @@ function TableBreakdown({
     return <p>No data available.</p>;
   }
 
-  // Generate unique aria-label based on context
   const generateAriaLabel = () => {
     if (tableContext) {
       return `${tableContext} - ${idHeader || 'data'} table`;
