@@ -27,7 +27,7 @@ testing/
 ```
 
 | Path         | Description                                       |
-|--------------|---------------------------------------------------|
+| ------------ | ------------------------------------------------- |
 | `backend/`   | The Node.js Express API.                          |
 | `frontend/`  | The React.js frontend application.                |
 | `concourse/` | Concourse CI pipeline configurations and scripts. |

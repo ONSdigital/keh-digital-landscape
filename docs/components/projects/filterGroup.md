@@ -46,8 +46,8 @@ function FilterableList() {
   });
 
   // Toggle section expansion
-  const toggleSection = (section) => {
-    setExpandedSections((prev) => ({
+  const toggleSection = section => {
+    setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section],
     }));
@@ -55,11 +55,13 @@ function FilterableList() {
 
   // Handle filter changes
   const handleFilterChange = (category, value) => {
-    setFilters((prevFilters) => {
+    setFilters(prevFilters => {
       const updatedFilters = { ...prevFilters };
 
       if (updatedFilters[category].includes(value)) {
-        updatedFilters[category] = updatedFilters[category].filter((item) => item !== value);
+        updatedFilters[category] = updatedFilters[category].filter(
+          item => item !== value
+        );
       } else {
         updatedFilters[category] = [...updatedFilters[category], value];
       }
