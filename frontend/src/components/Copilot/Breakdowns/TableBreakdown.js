@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import { getCellRenderers } from '../../../utilities/getCellRenderers';
 
+// Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TableBreakdown({
@@ -59,7 +60,6 @@ function TableBreakdown({
           headerName: headerMap[key] || key,
           sortable: true,
           valueFormatter: params => {
-            // Find corresponding display value
             return params.data.lastActivityDisplay;
           },
         };
@@ -84,7 +84,6 @@ function TableBreakdown({
     return <p>No data available.</p>;
   }
 
-  // Generate unique aria-label based on context
   const generateAriaLabel = () => {
     if (tableContext) {
       return `${tableContext} - ${idHeader || 'data'} table`;

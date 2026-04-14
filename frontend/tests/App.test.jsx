@@ -33,35 +33,60 @@ vi.mock(
   { virtual: true }
 );
 
+// Mock getDirectorates to prevent fetch during module-level await
+vi.mock('../src/utilities/getDirectorates', () => ({
+  getDirectorates: vi
+    .fn()
+    .mockResolvedValue([
+      { id: 0, name: 'Test', colour: '#000', default: true, enabled: true },
+    ]),
+}));
+
 import App from '../src/App';
 
 describe('App', () => {
   it('renders the Home page', async () => {
-    render(
-      <ThemeProvider>
-        <MemoryRouter initialEntries={['/']}>
-          <App />
-        </MemoryRouter>
-      </ThemeProvider>
-    );
-    expect(screen.getByText(/Home/i)).toBeInTheDocument();
-    expect(screen.getByText(/Restricted/i)).toBeInTheDocument();
+    await act(async () => {
+      render(
+        <ThemeProvider>
+          <MemoryRouter initialEntries={['/']}>
+            <App />
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+    });
+    expect(
+      await screen.findByText(/Home/i, {}, { timeout: 3000 })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Restricted/i, {}, { timeout: 3000 })
+    ).toBeInTheDocument();
   });
 
   it('shows the "Report a Bug" link and can be clicked to the Report Bug information', async () => {
-    render(
-      <ThemeProvider>
-        <MemoryRouter initialEntries={['/']}>
-          <App />
-        </MemoryRouter>
-      </ThemeProvider>
+    await act(async () => {
+      render(
+        <ThemeProvider>
+          <MemoryRouter initialEntries={['/']}>
+            <App />
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+    });
+    const reportBugLink = await screen.findByText(
+      /Report a bug/i,
+      {},
+      { timeout: 3000 }
     );
-    const reportBugLink = await screen.findByText(/Report a bug/i);
     await act(() => {
       userEvent.click(reportBugLink);
     });
     expect(
-      await screen.findByText(/You will be redirected to GitHub/i)
+      await screen.findByText(
+        /You will be redirected to GitHub/i,
+        {},
+        { timeout: 3000 }
+      )
     ).toBeInTheDocument();
   });
 });
