@@ -1,10 +1,21 @@
 import React, { useMemo, useRef } from 'react';
-import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import {
+  ClientSideRowModelModule,
+  PaginationModule,
+  TextFilterModule,
+  NumberFilterModule,
+  ModuleRegistry,
+} from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import { getCellRenderers } from '../../../utilities/getCellRenderers';
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  PaginationModule,
+  TextFilterModule,
+  NumberFilterModule,
+]);
 
 function TableBreakdown({
   data,
