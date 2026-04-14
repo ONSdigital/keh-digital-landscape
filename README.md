@@ -101,7 +101,7 @@ To run the project locally, do the following:
    ```
 
 2. Export the required environment variables
-   
+
    ```bash
    # AWS
    export AWS_ACCESS_KEY_ID=<your_access_key>
@@ -116,7 +116,7 @@ To run the project locally, do the following:
    export GITHUB_ORG=<your_github_organisation>
    ```
 
-   Alternatively, you can use the `.env.example` files. Copy the `.env.example` files to `.env` in both the frontend and backend directories and fill in the values. 
+   Alternatively, you can use the `.env.example` files. Copy the `.env.example` files to `.env` in both the frontend and backend directories and fill in the values.
 
    **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
 
@@ -224,16 +224,16 @@ try {
 
 #### Allowlisting your IP
 
-To setup the deployment pipeline with concourse, you must first allowlist your IP address on the Concourse server. IP addresses are flushed everyday at 00:00 so this must be done at the beginning of every working day whenever the deployment pipeline needs to be used. 
+To setup the deployment pipeline with concourse, you must first allowlist your IP address on the Concourse server. IP addresses are flushed everyday at 00:00 so this must be done at the beginning of every working day whenever the deployment pipeline needs to be used.
 
-Instructions on this are available within **KEH's Confluence Space**. 
+Instructions on this are available within **KEH's Confluence Space**.
 
 All pipelines run within the `sdp-pipeline-prod` AWS account, whereas `sdp-pipeline-dev` is the account used for testing changes to the Concourse instance itself (i.e. configuration changes, not pipeline changes).
 
 #### Setting up a pipeline
 
 Our pipelines use the `ecs-infra-user` IAM user within AWS to interact with our infrastructure.
-Credentials/secrets for pipelines are stored within AWS Secrets Manager on the `sdp-pipeline-prod` account, so you do not need to set up anything yourself. 
+Credentials/secrets for pipelines are stored within AWS Secrets Manager on the `sdp-pipeline-prod` account, so you do not need to set up anything yourself.
 
 To set the pipeline, run the following script:
 
@@ -244,11 +244,11 @@ chmod u+x ./concourse/scripts/set_pipeline.sh
 
 **Note:** You only have to run `chmod` the first time running the script in order to give permissions.
 
-This script will set the branch and pipeline name to whatever branch you are currently on. 
+This script will set the branch and pipeline name to whatever branch you are currently on.
 It will also set the image tag on ECR to 7 characters of the current branch name if running on a branch other than `main`.
 For `main`, the ECR tag will be the latest release tag on the repository that has semantic versioning(vX.Y.Z).
 
-The pipeline name itself will usually follow a pattern as follows: 
+The pipeline name itself will usually follow a pattern as follows:
 
 - `digital-landscape-<branch-name>` for any non-main branch.
   - When following our branching strategy, pipelines are normally postfixed with the Jira ticket number, e.g. `digital-landscape-KEH-1234`.
@@ -331,10 +331,9 @@ export AWS_SECRET_ACCESS_KEY=<your_secret_key>
 With the image updated in ECR, the Terraform configuration can be applied. Navigate to the `terraform/service` directory and do the following:
 
 1. Fill out `.tfvars` files.
-
    - `env/dev/dev.tfvars` for dev environment.
    - `env/prod/prod.tfvars` for prod environment.
- 
+
    These files can be created based on the respective `example_tfvars.txt` files in the same directories.
 
    **Note:** Do not commit the `.tfvars` files to the repository and do not put the secrets in the `example_tfvars.txt` files.
@@ -357,7 +356,7 @@ With the image updated in ECR, the Terraform configuration can be applied. Navig
    terraform apply -var-file=env/<environment>/<environment>.tfvars
    ```
 
-**Note:** Replace `<environment>` with either `dev` or `prod` depending on which environment you are deploying to. 
+**Note:** Replace `<environment>` with either `dev` or `prod` depending on which environment you are deploying to.
 
 **Manual production deployments should only be done via Concourse, unless absolutely necessary.**
 
@@ -375,7 +374,7 @@ This workflow is located at `.github/workflows/ci-docs.yml`.
 
 To run the documentation locally:
 
-1. Create and activate a Python virtual environment __(optional but recommended)__:
+1. Create and activate a Python virtual environment **(optional but recommended)**:
 
    ```bash
    python -m venv venv
@@ -388,7 +387,7 @@ To run the documentation locally:
    make install-docs
    ```
 
-  **Note:** This will install the dependencies for MkDocs and any MkDocs plugins we use. If a virtual environment is not activated, poetry will configure its own virtual environment.
+   **Note:** This will install the dependencies for MkDocs and any MkDocs plugins we use. If a virtual environment is not activated, poetry will configure its own virtual environment.
 
 3. Run the MkDocs development server.
 

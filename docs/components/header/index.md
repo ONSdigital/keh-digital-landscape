@@ -25,12 +25,12 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  const handleSearchChange = (term) => {
+  const handleSearchChange = term => {
     setSearchTerm(term);
     // Perform search and update results
   };
 
-  const handleSearchResultClick = (result) => {
+  const handleSearchResultClick = result => {
     // Handle result selection
   };
 

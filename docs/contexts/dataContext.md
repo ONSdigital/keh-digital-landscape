@@ -39,12 +39,12 @@ const { getTechRadarData, getCsvData } = useData();
 
 // Fetches and caches tech radar data
 useEffect(() => {
-  getTechRadarData().then((data) => setData(data));
+  getTechRadarData().then(data => setData(data));
 }, [getTechRadarData]);
 
 // Fetches and caches project data
 useEffect(() => {
-  getCsvData().then((data) => setProjectsData(data));
+  getCsvData().then(data => setProjectsData(data));
 }, [getCsvData]);
 ```
 

@@ -8,6 +8,7 @@ import {
   extractTeamData,
 } from '../utilities/getUsageData';
 import PageBanner from '../components/PageBanner/PageBanner';
+import '../styles/ReviewPage.css';
 import '../styles/CopilotPage.css';
 import { useData } from '../contexts/dataContext';
 import {
@@ -29,10 +30,10 @@ function CopilotDashboard() {
   const [searchParams] = useSearchParams();
 
   const initialiseDateRange = data => {
-    const end = data[data.length - 1]?.date
-      ? new Date(data[data.length - 1].date)
+    const end = data[data.length - 1]?.day
+      ? new Date(data[data.length - 1].day)
       : new Date();
-    const start = data[0]?.date ? new Date(data[0].date) : new Date();
+    const start = data[0]?.day ? new Date(data[0].day) : new Date();
 
     return {
       start: start.toISOString().slice(0, 10),
@@ -465,7 +466,7 @@ function CopilotDashboard() {
                               onChange={e =>
                                 handleDateChange('start', e.target.value)
                               }
-                              min={data?.allUsage?.[0]?.date}
+                              min={data?.allUsage?.[0]?.day}
                               max={endDate}
                               aria-label="Start date for data range"
                             />
@@ -492,7 +493,7 @@ function CopilotDashboard() {
                               }
                               min={startDate}
                               max={
-                                data?.allUsage?.[data.allUsage.length - 1]?.date
+                                data?.allUsage?.[data.allUsage.length - 1]?.day
                               }
                               aria-label="End date for data range"
                             />

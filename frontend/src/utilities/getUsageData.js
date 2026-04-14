@@ -61,7 +61,7 @@ export const filterUsageData = (data, startDate, endDate) => {
   const end = new Date(endDate);
 
   return data.filter(item => {
-    const itemDate = new Date(item.date);
+    const itemDate = new Date(item.day);
     return itemDate >= start && itemDate <= end;
   });
 };
@@ -87,6 +87,23 @@ const getGroupedDate = (dateStr, groupBy) => {
   }
 };
 
+const CHAT_MODES = [
+  'chat_panel_agent_mode',
+  'chat_panel_ask_mode',
+  'chat_panel_edit_mode',
+  'chat_panel_plan_mode',
+  'chat_panel_custom_mode',
+  'chat_panel_unknown_mode',
+  'chat_inline',
+];
+
+const ENGAGED_USERS_FIELD = {
+  day: 'daily_active_users',
+  week: 'weekly_active_users',
+  month: 'monthly_active_users',
+  year: 'monthly_active_users',
+};
+
 /**
  * Process usage data in a format suitable for dashboard display
  *
@@ -101,166 +118,197 @@ export const processUsageData = (data, groupBy = 'day') => {
     totalLinesSuggested: 0,
     totalLinesAccepted: 0,
     perGroupedPeriod: [],
-    engagedUsersByLanguage: {},
-    engagedUsersByEditor: {},
-    languageBreakdown: {},
   };
 
   const chat = {
     totalChats: 0,
-    totalInsertions: 0,
-    totalCopies: 0,
+    totalLinesSuggested: 0,
+    totalLinesAdded: 0,
+    totalLineAcceptanceRate: 0,
     perGroupedPeriod: [],
-    engagedUsersByEditor: {},
-    editorBreakdown: {},
+    modeBreakdown: {},
   };
 
-  if (!data || !data.length) return { completions, chat };
+  // Computed for future display — not yet rendered in the UI
+  const agentEdit = {
+    totalLinesAdded: 0,
+    totalLinesDeleted: 0,
+    totalAgentSessions: 0,
+    perGroupedPeriod: [],
+  };
+
+  // Language breakdown is provided for all features
+  const languageBreakdown = {};
+
+  if (!data || !data.length)
+    return { completions, chat, agentEdit, languageBreakdown };
+
+  const engagedUsersField =
+    ENGAGED_USERS_FIELD[groupBy] ?? 'daily_active_users';
 
   const completionsPerDate = {};
   const chatPerDate = {};
+  const agentEditPerDate = {};
 
   data.forEach(entry => {
-    const rawDate = entry.date;
+    const rawDate = entry.day;
     const groupDate = getGroupedDate(rawDate, groupBy);
 
+    // Initialise per-date buckets before the feature loop
+    if (!completionsPerDate[groupDate]) {
+      completionsPerDate[groupDate] = {
+        date: groupDate,
+        suggestions: 0,
+        acceptances: 0,
+        engagedUsers: 0,
+        monthlyValues: [],
+      };
+    }
+    if (!chatPerDate[groupDate]) {
+      chatPerDate[groupDate] = {
+        date: groupDate,
+        linesSuggested: 0,
+        linesAdded: 0,
+      };
+    }
+    if (!agentEditPerDate[groupDate]) {
+      agentEditPerDate[groupDate] = {
+        date: groupDate,
+        linesAdded: 0,
+        linesDeleted: 0,
+        agentSessions: 0,
+      };
+    }
+
     // === COMPLETIONS ===
-    const ide = entry.copilot_ide_code_completions;
-    const completionsEngagedUsers = ide.total_engaged_users ?? 0;
-    if (ide?.editors) {
-      let dailySuggestions = 0;
-      let dailyAcceptances = 0;
-      let dailyLinesSuggested = 0;
-      let dailyLinesAccepted = 0;
+    const completionFeature =
+      entry.totals_by_feature?.find(f => f.feature === 'code_completion') ?? {};
+    const dailySuggestions =
+      completionFeature.code_generation_activity_count ?? 0;
+    const dailyAcceptances =
+      completionFeature.code_acceptance_activity_count ?? 0;
+    const dailyLinesSuggested = completionFeature.loc_suggested_to_add_sum ?? 0;
+    const dailyLinesAccepted = completionFeature.loc_added_sum ?? 0;
 
-      ide.editors.forEach(editor => {
-        const editorName = editor.name;
+    completions.totalSuggestions += dailySuggestions;
+    completions.totalAcceptances += dailyAcceptances;
+    completions.totalLinesSuggested += dailyLinesSuggested;
+    completions.totalLinesAccepted += dailyLinesAccepted;
 
-        completions.engagedUsersByEditor[editorName] =
-          (completions.engagedUsersByEditor[editorName] || 0) +
-          (editor.total_engaged_users ?? 0);
-
-        editor.models?.forEach(model => {
-          model.languages?.forEach(lang => {
-            const langName = lang.name;
-            const suggestions = lang.total_code_suggestions ?? 0;
-            const acceptances = lang.total_code_acceptances ?? 0;
-            const linesSuggested = lang.total_code_lines_suggested ?? 0;
-            const linesAccepted = lang.total_code_lines_accepted ?? 0;
-            const engagedUsers = lang.total_engaged_users ?? 0;
-
-            dailySuggestions += suggestions;
-            dailyAcceptances += acceptances;
-            dailyLinesSuggested += linesSuggested;
-            dailyLinesAccepted += linesAccepted;
-
-            if (!completions.languageBreakdown[langName]) {
-              completions.languageBreakdown[langName] = {
-                suggestions: 0,
-                acceptances: 0,
-                linesSuggested: 0,
-                linesAccepted: 0,
-              };
-            }
-
-            completions.languageBreakdown[langName].suggestions += suggestions;
-            completions.languageBreakdown[langName].acceptances += acceptances;
-            completions.languageBreakdown[langName].linesSuggested +=
-              linesSuggested;
-            completions.languageBreakdown[langName].linesAccepted +=
-              linesAccepted;
-
-            completions.engagedUsersByLanguage[langName] =
-              (completions.engagedUsersByLanguage[langName] || 0) +
-              engagedUsers;
-          });
-        });
-      });
-
-      if (!completionsPerDate[groupDate]) {
-        completionsPerDate[groupDate] = {
-          date: groupDate,
-          acceptances: 0,
-          suggestions: 0,
-          engagedUsers: 0,
-        };
-      }
-      completionsPerDate[groupDate].acceptances += dailyAcceptances;
-      completionsPerDate[groupDate].suggestions += dailySuggestions;
-      completionsPerDate[groupDate].engagedUsers += completionsEngagedUsers;
-
-      completions.totalSuggestions += dailySuggestions;
-      completions.totalAcceptances += dailyAcceptances;
-      completions.totalLinesSuggested += dailyLinesSuggested;
-      completions.totalLinesAccepted += dailyLinesAccepted;
+    completionsPerDate[groupDate].suggestions += dailySuggestions;
+    completionsPerDate[groupDate].acceptances += dailyAcceptances;
+    completionsPerDate[groupDate].engagedUsers = entry[engagedUsersField] ?? 0;
+    if (groupBy === 'year') {
+      completionsPerDate[groupDate].monthlyValues.push(
+        entry[engagedUsersField] ?? 0
+      );
     }
 
     // === CHAT ===
-    const ideChat = entry.copilot_ide_chat;
-    const chatEngagedUsers = ideChat.total_engaged_users ?? 0;
-    if (ideChat?.editors) {
-      let dailyChats = 0;
-      let dailyInsertions = 0;
-      let dailyCopies = 0;
+    entry.totals_by_feature
+      ?.filter(f => CHAT_MODES.includes(f.feature))
+      .forEach(f => {
+        const dailyChatLinesSuggested = f.loc_suggested_to_add_sum ?? 0;
+        const dailyChatLinesAdded = f.loc_added_sum ?? 0;
 
-      ideChat.editors.forEach(editor => {
-        const editorName = editor.name;
+        chat.totalChats += f.user_initiated_interaction_count ?? 0;
+        chat.totalLinesSuggested += dailyChatLinesSuggested;
+        chat.totalLinesAdded += dailyChatLinesAdded;
 
-        chat.engagedUsersByEditor[editorName] =
-          (chat.engagedUsersByEditor[editorName] || 0) +
-          (editor.total_engaged_users ?? 0);
+        chatPerDate[groupDate].linesSuggested += dailyChatLinesSuggested;
+        chatPerDate[groupDate].linesAdded += dailyChatLinesAdded;
 
-        editor.models?.forEach(model => {
-          const chats = model.total_chats ?? 0;
-          const insertions = model.total_chat_insertion_events ?? 0;
-          const copies = model.total_chat_copy_events ?? 0;
-
-          dailyChats += chats;
-          dailyInsertions += insertions;
-          dailyCopies += copies;
-
-          if (!chat.editorBreakdown[editorName]) {
-            chat.editorBreakdown[editorName] = {
-              chats: 0,
-              insertions: 0,
-              copies: 0,
-              insertionRate: 0,
-              copyRate: 0,
-            };
-          }
-
-          chat.editorBreakdown[editorName].chats += chats;
-          chat.editorBreakdown[editorName].insertions += insertions;
-          chat.editorBreakdown[editorName].copies += copies;
-        });
+        if (!chat.modeBreakdown[f.feature]) {
+          chat.modeBreakdown[f.feature] = {
+            interactions: 0,
+            codeGenerated: 0,
+            codeAccepted: 0,
+            linesSuggested: 0,
+            linesAdded: 0,
+          };
+        }
+        chat.modeBreakdown[f.feature].interactions +=
+          f.user_initiated_interaction_count ?? 0;
+        chat.modeBreakdown[f.feature].codeGenerated +=
+          f.code_generation_activity_count ?? 0;
+        chat.modeBreakdown[f.feature].codeAccepted +=
+          f.code_acceptance_activity_count ?? 0;
+        chat.modeBreakdown[f.feature].linesSuggested += dailyChatLinesSuggested;
+        chat.modeBreakdown[f.feature].linesAdded += dailyChatLinesAdded;
       });
 
-      if (!chatPerDate[groupDate]) {
-        chatPerDate[groupDate] = {
-          date: groupDate,
-          engagedUsers: 0,
-        };
-      }
-      chatPerDate[groupDate].engagedUsers += chatEngagedUsers;
+    // === AGENT EDIT (computed, not yet displayed) ===
+    const agentEditFeature =
+      entry.totals_by_feature?.find(f => f.feature === 'agent_edit') ?? {};
+    const dailyAgentAdded = agentEditFeature.loc_added_sum ?? 0;
+    const dailyAgentDeleted = agentEditFeature.loc_deleted_sum ?? 0;
+    const dailyAgentSessions =
+      agentEditFeature.code_generation_activity_count ?? 0;
 
-      chat.totalChats += dailyChats;
-      chat.totalInsertions += dailyInsertions;
-      chat.totalCopies += dailyCopies;
-    }
+    agentEdit.totalLinesAdded += dailyAgentAdded;
+    agentEdit.totalLinesDeleted += dailyAgentDeleted;
+    agentEdit.totalAgentSessions += dailyAgentSessions;
+
+    agentEditPerDate[groupDate].linesAdded += dailyAgentAdded;
+    agentEditPerDate[groupDate].linesDeleted += dailyAgentDeleted;
+    agentEditPerDate[groupDate].agentSessions += dailyAgentSessions;
+
+    // === LANGUAGE BREAKDOWN (computed, not yet displayed) ===
+    entry.totals_by_language_feature?.forEach(item => {
+      languageBreakdown[item.feature] ??= {};
+      languageBreakdown[item.feature][item.language] ??= {
+        suggestions: 0,
+        acceptances: 0,
+        linesSuggested: 0,
+        linesAccepted: 0,
+        linesDeleted: 0,
+      };
+      const b = languageBreakdown[item.feature][item.language];
+      b.suggestions += item.code_generation_activity_count ?? 0;
+      b.acceptances += item.code_acceptance_activity_count ?? 0;
+      b.linesSuggested += item.loc_suggested_to_add_sum ?? 0;
+      b.linesAccepted += item.loc_added_sum ?? 0;
+      b.linesDeleted += item.loc_deleted_sum ?? 0;
+    });
   });
 
-  // Finalise per grouped period arrays
-  completions.perGroupedPeriod = Object.values(completionsPerDate).map(day => ({
-    date: day.date,
-    acceptances: day.acceptances,
-    engagedUsers: day.engagedUsers,
-    acceptanceRate:
-      day.suggestions > 0 ? (day.acceptances / day.suggestions) * 100 : 0,
-  }));
+  // Build perGroupedPeriod arrays
+  completions.perGroupedPeriod = Object.values(completionsPerDate)
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(day => {
+      const engagedUsers =
+        groupBy === 'year' && day.monthlyValues.length > 0
+          ? Math.round(
+              day.monthlyValues.reduce((s, v) => s + v, 0) /
+                day.monthlyValues.length
+            )
+          : day.engagedUsers;
+      return {
+        date: day.date,
+        acceptances: day.acceptances,
+        acceptanceRate:
+          day.suggestions > 0 ? (day.acceptances / day.suggestions) * 100 : 0,
+        engagedUsers,
+      };
+    });
 
-  chat.perGroupedPeriod = Object.values(chatPerDate);
+  chat.perGroupedPeriod = Object.values(chatPerDate)
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(day => ({
+      date: day.date,
+      linesSuggested: day.linesSuggested,
+      linesAdded: day.linesAdded,
+      lineAcceptanceRate:
+        day.linesSuggested > 0
+          ? (day.linesAdded / day.linesSuggested) * 100
+          : 0,
+    }));
 
-  // Final calculations
+  agentEdit.perGroupedPeriod = Object.values(agentEditPerDate).sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  // Derived rates
   completions.acceptanceRate =
     completions.totalSuggestions > 0
       ? completions.totalAcceptances / completions.totalSuggestions
@@ -271,17 +319,10 @@ export const processUsageData = (data, groupBy = 'day') => {
       ? completions.totalLinesAccepted / completions.totalLinesSuggested
       : 0;
 
-  chat.insertionRate =
-    chat.totalChats > 0 ? chat.totalInsertions / chat.totalChats : 0;
+  chat.totalLineAcceptanceRate =
+    chat.totalLinesSuggested > 0
+      ? chat.totalLinesAdded / chat.totalLinesSuggested
+      : 0;
 
-  chat.copyRate = chat.totalChats > 0 ? chat.totalCopies / chat.totalChats : 0;
-
-  Object.entries(chat.editorBreakdown).forEach(([editorName, breakdown]) => {
-    breakdown.insertionRate =
-      breakdown.chats > 0 ? breakdown.insertions / breakdown.chats : 0;
-    breakdown.copyRate =
-      breakdown.chats > 0 ? breakdown.copies / breakdown.chats : 0;
-  });
-
-  return { completions, chat };
+  return { completions, chat, agentEdit, languageBreakdown };
 };

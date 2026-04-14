@@ -21,31 +21,25 @@ function ChatCards({ chats, prefix, divider = 1 }) {
         </p>
       </div>
       <div className="stat-card">
-        <h2>{prefix} Insertions</h2>
+        <h2>{prefix} Lines Suggested</h2>
         <p>
           {formatNumberWithCommas(
-            Math.round((chats?.totalInsertions ?? 0) / divider)
+            Math.round((chats?.totalLinesSuggested ?? 0) / divider)
           )}
         </p>
       </div>
-      {prefix !== 'Average' && (
-        <div className="stat-card">
-          <h2>{prefix} Insertion Rate</h2>
-          <p>{getPercentage(chats?.insertionRate ?? 0)}</p>
-        </div>
-      )}
       <div className="stat-card">
-        <h2>{prefix} Copies</h2>
+        <h2>{prefix} Lines Added</h2>
         <p>
           {formatNumberWithCommas(
-            Math.round((chats?.totalCopies ?? 0) / divider)
+            Math.round((chats?.totalLinesAdded ?? 0) / divider)
           )}
         </p>
       </div>
       {prefix !== 'Average' && (
         <div className="stat-card">
-          <h2>{prefix} Copy Rate</h2>
-          <p>{getPercentage(chats?.copyRate ?? 0)}</p>
+          <h2>{prefix} Line Acceptance Rate</h2>
+          <p>{getPercentage(chats?.totalLineAcceptanceRate ?? 0)}</p>
         </div>
       )}
     </div>

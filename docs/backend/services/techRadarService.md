@@ -162,7 +162,7 @@ function validateEntry(entry) {
 ```javascript
 function checkForDuplicates(entries, newEntry) {
   const duplicate = entries.find(
-    (entry) =>
+    entry =>
       entry.name.toLowerCase() === newEntry.name.toLowerCase() &&
       entry.quadrant === newEntry.quadrant
   );
@@ -181,7 +181,10 @@ The service seamlessly integrates with S3 storage:
 
 ```javascript
 // Retrieve current radar data
-const radarData = await s3Service.getObject(s3Service.getMainBucket(), 'tech-radar-data.json');
+const radarData = await s3Service.getObject(
+  s3Service.getMainBucket(),
+  'tech-radar-data.json'
+);
 ```
 
 ### Data Persistence
@@ -214,12 +217,12 @@ async function getTechnologySummary() {
   try {
     const radarData = await techRadarService.getTechRadarData();
 
-    const summary = radarData.quadrants.map((quadrant) => ({
+    const summary = radarData.quadrants.map(quadrant => ({
       name: quadrant.name,
       totalTechnologies: quadrant.items.length,
-      newTechnologies: quadrant.items.filter((item) => item.isNew).length,
-      adoptRing: quadrant.items.filter((item) => item.ring === 'adopt').length,
-      trialRing: quadrant.items.filter((item) => item.ring === 'trial').length,
+      newTechnologies: quadrant.items.filter(item => item.isNew).length,
+      adoptRing: quadrant.items.filter(item => item.ring === 'adopt').length,
+      trialRing: quadrant.items.filter(item => item.ring === 'trial').length,
     }));
 
     return summary;
@@ -254,10 +257,10 @@ async function bulkUpdateTechnologies(entries) {
 ```javascript
 async function searchTechnologies(searchTerm) {
   const radarData = await techRadarService.getTechRadarData();
-  const allTechnologies = radarData.quadrants.flatMap((q) => q.items);
+  const allTechnologies = radarData.quadrants.flatMap(q => q.items);
 
   return allTechnologies.filter(
-    (tech) =>
+    tech =>
       tech.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tech.description.toLowerCase().includes(searchTerm.toLowerCase())
   );

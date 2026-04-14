@@ -38,7 +38,7 @@ router.get('/org/historic', async (req, res) => {
   try {
     const data = await s3Service.getObjectViaSignedUrl(
       'copilot',
-      'historic_usage_data.json'
+      'organisation_history.json'
     );
     res.json(data);
   } catch (error) {

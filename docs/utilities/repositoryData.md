@@ -9,7 +9,11 @@ The utility exports a primary function:
 ### fetchRepositoryData
 
 ```javascript
-export const fetchRepositoryData = async (repositories, date = null, archived = null) => {
+export const fetchRepositoryData = async (
+  repositories,
+  date = null,
+  archived = null
+) => {
   // Implementation details
 };
 ```

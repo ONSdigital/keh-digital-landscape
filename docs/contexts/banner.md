@@ -21,7 +21,10 @@ import { useBanner } from '../contexts/banner';
 
 function MyComponent() {
   // Parameters: message text, unique local storage key
-  useBanner('Welcome to our application! This is an important announcement.', 'welcome-banner');
+  useBanner(
+    'Welcome to our application! This is an important announcement.',
+    'welcome-banner'
+  );
 
   return <div>{/* Your component content */}</div>;
 }
