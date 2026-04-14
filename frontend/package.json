@@ -13,6 +13,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "ag-grid-react": "^35.0.0",
     "date-fns": "^4.1.0",
+    "follow-redirects": "^1.16.0",
     "http-proxy-middleware": "^2.0.6",
     "papaparse": "^5.4.1",
     "react": "^18.3.1",
