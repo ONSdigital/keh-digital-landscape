@@ -7,7 +7,6 @@
     "@aws-sdk/client-secrets-manager": "^3.982.0",
     "@aws-sdk/s3-request-presigner": "^3.982.0",
     "@octokit/app": "^15.1.6",
-    "@octokit/core": "^6.1.5",
     "@octokit/rest": "^22.0.0",
     "aws-jwt-verify": "^5.1.0",
     "compression": "^1.7.4",
@@ -17,7 +16,6 @@
     "express": "^5.2.1",
     "express-rate-limit": "^7.5.0",
     "node-fetch": "^3.3.2",
-    "papaparse": "^5.4.1",
     "winston": "^3.17.0",
     "winston-cloudwatch": "^6.3.0"
   },
@@ -41,7 +39,6 @@
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.37.0",
     "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.1.8",
     "globals": "^16.4.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.2.5",
