@@ -1,7 +1,11 @@
 import React, { useMemo, useRef } from 'react';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import { getCellRenderers } from '../../../utilities/getCellRenderers';
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 function TableBreakdown({
   data,
