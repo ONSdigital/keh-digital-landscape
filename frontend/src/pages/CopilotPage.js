@@ -8,6 +8,7 @@ import {
   extractTeamData,
 } from '../utilities/getUsageData';
 import PageBanner from '../components/PageBanner/PageBanner';
+import '../styles/ReviewPage.css';
 import '../styles/CopilotPage.css';
 import { useData } from '../contexts/dataContext';
 import {
