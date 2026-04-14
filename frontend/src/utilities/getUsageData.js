@@ -137,7 +137,7 @@ export const processUsageData = (data, groupBy = 'day') => {
     perGroupedPeriod: [],
   };
 
-  // Language breakdown is provided for all features 
+  // Language breakdown is provided for all features
   const languageBreakdown = {};
 
   if (!data || !data.length)
