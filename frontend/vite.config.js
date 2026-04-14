@@ -39,6 +39,17 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-aws': ['@aws-sdk/client-s3', '@aws-sdk/credential-provider-node', '@aws-sdk/credential-providers', '@aws-sdk/s3-request-presigner'],
+          'vendor-charts': ['recharts'],
+          'vendor-grid': ['ag-grid-react'],
+          'vendor-icons': ['react-icons'],
+        },
+      },
+    },
   },
   define: {
     global: 'globalThis',

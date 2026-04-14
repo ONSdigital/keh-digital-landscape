@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Radar from './pages/RadarPage';
-import Statistics from './pages/StatisticsPage';
-import Home from './pages/HomePage';
-import Projects from './pages/ProjectsPage';
-import ReviewDashboard from './pages/ReviewPage';
-import AdminPage from './pages/AdminPage';
-import AddressBookPage from './pages/AddressBookPage';
-import CopilotDashboard from './pages/CopilotPage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+
+const Home = lazy(() => import('./pages/HomePage'));
+const Radar = lazy(() => import('./pages/RadarPage'));
+const Statistics = lazy(() => import('./pages/StatisticsPage'));
+const Projects = lazy(() => import('./pages/ProjectsPage'));
+const ReviewDashboard = lazy(() => import('./pages/ReviewPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const AddressBookPage = lazy(() => import('./pages/AddressBookPage'));
+const CopilotDashboard = lazy(() => import('./pages/CopilotPage'));
 
 import { getDirectorates } from './utilities/getDirectorates';
 
@@ -27,6 +28,7 @@ if (defaultDirectorate) {
 
 const App = () => {
   return (
+    <Suspense fallback={<div />}>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/radar" element={<Radar />} />
@@ -62,6 +64,7 @@ const App = () => {
       <Route path="/copilot/team/:teamSlug" element={<CopilotDashboard />} />
       <Route path="/copilot/:scope" element={<CopilotDashboard />} />
     </Routes>
+    </Suspense>
   );
 };
 
