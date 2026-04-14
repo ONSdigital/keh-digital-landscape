@@ -6,7 +6,6 @@
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-tooltip": "^1.1.4",
-    "ag-grid-community": "^35.2.1",
     "ag-grid-react": "^35.0.0",
     "date-fns": "^4.1.0",
     "esbuild": "^0.28.0",
