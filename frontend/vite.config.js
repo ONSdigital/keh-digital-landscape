@@ -39,6 +39,20 @@ export default defineConfig({
   build: {
     outDir: 'build',
     sourcemap: false,
+    target: 'esnext',
+    minify: 'esbuild',
+    cssCodeSplit: false,
+    modulePreload: { polyfill: false },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['recharts'],
+          'vendor-grid': ['ag-grid-react'],
+          'vendor-icons': ['react-icons'],
+        },
+      },
+    },
   },
   define: {
     global: 'globalThis',
