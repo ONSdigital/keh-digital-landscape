@@ -33,19 +33,28 @@ vi.mock(
   { virtual: true }
 );
 
+// Mock getDirectorates to prevent fetch during module-level await
+vi.mock('../src/utilities/getDirectorates', () => ({
+  getDirectorates: vi.fn().mockResolvedValue([
+    { id: 0, name: 'Test', colour: '#000', default: true, enabled: true },
+  ]),
+}));
+
 import App from '../src/App';
 
 describe('App', () => {
   it('renders the Home page', async () => {
-    render(
-      <ThemeProvider>
-        <MemoryRouter initialEntries={['/']}>
-          <App />
-        </MemoryRouter>
-      </ThemeProvider>
-    );
-    expect(screen.getByText(/Home/i)).toBeInTheDocument();
-    expect(screen.getByText(/Restricted/i)).toBeInTheDocument();
+    await act(async () => {
+      render(
+        <ThemeProvider>
+          <MemoryRouter initialEntries={['/']}>
+            <App />
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+    });
+    expect(await screen.findByText(/Home/i, {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(await screen.findByText(/Restricted/i, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it('shows the "Report a Bug" link and can be clicked to the Report Bug information', async () => {
