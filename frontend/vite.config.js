@@ -41,6 +41,8 @@ export default defineConfig({
     sourcemap: false,
     target: 'esnext',
     minify: 'esbuild',
+    cssCodeSplit: false,
+    modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
         manualChunks: {
