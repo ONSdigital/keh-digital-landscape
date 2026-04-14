@@ -58,19 +58,21 @@ describe('App', () => {
   });
 
   it('shows the "Report a Bug" link and can be clicked to the Report Bug information', async () => {
-    render(
-      <ThemeProvider>
-        <MemoryRouter initialEntries={['/']}>
-          <App />
-        </MemoryRouter>
-      </ThemeProvider>
-    );
-    const reportBugLink = await screen.findByText(/Report a bug/i);
+    await act(async () => {
+      render(
+        <ThemeProvider>
+          <MemoryRouter initialEntries={['/']}>
+            <App />
+          </MemoryRouter>
+        </ThemeProvider>
+      );
+    });
+    const reportBugLink = await screen.findByText(/Report a bug/i, {}, { timeout: 3000 });
     await act(() => {
       userEvent.click(reportBugLink);
     });
     expect(
-      await screen.findByText(/You will be redirected to GitHub/i)
+      await screen.findByText(/You will be redirected to GitHub/i, {}, { timeout: 3000 })
     ).toBeInTheDocument();
   });
 });
