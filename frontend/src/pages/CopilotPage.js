@@ -7,6 +7,7 @@ import {
   fetchTeamsHistoricData,
   extractTeamData,
 } from '../utilities/getUsageData';
+import { getLegacyCopilotData } from '../utilities/getLegacyCopilotData';
 import PageBanner from '../components/PageBanner/PageBanner';
 import '../styles/ReviewPage.css';
 import '../styles/CopilotPage.css';
@@ -29,7 +30,7 @@ function CopilotDashboard() {
   const { scope: urlScope } = useParams();
   const [searchParams] = useSearchParams();
 
-  const initialiseDateRange = data => {
+  const initialiseDateRange = (data = []) => {
     const end = data[data.length - 1]?.day
       ? new Date(data[data.length - 1].day)
       : new Date();
@@ -89,6 +90,21 @@ function CopilotDashboard() {
     if (viewDatesBy === 'Year') return historicOrgData.yearUsage;
   };
 
+  // Fetch legacy Copilot data on mount
+  useEffect(() => {
+    const fetchLegacy = async () => {
+      setIsLegacyLoading(true);
+      const legacyDataFeb25 = await getLegacyCopilotData('pre-0225');
+      const legacyDataMar26 = await getLegacyCopilotData('pre-0326');
+      setLegacyCopilotData({
+        feb25: legacyDataFeb25,
+        mar26: legacyDataMar26,
+      });
+      setIsLegacyLoading(false);
+    };
+    fetchLegacy();
+  }, []);
+
   const setFilteredData = (data, setData) => {
     if (!data || !startDate || !endDate) return;
     const filteredData = filterUsageData(data, startDate, endDate);
@@ -100,7 +116,7 @@ function CopilotDashboard() {
   };
 
   const [historicOrgData, setHistoricOrgData] = useState({
-    allUsage: [], // Equivalent of day usage
+    allUsage: [],
     weekUsage: [],
     monthUsage: [],
     yearUsage: [],
@@ -137,6 +153,9 @@ function CopilotDashboard() {
   const [userTeamSlugs, setUserTeamSlugs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [teamsHistoricData, setTeamsHistoricData] = useState(null);
+  // State for legacy Copilot data
+  const [legacyCopilotData, setLegacyCopilotData] = useState(null);
+  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
 
   // Filter listed available teams based on search term
   const filteredAvailableTeams = useMemo(() => {
@@ -144,7 +163,9 @@ function CopilotDashboard() {
     return availableTeams.filter(
       team =>
         team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        team.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (team.description || '')
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
     );
   }, [availableTeams, searchTerm]);
 
