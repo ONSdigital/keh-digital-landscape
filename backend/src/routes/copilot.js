@@ -36,13 +36,47 @@ router.get('/auth/status', (req, res) => {
  */
 router.get('/org/historic', async (req, res) => {
   try {
-    const data = await s3Service.getObjectViaSignedUrl(
+    const data = await s3Service.getObject(
       'copilot',
       'organisation_history.json'
     );
     res.json(data);
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Endpoint for fetching legacy Copilot organisation usage data from S3.
+ * @route GET /copilot/api/org/legacy
+ * @param {string} req.query.type - Type of legacy data to fetch ('pre-0326' or 'pre-0225')
+ * @returns {Object} Legacy organisation usage JSON data
+ * @throws {Error} 400 - If type is missing or invalid
+ * @throws {Error} 500 - If fetching fails
+ */
+router.get('/org/legacy', async (req, res) => {
+  try {
+    const legacyType = req.query.type ? req.query.type.toLowerCase() : null;
+
+    if (!legacyType) {
+      return res.status(400).json({ error: 'Missing legacy data type' });
+    }
+
+    if (legacyType !== 'pre-0326' && legacyType !== 'pre-0225') {
+      return res.status(400).json({ error: 'Invalid legacy data type' });
+    }
+
+    const archivePrefix = 'archive/';
+    const key =
+      legacyType === 'pre-0326'
+        ? 'pre-mar26/historic_usage_data_mar26.json'
+        : 'pre-feb25/historic_usage_data_feb25.json';
+
+    const data = await s3Service.getObject('copilot', `${archivePrefix}${key}`);
+    res.json(data);
+  } catch (error) {
+    logger.error('Error fetching legacy JSON:', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });

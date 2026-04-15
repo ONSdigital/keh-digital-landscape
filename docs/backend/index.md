@@ -148,7 +148,7 @@ Manages all Amazon S3 operations:
 
 - Singleton pattern for consistent S3 client instances
 - Supports multiple buckets (main, TAT, Copilot)
-- Methods: `getObject()`, `putObject()`, `getObjectViaSignedUrl()`
+- Methods: `getObject()`, `putObject()`
 - Centralised error handling and logging
 
 ### GitHub Service (`services/githubService.js`)

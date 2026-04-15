@@ -61,28 +61,6 @@ const result = await s3Service.putObject('my-bucket', 'data/file.json', {
 });
 ```
 
-### `getObjectViaSignedUrl(bucket, key, expiresIn = 3600)`
-
-Generates a presigned URL for accessing an S3 object.
-
-**Parameters:**
-
-- `bucket` (string) - The S3 bucket name
-- `key` (string) - The object key/path
-- `expiresIn` (number, optional) - URL expiration time in seconds (default: 3600)
-
-**Returns:** Promise resolving to the signed URL
-
-**Example:**
-
-```javascript
-const signedUrl = await s3Service.getObjectViaSignedUrl(
-  'my-bucket',
-  'private/file.pdf',
-  7200
-);
-```
-
 ## Bucket Configuration Methods
 
 ### `getMainBucket()`
