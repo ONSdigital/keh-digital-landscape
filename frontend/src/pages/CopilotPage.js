@@ -24,6 +24,7 @@ import { TbLogout } from 'react-icons/tb';
 import '../styles/components/MultiSelect.css';
 import { toast } from 'react-hot-toast';
 import Layout from '../components/Layout/Layout';
+import LegacyDataVisualisation from '../components/Copilot/LegacyData';
 
 function CopilotDashboard() {
   const navigate = useNavigate();
@@ -153,8 +154,12 @@ function CopilotDashboard() {
   const [userTeamSlugs, setUserTeamSlugs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [teamsHistoricData, setTeamsHistoricData] = useState(null);
+
   // State for legacy Copilot data
-  const [legacyCopilotData, setLegacyCopilotData] = useState(null);
+  const [legacyCopilotData, setLegacyCopilotData] = useState({
+    feb25: null,
+    mar26: null,
+  });
   const [isLegacyLoading, setIsLegacyLoading] = useState(false);
 
   // Filter listed available teams based on search term
@@ -676,6 +681,11 @@ function CopilotDashboard() {
                 viewDatesBy="Day"
               />
             )}
+
+            <LegacyDataVisualisation
+              data={legacyCopilotData}
+              isLoading={isLegacyLoading}
+            />
           </div>
         </div>
       </Layout>
