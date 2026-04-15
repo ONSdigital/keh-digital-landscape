@@ -91,21 +91,6 @@ function CopilotDashboard() {
     if (viewDatesBy === 'Year') return historicOrgData.yearUsage;
   };
 
-  // Fetch legacy Copilot data on mount
-  useEffect(() => {
-    const fetchLegacy = async () => {
-      setIsLegacyLoading(true);
-      const legacyDataFeb25 = await getLegacyCopilotData('pre-0225');
-      const legacyDataMar26 = await getLegacyCopilotData('pre-0326');
-      setLegacyCopilotData({
-        feb25: legacyDataFeb25,
-        mar26: legacyDataMar26,
-      });
-      setIsLegacyLoading(false);
-    };
-    fetchLegacy();
-  }, []);
-
   const setFilteredData = (data, setData) => {
     if (!data || !startDate || !endDate) return;
     const filteredData = filterUsageData(data, startDate, endDate);
@@ -154,13 +139,6 @@ function CopilotDashboard() {
   const [userTeamSlugs, setUserTeamSlugs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [teamsHistoricData, setTeamsHistoricData] = useState(null);
-
-  // State for legacy Copilot data
-  const [legacyCopilotData, setLegacyCopilotData] = useState({
-    feb25: null,
-    mar26: null,
-  });
-  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
 
   // Filter listed available teams based on search term
   const filteredAvailableTeams = useMemo(() => {
@@ -376,6 +354,28 @@ function CopilotDashboard() {
     const color = Math.abs(hash).toString(16).substring(0, 6);
     return `#${'0'.repeat(6 - color.length)}${color}`;
   };
+
+  // State for legacy Copilot data
+  const [legacyCopilotData, setLegacyCopilotData] = useState({
+    feb25: null,
+    mar26: null,
+  });
+  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
+
+  // Fetch legacy Copilot data on mount
+  useEffect(() => {
+    const fetchLegacy = async () => {
+      setIsLegacyLoading(true);
+      const legacyDataFeb25 = await getLegacyCopilotData('pre-0225');
+      const legacyDataMar26 = await getLegacyCopilotData('pre-0326');
+      setLegacyCopilotData({
+        feb25: legacyDataFeb25,
+        mar26: legacyDataMar26,
+      });
+      setIsLegacyLoading(false);
+    };
+    fetchLegacy();
+  }, []);
 
   return (
     <>
