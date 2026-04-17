@@ -4,6 +4,9 @@ import { csvData } from './data/csvData';
 import { nodeBlipCases } from './data/nodeBlipCases';
 import { reviewPositionCases } from './data/reviewPositionCases';
 import { directorateData } from './data/directorateData';
+import { getTechRadarSubmissionsUrl } from '../../../frontend/src/constants/radarConstants';
+
+const techRadarSubmissionsUrl = getTechRadarSubmissionsUrl(process.env);
 
 // Function to intercept and mock the API call
 const interceptAPICall = async ({ page }) => {
@@ -137,10 +140,7 @@ test('Check technology change suggestion message is displayed with repository li
 
   const suggestionLink = page.getByRole('link', { name: 'repository' });
   await expect(suggestionLink).toBeVisible();
-  await expect(suggestionLink).toHaveAttribute(
-    'href',
-    'https://github.com/ONSdigital/keh-tech-radar-submissions'
-  );
+  await expect(suggestionLink).toHaveAttribute('href', techRadarSubmissionsUrl);
 });
 
 // Multiple Directorate Support

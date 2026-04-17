@@ -20,6 +20,7 @@ import {
 import sendAlert from '../components/Alerts/Alerts';
 import Tooltip from '../components/Tooltip/Tooltip';
 import Layout from '../components/Layout/Layout';
+import { getTechRadarSubmissionsUrl } from '../constants/radarConstants';
 
 /**
  * RadarPage component for displaying the radar page.
@@ -27,6 +28,8 @@ import Layout from '../components/Layout/Layout';
  * @returns {JSX.Element} - The RadarPage component.
  */
 function RadarPage() {
+  const techRadarSubmissionsUrl = getTechRadarSubmissionsUrl(import.meta.env);
+
   const fetchedOnce = useRef(false);
   const projectsFetchedOnce = useRef(false);
   const [data, setData] = useState(null);
@@ -880,7 +883,7 @@ function RadarPage() {
           >
             Want to suggest a technology change on the radar? View this{' '}
             <a
-              href="https://github.com/ONSdigital/keh-tech-radar-submissions"
+              href={techRadarSubmissionsUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
