@@ -130,7 +130,9 @@ test('Check technology change suggestion message is displayed with repository li
   await interceptAPICall({ page });
 
   await expect(
-    page.getByText('Want to suggest a technology change on the radar? View this')
+    page.getByText(
+      'Want to suggest a technology change on the radar? View this'
+    )
   ).toBeVisible();
 
   const suggestionLink = page.getByRole('link', { name: 'repository' });
