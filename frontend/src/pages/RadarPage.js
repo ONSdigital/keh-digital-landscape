@@ -880,7 +880,6 @@ function RadarPage() {
           >
             Want to suggest a technology change on the radar? View this{' '}
             <a
-              style={{ color: 'hsl(210deg 100% 20%)' }}
               href="https://github.com/ONSdigital/keh-tech-radar-submissions"
               target="_blank"
               rel="noopener noreferrer"

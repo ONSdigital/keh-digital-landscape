@@ -124,6 +124,18 @@ html:not(.dark)
   width: fit-content;
 }
 
+.disclaimer-banner a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disclaimer-banner a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 :root[class~='dark'] .disclaimer-banner {
   background-color: hsl(210deg 50% 20%);
   color: hsl(210deg 100% 90%);
