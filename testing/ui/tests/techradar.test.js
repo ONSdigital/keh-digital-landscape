@@ -124,6 +124,23 @@ test.describe('Check projects available under Tech Radar', () => {
   });
 });
 
+test('Check technology change suggestion message is displayed with repository link', async ({
+  page,
+}) => {
+  await interceptAPICall({ page });
+
+  await expect(
+    page.getByText('Want to suggest a technology change on the radar? View this')
+  ).toBeVisible();
+
+  const suggestionLink = page.getByRole('link', { name: 'repository' });
+  await expect(suggestionLink).toBeVisible();
+  await expect(suggestionLink).toHaveAttribute(
+    'href',
+    'https://github.com/ONSdigital/keh-tech-radar-submissions'
+  );
+});
+
 // Multiple Directorate Support
 
 test('Check that directorate dropdown is present and has expected options', async ({
