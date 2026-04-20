@@ -214,6 +214,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
   const formattedMarStartDate = formatDate(marStartDate);
   const formattedMarEndDate = formatDate(marEndDate);
 
+  // Prepare graph data with acceptance rates for Mar dataset
   const marCompletionGraphData = marDataMonthly.suggestions.map(
     (item, index) => ({
       date: item.date,
@@ -230,6 +231,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
     })
   );
 
+  // Prepare graph data with insertion and copy rates for Mar chats
   const marChatGraphData = marDataMonthly.chats.map((item, index) => {
     const chatInsertions = marDataMonthly.chatInsertions[index]
       ? marDataMonthly.chatInsertions[index].count
@@ -248,6 +250,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
     };
   });
 
+  // Prepare graph data with acceptance rates for Feb dataset
   const febCompletionGraphData = febDataMonthly.suggestions.map(
     (item, index) => ({
       date: item.date,
@@ -264,6 +267,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
     })
   );
 
+  // Prepare graph data with acceptance rates for Feb chats
   const febChatGraphData = febDataMonthly.chats.map((item, index) => {
     const chatAcceptances = febDataMonthly.chatAcceptances[index]
       ? febDataMonthly.chatAcceptances[index].count
