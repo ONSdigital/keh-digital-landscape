@@ -582,7 +582,6 @@ function LegacyDataVisualisation({ data, isLoading }) {
             />
           </ComposedChart>
         </ResponsiveContainer>
-
       </div>
 
       <div>
@@ -777,7 +776,6 @@ function LegacyDataVisualisation({ data, isLoading }) {
               />
             </ComposedChart>
           </ResponsiveContainer>
-
         </div>
       </div>
     </div>
