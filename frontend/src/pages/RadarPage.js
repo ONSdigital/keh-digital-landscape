@@ -862,13 +862,7 @@ function RadarPage() {
 
             <div
               id="directorate-title"
-              style={{
-                fontWeight: 'bold',
-                fontSize: '1.6em',
-                color: 'white',
-                float: 'right',
-                textShadow: '1px 1px 2px black',
-              }}
+              className="radar-directorate-title"
             >
               {directorateName}
             </div>
