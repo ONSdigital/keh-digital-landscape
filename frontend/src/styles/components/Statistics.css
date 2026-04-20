@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .statistics-header {
@@ -82,8 +82,8 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
-  min-height: 0;
-  overflow: hidden;
+  min-height: auto;
+  overflow: visible;
 }
 
 .language-header {
@@ -473,22 +473,11 @@
   transform: translateY(2px);
 }
 
-.stats-accordion-trigger:after {
-  content: '[Expand]';
+.stats-accordion-icon {
   margin-left: auto;
   transition: transform 0.2s ease;
 }
 
-.stats-accordion-trigger[aria-expanded='true']:after {
-  content: '[Collapse]';
-}
-
-.stats-accordion-content {
-  margin-top: 0.5em;
-  padding: 0 16px 16px 16px;
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
-  background: hsl(var(--card));
-  color: hsl(var(--card-foreground));
-  text-align: center;
+.stats-accordion-trigger[data-state='open'] .stats-accordion-icon {
+  transform: rotate(180deg);
 }
