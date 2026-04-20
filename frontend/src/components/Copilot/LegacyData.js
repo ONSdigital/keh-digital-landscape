@@ -1,16 +1,17 @@
+import AcceptanceGraph from './Breakdowns/AcceptanceGraph';
+import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
+import { getPercentage } from '../../utilities/getPercentage';
 import {
-  ResponsiveContainer,
   ComposedChart,
   Line,
   Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from 'recharts';
-import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
-import { getPercentage } from '../../utilities/getPercentage';
 
 function LegacyDataVisualisation({ data, isLoading }) {
   if (isLoading) {
@@ -213,6 +214,69 @@ function LegacyDataVisualisation({ data, isLoading }) {
   const formattedMarStartDate = formatDate(marStartDate);
   const formattedMarEndDate = formatDate(marEndDate);
 
+  const marCompletionGraphData = marDataMonthly.suggestions.map(
+    (item, index) => ({
+      date: item.date,
+      suggestions: item.count,
+      acceptances: marDataMonthly.acceptances[index]
+        ? marDataMonthly.acceptances[index].count
+        : 0,
+      acceptanceRate:
+        (item.count
+          ? marDataMonthly.acceptances[index]
+            ? marDataMonthly.acceptances[index].count / item.count
+            : 0
+          : 0) * 100,
+    })
+  );
+
+  const marChatGraphData = marDataMonthly.chats.map((item, index) => {
+    const chatInsertions = marDataMonthly.chatInsertions[index]
+      ? marDataMonthly.chatInsertions[index].count
+      : 0;
+    const chatCopies = marDataMonthly.chatCopies[index]
+      ? marDataMonthly.chatCopies[index].count
+      : 0;
+
+    return {
+      date: item.date,
+      chats: item.count,
+      chatInsertions,
+      chatCopies,
+      chatInsertionRate: item.count ? (chatInsertions / item.count) * 100 : 0,
+      chatCopyRate: item.count ? (chatCopies / item.count) * 100 : 0,
+    };
+  });
+
+  const febCompletionGraphData = febDataMonthly.suggestions.map(
+    (item, index) => ({
+      date: item.date,
+      suggestions: item.count,
+      acceptances: febDataMonthly.acceptances[index]
+        ? febDataMonthly.acceptances[index].count
+        : 0,
+      acceptanceRate:
+        (item.count
+          ? febDataMonthly.acceptances[index]
+            ? febDataMonthly.acceptances[index].count / item.count
+            : 0
+          : 0) * 100,
+    })
+  );
+
+  const febChatGraphData = febDataMonthly.chats.map((item, index) => {
+    const chatAcceptances = febDataMonthly.chatAcceptances[index]
+      ? febDataMonthly.chatAcceptances[index].count
+      : 0;
+
+    return {
+      date: item.date,
+      chats: item.count,
+      chatAcceptances,
+      chatAcceptanceRate: item.count ? (chatAcceptances / item.count) * 100 : 0,
+    };
+  });
+
   return (
     <div>
       <h2>Legacy Copilot Data</h2>
@@ -268,7 +332,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        {/* TODO: Add Graph */}
+        <AcceptanceGraph data={marCompletionGraphData} />
 
         <h4>IDE Chats</h4>
         <div className="copilot-chat-grid">
@@ -301,8 +365,82 @@ function LegacyDataVisualisation({ data, isLoading }) {
             </p>
           </div>
         </div>
+      </div>
 
-        {/* TODO: Add Graph */}
+      <div className="copilot-graph-container">
+        <ResponsiveContainer>
+          <ComposedChart
+            width={400}
+            height={300}
+            data={marChatGraphData}
+            margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid stroke="#f5f5f5" vertical={false} />
+            <XAxis
+              dataKey="date"
+              interval={marChatGraphData.length - 2}
+              tickLine={false}
+              axisLine={{ stroke: '#f5f5f5' }}
+            />
+            <Legend verticalAlign="top" align="left" height={36} />
+            <Bar
+              radius={[10, 10, 0, 0]}
+              dataKey="chats"
+              barSize={20}
+              fill="#70c4e6"
+              yAxisId="left"
+              legendType="rect"
+              name="Chats"
+            />
+            <Line
+              dot={false}
+              strokeWidth={2}
+              strokeLinecap="round"
+              type="monotone"
+              dataKey="chatInsertionRate"
+              stroke="#3B7AD9"
+              yAxisId="right"
+              legendType="rect"
+              name="Insertion Rate"
+            />
+            <Line
+              dot={false}
+              strokeWidth={2}
+              strokeLinecap="round"
+              type="monotone"
+              dataKey="chatCopyRate"
+              stroke="#0f766e"
+              yAxisId="right"
+              legendType="rect"
+              name="Copy Rate"
+            />
+            <YAxis
+              tickLine={false}
+              yAxisId="left"
+              axisLine={{ stroke: '#f5f5f5' }}
+              domain={[0, 'dataMax + 5']}
+              tickCount={5}
+              tickFormatter={value => formatNumberWithCommas(value)}
+            />
+            <YAxis
+              tickLine={false}
+              yAxisId="right"
+              orientation="right"
+              axisLine={{ stroke: '#f5f5f5' }}
+              domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
+              tickFormatter={value => `${value.toFixed(0)}%`}
+              tickCount={5}
+            />
+            <Tooltip
+              wrapperStyle={{ color: 'black' }}
+              formatter={(value, name) =>
+                name === 'Chats'
+                  ? formatNumberWithCommas(value)
+                  : `${value.toFixed(2)}%`
+              }
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
 
       <div>
@@ -349,7 +487,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        {/* TODO: Add Graph */}
+        <AcceptanceGraph data={febCompletionGraphData} />
 
         <h4>IDE Chats</h4>
         <div className="copilot-chat-grid">
@@ -371,7 +509,70 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        {/* TODO: Add Graph */}
+        <div className="copilot-graph-container">
+          <ResponsiveContainer>
+            <ComposedChart
+              width={400}
+              height={300}
+              data={febChatGraphData}
+              margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid stroke="#f5f5f5" vertical={false} />
+              <XAxis
+                dataKey="date"
+                interval={febChatGraphData.length - 2}
+                tickLine={false}
+                axisLine={{ stroke: '#f5f5f5' }}
+              />
+              <Legend verticalAlign="top" align="left" height={36} />
+              <Bar
+                radius={[10, 10, 0, 0]}
+                dataKey="chats"
+                barSize={20}
+                fill="#70c4e6"
+                yAxisId="left"
+                legendType="rect"
+                name="Chats"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="chatAcceptanceRate"
+                stroke="#3B7AD9"
+                yAxisId="right"
+                legendType="rect"
+                name="Acceptance Rate"
+              />
+              <YAxis
+                tickLine={false}
+                yAxisId="left"
+                axisLine={{ stroke: '#f5f5f5' }}
+                domain={[0, 'dataMax + 5']}
+                tickCount={5}
+                tickFormatter={value => formatNumberWithCommas(value)}
+              />
+              <YAxis
+                tickLine={false}
+                yAxisId="right"
+                orientation="right"
+                axisLine={{ stroke: '#f5f5f5' }}
+                domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
+                tickFormatter={value => `${value.toFixed(0)}%`}
+                tickCount={5}
+              />
+              <Tooltip
+                wrapperStyle={{ color: 'black' }}
+                formatter={(value, name) =>
+                  name === 'Chats'
+                    ? formatNumberWithCommas(value)
+                    : `${value.toFixed(2)}%`
+                }
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
