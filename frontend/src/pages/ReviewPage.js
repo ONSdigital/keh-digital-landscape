@@ -1142,10 +1142,7 @@ const ReviewPage = () => {
                 </div>
               </div>
               <div>
-                <div
-                  id="directorate-title"
-                  className="admin-directorate-title"
-                >
+                <div id="directorate-title" className="admin-directorate-title">
                   {getDirectorateName(selectedDirectorate, directorates)}
                 </div>
                 <p style={{ float: 'left' }}>

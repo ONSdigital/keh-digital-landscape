@@ -860,10 +860,7 @@ function RadarPage() {
               </select>
             </div>
 
-            <div
-              id="directorate-title"
-              className="radar-directorate-title"
-            >
+            <div id="directorate-title" className="radar-directorate-title">
               {directorateName}
             </div>
           </div>
