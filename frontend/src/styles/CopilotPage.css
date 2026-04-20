@@ -301,6 +301,11 @@ html:not(.dark)
   height: calc(50vh - 16px);
 }
 
+.copilot-graph-container--stacked {
+  height: auto;
+  margin-bottom: 24px;
+}
+
 .ag-body-viewport {
   scroll-behavior: smooth;
   scrollbar-width: thin;

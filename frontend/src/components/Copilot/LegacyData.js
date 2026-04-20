@@ -23,6 +23,53 @@ function LegacyDataVisualisation({ data, isLoading }) {
     );
   }
 
+  // Process user metrics for Feb 25 and Mar 26 datasets
+  // Note: the separation of users in the Feb dataset is not as clear as in the Mar dataset. Because of this, we will keep the Feb and Mar datasets separate.
+
+  const userMetricsFeb = {
+    totalUsers: [],
+    completionUsers: [],
+    chatUsers: [],
+  };
+
+  for (const index in data?.feb25 || {}) {
+    const day = data.feb25[index];
+    userMetricsFeb.totalUsers.push({
+      date: day.day,
+      count: (day.total_active_users || 0) + (day.total_active_chat_users || 0),
+    });
+    userMetricsFeb.completionUsers.push({
+      date: day.day,
+      count: day.total_active_users || 0,
+    });
+    userMetricsFeb.chatUsers.push({
+      date: day.day,
+      count: day.total_active_chat_users || 0,
+    });
+  }
+
+  const userMetricsMar = {
+    totalUsers: [],
+    completionUsers: [],
+    chatUsers: [],
+  };
+
+  for (const index in data?.mar26 || {}) {
+    const day = data.mar26[index];
+    userMetricsMar.totalUsers.push({
+      date: day.date,
+      count: day.total_active_users || 0,
+    });
+    userMetricsMar.completionUsers.push({
+      date: day.date,
+      count: day.copilot_ide_code_completions?.total_engaged_users || 0,
+    });
+    userMetricsMar.chatUsers.push({
+      date: day.date,
+      count: day.copilot_ide_chat?.total_engaged_users || 0,
+    });
+  }
+
   // Process Feb 25 Data
   const rawFebData = data?.feb25 || {};
 
@@ -281,6 +328,33 @@ function LegacyDataVisualisation({ data, isLoading }) {
     };
   });
 
+  // Prepare user metrics graph data for Mar and Feb datasets
+  const marUserMetricsGraphData = userMetricsMar.totalUsers.map(
+    (item, index) => ({
+      date: item.date,
+      totalUsers: item.count,
+      completionUsers: userMetricsMar.completionUsers[index]
+        ? userMetricsMar.completionUsers[index].count
+        : 0,
+      chatUsers: userMetricsMar.chatUsers[index]
+        ? userMetricsMar.chatUsers[index].count
+        : 0,
+    })
+  );
+
+  const febUserMetricsGraphData = userMetricsFeb.totalUsers.map(
+    (item, index) => ({
+      date: item.date,
+      totalUsers: item.count,
+      completionUsers: userMetricsFeb.completionUsers[index]
+        ? userMetricsFeb.completionUsers[index].count
+        : 0,
+      chatUsers: userMetricsFeb.chatUsers[index]
+        ? userMetricsFeb.chatUsers[index].count
+        : 0,
+    })
+  );
+
   return (
     <div>
       <h2>Legacy Copilot Data</h2>
@@ -371,8 +445,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
         </div>
       </div>
 
-      <div className="copilot-graph-container">
-        <ResponsiveContainer>
+      <div className="copilot-graph-container copilot-graph-container--stacked">
+        <ResponsiveContainer width="100%" height={300}>
           <ComposedChart
             width={400}
             height={300}
@@ -445,6 +519,70 @@ function LegacyDataVisualisation({ data, isLoading }) {
             />
           </ComposedChart>
         </ResponsiveContainer>
+
+        <h4>User Metrics</h4>
+
+        <ResponsiveContainer width="100%" height={300}>
+          <ComposedChart
+            width={400}
+            height={300}
+            data={marUserMetricsGraphData}
+            margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid stroke="#f5f5f5" vertical={false} />
+            <XAxis
+              dataKey="date"
+              interval={marUserMetricsGraphData.length - 2}
+              tickLine={false}
+              axisLine={{ stroke: '#f5f5f5' }}
+            />
+            <Legend verticalAlign="top" align="left" height={36} />
+            <Bar
+              radius={[10, 10, 0, 0]}
+              dataKey="totalUsers"
+              barSize={20}
+              fill="#70c4e6"
+              yAxisId="left"
+              legendType="rect"
+              name="Total Users"
+            />
+            <Line
+              dot={false}
+              strokeWidth={2}
+              strokeLinecap="round"
+              type="monotone"
+              dataKey="completionUsers"
+              stroke="#3B7AD9"
+              yAxisId="left"
+              legendType="rect"
+              name="Completion Users"
+            />
+            <Line
+              dot={false}
+              strokeWidth={2}
+              strokeLinecap="round"
+              type="monotone"
+              dataKey="chatUsers"
+              stroke="#0f766e"
+              yAxisId="left"
+              legendType="rect"
+              name="Chat Users"
+            />
+            <YAxis
+              tickLine={false}
+              yAxisId="left"
+              axisLine={{ stroke: '#f5f5f5' }}
+              domain={[0, 'dataMax + 5']}
+              tickCount={5}
+              tickFormatter={value => formatNumberWithCommas(value)}
+            />
+            <Tooltip
+              wrapperStyle={{ color: 'black' }}
+              formatter={value => formatNumberWithCommas(value)}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+
       </div>
 
       <div>
@@ -513,8 +651,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container">
-          <ResponsiveContainer>
+        <div className="copilot-graph-container copilot-graph-container--stacked">
+          <ResponsiveContainer width="100%" height={300}>
             <ComposedChart
               width={400}
               height={300}
@@ -576,6 +714,70 @@ function LegacyDataVisualisation({ data, isLoading }) {
               />
             </ComposedChart>
           </ResponsiveContainer>
+
+          <h4>User Metrics</h4>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart
+              width={400}
+              height={300}
+              data={febUserMetricsGraphData}
+              margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid stroke="#f5f5f5" vertical={false} />
+              <XAxis
+                dataKey="date"
+                interval={febUserMetricsGraphData.length - 2}
+                tickLine={false}
+                axisLine={{ stroke: '#f5f5f5' }}
+              />
+              <Legend verticalAlign="top" align="left" height={36} />
+              <Bar
+                radius={[10, 10, 0, 0]}
+                dataKey="totalUsers"
+                barSize={20}
+                fill="#70c4e6"
+                yAxisId="left"
+                legendType="rect"
+                name="Total Users"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="completionUsers"
+                stroke="#3B7AD9"
+                yAxisId="left"
+                legendType="rect"
+                name="Completion Users"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="chatUsers"
+                stroke="#0f766e"
+                yAxisId="left"
+                legendType="rect"
+                name="Chat Users"
+              />
+              <YAxis
+                tickLine={false}
+                yAxisId="left"
+                axisLine={{ stroke: '#f5f5f5' }}
+                domain={[0, 'dataMax + 5']}
+                tickCount={5}
+                tickFormatter={value => formatNumberWithCommas(value)}
+              />
+              <Tooltip
+                wrapperStyle={{ color: 'black' }}
+                formatter={value => formatNumberWithCommas(value)}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+
         </div>
       </div>
     </div>
