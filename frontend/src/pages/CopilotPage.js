@@ -7,7 +7,6 @@ import {
   fetchTeamsHistoricData,
   extractTeamData,
 } from '../utilities/getUsageData';
-import { getLegacyCopilotData } from '../utilities/legacyCopilotData/getLegacyCopilotData';
 import PageBanner from '../components/PageBanner/PageBanner';
 import '../styles/ReviewPage.css';
 import '../styles/CopilotPage.css';
@@ -126,7 +125,8 @@ function CopilotDashboard() {
   const [scope, setScope] = useState('organisation');
   const [isHistoricLoading, setIsHistoricLoading] = useState(false);
   const [hasFetchedHistoric, setHasFetchedHistoric] = useState(false);
-  const { getHistoricUsageData } = useData();
+  const { getHistoricUsageData, getLegacyUsageData, legacyCopilotData } =
+    useData();
   const [viewDatesBy, setViewDatesBy] = useState('Day');
   const [isSelectingTeam, setIsSelectingTeam] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -139,6 +139,7 @@ function CopilotDashboard() {
   const [userTeamSlugs, setUserTeamSlugs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [teamsHistoricData, setTeamsHistoricData] = useState(null);
+  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
 
   // Filter listed available teams based on search term
   const filteredAvailableTeams = useMemo(() => {
@@ -355,23 +356,11 @@ function CopilotDashboard() {
     return `#${'0'.repeat(6 - color.length)}${color}`;
   };
 
-  // State for legacy Copilot data
-  const [legacyCopilotData, setLegacyCopilotData] = useState({
-    feb25: null,
-    mar26: null,
-  });
-  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
-
   // Fetch legacy Copilot data on mount
   useEffect(() => {
     const fetchLegacy = async () => {
       setIsLegacyLoading(true);
-      const legacyDataFeb25 = await getLegacyCopilotData('pre-0225');
-      const legacyDataMar26 = await getLegacyCopilotData('pre-0326');
-      setLegacyCopilotData({
-        feb25: legacyDataFeb25,
-        mar26: legacyDataMar26,
-      });
+      await getLegacyUsageData();
       setIsLegacyLoading(false);
     };
     fetchLegacy();

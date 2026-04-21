@@ -43,7 +43,7 @@ S3 Bucket (archive/pre-feb25/ and archive/pre-mar26/)
 Backend API Route (/copilot/api/org/legacy)
         │
         │
-Frontend Collection (getLegacyCopilotData.js)
+Frontend Collection (DataContext -> getLegacyUsageData)
         │
         │
 Frontend Processing (processLegacyCopilotData.js)
@@ -52,8 +52,8 @@ Frontend Processing (processLegacyCopilotData.js)
 Frontend Visualisation (LegacyData.js)
 ```
 
-The Frontend collection happens within the Copilot Page (`/pages/CopilotPage.js`).
-The data is then passed when rendering the `LegacyData` component within the page.
+The frontend collection is managed by the DataContext (`/frontend/src/contexts/dataContext.js`) via `getLegacyUsageData`, which uses `getLegacyCopilotData.js` internally.
+The Copilot Page (`/pages/CopilotPage.js`) consumes `legacyCopilotData` through `useData()` and passes it when rendering the `LegacyData` component.
 The `LegacyData` component uses the processing utilities to transform the data and then renders visualisations.
 
 ## Pre-March 2026 Legacy Data
