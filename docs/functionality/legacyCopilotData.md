@@ -11,7 +11,7 @@ At each instance, GitHub made breaking changes to the API, which resulted in dif
 
 All legacy Copilot data is stored in the `archive/` folder within the GitHub Copilot S3 bucket. The data is then organised into subfolders based on the time period it covers (i.e. `pre-feb25/` and `pre-mar26/`).
 
-```
+```bash
 copilot-data-bucket/
 ├── archive/
 │   ├── pre-feb25/
@@ -36,7 +36,7 @@ In the frontend, the legacy data gets consumed and visualised within the GitHub 
 
 To summarise the full flow:
 
-```
+```bash
 S3 Bucket (archive/pre-feb25/ and archive/pre-mar26/)
         │
         │
@@ -58,7 +58,7 @@ The `LegacyData` component uses the processing utilities to transform the data a
 
 ## Pre-March 2026 Legacy Data
 
-### Structure
+### Structure (Mar 26)
 
 The structure of the legacy data for periods before March 2026 contains a list of daily usage records, where each record includes top-level usage totals and nested IDE Chat / IDE Code Completions breakdowns. The fields included in each record are as follows:
 
@@ -97,7 +97,7 @@ The structure of the legacy data for periods before March 2026 contains a list o
 - `copilot_dotcom_chat`: Dotcom Chat usage summary (for example, `total_engaged_users`).
 - `copilot_dotcom_pull_requests`: Dotcom Pull Request usage summary (for example, `total_engaged_users`).
 
-```
+```json
 [
     {
         "date": "2025-01-25",
@@ -168,7 +168,7 @@ The structure of the legacy data for periods before March 2026 contains a list o
 
 ## Pre-February 2025 Legacy Data
 
-### Structure
+### Structure (Feb 25)
 
 The structure of the legacy data for periods before February 2025 contains a list of daily usage records, where each record includes aggregated metrics for that day. The fields included in each record are as follows:
 
@@ -182,15 +182,15 @@ The structure of the legacy data for periods before February 2025 contains a lis
 - `total_chat_turns`: The total number of chat turns (sessions) initiated by users on that day (IDE Chat).
 - `total_active_chat_users`: The total number of unique users who initiated chat sessions with GitHub Copilot on that day (IDE Chat).
 - `breakdown`: A list of breakdowns
-    - `language`: The programming language for which the metrics are recorded.
-    - `editor`: The code editor or IDE used by the users (e.g., VSCode, JetBrains).
-    - `suggestions_count`: The number of suggestions made for that specific language and editor combination.
-    - `acceptances_count`: The number of suggestions accepted for that specific language and editor combination.
-    - `lines_suggested`: The number of lines of code suggested for that specific language and editor combination.
-    - `lines_accepted`: The number of lines of code accepted for that specific language and editor combination.
-    - `active_users`: The number of unique users who received suggestions for that specific language and editor combination.
+  - `language`: The programming language for which the metrics are recorded.
+  - `editor`: The code editor or IDE used by the users (e.g., VSCode, JetBrains).
+  - `suggestions_count`: The number of suggestions made for that specific language and editor combination.
+  - `acceptances_count`: The number of suggestions accepted for that specific language and editor combination.
+  - `lines_suggested`: The number of lines of code suggested for that specific language and editor combination.
+  - `lines_accepted`: The number of lines of code accepted for that specific language and editor combination.
+  - `active_users`: The number of unique users who received suggestions for that specific language and editor combination.
 
-```
+```json
 [
     {
         "day": "2024-05-15",
