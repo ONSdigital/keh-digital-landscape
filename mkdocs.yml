@@ -60,11 +60,11 @@ nav:
   - Functionality:
       - Banner Support: functionality/bannerSupport.md
       - Alerts: functionality/alerts.md
+      - Multiple Directorates Support: functionality/directorateSupport.md
+      - Legacy Copilot Data: functionality/legacyCopilotData.md
   - Testing:
       - Overview: testing/index.md
       - Playwright: testing/playwright.md
-  - Additional Notes:
-      - Multiple Directorates Support: additionalNotes/directorateSupport.md
   - Infrastructure:
       - Cognito: cognito.md
   - MkDocs:
