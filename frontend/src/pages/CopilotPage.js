@@ -23,7 +23,7 @@ import { TbLogout } from 'react-icons/tb';
 import '../styles/components/MultiSelect.css';
 import { toast } from 'react-hot-toast';
 import Layout from '../components/Layout/Layout';
-import LegacyDataVisualisation from '../components/Copilot/LegacyData';
+import LegacyDataVisualisation from '../components/Copilot/Dashboards/LegacyData';
 
 function CopilotDashboard() {
   const navigate = useNavigate();

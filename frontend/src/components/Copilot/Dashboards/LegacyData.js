@@ -5,10 +5,10 @@ import {
   prepareFebruaryChatGraphData,
   prepareMarchChatGraphData,
   prepareUserMetricsGraphData,
-} from '../../utilities/legacyCopilotData/processLegacyCopilotData';
-import AcceptanceGraph from './Breakdowns/AcceptanceGraph';
-import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
-import { getPercentage } from '../../utilities/getPercentage';
+} from '../../../utilities/legacyCopilotData/processLegacyCopilotData';
+import AcceptanceGraph from '../Breakdowns/AcceptanceGraph';
+import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+import { getPercentage } from '../../../utilities/getPercentage';
 import {
   ComposedChart,
   Line,
