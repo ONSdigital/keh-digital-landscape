@@ -1,3 +1,11 @@
+import {
+  processFebruaryCopilotData,
+  processMarchCopilotData,
+  prepareCompletionGraphData,
+  prepareFebruaryChatGraphData,
+  prepareMarchChatGraphData,
+  prepareUserMetricsGraphData,
+} from '../../utilities/legacyCopilotData/processLegacyCopilotData';
 import AcceptanceGraph from './Breakdowns/AcceptanceGraph';
 import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
 import { getPercentage } from '../../utilities/getPercentage';
@@ -23,213 +31,26 @@ function LegacyDataVisualisation({ data, isLoading }) {
     );
   }
 
-  // Process user metrics for Feb 25 and Mar 26 datasets
-  // Note: the separation of users in the Feb dataset is not as clear as in the Mar dataset. Because of this, we will keep the Feb and Mar datasets separate.
-
-  const userMetricsFeb = {
-    totalUsers: [],
-    completionUsers: [],
-    chatUsers: [],
-  };
-
-  for (const index in data?.feb25 || {}) {
-    const day = data.feb25[index];
-    userMetricsFeb.totalUsers.push({
-      date: day.day,
-      count: (day.total_active_users || 0) + (day.total_active_chat_users || 0),
-    });
-    userMetricsFeb.completionUsers.push({
-      date: day.day,
-      count: day.total_active_users || 0,
-    });
-    userMetricsFeb.chatUsers.push({
-      date: day.day,
-      count: day.total_active_chat_users || 0,
-    });
-  }
-
-  const userMetricsMar = {
-    totalUsers: [],
-    completionUsers: [],
-    chatUsers: [],
-  };
-
-  for (const index in data?.mar26 || {}) {
-    const day = data.mar26[index];
-    userMetricsMar.totalUsers.push({
-      date: day.date,
-      count: day.total_active_users || 0,
-    });
-    userMetricsMar.completionUsers.push({
-      date: day.date,
-      count: day.copilot_ide_code_completions?.total_engaged_users || 0,
-    });
-    userMetricsMar.chatUsers.push({
-      date: day.date,
-      count: day.copilot_ide_chat?.total_engaged_users || 0,
-    });
-  }
-
   // Process Feb 25 Data
-  const rawFebData = data?.feb25 || {};
-
-  let febDataTotals = {
-    suggestions: 0,
-    acceptances: 0,
-    linesSuggested: 0,
-    linesAccepted: 0,
-    chats: 0,
-    chatAcceptances: 0,
-  };
-
-  let febDataMonthly = {
-    suggestions: [],
-    acceptances: [],
-    linesSuggested: [],
-    linesAccepted: [],
-    chats: [],
-    chatAcceptances: [],
-  };
-
-  for (const index in rawFebData) {
-    const day = rawFebData[index];
-
-    // Aggregate totals
-
-    febDataTotals.suggestions += day.total_suggestions_count || 0;
-    febDataTotals.acceptances += day.total_acceptances_count || 0;
-    febDataTotals.linesSuggested += day.total_lines_suggested || 0;
-    febDataTotals.linesAccepted += day.total_lines_accepted || 0;
-    febDataTotals.chats += day.total_chat_turns || 0;
-    febDataTotals.chatAcceptances += day.total_chat_acceptances || 0;
-
-    // Prepare monthly data for graphing
-
-    febDataMonthly.suggestions.push({
-      date: day.day,
-      count: day.total_suggestions_count || 0,
-    });
-    febDataMonthly.acceptances.push({
-      date: day.day,
-      count: day.total_acceptances_count || 0,
-    });
-    febDataMonthly.linesSuggested.push({
-      date: day.day,
-      count: day.total_lines_suggested || 0,
-    });
-    febDataMonthly.linesAccepted.push({
-      date: day.day,
-      count: day.total_lines_accepted || 0,
-    });
-    febDataMonthly.chats.push({
-      date: day.day,
-      count: day.total_chat_turns || 0,
-    });
-    febDataMonthly.chatAcceptances.push({
-      date: day.day,
-      count: day.total_chat_acceptances || 0,
-    });
-  }
+  const preFeb25Data = data?.feb25 || {};
+  const febData = processFebruaryCopilotData(preFeb25Data);
 
   // Process Mar 26 Data
-  const rawMarData = data?.mar26 || {};
+  const preMar26Data = data?.mar26 || {};
+  const marData = processMarchCopilotData(preMar26Data);
 
-  let marDataTotals = {
-    suggestions: 0,
-    acceptances: 0,
-    linesSuggested: 0,
-    linesAccepted: 0,
-    chats: 0,
-    chatInsertions: 0,
-    chatCopies: 0,
-  };
+  // Prepare data for Feb and Mar datasets
+  const {
+    totals: febDataTotals,
+    monthly: febDataMonthly,
+    users: userMetricsFeb,
+  } = febData;
 
-  let marDataMonthly = {
-    suggestions: [],
-    acceptances: [],
-    linesSuggested: [],
-    linesAccepted: [],
-    chats: [],
-    chatInsertions: [],
-    chatCopies: [],
-  };
-
-  for (const index in rawMarData) {
-    const day = rawMarData[index];
-
-    const ideChat = day.copilot_ide_chat || {};
-    const ideCompletions = day.copilot_ide_code_completions || {};
-
-    let dayTotals = {
-      suggestions: 0,
-      acceptances: 0,
-      linesSuggested: 0,
-      linesAccepted: 0,
-      chats: 0,
-      chatInsertions: 0,
-      chatCopies: 0,
-    };
-
-    (ideChat.editors || []).forEach(editor => {
-      (editor.models || []).forEach(model => {
-        // Overall totals
-        marDataTotals.chats += model.total_chats || 0;
-        marDataTotals.chatInsertions += model.total_chat_insertion_events || 0;
-        marDataTotals.chatCopies += model.total_chat_copy_events || 0;
-
-        // Monthly data for graphing
-        dayTotals.chats += model.total_chats || 0;
-        dayTotals.chatInsertions += model.total_chat_insertion_events || 0;
-        dayTotals.chatCopies += model.total_chat_copy_events || 0;
-      });
-    });
-
-    (ideCompletions.editors || []).forEach(editor => {
-      (editor.models || []).forEach(model => {
-        (model.languages || []).forEach(language => {
-          // Overall totals
-          marDataTotals.suggestions += language.total_code_suggestions || 0;
-          marDataTotals.acceptances += language.total_code_acceptances || 0;
-          marDataTotals.linesSuggested +=
-            language.total_code_lines_suggested || 0;
-          marDataTotals.linesAccepted +=
-            language.total_code_lines_accepted || 0;
-
-          // Monthly data for graphing
-          dayTotals.suggestions += language.total_code_suggestions || 0;
-          dayTotals.acceptances += language.total_code_acceptances || 0;
-          dayTotals.linesSuggested += language.total_code_lines_suggested || 0;
-          dayTotals.linesAccepted += language.total_code_lines_accepted || 0;
-        });
-      });
-    });
-
-    marDataMonthly.suggestions.push({
-      date: day.date,
-      count: dayTotals.suggestions,
-    });
-    marDataMonthly.acceptances.push({
-      date: day.date,
-      count: dayTotals.acceptances,
-    });
-    marDataMonthly.linesSuggested.push({
-      date: day.date,
-      count: dayTotals.linesSuggested,
-    });
-    marDataMonthly.linesAccepted.push({
-      date: day.date,
-      count: dayTotals.linesAccepted,
-    });
-    marDataMonthly.chats.push({ date: day.date, count: dayTotals.chats });
-    marDataMonthly.chatInsertions.push({
-      date: day.date,
-      count: dayTotals.chatInsertions,
-    });
-    marDataMonthly.chatCopies.push({
-      date: day.date,
-      count: dayTotals.chatCopies,
-    });
-  }
+  const {
+    totals: marDataTotals,
+    monthly: marDataMonthly,
+    users: userMetricsMar,
+  } = marData;
 
   // Get the start and end dates for both datasets
   const febStartDate =
@@ -261,99 +82,19 @@ function LegacyDataVisualisation({ data, isLoading }) {
   const formattedMarStartDate = formatDate(marStartDate);
   const formattedMarEndDate = formatDate(marEndDate);
 
-  // Prepare graph data with acceptance rates for Mar dataset
-  const marCompletionGraphData = marDataMonthly.suggestions.map(
-    (item, index) => ({
-      date: item.date,
-      suggestions: item.count,
-      acceptances: marDataMonthly.acceptances[index]
-        ? marDataMonthly.acceptances[index].count
-        : 0,
-      acceptanceRate:
-        (item.count
-          ? marDataMonthly.acceptances[index]
-            ? marDataMonthly.acceptances[index].count / item.count
-            : 0
-          : 0) * 100,
-    })
-  );
+  // Prepare graph data for Feb and Mar datasets
 
-  // Prepare graph data with insertion and copy rates for Mar chats
-  const marChatGraphData = marDataMonthly.chats.map((item, index) => {
-    const chatInsertions = marDataMonthly.chatInsertions[index]
-      ? marDataMonthly.chatInsertions[index].count
-      : 0;
-    const chatCopies = marDataMonthly.chatCopies[index]
-      ? marDataMonthly.chatCopies[index].count
-      : 0;
+  // Completion Data
+  const febCompletionGraphData = prepareCompletionGraphData(febDataMonthly);
+  const marCompletionGraphData = prepareCompletionGraphData(marDataMonthly);
 
-    return {
-      date: item.date,
-      chats: item.count,
-      chatInsertions,
-      chatCopies,
-      chatInsertionRate: item.count ? (chatInsertions / item.count) * 100 : 0,
-      chatCopyRate: item.count ? (chatCopies / item.count) * 100 : 0,
-    };
-  });
+  // Chat Data
+  const febChatGraphData = prepareFebruaryChatGraphData(febDataMonthly);
+  const marChatGraphData = prepareMarchChatGraphData(marDataMonthly);
 
-  // Prepare graph data with acceptance rates for Feb dataset
-  const febCompletionGraphData = febDataMonthly.suggestions.map(
-    (item, index) => ({
-      date: item.date,
-      suggestions: item.count,
-      acceptances: febDataMonthly.acceptances[index]
-        ? febDataMonthly.acceptances[index].count
-        : 0,
-      acceptanceRate:
-        (item.count
-          ? febDataMonthly.acceptances[index]
-            ? febDataMonthly.acceptances[index].count / item.count
-            : 0
-          : 0) * 100,
-    })
-  );
-
-  // Prepare graph data with acceptance rates for Feb chats
-  const febChatGraphData = febDataMonthly.chats.map((item, index) => {
-    const chatAcceptances = febDataMonthly.chatAcceptances[index]
-      ? febDataMonthly.chatAcceptances[index].count
-      : 0;
-
-    return {
-      date: item.date,
-      chats: item.count,
-      chatAcceptances,
-      chatAcceptanceRate: item.count ? (chatAcceptances / item.count) * 100 : 0,
-    };
-  });
-
-  // Prepare user metrics graph data for Mar and Feb datasets
-  const marUserMetricsGraphData = userMetricsMar.totalUsers.map(
-    (item, index) => ({
-      date: item.date,
-      totalUsers: item.count,
-      completionUsers: userMetricsMar.completionUsers[index]
-        ? userMetricsMar.completionUsers[index].count
-        : 0,
-      chatUsers: userMetricsMar.chatUsers[index]
-        ? userMetricsMar.chatUsers[index].count
-        : 0,
-    })
-  );
-
-  const febUserMetricsGraphData = userMetricsFeb.totalUsers.map(
-    (item, index) => ({
-      date: item.date,
-      totalUsers: item.count,
-      completionUsers: userMetricsFeb.completionUsers[index]
-        ? userMetricsFeb.completionUsers[index].count
-        : 0,
-      chatUsers: userMetricsFeb.chatUsers[index]
-        ? userMetricsFeb.chatUsers[index].count
-        : 0,
-    })
-  );
+  // User Metrics Data
+  const febUserMetricsGraphData = prepareUserMetricsGraphData(userMetricsFeb);
+  const marUserMetricsGraphData = prepareUserMetricsGraphData(userMetricsMar);
 
   return (
     <div>

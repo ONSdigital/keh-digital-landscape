@@ -1,4 +1,4 @@
-import customFetch from './customFetch';
+import customFetch from '../customFetch';
 
 /**
  * Fetches legacy Copilot data based on the specified type.

@@ -7,7 +7,7 @@ import {
   fetchTeamsHistoricData,
   extractTeamData,
 } from '../utilities/getUsageData';
-import { getLegacyCopilotData } from '../utilities/getLegacyCopilotData';
+import { getLegacyCopilotData } from '../utilities/legacyCopilotData/getLegacyCopilotData';
 import PageBanner from '../components/PageBanner/PageBanner';
 import '../styles/ReviewPage.css';
 import '../styles/CopilotPage.css';
