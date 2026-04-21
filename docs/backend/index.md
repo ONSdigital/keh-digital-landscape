@@ -121,6 +121,7 @@ Located in `routes/review.js`, these provide review functionality requiring revi
 Located in `routes/copilot.js`, these provide GitHub Copilot metrics:
 
 - **GET `/org/historic`** - Get Copilot organisation historic usage data from S3
+- **GET `/org/legacy`** - Get Copilot organisation legacy usage data from S3 (data for periods before March 2026 and February 2025 - [Legacy Copilot Data Documentation](../functionality/legacyCopilotData.md))
 - **GET `/teams/historic`** - Get historic Copilot usage data for all teams from S3 (requires authentication)
 - **GET `/seats`** - Get Copilot seat information
 - **GET `/teams`** - Get all teams the user is a member of in the organisation (requires authentication)
@@ -148,7 +149,7 @@ Manages all Amazon S3 operations:
 
 - Singleton pattern for consistent S3 client instances
 - Supports multiple buckets (main, TAT, Copilot)
-- Methods: `getObject()`, `putObject()`, `getObjectViaSignedUrl()`
+- Methods: `getObject()`, `putObject()`
 - Centralised error handling and logging
 
 ### GitHub Service (`services/githubService.js`)

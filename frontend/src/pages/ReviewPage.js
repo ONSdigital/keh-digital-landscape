@@ -1142,17 +1142,7 @@ const ReviewPage = () => {
                 </div>
               </div>
               <div>
-                <div
-                  id="directorate-title"
-                  style={{
-                    paddingRight: '16px',
-                    fontWeight: 'bold',
-                    fontSize: '1.6em',
-                    color: 'white',
-                    float: 'right',
-                    textShadow: '1px 1px 2px black',
-                  }}
-                >
+                <div id="directorate-title" className="admin-directorate-title">
                   {getDirectorateName(selectedDirectorate, directorates)}
                 </div>
                 <p style={{ float: 'left' }}>
