@@ -399,26 +399,6 @@ function CopilotDashboard() {
               });
             }}
           />
-          <div className="disclaimer-banner" style={{ margin: '1em' }}>
-            <p>
-              <b>Please Note:</b> This dashboard is currently under active
-              development to migrate to new GitHub Copilot data endpoints.
-              During this transition period, some data may not be fully
-              up-to-date. We are working to refresh this page to use the latest
-              available data and appreciate your understanding as we make these
-              improvements.
-            </p>
-            <p>
-              Please see the blog post from GitHub regarding these changes:{' '}
-              <a
-                href="https://github.blog/changelog/2026-01-29-closing-down-notice-of-legacy-copilot-metrics-apis/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Closing down notice of legacy Copilot Metrics APIs
-              </a>
-            </p>
-          </div>
           <div className="admin-container" tabIndex="0">
             {!isSelectingTeam && (
               <>
