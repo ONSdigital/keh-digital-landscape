@@ -4,9 +4,10 @@ import { csvData } from './data/csvData';
 import { nodeBlipCases } from './data/nodeBlipCases';
 import { reviewPositionCases } from './data/reviewPositionCases';
 import { directorateData } from './data/directorateData';
-import { getTechRadarSubmissionsUrl } from '../../../frontend/src/constants/radarConstants';
 
-const techRadarSubmissionsUrl = getTechRadarSubmissionsUrl(process.env);
+const techRadarSubmissionsUrl =
+  process.env.VITE_TECH_RADAR_SUBMISSIONS_URL ||
+  'https://example.test/mock-tech-radar-submissions';
 
 // Function to intercept and mock the API call
 const interceptAPICall = async ({ page }) => {
