@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
         {
           name = "VITE_TECH_RADAR_SUBMISSIONS_URL",
           value = var.tech_radar_submissions_url
-        }
+        },
         {
           name  = "IMAGE_TAG",
           value = data.aws_ecr_image.frontend_image.image_tag

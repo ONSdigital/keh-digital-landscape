@@ -115,5 +115,5 @@ terraform apply \
 	-var "copilot_bucket_name=$copilot_bucket_name" \
 	-var "support_mail=$support_mail" \
 	-var "alerts_channel_id=$alerts_channel_id" \
-	-var "submissions_url=$submissions_url" \
+	-var "tech_radar_submissions_url=$tech_radar_submissions_url" \
 	-auto-approve
