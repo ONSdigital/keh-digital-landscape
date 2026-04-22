@@ -213,7 +213,7 @@ variable "alerts_channel_id" {
   type        = string
 }
 
-variable "tech_radar_submissions_url {
+variable "tech_radar_submissions_url" {
   description = "URL for submitting tech radar updates"
   type        = string
 }
