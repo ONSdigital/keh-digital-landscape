@@ -20,7 +20,6 @@ import {
 import sendAlert from '../components/Alerts/Alerts';
 import Tooltip from '../components/Tooltip/Tooltip';
 import Layout from '../components/Layout/Layout';
-import { getTechRadarSubmissionsUrl } from '../constants/radarConstants';
 
 /**
  * RadarPage component for displaying the radar page.
@@ -28,7 +27,7 @@ import { getTechRadarSubmissionsUrl } from '../constants/radarConstants';
  * @returns {JSX.Element} - The RadarPage component.
  */
 function RadarPage() {
-  const techRadarSubmissionsUrl = getTechRadarSubmissionsUrl(import.meta.env);
+  const techRadarSubmissionsUrl = import.meta.env.VITE_TECH_RADAR_SUBMISSIONS_URL || '';
 
   const fetchedOnce = useRef(false);
   const projectsFetchedOnce = useRef(false);
