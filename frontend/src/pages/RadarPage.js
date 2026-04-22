@@ -27,7 +27,8 @@ import Layout from '../components/Layout/Layout';
  * @returns {JSX.Element} - The RadarPage component.
  */
 function RadarPage() {
-  const techRadarSubmissionsUrl = import.meta.env.VITE_TECH_RADAR_SUBMISSIONS_URL || '';
+  const techRadarSubmissionsUrl =
+    import.meta.env.VITE_TECH_RADAR_SUBMISSIONS_URL || '';
 
   const fetchedOnce = useRef(false);
   const projectsFetchedOnce = useRef(false);
