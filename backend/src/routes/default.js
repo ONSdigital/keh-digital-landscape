@@ -16,10 +16,7 @@ const router = express.Router();
  */
 router.get('/csv', async (req, res) => {
   try {
-    const jsonData = await s3Service.getObjectViaSignedUrl(
-      'tat',
-      'new_project_data.json'
-    );
+    const jsonData = await s3Service.getObject('tat', 'new_project_data.json');
 
     // Transform JSON data to CSV format using the utility function that handles reverse dependencies
     const transformedData = transformProjectsToCSVFormat(jsonData.projects);
@@ -41,10 +38,7 @@ router.get('/csv', async (req, res) => {
  */
 router.get('/tech-radar/json', async (req, res) => {
   try {
-    const jsonData = await s3Service.getObjectViaSignedUrl(
-      'main',
-      'onsRadarSkeleton.json'
-    );
+    const jsonData = await s3Service.getObject('main', 'onsRadarSkeleton.json');
     res.json(jsonData);
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
@@ -66,10 +60,7 @@ router.get('/tech-radar/json', async (req, res) => {
 router.get('/json', async (req, res) => {
   try {
     const { datetime, archived } = req.query;
-    const jsonData = await s3Service.getObjectViaSignedUrl(
-      'main',
-      'repositories.json'
-    );
+    const jsonData = await s3Service.getObject('main', 'repositories.json');
 
     // First filter by date if provided
     let filteredRepos = jsonData.repositories;
@@ -175,10 +166,7 @@ router.get('/repository/project/json', async (req, res) => {
       .split(',')
       .map(repo => repo.toLowerCase().trim());
 
-    const jsonData = await s3Service.getObjectViaSignedUrl(
-      'main',
-      'repositories.json'
-    );
+    const jsonData = await s3Service.getObject('main', 'repositories.json');
 
     // Filter repositories based on provided names
     let filteredRepos = jsonData.repositories.filter(repo =>

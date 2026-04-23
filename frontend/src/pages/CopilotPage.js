@@ -23,13 +23,14 @@ import { TbLogout } from 'react-icons/tb';
 import '../styles/components/MultiSelect.css';
 import { toast } from 'react-hot-toast';
 import Layout from '../components/Layout/Layout';
+import LegacyDataVisualisation from '../components/Copilot/Dashboards/LegacyData';
 
 function CopilotDashboard() {
   const navigate = useNavigate();
   const { scope: urlScope } = useParams();
   const [searchParams] = useSearchParams();
 
-  const initialiseDateRange = data => {
+  const initialiseDateRange = (data = []) => {
     const end = data[data.length - 1]?.day
       ? new Date(data[data.length - 1].day)
       : new Date();
@@ -100,7 +101,7 @@ function CopilotDashboard() {
   };
 
   const [historicOrgData, setHistoricOrgData] = useState({
-    allUsage: [], // Equivalent of day usage
+    allUsage: [],
     weekUsage: [],
     monthUsage: [],
     yearUsage: [],
@@ -124,7 +125,8 @@ function CopilotDashboard() {
   const [scope, setScope] = useState('organisation');
   const [isHistoricLoading, setIsHistoricLoading] = useState(false);
   const [hasFetchedHistoric, setHasFetchedHistoric] = useState(false);
-  const { getHistoricUsageData } = useData();
+  const { getHistoricUsageData, getLegacyUsageData, legacyCopilotData } =
+    useData();
   const [viewDatesBy, setViewDatesBy] = useState('Day');
   const [isSelectingTeam, setIsSelectingTeam] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -137,6 +139,7 @@ function CopilotDashboard() {
   const [userTeamSlugs, setUserTeamSlugs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [teamsHistoricData, setTeamsHistoricData] = useState(null);
+  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
 
   // Filter listed available teams based on search term
   const filteredAvailableTeams = useMemo(() => {
@@ -144,7 +147,9 @@ function CopilotDashboard() {
     return availableTeams.filter(
       team =>
         team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        team.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (team.description || '')
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
     );
   }, [availableTeams, searchTerm]);
 
@@ -351,6 +356,16 @@ function CopilotDashboard() {
     return `#${'0'.repeat(6 - color.length)}${color}`;
   };
 
+  // Fetch legacy Copilot data on mount
+  useEffect(() => {
+    const fetchLegacy = async () => {
+      setIsLegacyLoading(true);
+      await getLegacyUsageData();
+      setIsLegacyLoading(false);
+    };
+    fetchLegacy();
+  }, []);
+
   return (
     <>
       <Layout
@@ -384,26 +399,6 @@ function CopilotDashboard() {
               });
             }}
           />
-          <div className="disclaimer-banner" style={{ margin: '1em' }}>
-            <p>
-              <b>Please Note:</b> This dashboard is currently under active
-              development to migrate to new GitHub Copilot data endpoints.
-              During this transition period, some data may not be fully
-              up-to-date. We are working to refresh this page to use the latest
-              available data and appreciate your understanding as we make these
-              improvements.
-            </p>
-            <p>
-              Please see the blog post from GitHub regarding these changes:{' '}
-              <a
-                href="https://github.blog/changelog/2026-01-29-closing-down-notice-of-legacy-copilot-metrics-apis/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Closing down notice of legacy Copilot Metrics APIs
-              </a>
-            </p>
-          </div>
           <div className="admin-container" tabIndex="0">
             {!isSelectingTeam && (
               <>
@@ -655,6 +650,11 @@ function CopilotDashboard() {
                 viewDatesBy="Day"
               />
             )}
+
+            <LegacyDataVisualisation
+              data={legacyCopilotData}
+              isLoading={isLegacyLoading}
+            />
           </div>
         </div>
       </Layout>

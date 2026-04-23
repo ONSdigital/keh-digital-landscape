@@ -48,6 +48,7 @@ copilot_bucket_name=$(echo "$secrets" | jq -r .copilot_bucket_name)
 
 support_mail=$(echo "$secrets" | jq -r .support_mail)
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
+tech_radar_submissions_url=$(echo "$secrets" | jq -r .tech_radar_submissions_url)
 
 # Cognito variables for AzureAD SAML
 domain_extension=$(echo "$secrets" | jq -r .domain_extension)
@@ -126,4 +127,5 @@ terraform apply \
 	-var "copilot_bucket_name=$copilot_bucket_name" \
 	-var "support_mail=$support_mail" \
 	-var "alerts_channel_id=$alerts_channel_id" \
+	-var "tech_radar_submissions_url=$tech_radar_submissions_url" \
 	-auto-approve

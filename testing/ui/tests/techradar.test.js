@@ -5,6 +5,10 @@ import { nodeBlipCases } from './data/nodeBlipCases';
 import { reviewPositionCases } from './data/reviewPositionCases';
 import { directorateData } from './data/directorateData';
 
+const techRadarSubmissionsUrl =
+  process.env.VITE_TECH_RADAR_SUBMISSIONS_URL ||
+  'https://example.test/mock-tech-radar-submissions';
+
 // Function to intercept and mock the API call
 const interceptAPICall = async ({ page }) => {
   // Function to intercept and mock the API radarData call
@@ -122,6 +126,22 @@ test.describe('Check projects available under Tech Radar', () => {
     const blip40 = page.locator('text', { hasText: '40' });
     await expect(blip40).toHaveCount(0);
   });
+});
+
+test('Check technology change suggestion message is displayed with repository link', async ({
+  page,
+}) => {
+  await interceptAPICall({ page });
+
+  await expect(
+    page.getByText(
+      'Want to suggest a technology change on the radar? View this'
+    )
+  ).toBeVisible();
+
+  const suggestionLink = page.getByRole('link', { name: 'repository' });
+  await expect(suggestionLink).toBeVisible();
+  await expect(suggestionLink).toHaveAttribute('href', techRadarSubmissionsUrl);
 });
 
 // Multiple Directorate Support

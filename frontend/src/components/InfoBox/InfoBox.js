@@ -292,7 +292,10 @@ const InfoBox = ({
             )}
           </button>
         </div>
-        <p>Click a box to show the description of the event</p>
+        <p>
+          Click a date box below to read reasoning behind status changes over
+          time
+        </p>
       </div>
 
       <div className="timeline-container" tabIndex={0}>

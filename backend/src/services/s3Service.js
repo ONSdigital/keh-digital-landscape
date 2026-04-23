@@ -3,7 +3,6 @@ const {
   GetObjectCommand,
   PutObjectCommand,
 } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const logger = require('../config/logger');
 
 /**
@@ -73,44 +72,6 @@ class S3Service {
       logger.error(`Error putting object to S3: ${bucket}/${key}`, {
         error: error.message,
       });
-      throw error;
-    }
-  }
-
-  /**
-   * Get a signed URL for an S3 object and fetch its content
-   * @param {string} bucket - Bucket name or bucket key from this.buckets
-   * @param {string} key - Object key
-   * @param {number} expiresIn - URL expiration time in seconds (default: 300)
-   * @returns {Promise<Object>} Parsed JSON object
-   */
-  async getObjectViaSignedUrl(bucket, key, expiresIn = 300) {
-    try {
-      const bucketName = this.buckets[bucket] || bucket;
-      const command = new GetObjectCommand({
-        Bucket: bucketName,
-        Key: key,
-      });
-
-      const signedUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn,
-      });
-
-      const response = await fetch(signedUrl);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const jsonData = await response.json();
-      logger.info(
-        `Successfully fetched ${bucket}/${key} object via signed URL`
-      );
-      return jsonData;
-    } catch (error) {
-      logger.error(
-        `Error getting object via signed URL from S3: ${bucket}/${key}`,
-        { error: error.message }
-      );
       throw error;
     }
   }
