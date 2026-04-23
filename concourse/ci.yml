@@ -324,7 +324,7 @@ jobs:
               params:
                 env: prod
 
-  - name: import-storage-bucket-and-apply
+  - name: import-storage-bucket-and-apply-dev
     public: true
     plan:
       - get: resource-repo
@@ -341,8 +341,8 @@ jobs:
             - name: resource-repo
           params:
             # kics-scan ignore-line (This one alert is a false positive)
-            secrets: ((sdp_((env))_digital_landscape_secrets))
-            env: ((env))
+            secrets: ((sdp_dev_digital_landscape_secrets))
+            env: dev
           run:
             path: sh
             args:
@@ -359,9 +359,65 @@ jobs:
                 export AWS_ACCESS_KEY_ID="$aws_access_key_id"
                 export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
 
-                if [ "$env" != "prod" ]; then
-                  env="dev"
+                cd resource-repo/terraform/storage
+                terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
+
+                bucket_name="${domain}-${service_subdomain}"
+
+                if ! terraform state show aws_s3_bucket.data_bucket >/dev/null 2>&1; then
+                  terraform import \
+                    -var "aws_account_id=${aws_account_id}" \
+                    -var "aws_access_key_id=${aws_access_key_id}" \
+                    -var "aws_secret_access_key=${aws_secret_access_key}" \
+                    -var "domain=${domain}" \
+                    -var "service_subdomain=${service_subdomain}" \
+                    aws_s3_bucket.data_bucket "${bucket_name}"
+                else
+                  echo "aws_s3_bucket.data_bucket already in state; skipping import."
                 fi
+
+                terraform apply \
+                  -var "aws_account_id=${aws_account_id}" \
+                  -var "aws_access_key_id=${aws_access_key_id}" \
+                  -var "aws_secret_access_key=${aws_secret_access_key}" \
+                  -var "domain=${domain}" \
+                  -var "service_subdomain=${service_subdomain}" \
+                  -auto-approve
+
+  - name: import-storage-bucket-and-apply-prod
+    public: true
+    plan:
+      - get: resource-repo
+        trigger: false
+      - task: import-storage-and-apply
+        privileged: true
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: hashicorp/terraform
+          inputs:
+            - name: resource-repo
+          params:
+            # kics-scan ignore-line (This one alert is a false positive)
+            secrets: ((sdp_prod_digital_landscape_secrets))
+            env: prod
+          run:
+            path: sh
+            args:
+              - -euc
+              - |
+                apk add --no-cache jq
+
+                aws_account_id=$(echo "$secrets" | jq -r .aws_account_id)
+                aws_access_key_id=$(echo "$secrets" | jq -r .aws_access_key_id)
+                aws_secret_access_key=$(echo "$secrets" | jq -r .aws_secret_access_key)
+                service_subdomain=$(echo "$secrets" | jq -r .service_subdomain)
+                domain=$(echo "$secrets" | jq -r .domain)
+
+                export AWS_ACCESS_KEY_ID="$aws_access_key_id"
+                export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
 
                 cd resource-repo/terraform/storage
                 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
