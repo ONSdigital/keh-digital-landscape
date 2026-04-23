@@ -27,6 +27,9 @@ import Layout from '../components/Layout/Layout';
  * @returns {JSX.Element} - The RadarPage component.
  */
 function RadarPage() {
+  const techRadarSubmissionsUrl =
+    import.meta.env.VITE_TECH_RADAR_SUBMISSIONS_URL || '';
+
   const fetchedOnce = useRef(false);
   const projectsFetchedOnce = useRef(false);
   const [data, setData] = useState(null);
@@ -863,6 +866,21 @@ function RadarPage() {
             <div id="directorate-title" className="radar-directorate-title">
               {directorateName}
             </div>
+          </div>
+
+          <div
+            className="disclaimer-banner"
+            style={{ marginTop: '16px', marginBottom: '16px' }}
+          >
+            Want to suggest a technology change on the radar? View this{' '}
+            <a
+              href={techRadarSubmissionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              repository
+            </a>
+            .
           </div>
 
           <div className="quadrant-lists">

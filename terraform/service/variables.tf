@@ -213,6 +213,11 @@ variable "alerts_channel_id" {
   type        = string
 }
 
+variable "tech_radar_submissions_url" {
+  description = "URL for submitting tech radar updates"
+  type        = string
+}
+
 locals {
   url         = "${var.domain}.${var.domain_extension}"
   service_url = "${var.service_subdomain}.${local.url}"
