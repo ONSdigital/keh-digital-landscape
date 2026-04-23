@@ -7,6 +7,7 @@ import {
 } from '../utilities/getRepositoryData';
 import { fetchBanners } from '../utilities/getBanner';
 import { fetchOrgHistoricUsageData } from '../utilities/getUsageData';
+import { getLegacyCopilotData } from '../utilities/legacyCopilotData/getLegacyCopilotData';
 import { fetchUserInfo } from '../utilities/getUser';
 /**
  * DataContext provides centralized data management and caching for the application.
@@ -29,6 +30,10 @@ export function DataProvider({ children }) {
   const [repositoryStats, setRepositoryStats] = useState(new Map());
   const [pageBanners, setPageBanners] = useState(new Map());
   const [historicUsageData, setHistoricUsageData] = useState(null);
+  const [legacyCopilotData, setLegacyCopilotData] = useState({
+    feb25: null,
+    mar26: null,
+  });
   const [userData, setUserData] = useState(null);
 
   const pendingRequests = useRef({
@@ -38,6 +43,7 @@ export function DataProvider({ children }) {
     repositoryStats: new Map(),
     banners: new Map(),
     historicUsageData: null,
+    legacyCopilotData: null,
     userData: null,
   });
 
@@ -225,6 +231,41 @@ export function DataProvider({ children }) {
   };
 
   /**
+   * Fetches and caches legacy Copilot usage data.
+   *
+   * @param {boolean} [forceRefresh=false] - Whether to force a refresh of the cached data
+   * @returns {Promise<Object>} Legacy Copilot data for the selected snapshots
+   */
+  const getLegacyUsageData = async (forceRefresh = false) => {
+    if (
+      !forceRefresh &&
+      (legacyCopilotData.feb25 !== null || legacyCopilotData.mar26 !== null)
+    ) {
+      return legacyCopilotData;
+    }
+
+    if (pendingRequests.current.legacyCopilotData) {
+      return pendingRequests.current.legacyCopilotData;
+    }
+
+    const promise = Promise.all([
+      getLegacyCopilotData('pre-0225'),
+      getLegacyCopilotData('pre-0326'),
+    ]).then(([legacyDataFeb25, legacyDataMar26]) => {
+      const data = {
+        feb25: legacyDataFeb25,
+        mar26: legacyDataMar26,
+      };
+      setLegacyCopilotData(data);
+      pendingRequests.current.legacyCopilotData = null;
+      return data;
+    });
+
+    pendingRequests.current.legacyCopilotData = promise;
+    return promise;
+  };
+
+  /**
    * Fetches and caches user information.
    *
    * @param {boolean} [forceRefresh=false] - Whether to force a refresh of the cached data
@@ -256,6 +297,10 @@ export function DataProvider({ children }) {
     setRepositoryStats(new Map());
     setPageBanners(new Map());
     setHistoricUsageData(null);
+    setLegacyCopilotData({
+      feb25: null,
+      mar26: null,
+    });
     setUserData(null);
     pendingRequests.current = {
       csv: null,
@@ -264,6 +309,7 @@ export function DataProvider({ children }) {
       repositoryStats: new Map(),
       banners: new Map(),
       historicUsageData: null,
+      legacyCopilotData: null,
       userData: null,
     };
   };
@@ -281,6 +327,8 @@ export function DataProvider({ children }) {
         getPageBanners,
         clearCache,
         getHistoricUsageData,
+        getLegacyUsageData,
+        legacyCopilotData,
         getUserData,
       }}
     >

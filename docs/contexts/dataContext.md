@@ -2,18 +2,22 @@
 
 ## Overview
 
-The DataContext provides centralised data management and caching for the Tech Radar application. It handles fetching and caching of CSV data, Tech Radar data, repository data, and repository statistics.
+The DataContext provides centralised data management and caching for the Tech Radar application. It handles fetching and caching of CSV data, Tech Radar data, repository data, repository statistics, Copilot historic usage data, Copilot legacy usage data, banners, and user data.
 
 ## Core Functionality
 
 ### State Management
 
-The context maintains four main pieces of state:
+The context maintains these main pieces of state:
 
 - csvData: Project and technology information
 - techRadarData: Tech Radar entries and their statuses
 - repositoryData: Repository-specific information (cached with Map)
 - repositoryStats: General repository statistics (cached with Map)
+- pageBanners: Page-specific banner content (cached with Map)
+- historicUsageData: Organisation-level Copilot historic usage data
+- legacyCopilotData: Legacy Copilot snapshots for pre-Feb 2025 and pre-Mar 2026
+- userData: User profile information
 
 ### Caching Strategy
 
@@ -39,12 +43,12 @@ const { getTechRadarData, getCsvData } = useData();
 
 // Fetches and caches tech radar data
 useEffect(() => {
-  getTechRadarData().then((data) => setData(data));
+  getTechRadarData().then(data => setData(data));
 }, [getTechRadarData]);
 
 // Fetches and caches project data
 useEffect(() => {
-  getCsvData().then((data) => setProjectsData(data));
+  getCsvData().then(data => setProjectsData(data));
 }, [getCsvData]);
 ```
 
@@ -91,12 +95,33 @@ const handleRefresh = async () => {
 
 ## Cache Invalidation
 
-The context provides a clearCache method to reset all cached data:
+The context provides a `clearCache` method to reset all cached data (including legacy Copilot data):
 
 ```javascript
 const { clearCache } = useData();
 clearCache(); // Clears all cached data
 ```
+
+## Copilot Legacy Data
+
+Legacy Copilot data is now fetched via DataContext to avoid page-level duplicate requests.
+
+```javascript
+const { getLegacyUsageData, legacyCopilotData } = useData();
+
+useEffect(() => {
+  getLegacyUsageData();
+}, [getLegacyUsageData]);
+```
+
+- `getLegacyUsageData(forceRefresh = false)` fetches both legacy snapshots:
+  - `pre-0225`
+  - `pre-0326`
+- `legacyCopilotData` shape:
+  - `feb25`
+  - `mar26`
+
+The method uses the same deduplication pattern as other context fetchers (checks cache, then checks pending request, then performs fetch).
 
 ## Error Handling
 

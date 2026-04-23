@@ -149,7 +149,7 @@ Converts a project object from JSON structure to CSV-compatible format.
 ```javascript
 // Technical contact with ONS email
 const technicalContactUser = project.user.find(
-  (u) =>
+  u =>
     u.roles.includes('Technical Contact') &&
     (u.email?.includes('@ons.gov.uk') || u.email?.includes('@ext.ons.gov.uk'))
 );
@@ -215,7 +215,9 @@ const developed =
 **Example Usage:**
 
 ```javascript
-const { transformProjectToCSVFormat } = require('./utilities/projectDataTransformer');
+const {
+  transformProjectToCSVFormat,
+} = require('./utilities/projectDataTransformer');
 
 const rawProject = {
   details: [{ name: 'Digital Platform', short_name: 'DP' }],
@@ -274,7 +276,9 @@ Updates technology names in arrays while tracking whether changes occurred.
 **Example Usage:**
 
 ```javascript
-const { updateTechnologyInArray } = require('./utilities/updateTechnologyInArray');
+const {
+  updateTechnologyInArray,
+} = require('./utilities/updateTechnologyInArray');
 
 const technologies = ['React', 'Vue.js', 'Angular'];
 
@@ -316,15 +320,20 @@ async function authenticatedGitHubOperation() {
 ### Bulk Data Transformation
 
 ```javascript
-const { transformProjectToCSVFormat } = require('./utilities/projectDataTransformer');
+const {
+  transformProjectToCSVFormat,
+} = require('./utilities/projectDataTransformer');
 
 async function exportProjectsToCSV(projects) {
   const csvData = projects
-    .map((project) => {
+    .map(project => {
       try {
         return transformProjectToCSVFormat(project);
       } catch (error) {
-        console.error(`Failed to transform project ${project.details?.[0]?.name}:`, error);
+        console.error(
+          `Failed to transform project ${project.details?.[0]?.name}:`,
+          error
+        );
         return null;
       }
     })
@@ -337,7 +346,9 @@ async function exportProjectsToCSV(projects) {
 ### Technology Normalisation
 
 ```javascript
-const { updateTechnologyInArray } = require('./utilities/updateTechnologyInArray');
+const {
+  updateTechnologyInArray,
+} = require('./utilities/updateTechnologyInArray');
 
 function normaliseProjectTechnologies(project, normalisationMap) {
   let updated = false;
@@ -345,7 +356,11 @@ function normaliseProjectTechnologies(project, normalisationMap) {
 
   // Update main languages
   for (const [from, to] of Object.entries(normalisationMap)) {
-    const result = updateTechnologyInArray(project.architecture.languages.main, from, to);
+    const result = updateTechnologyInArray(
+      project.architecture.languages.main,
+      from,
+      to
+    );
 
     if (result.updated) {
       updatedProject.architecture.languages.main = result.array;

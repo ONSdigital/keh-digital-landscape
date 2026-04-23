@@ -8,6 +8,7 @@ import {
   extractTeamData,
 } from '../utilities/getUsageData';
 import PageBanner from '../components/PageBanner/PageBanner';
+import '../styles/ReviewPage.css';
 import '../styles/CopilotPage.css';
 import { useData } from '../contexts/dataContext';
 import {
@@ -22,17 +23,18 @@ import { TbLogout } from 'react-icons/tb';
 import '../styles/components/MultiSelect.css';
 import { toast } from 'react-hot-toast';
 import Layout from '../components/Layout/Layout';
+import LegacyDataVisualisation from '../components/Copilot/Dashboards/LegacyData';
 
 function CopilotDashboard() {
   const navigate = useNavigate();
   const { scope: urlScope } = useParams();
   const [searchParams] = useSearchParams();
 
-  const initialiseDateRange = data => {
-    const end = data[data.length - 1]?.date
-      ? new Date(data[data.length - 1].date)
+  const initialiseDateRange = (data = []) => {
+    const end = data[data.length - 1]?.day
+      ? new Date(data[data.length - 1].day)
       : new Date();
-    const start = data[0]?.date ? new Date(data[0].date) : new Date();
+    const start = data[0]?.day ? new Date(data[0].day) : new Date();
 
     return {
       start: start.toISOString().slice(0, 10),
@@ -43,6 +45,7 @@ function CopilotDashboard() {
   // Cancellation ref for fetchTeamData
   const fetchTeamDataCancelRef = React.useRef({ cancelled: false });
 
+  // Currently not used due to team-level Copilot usage being deactivated
   const fetchTeamData = async slug => {
     fetchTeamDataCancelRef.current.cancelled = false;
     setIsTeamLoading(true);
@@ -98,7 +101,7 @@ function CopilotDashboard() {
   };
 
   const [historicOrgData, setHistoricOrgData] = useState({
-    allUsage: [], // Equivalent of day usage
+    allUsage: [],
     weekUsage: [],
     monthUsage: [],
     yearUsage: [],
@@ -122,7 +125,8 @@ function CopilotDashboard() {
   const [scope, setScope] = useState('organisation');
   const [isHistoricLoading, setIsHistoricLoading] = useState(false);
   const [hasFetchedHistoric, setHasFetchedHistoric] = useState(false);
-  const { getHistoricUsageData } = useData();
+  const { getHistoricUsageData, getLegacyUsageData, legacyCopilotData } =
+    useData();
   const [viewDatesBy, setViewDatesBy] = useState('Day');
   const [isSelectingTeam, setIsSelectingTeam] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -135,6 +139,7 @@ function CopilotDashboard() {
   const [userTeamSlugs, setUserTeamSlugs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [teamsHistoricData, setTeamsHistoricData] = useState(null);
+  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
 
   // Filter listed available teams based on search term
   const filteredAvailableTeams = useMemo(() => {
@@ -142,7 +147,9 @@ function CopilotDashboard() {
     return availableTeams.filter(
       team =>
         team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        team.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (team.description || '')
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
     );
   }, [availableTeams, searchTerm]);
 
@@ -199,6 +206,7 @@ function CopilotDashboard() {
 
     const fetchTeamsHistoric = async () => {
       try {
+        // Returns an empty array until aggregated teams usage data is collected again
         const teamsData = await fetchTeamsHistoricData();
         if (teamsData) {
           setTeamsHistoricData(teamsData);
@@ -348,6 +356,16 @@ function CopilotDashboard() {
     return `#${'0'.repeat(6 - color.length)}${color}`;
   };
 
+  // Fetch legacy Copilot data on mount
+  useEffect(() => {
+    const fetchLegacy = async () => {
+      setIsLegacyLoading(true);
+      await getLegacyUsageData();
+      setIsLegacyLoading(false);
+    };
+    fetchLegacy();
+  }, []);
+
   return (
     <>
       <Layout
@@ -364,10 +382,7 @@ function CopilotDashboard() {
           <PageBanner
             title="Copilot Usage Dashboard"
             description="Analyse Copilot usage statistics organisation-wide and by team"
-            tabs={[
-              { id: 'organisation', label: 'Organisation Usage' },
-              { id: 'team', label: 'Team Usage' },
-            ]}
+            tabs={[]}
             activeTab={scope}
             onTabChange={() => {
               setScope(prevScope => {
@@ -446,7 +461,7 @@ function CopilotDashboard() {
                               onChange={e =>
                                 handleDateChange('start', e.target.value)
                               }
-                              min={data?.allUsage?.[0]?.date}
+                              min={data?.allUsage?.[0]?.day}
                               max={endDate}
                               aria-label="Start date for data range"
                             />
@@ -473,7 +488,7 @@ function CopilotDashboard() {
                               }
                               min={startDate}
                               max={
-                                data?.allUsage?.[data.allUsage.length - 1]?.date
+                                data?.allUsage?.[data.allUsage.length - 1]?.day
                               }
                               aria-label="End date for data range"
                             />
@@ -635,6 +650,11 @@ function CopilotDashboard() {
                 viewDatesBy="Day"
               />
             )}
+
+            <LegacyDataVisualisation
+              data={legacyCopilotData}
+              isLoading={isLegacyLoading}
+            />
           </div>
         </div>
       </Layout>

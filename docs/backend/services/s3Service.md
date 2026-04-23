@@ -56,25 +56,9 @@ Stores an object in the specified S3 bucket.
 **Example:**
 
 ```javascript
-const result = await s3Service.putObject('my-bucket', 'data/file.json', { message: 'Hello World' });
-```
-
-### `getObjectViaSignedUrl(bucket, key, expiresIn = 3600)`
-
-Generates a presigned URL for accessing an S3 object.
-
-**Parameters:**
-
-- `bucket` (string) - The S3 bucket name
-- `key` (string) - The object key/path
-- `expiresIn` (number, optional) - URL expiration time in seconds (default: 3600)
-
-**Returns:** Promise resolving to the signed URL
-
-**Example:**
-
-```javascript
-const signedUrl = await s3Service.getObjectViaSignedUrl('my-bucket', 'private/file.pdf', 7200);
+const result = await s3Service.putObject('my-bucket', 'data/file.json', {
+  message: 'Hello World',
+});
 ```
 
 ## Bucket Configuration Methods
@@ -106,7 +90,10 @@ const s3Service = require('../services/s3Service');
 
 // Get project data
 try {
-  const projectData = await s3Service.getObject(s3Service.getMainBucket(), 'projects/data.json');
+  const projectData = await s3Service.getObject(
+    s3Service.getMainBucket(),
+    'projects/data.json'
+  );
   console.log('Project data retrieved successfully');
 } catch (error) {
   console.error('Failed to retrieve project data:', error);
@@ -114,9 +101,13 @@ try {
 
 // Store updated data
 try {
-  await s3Service.putObject(s3Service.getMainBucket(), 'projects/updated-data.json', {
-    projects: updatedProjects,
-  });
+  await s3Service.putObject(
+    s3Service.getMainBucket(),
+    'projects/updated-data.json',
+    {
+      projects: updatedProjects,
+    }
+  );
   console.log('Data stored successfully');
 } catch (error) {
   console.error('Failed to store data:', error);

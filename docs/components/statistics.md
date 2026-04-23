@@ -38,21 +38,21 @@ function StatisticsPage() {
   const [projectsData, setProjectsData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleTechClick = (techName) => {
+  const handleTechClick = techName => {
     // Navigate to tech radar or show tech details
   };
 
   const handleDateChange = (date, repoView) => {
     // Fetch data for the selected date range and repository view
-    fetchStatistics(date, repoView).then((data) => {
+    fetchStatistics(date, repoView).then(data => {
       setData(data);
       setIsLoading(false);
     });
   };
 
-  const handleProjectsChange = (selectedProjects) => {
+  const handleProjectsChange = selectedProjects => {
     // Filter statistics by selected projects
-    fetchProjectStatistics(selectedProjects).then((data) => {
+    fetchProjectStatistics(selectedProjects).then(data => {
       setData(data);
       setIsLoading(false);
     });

@@ -50,7 +50,11 @@ import { sendAlert } from '../components/Alerts/Alerts';
 try {
   // Some code that may throw an error
 } catch (error) {
-  sendAlert('Critical Error', error.message, 'Additional context about the error');
+  sendAlert(
+    'Critical Error',
+    error.message,
+    'Additional context about the error'
+  );
 }
 ```
 
@@ -73,6 +77,11 @@ import { sendLog } from '../components/Alerts/Alerts';
 try {
   // Some code that may throw an error
 } catch (error) {
-  sendLog('error', 'Non-Critical Error', error.message, 'Additional context about the error');
+  sendLog(
+    'error',
+    'Non-Critical Error',
+    error.message,
+    'Additional context about the error'
+  );
 }
 ```

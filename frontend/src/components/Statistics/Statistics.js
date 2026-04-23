@@ -8,7 +8,7 @@ import { useTechnologyStatus } from '../../utilities/getTechnologyStatus';
 import { specialTechMatchers } from '../../utilities/getSpecialTechMatchers';
 import { formatNumberWithCommas } from '../../utilities/getCommaSeparated';
 import * as Accordion from '@radix-ui/react-accordion';
-import { IoHelpCircleSharp } from 'react-icons/io5';
+import { IoChevronDown, IoHelpCircleSharp } from 'react-icons/io5';
 
 /**
  * Statistics component for displaying repository statistics.
@@ -573,6 +573,9 @@ function Statistics({
                     />{' '}
                     What do the colours mean?
                   </h3>
+                  <span className="stats-accordion-icon" aria-hidden="true">
+                    <IoChevronDown />
+                  </span>
                 </Accordion.Trigger>
                 <Accordion.Content
                   id="colour-help-content"

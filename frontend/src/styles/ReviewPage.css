@@ -117,6 +117,29 @@
   font-size: 14px;
 }
 
+.admin-directorate-title {
+  display: inline-flex;
+  float: right;
+  align-items: center;
+  padding: 6px 12px;
+  margin-right: 16px;
+  margin-bottom: 8px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+@media (width <= 1250px) {
+  .admin-directorate-title {
+    margin-right: 0;
+    float: none;
+  }
+}
+
 .admin-grid-container {
   display: flex;
   align-items: stretch;

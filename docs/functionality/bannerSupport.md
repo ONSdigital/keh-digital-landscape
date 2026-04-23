@@ -52,20 +52,21 @@ All banners are stored in AWS S3 as a JSON file (`messages.json`). Each banner i
 
 ```json
 {
-    "messages": [
-        {   
-            "title": "Test Banner",
-            "message": "Test Banner Message",
-            "description": "Test Banner Message",
-            "type": "info",                         // Either info, warning, or error
-            "pages": [                              // The pages across the application that the banner should be shown on
-                "radar",
-                "statistics",
-                "addressbook"
-            ],
-            "show": false                           // Whether the banner is currently active and should be shown to users
-        },
-    ]
+  "messages": [
+    {
+      "title": "Test Banner",
+      "message": "Test Banner Message",
+      "description": "Test Banner Message",
+      "type": "info", // Either info, warning, or error
+      "pages": [
+        // The pages across the application that the banner should be shown on
+        "radar",
+        "statistics",
+        "addressbook"
+      ],
+      "show": false // Whether the banner is currently active and should be shown to users
+    }
+  ]
 }
 ```
 
@@ -96,43 +97,43 @@ To add banner support to a new page within the application, you must do the foll
 
 1. Ensure that the new page is wrapped within the `layout` component, as the Banner Container component is rendered within the layout and will only be visible on pages that are wrapped by it.
 
-    Example:
+   Example:
 
-    ```js
-    <Layout
-        headerProps={{
-          ...
-        }}
-        bannerProps={{ page: 'PAGE_NAME' }}
-    >
-        page content here
-    </Layout>
-    ```
+   ```js
+   <Layout
+       headerProps={{
+         ...
+       }}
+       bannerProps={{ page: 'PAGE_NAME' }}
+   >
+       page content here
+   </Layout>
+   ```
 
 2. Update the `Banner Manage` component to include the new page as an option when creating or editing banners.
 
-    This involves adding the new page to the list of available pages that administrators can select when configuring a banner's display settings.
+   This involves adding the new page to the list of available pages that administrators can select when configuring a banner's display settings.
 
-    Update the `pageOptions` array in the `Banner Manage` component to include the new page:
+   Update the `pageOptions` array in the `Banner Manage` component to include the new page:
 
-    ```js
-    const pageOptions = [
-        { label: 'Radar', value: 'radar' },
-        { label: 'Statistics', value: 'statistics' },
-        { label: 'Projects', value: 'projects' },
-        { label: 'Copilot Team', value: 'copilot/team' },
-        { label: 'Copilot Org', value: 'copilot/org' },
-        { label: 'Address Book', value: 'addressbook' },
-        { label: 'New Page', value: 'newpage' } // Add new page option here
-    ];
-    ```
+   ```js
+   const pageOptions = [
+     { label: 'Radar', value: 'radar' },
+     { label: 'Statistics', value: 'statistics' },
+     { label: 'Projects', value: 'projects' },
+     { label: 'Copilot Team', value: 'copilot/team' },
+     { label: 'Copilot Org', value: 'copilot/org' },
+     { label: 'Address Book', value: 'addressbook' },
+     { label: 'New Page', value: 'newpage' }, // Add new page option here
+   ];
+   ```
 
-    The `label` is the name that will be shown to administrators in the dropdown menu when configuring a banner, and the `value` is the identifier that will be used in the backend to determine which page the banner should be shown on. Make sure to use a unique value for the new page that does not conflict with existing page values.
+   The `label` is the name that will be shown to administrators in the dropdown menu when configuring a banner, and the `value` is the identifier that will be used in the backend to determine which page the banner should be shown on. Make sure to use a unique value for the new page that does not conflict with existing page values.
 
 3. Update UI tests for the banner logic to include the new page option.
 
-    This can be done by updating the `pageOptions` array in `admin.banners.test.js` to include the new page/match the one within code.
+   This can be done by updating the `pageOptions` array in `admin.banners.test.js` to include the new page/match the one within code.
 
-    The test uses this list to ensure that banners can be created for each page option.
+   The test uses this list to ensure that banners can be created for each page option.
 
 After completing these steps, the new page will be able to support banners, and administrators will be able to create banners that are shown on the new page.

@@ -111,7 +111,9 @@ console.log(`Retrieved ${seats.length} Copilot seats`);
 
 // Find recently active seats
 const recentlyActive = seats.filter(
-  (seat) => new Date(seat.last_activity_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  seat =>
+    new Date(seat.last_activity_at) >
+    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 );
 console.log(`${recentlyActive.length} seats active in the last 7 days`);
 ```
@@ -140,10 +142,13 @@ let allSeats = [];
 let page = 1;
 
 while (true) {
-  const response = await octokit.request(`GET /orgs/${GITHUB_ORG}/copilot/billing/seats`, {
-    per_page: 100,
-    page,
-  });
+  const response = await octokit.request(
+    `GET /orgs/${GITHUB_ORG}/copilot/billing/seats`,
+    {
+      per_page: 100,
+      page,
+    }
+  );
 
   if (response.data.seats.length === 0) break;
 
@@ -180,8 +185,8 @@ async function getInactiveSeats(daysThreshold = 30) {
   const cutoffDate = new Date(Date.now() - daysThreshold * 24 * 60 * 60 * 1000);
 
   return seats
-    .filter((seat) => new Date(seat.last_activity_at) < cutoffDate)
-    .map((seat) => ({
+    .filter(seat => new Date(seat.last_activity_at) < cutoffDate)
+    .map(seat => ({
       user: seat.assignee.login,
       lastActivity: seat.last_activity_at,
       daysSinceActivity: Math.floor(

@@ -36,7 +36,10 @@ The PieChart component accepts the following props:
 
 ```jsx
 import PieChart from '../components/Projects/PieChart';
-import { PROJECT_STAGES, CATEGORY_COLOURS } from '../../constants/projectConstants';
+import {
+  PROJECT_STAGES,
+  CATEGORY_COLOURS,
+} from '../../constants/projectConstants';
 
 function ProjectsOverview() {
   const [projectsData, setProjectsData] = useState([]);

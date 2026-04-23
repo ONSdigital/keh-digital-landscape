@@ -18,6 +18,7 @@ on:
       - 'terraform/**'
 permissions:
   contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest

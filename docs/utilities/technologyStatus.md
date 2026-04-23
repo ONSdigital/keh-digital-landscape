@@ -27,7 +27,7 @@ This hook:
 The `useTechnologyStatus` hook returns a function with the following signature:
 
 ```javascript
-const getTechnologyStatus = (tech) => {
+const getTechnologyStatus = tech => {
   // Implementation details
 };
 ```
@@ -72,7 +72,7 @@ RadarPage:
  * @param {string} technologies - The technologies to render.
  * @returns {JSX.Element|null} - The rendered technology list or null if not found.
  */
-const renderTechnologyList = (technologies) => {
+const renderTechnologyList = technologies => {
   if (!technologies) return null;
 
   return technologies.split(';').map((tech, index) => {
@@ -83,7 +83,10 @@ const renderTechnologyList = (technologies) => {
       <span key={index}>
         {index > 0 && '; '}
         {status ? (
-          <span className={`clickable-tech ${status}`} onClick={() => handleTechClick(trimmedTech)}>
+          <span
+            className={`clickable-tech ${status}`}
+            onClick={() => handleTechClick(trimmedTech)}
+          >
             {trimmedTech}
           </span>
         ) : (

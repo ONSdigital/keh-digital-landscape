@@ -33,11 +33,11 @@ function ProjectsView() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleTechClick = (techName) => {
+  const handleTechClick = techName => {
     // Navigate to tech radar or show tech details
   };
 
-  const getTechStatus = (techName) => {
+  const getTechStatus = techName => {
     // Return the status of the technology (adopt, trial, assess, hold)
   };
 
@@ -49,9 +49,9 @@ function ProjectsView() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         project={selectedProject}
-        renderTechnologyList={(technologies) => (
+        renderTechnologyList={technologies => (
           <div className="tech-list">
-            {technologies.map((tech) => (
+            {technologies.map(tech => (
               <span key={tech}>{tech}</span>
             ))}
           </div>

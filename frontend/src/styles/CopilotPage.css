@@ -112,6 +112,7 @@ html:not(.dark)
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   max-width: 100%;
+  padding-bottom: 20px;
 }
 
 .disclaimer-banner {
@@ -310,6 +311,11 @@ html:not(.dark)
 .copilot-graph-container {
   width: calc(100% - 16px);
   height: calc(50vh - 16px);
+}
+
+.copilot-graph-container--stacked {
+  height: auto;
+  margin-bottom: 24px;
 }
 
 .ag-body-viewport {
