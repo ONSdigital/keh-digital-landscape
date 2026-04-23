@@ -6,6 +6,31 @@ resource "aws_s3_bucket" "data_bucket" {
   }
 }
 
+resource "aws_s3_bucket_policy" "data_bucket_ssl_only" {
+  bucket = aws_s3_bucket.data_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureConnections"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.data_bucket.arn,
+          "${aws_s3_bucket.data_bucket.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket_versioning" "enabled" {
   bucket = aws_s3_bucket.data_bucket.id
 

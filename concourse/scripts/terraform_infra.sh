@@ -67,8 +67,20 @@ fi
 
 echo "$env"
 
+echo "Setting the Storage"
+cd resource-repo/terraform/storage
+terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
+
+terraform apply \
+	-var "aws_account_id=${aws_account_id}" \
+	-var "aws_access_key_id=${aws_access_key_id}" \
+	-var "aws_secret_access_key=${aws_secret_access_key}" \
+	-var "domain=${domain}" \
+	-var "service_subdomain=${service_subdomain}" \
+	-auto-approve
+
 echo "Setting the Auth service"
-cd resource-repo/terraform/authentication
+cd ../authentication
 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
 terraform apply \
