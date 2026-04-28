@@ -40,8 +40,8 @@ export const fetchBanners = async page => {
         return false;
       })
       .map(message => ({
-        title: message.title || message.message || '',
-        description: message.description || message.message || '',
+        title: message.title || message.description || '',
+        description: message.description || '',
         type: message.type || 'info',
       }))
       .filter(banner => {
