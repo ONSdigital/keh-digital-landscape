@@ -7,7 +7,7 @@ The application uses AWS Cognito for user authentication in deployed environment
 
 ## Login Screen
 
-The login screen provides users with the option to authenticate using either Cognito credentials or Azure SSO. Upon successful login, users are redirected to the application, and their session is securely managed.
+The login screen provides users with the option to authenticate using either Cognito credentials or Azure SSO. Dev environment allows for both methods while Prod environment is exclusively through the Azure Idp SSO. Upon successful login, users are redirected to the application, and their session is securely managed.
 
 ## Running Locally
 
@@ -23,5 +23,5 @@ The application will run without requiring Cognito login.
 ## Notes
 
 - Ensure the Cognito User Pool is configured with the necessary users and groups for deployed environments.
-- Azure SSO integration is currently available in the development environment and will be extended to production in future updates.
+- Azure SSO integration is available in the development environment and production. (See playbook for more information).
 - The application uses Cognito tokens to manage sessions and permissions in production.
