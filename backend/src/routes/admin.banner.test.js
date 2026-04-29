@@ -60,7 +60,7 @@ describe('Admin banner routes', () => {
       const res = await fetch(`${baseUrl}/admin/api/banners/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ banner: { message: '', pages: [] } }),
+        body: JSON.stringify({ banner: { description: '', pages: [] } }),
       });
 
       expect(res.status).toBe(400);
@@ -78,7 +78,7 @@ describe('Admin banner routes', () => {
       const payload = {
         banner: {
           title: 'Planned downtime',
-          message: 'Service unavailable tonight',
+          description: 'Service unavailable tonight',
           type: 'warning',
           pages: ['/projects'],
         },
@@ -99,7 +99,6 @@ describe('Admin banner routes', () => {
         messages: [
           {
             title: 'Planned downtime',
-            message: 'Service unavailable tonight',
             description: 'Service unavailable tonight',
             type: 'warning',
             pages: ['/projects'],
@@ -113,14 +112,14 @@ describe('Admin banner routes', () => {
   describe('GET /admin/api/banners', () => {
     it('returns all messages when messages.json exists', async () => {
       vi.spyOn(s3Service, 'getObject').mockResolvedValue({
-        messages: [{ message: 'Banner one', pages: ['/'] }],
+        messages: [{ description: 'Banner one', pages: ['/'] }],
       });
 
       const res = await fetch(`${baseUrl}/admin/api/banners`);
 
       expect(res.status).toBe(200);
       await expect(res.json()).resolves.toEqual({
-        messages: [{ message: 'Banner one', pages: ['/'] }],
+        messages: [{ description: 'Banner one', pages: ['/'] }],
       });
     });
 
@@ -184,7 +183,7 @@ describe('Admin banner routes', () => {
 
     it('updates banner visibility and persists messages', async () => {
       const messages = {
-        messages: [{ message: 'Notice', show: true, pages: ['/'] }],
+        messages: [{ description: 'Notice', show: true, pages: ['/'] }],
       };
       vi.spyOn(s3Service, 'getObject').mockResolvedValue(messages);
       const putObjectSpy = vi.spyOn(s3Service, 'putObject').mockResolvedValue();
@@ -200,7 +199,7 @@ describe('Admin banner routes', () => {
         message: 'Banner visibility updated successfully',
       });
       expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [{ message: 'Notice', show: false, pages: ['/'] }],
+        messages: [{ description: 'Notice', show: false, pages: ['/'] }],
       });
     });
   });
@@ -237,8 +236,8 @@ describe('Admin banner routes', () => {
     it('deletes a banner and persists messages', async () => {
       const messages = {
         messages: [
-          { message: 'Keep me', show: true, pages: ['/'] },
-          { message: 'Delete me', show: true, pages: ['/projects'] },
+          { description: 'Keep me', show: true, pages: ['/'] },
+          { description: 'Delete me', show: true, pages: ['/projects'] },
         ],
       };
       vi.spyOn(s3Service, 'getObject').mockResolvedValue(messages);
@@ -255,7 +254,7 @@ describe('Admin banner routes', () => {
         message: 'Banner deleted successfully',
       });
       expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [{ message: 'Keep me', show: true, pages: ['/'] }],
+        messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
       });
     });
   });
