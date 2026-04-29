@@ -55,7 +55,6 @@ All banners are stored in AWS S3 as a JSON file (`messages.json`). Each banner i
   "messages": [
     {
       "title": "Test Banner",
-      "message": "Test Banner Message",
       "description": "Test Banner Message",
       "type": "info", // Either info, warning, or error
       "pages": [

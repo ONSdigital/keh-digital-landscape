@@ -76,7 +76,7 @@ router.post('/banners/update', async (req, res) => {
     // Add the new banner to messages
     messagesData.messages.push({
       title: banner.title || '',
-      description: banner.description, // For backwards compatibility
+      description: banner.description,
       type: banner.type || 'info',
       pages: banner.pages,
       show: banner.show !== false, // Default to true if not explicitly set to false
