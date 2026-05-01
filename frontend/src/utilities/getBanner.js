@@ -41,7 +41,7 @@ export const fetchBanners = async page => {
       })
       .map(message => ({
         title: message.title || '',
-        description: message.description || '',
+        description: message.description || message.message || '',
         type: message.type || 'info',
       }))
       .filter(banner => {
