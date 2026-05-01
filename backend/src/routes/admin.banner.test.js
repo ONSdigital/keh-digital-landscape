@@ -60,7 +60,7 @@ describe('Admin banner routes', () => {
       const res = await fetch(`${baseUrl}/admin/api/banners/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ banner: { description: '', pages: [] } }),
+        body: JSON.stringify({ banner: { message: '', pages: [] } }),
       });
 
       expect(res.status).toBe(400);
@@ -78,7 +78,7 @@ describe('Admin banner routes', () => {
       const payload = {
         banner: {
           title: 'Planned downtime',
-          description: 'Service unavailable tonight',
+          message: 'Service unavailable tonight',
           type: 'warning',
           pages: ['/projects'],
         },
@@ -99,7 +99,7 @@ describe('Admin banner routes', () => {
         messages: [
           {
             title: 'Planned downtime',
-            description: 'Service unavailable tonight',
+            message: 'Service unavailable tonight',
             type: 'warning',
             pages: ['/projects'],
             show: true,
