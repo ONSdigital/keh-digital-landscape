@@ -55,7 +55,7 @@ router.post('/banners/update', async (req, res) => {
     // Validate banner data
     if (
       !banner ||
-      !banner.description ||
+      !banner.message ||
       !Array.isArray(banner.pages) ||
       banner.pages.length === 0
     ) {
@@ -76,7 +76,7 @@ router.post('/banners/update', async (req, res) => {
     // Add the new banner to messages
     messagesData.messages.push({
       title: banner.title || '',
-      description: banner.description,
+      message: banner.message,
       type: banner.type || 'info',
       pages: banner.pages,
       show: banner.show !== false, // Default to true if not explicitly set to false
