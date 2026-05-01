@@ -111,11 +111,13 @@ const RecentBanners = () => {
               </span>
             </div>
             <div className="recent-banner-body">
-              {(banner.description || banner.message || '').split('\n').map((line, i) => (
-                <p key={i} className="recent-banner-line">
-                  {line}
-                </p>
-              ))}
+              {(banner.description || banner.message || '')
+                .split('\n')
+                .map((line, i) => (
+                  <p key={i} className="recent-banner-line">
+                    {line}
+                  </p>
+                ))}
             </div>
           </div>
         ))}
