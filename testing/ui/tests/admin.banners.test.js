@@ -118,15 +118,15 @@ test.beforeEach(async ({ page }) => {
  */
 async function fillInBannerForm(
   page,
-  formValues = { title, message, type, pages }
+  formValues = { title: '', description: '', type: 'info', pages: [] }
 ) {
   const bannerTitle = page.locator('#banner-title-input');
-  const bannerMessage = page.locator('#banner-message-input');
+  const bannerDescription = page.locator('#banner-message-input');
   const typeOption = page.locator(`#${formValues.type}-type-option`);
   const multiselectInput = page.locator('input[placeholder="Select pages..."]');
 
   await bannerTitle.fill(formValues.title);
-  await bannerMessage.fill(formValues.message);
+  await bannerDescription.fill(formValues.description);
   await typeOption.click();
   await multiselectInput.click();
 
@@ -159,7 +159,7 @@ test.describe('add banner', () => {
     }) => {
       const bannerData = {
         title: `Test ${type} Banner`,
-        message: `This is a test ${type} banner message.`,
+        description: `This is a test ${type} banner message.`,
         type,
         pages: ['radar', 'projects'],
       };
@@ -198,7 +198,7 @@ test.describe('add banner', () => {
     }) => {
       const bannerData = {
         title: `Test Banner for ${option.label}`,
-        message: `This banner is for ${option.label} page.`,
+        description: `This banner is for ${option.label} page.`,
         type: 'info',
         pages: [option.label],
       };
@@ -223,7 +223,7 @@ test.describe('add banner', () => {
   }) => {
     const bannerData = {
       title: 'Test Cancel Banner',
-      message: 'This banner should not be saved.',
+      description: 'This banner should not be saved.',
       type: 'warning',
       pages: ['statistics'],
     };
@@ -275,7 +275,7 @@ test.describe('banner actions', () => {
     // First, add a banner that is shown on the radar page
     const bannerData = {
       title: 'Hide Test Banner',
-      message: 'This banner will be hidden on radar page.',
+      description: 'This banner will be hidden on radar page.',
       type: 'info',
       pages: ['radar'],
     };
@@ -314,7 +314,7 @@ test.describe('banner actions', () => {
     // First, add a banner that is shown on the radar page
     const bannerData = {
       title: 'Delete Test Banner',
-      message: 'This banner will be deleted.',
+      description: 'This banner will be deleted.',
       type: 'warning',
       pages: ['radar'],
     };
@@ -347,13 +347,13 @@ test.describe('banner actions', () => {
     // Add two banners
     const bannerData1 = {
       title: 'Banner 1',
-      message: 'First banner.',
+      description: 'First banner.',
       type: 'info',
       pages: ['radar'],
     };
     const bannerData2 = {
       title: 'Banner 2',
-      message: 'Second banner.',
+      description: 'Second banner.',
       type: 'warning',
       pages: ['projects'],
     };
@@ -385,7 +385,7 @@ test.describe('banner actions', () => {
 
     // Check that the second banner still exists in the in-memory variable
     expect(banners.messages[secondBannerIndex - 1]).toEqual({
-      message: 'Second banner.',
+      description: 'Second banner.',
       pages: ['projects'],
       show: true,
       type: 'warning',

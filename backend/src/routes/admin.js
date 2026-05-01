@@ -43,7 +43,7 @@ router.post('/tech-radar/update', async (req, res) => {
  * Endpoint for updating banner messages.
  * @route POST /admin/api/banners/update
  * @param {Object} req.body - The banner data
- * @param {Object} req.body.banner - Banner object with message, pages, and show properties
+ * @param {Object} req.body.banner - Banner object with description, pages, and show properties
  * @returns {Object} Success message or error response
  * @throws {Error} 400 - If banner data is invalid
  * @throws {Error} 500 - If update operation fails

@@ -259,8 +259,7 @@ describe('fetchBanners', () => {
       ok: true,
       json: async () => ({
         messages: [
-          { show: true, page: 'radar', message: 'Fallback Message' },
-          { show: true, page: 'radar' },
+          { show: true, page: 'radar', description: 'Fallback Message' },
         ],
       }),
     });
@@ -268,7 +267,7 @@ describe('fetchBanners', () => {
     const banners = await fetchBanners('radar');
     expect(banners[0]).toMatchObject({
       title: '',
-      description: '',
+      description: 'Fallback Message',
       type: 'info',
     });
   });

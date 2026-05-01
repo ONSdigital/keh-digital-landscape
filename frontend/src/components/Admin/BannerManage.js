@@ -58,7 +58,7 @@ const BannerManage = () => {
   const handleSaveBannerConfirm = async () => {
     try {
       const bannerData = {
-        message: bannerMessage,
+        description: bannerMessage,
         title: bannerTitle,
         type: bannerType,
         pages: selectedPages.map(page => page.value),
@@ -231,9 +231,9 @@ const BannerManage = () => {
                 <div id={`banner-${index}`} className="banner-item" key={index}>
                   <div className="banner-content">
                     <h2 id={`banner-title-${index}`}>
-                      {banner.title || banner.message}
+                      {banner.title || banner.description}
                     </h2>
-                    <p id={`banner-message-${index}`}>{banner.message}</p>
+                    <p id={`banner-message-${index}`}>{banner.description}</p>
                     <div className="banner-actions">
                       <div className="banner-meta">
                         <span
