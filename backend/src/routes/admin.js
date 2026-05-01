@@ -43,7 +43,7 @@ router.post('/tech-radar/update', async (req, res) => {
  * Endpoint for updating banner messages.
  * @route POST /admin/api/banners/update
  * @param {Object} req.body - The banner data
- * @param {Object} req.body.banner - Banner object with message, pages, and show properties
+ * @param {Object} req.body.banner - Banner object with description, pages, and show properties
  * @returns {Object} Success message or error response
  * @throws {Error} 400 - If banner data is invalid
  * @throws {Error} 500 - If update operation fails
@@ -55,7 +55,7 @@ router.post('/banners/update', async (req, res) => {
     // Validate banner data
     if (
       !banner ||
-      !banner.message ||
+      !banner.description ||
       !Array.isArray(banner.pages) ||
       banner.pages.length === 0
     ) {
@@ -76,7 +76,7 @@ router.post('/banners/update', async (req, res) => {
     // Add the new banner to messages
     messagesData.messages.push({
       title: banner.title || '',
-      message: banner.message,
+      description: banner.description,
       type: banner.type || 'info',
       pages: banner.pages,
       show: banner.show !== false, // Default to true if not explicitly set to false

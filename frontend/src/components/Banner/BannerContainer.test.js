@@ -10,10 +10,10 @@ const { mockSendAlert } = vi.hoisted(() => ({
 // Mock Banner component
 vi.mock('./Banner', () => ({
   __esModule: true,
-  default: ({ title, description, type, onClose }) => (
+  default: ({ title, message, type, onClose }) => (
     <div data-testid="banner">
       <span>{title}</span>
-      <span>{description}</span>
+      <span>{message}</span>
       <span>{type}</span>
       <button onClick={onClose}>Close</button>
     </div>
@@ -56,9 +56,7 @@ describe('BannerContainer', () => {
   });
 
   it('renders banner when getPageBanners returns a single banner', async () => {
-    const banners = [
-      { title: 'Test Banner', description: 'Desc', type: 'info' },
-    ];
+    const banners = [{ title: 'Test Banner', message: 'Desc', type: 'info' }];
     mockGetPageBanners.mockResolvedValue(banners);
     render(<BannerContainer page="radar" />);
     await waitFor(() => {
@@ -69,8 +67,8 @@ describe('BannerContainer', () => {
 
   it('renders only the first banner and calls sendAlert if multiple banners are returned', async () => {
     const banners = [
-      { title: 'Banner 1', description: 'Desc 1', type: 'info' },
-      { title: 'Banner 2', description: 'Desc 2', type: 'warning' },
+      { title: 'Banner 1', message: 'Desc 1', type: 'info' },
+      { title: 'Banner 2', message: 'Desc 2', type: 'warning' },
     ];
     mockGetPageBanners.mockResolvedValue(banners);
     render(<BannerContainer page="radar" />);
@@ -86,9 +84,7 @@ describe('BannerContainer', () => {
   });
 
   it('removes banners when onClose is clicked', async () => {
-    const banners = [
-      { title: 'Closable Banner', description: 'Desc', type: 'info' },
-    ];
+    const banners = [{ title: 'Closable Banner', message: 'Desc', type: 'info' }];
     mockGetPageBanners.mockResolvedValue(banners);
     render(<BannerContainer page="radar" />);
     await waitFor(() => {

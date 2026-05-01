@@ -43,14 +43,14 @@ describe('fetchBanners', () => {
             show: true,
             page: 'radar',
             title: 'Radar Banner',
-            description: 'Radar Desc',
+            message: 'Radar Desc',
             type: 'warning',
           },
           {
             show: true,
             page: 'statistics',
             title: 'Stats Banner',
-            description: 'Stats Desc',
+            message: 'Stats Desc',
             type: 'info',
           },
         ],
@@ -61,7 +61,7 @@ describe('fetchBanners', () => {
     expect(banners).toEqual([
       {
         title: 'Radar Banner',
-        description: 'Radar Desc',
+        message: 'Radar Desc',
         type: 'warning',
       },
     ]);
@@ -76,13 +76,13 @@ describe('fetchBanners', () => {
             show: false,
             page: 'radar',
             title: 'Hidden Banner',
-            description: 'Should not show',
+            message: 'Should not show',
           },
           {
             show: true,
             page: 'radar',
             title: 'Visible Banner',
-            description: 'Should show',
+            message: 'Should show',
           },
         ],
       }),
@@ -102,7 +102,7 @@ describe('fetchBanners', () => {
             show: true,
             pages: ['radar', 'statistics'],
             title: 'Multi Banner',
-            description: 'Multi Desc',
+            message: 'Multi Desc',
           },
         ],
       }),
@@ -147,13 +147,13 @@ describe('fetchBanners', () => {
             show: true,
             page: 'radar',
             title: 'First',
-            description: 'First Desc',
+            message: 'First Desc',
           },
           {
             show: true,
             page: 'radar',
             title: 'Second',
-            description: 'Second Desc',
+            message: 'Second Desc',
           },
         ],
       }),
@@ -169,7 +169,7 @@ describe('fetchBanners', () => {
       show: true,
       page: 'radar',
       title: 'Dismissed',
-      description: 'Dismissed Desc',
+      message: 'Dismissed Desc',
     };
     const bannerId = `dismissed_banner_Dismissed_Dismissed_Desc`.replace(
       /\s+/g,
@@ -196,7 +196,7 @@ describe('fetchBanners', () => {
       show: true,
       page: 'radar',
       title: 'Not Dismissed',
-      description: 'Not Dismissed Desc',
+      message: 'Not Dismissed Desc',
     };
     const bannerId =
       `dismissed_banner_Not_Dismissed_Not_Dismissed_Desc`.replace(/\s+/g, '_');
@@ -223,7 +223,7 @@ describe('fetchBanners', () => {
       show: true,
       page: 'radar',
       title: 'Old Dismissed',
-      description: 'Old Desc',
+      message: 'Old Desc',
     };
     const bannerId = `dismissed_banner_Old_Dismissed_Old_Desc`.replace(
       /\s+/g,
@@ -258,17 +258,14 @@ describe('fetchBanners', () => {
     mockCustomFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        messages: [
-          { show: true, page: 'radar', message: 'Fallback Message' },
-          { show: true, page: 'radar' },
-        ],
+        messages: [{ show: true, page: 'radar', message: 'Fallback Message' }],
       }),
     });
 
     const banners = await fetchBanners('radar');
     expect(banners[0]).toMatchObject({
       title: '',
-      description: '',
+      message: 'Fallback Message',
       type: 'info',
     });
   });
