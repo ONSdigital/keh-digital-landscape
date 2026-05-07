@@ -67,17 +67,8 @@ fi
 
 echo "$env"
 
-echo "Setting the Account level infrastructure"
-cd resource-repo/terraform/account
-terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
-terraform apply \
-	-var "aws_account_id=${aws_account_id}" \
-	-var "aws_access_key_id=${aws_access_key_id}" \
-	-var "aws_secret_access_key=${aws_secret_access_key}" \
-	-auto-approve
-
-echo "Setting the Storage infrastructure"
-cd ../storage
+echo "Setting the Storage"
+cd resource-repo/terraform/storage
 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
 terraform apply \
