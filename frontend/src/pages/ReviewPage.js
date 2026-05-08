@@ -10,6 +10,8 @@ import ProjectModal from '../components/Projects/ProjectModal';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
 import { useData } from '../contexts/dataContext';
 import { MarkdownText } from '../utilities/markdownRenderer';
+import { getRelatedTechnologiesByTags } from '../utilities/relatedTechnologies';
+import { TECHNOLOGY_TAG_OPTIONS } from '../constants/technologyTagConstants';
 import { format, set } from 'date-fns';
 import { getDirectorates } from '../utilities/getDirectorates';
 import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
@@ -36,9 +38,11 @@ const ReviewPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [newTechnology, setNewTechnology] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [newTechnologyTags, setNewTechnologyTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedCategory, setEditedCategory] = useState('');
+  const [editedTags, setEditedTags] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
@@ -547,10 +551,15 @@ const ReviewPage = () => {
       Infrastructure: '4',
     };
 
+    const tags = newTechnologyTags
+      .map(t => t?.value)
+      .filter(v => typeof v === 'string' && v.length > 0);
+
     const newEntry = {
       id: `tech-${Date.now()}`,
       title: newTechnology.trim(),
       description: selectedCategory,
+      ...(tags.length > 0 ? { tags } : {}),
       key: newTechnology.trim().toLowerCase().replace(/\s+/g, ''),
       url: '#',
       quadrant: categoryToQuadrant[selectedCategory],
@@ -591,14 +600,24 @@ const ReviewPage = () => {
     setEditedCategory('');
   };
 
-  const handleConfirmEdit = () => {
-    setShowConfirmModal(true);
+  const handleConfirmEdit = (title, category, tagsInput) => {
+    const nextTitle = typeof title === 'string' ? title : '';
+    const nextCategory = typeof category === 'string' ? category : '';
+    const tags = Array.isArray(tagsInput)
+      ? tagsInput.filter(t => typeof t === 'string' && t.length > 0)
+      : [];
+
+    setEditedTitle(nextTitle);
+    setEditedCategory(nextCategory);
+    setEditedTags(tags);
     setEditedItem({
       ...selectedItem,
-      title: editedTitle,
-      description: editedCategory,
-      quadrant: categoryToQuadrant[editedCategory],
+      title: nextTitle,
+      description: nextCategory,
+      quadrant: categoryToQuadrant[nextCategory],
+      tags,
     });
+    setShowConfirmModal(true);
   };
 
   const categoryToQuadrant = {
@@ -609,10 +628,19 @@ const ReviewPage = () => {
   };
 
   const handleConfirmModalYes = () => {
+    if (!editedItem) {
+      setShowConfirmModal(false);
+      return;
+    }
+
+    const ringTimeline =
+      Array.isArray(selectedItem?.filteredTimeline) &&
+      selectedItem.filteredTimeline.length > 0
+        ? selectedItem.filteredTimeline
+        : selectedItem.timeline;
+
     const currentRing =
-      selectedItem.timeline[
-        selectedItem.timeline.length - 1
-      ].ringId.toLowerCase();
+      ringTimeline[ringTimeline.length - 1].ringId.toLowerCase();
 
     // Create timeline entry for the change
     const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -620,16 +648,21 @@ const ReviewPage = () => {
       moved: 0,
       ringId: currentRing,
       date: now,
-      description: `Changed from ${selectedItem.title} (${selectedItem.description}) to ${editedTitle} (${editedCategory})`,
+      description: `Changed from ${selectedItem.title} (${selectedItem.description}) to ${editedItem.title} (${editedItem.description})${
+        Array.isArray(editedItem.tags) && editedItem.tags.length > 0
+          ? `; tags: ${editedItem.tags.join(', ')}`
+          : ''
+      }`,
       author: currentUser?.user?.email || null,
     };
 
     // Update the item with new values and timeline
     const updatedItem = {
       ...selectedItem,
-      title: editedTitle,
-      description: editedCategory,
-      quadrant: categoryToQuadrant[editedCategory],
+      title: editedItem.title,
+      description: editedItem.description,
+      tags: editedItem.tags,
+      quadrant: editedItem.quadrant,
       timeline: [...selectedItem.timeline, timelineEntry],
     };
 
@@ -645,6 +678,7 @@ const ReviewPage = () => {
     setShowConfirmModal(false);
     setEditedTitle('');
     setEditedCategory('');
+    setEditedTags([]);
     setEditedItem(null);
 
     // Track the edit as a change so Save button becomes enabled
@@ -695,6 +729,7 @@ const ReviewPage = () => {
     }));
     setNewTechnology('');
     setSelectedCategory('');
+    setNewTechnologyTags([]);
     setPendingNewTechnology(null);
     setShowAddConfirmModal(false);
 
@@ -840,10 +875,21 @@ const ReviewPage = () => {
         setSelectedTimelineItem={setExpandedTimelineEntry}
         projectsForTech={projectsForTech}
         handleProjectClick={handleProjectClick}
-        onEditConfirm={(title, category) => {
-          setEditedTitle(title);
-          setEditedCategory(category);
-          handleConfirmEdit();
+        relatedItems={getRelatedTechnologiesByTags({
+          selectedEntry: selectedItem,
+          candidates: [
+            ...entries.adopt,
+            ...entries.trial,
+            ...entries.assess,
+            ...entries.hold,
+            ...entries.review,
+          ],
+          limit: 6,
+        })}
+        onRelatedItemClick={handleItemClick}
+        tagOptions={TECHNOLOGY_TAG_OPTIONS}
+        onEditConfirm={(title, category, tags) => {
+          handleConfirmEdit(title, category, tags);
         }}
         onEditCancel={handleCancelEdit}
         isHighlighted={highlightedTechnologies.includes(selectedItem.id)}
@@ -1224,6 +1270,15 @@ const ReviewPage = () => {
                     <option value="Supporting Tools">Supporting Tools</option>
                     <option value="Infrastructure">Infrastructure</option>
                   </select>
+                </div>
+                <div className="admin-modal-field">
+                  <label>Tags</label>
+                  <MultiSelect
+                    options={TECHNOLOGY_TAG_OPTIONS}
+                    value={newTechnologyTags}
+                    onChange={setNewTechnologyTags}
+                    placeholder="Select tags..."
+                  />
                 </div>
               </div>
               <div className="modal-buttons">

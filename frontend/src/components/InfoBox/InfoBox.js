@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
@@ -16,6 +16,31 @@ import {
   FaTimes,
 } from 'react-icons/fa';
 import { MarkdownText } from '../../utilities/markdownRenderer';
+import MultiSelect from '../MultiSelect/MultiSelect';
+
+const tagsToOptions = (tags, tagOptions = []) => {
+  if (!Array.isArray(tags)) return [];
+  const values = tags.filter(t => typeof t === 'string' && t.length > 0);
+
+  return values.map(value => {
+    const lower = String(value).toLowerCase();
+    const match = Array.isArray(tagOptions)
+      ? tagOptions.find(o => String(o.value).toLowerCase() === lower)
+      : undefined;
+
+    return match || { label: value, value };
+  });
+};
+
+const getTagLabel = (tag, tagOptions = []) => {
+  if (typeof tag !== 'string' || tag.length === 0) return '';
+  const lower = tag.toLowerCase();
+  const match = Array.isArray(tagOptions)
+    ? tagOptions.find(o => String(o.value).toLowerCase() === lower)
+    : undefined;
+
+  return match?.label || tag;
+};
 
 const InfoBox = ({
   isAdmin = false,
@@ -26,8 +51,11 @@ const InfoBox = ({
   setTimelineAscending,
   selectedTimelineItem,
   setSelectedTimelineItem,
-  projectsForTech,
+  projectsForTech = [],
   handleProjectClick,
+  relatedItems = [],
+  onRelatedItemClick,
+  tagOptions = [],
   onEditConfirm,
   onEditCancel,
   isHighlighted = false,
@@ -37,19 +65,27 @@ const InfoBox = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedCategory, setEditedCategory] = useState('');
+  const [editedTags, setEditedTags] = useState([]);
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState(initialPosition);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
   const [localTitle, setLocalTitle] = useState(selectedItem?.title || '');
   const [localCategory, setLocalCategory] = useState(
     selectedItem?.description || ''
   );
+  const [localTags, setLocalTags] = useState(
+    Array.isArray(selectedItem?.tags) ? selectedItem.tags : []
+  );
   const [showProjects, setShowProjects] = useState(true);
+
   const infoBoxRef = useRef(null);
 
   const handleMouseDown = e => {
     e.stopPropagation(); // Prevent event from bubbling to parent
     setIsDragging(true);
+
     const infoBox = e.currentTarget.closest('.info-box');
     const infoBoxRect = infoBox.getBoundingClientRect();
     const clickX = e.clientX - infoBoxRect.left;
@@ -118,6 +154,7 @@ const InfoBox = ({
     if (selectedItem) {
       setLocalTitle(selectedItem.title);
       setLocalCategory(selectedItem.description);
+      setLocalTags(Array.isArray(selectedItem.tags) ? selectedItem.tags : []);
     }
   }, [selectedItem]);
 
@@ -131,6 +168,7 @@ const InfoBox = ({
   const handleEditClick = () => {
     setEditedTitle(selectedItem.title);
     setEditedCategory(selectedItem.description);
+    setEditedTags(tagsToOptions(selectedItem.tags, tagOptions));
     setIsEditing(true);
   };
 
@@ -138,12 +176,17 @@ const InfoBox = ({
     setIsEditing(false);
     setEditedTitle('');
     setEditedCategory('');
+    setEditedTags([]);
     if (onEditCancel) onEditCancel();
   };
 
   const handleConfirmEdit = () => {
     if (onEditConfirm) {
-      onEditConfirm(editedTitle, editedCategory);
+      onEditConfirm(
+        editedTitle,
+        editedCategory,
+        editedTags.map(t => t.value)
+      );
     }
     setIsEditing(false);
   };
@@ -205,10 +248,12 @@ const InfoBox = ({
       <button className="info-box-close" onClick={onClose}>
         ×
       </button>
+
       <div className="info-box-header">
         <div className="info-box-drag-handle" onMouseDown={handleMouseDown}>
           <IoGridOutline size={12} />
         </div>
+
         {selectedItem.number && (
           <span className="info-box-number">#{selectedItem.number}</span>
         )}
@@ -266,12 +311,44 @@ const InfoBox = ({
           </>
         )}
       </div>
+
       <div className="info-box-header">
         <p className="info-box-ring">{localCategory}</p>
         <span className={`info-box-ring ${mostRecentRing.toLowerCase()}`}>
           {mostRecentRing}
         </span>
       </div>
+
+      <div className="info-box-tag-section">
+        <h4 style={{ margin: 0 }}>Tags</h4>
+        {localTags && localTags.length > 0 ? (
+          <div className="info-box-tags" aria-label="Technology tags">
+            {localTags.map(tagValue => {
+              const cleaned = String(tagValue).trim();
+              if (!cleaned) return null;
+              return (
+                <span key={cleaned} className="info-box-tag">
+                  {getTagLabel(cleaned, tagOptions)}
+                </span>
+              );
+            })}
+          </div>
+        ) : (
+          <p style={{ marginTop: '6px' }}>No tags set</p>
+        )}
+      </div>
+
+      {isEditing && isAdmin && tagOptions.length > 0 && (
+        <div>
+          <h4 style={{ margin: 0 }}>Edit tags</h4>
+          <MultiSelect
+            options={tagOptions}
+            value={editedTags}
+            onChange={setEditedTags}
+            placeholder="Select tags..."
+          />
+        </div>
+      )}
 
       {selectedDirectorate !== 'Digital Services (DS)' && (
         <small style={{ marginTop: '4px' }}>{positionMessage}</small>
@@ -349,17 +426,18 @@ const InfoBox = ({
                   );
                 })()}
               </div>
+
               {index < array.length - 1 && (
                 <div className="timeline-connector" />
               )}
             </div>
           ))}
       </div>
+
       {selectedTimelineItem && (
         <div className="info-box-timeline-item">
           <span className="info-box-timeline-item-title">
-            Review {' - '}
-            {formatTimelineDate(selectedTimelineItem.date)}
+            Review {' - '} {formatTimelineDate(selectedTimelineItem.date)}
           </span>
           <div className="timeline-description">
             <MarkdownText text={selectedTimelineItem.description} />
@@ -371,6 +449,49 @@ const InfoBox = ({
             </span>
           )}
         </div>
+      )}
+
+      {relatedItems && relatedItems.length > 0 ? (
+        <div className="info-box-projects">
+          <div className="info-box-projects-header">
+            <h4>
+              <strong>Related technologies</strong>
+            </h4>
+          </div>
+          <p>Click a technology to view its details</p>
+          <ul tabIndex={0}>
+            {relatedItems.map(item => (
+              <li
+                key={item.id || item.title}
+                onClick={() => onRelatedItemClick && onRelatedItemClick(item)}
+                className="info-box-project-item clickable-tech"
+                role={onRelatedItemClick ? 'button' : undefined}
+                tabIndex={0}
+                onKeyDown={e => {
+                  if (!onRelatedItemClick) return;
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onRelatedItemClick(item);
+                  }
+                }}
+              >
+                {item.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        Array.isArray(localTags) &&
+        localTags.length > 0 && (
+          <div className="info-box-projects">
+            <div className="info-box-projects-header">
+              <h4>
+                <strong>Related technologies</strong>
+              </h4>
+            </div>
+            <p>No related technologies found</p>
+          </div>
+        )
       )}
 
       {projectsForTech.length > 0 && (
@@ -398,6 +519,7 @@ const InfoBox = ({
               )}
             </button>
           </div>
+
           {showProjects && (
             <>
               <p>Click a project to view more details</p>
@@ -434,5 +556,4 @@ const InfoBox = ({
     </div>
   );
 };
-
 export default InfoBox;

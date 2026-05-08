@@ -96,3 +96,18 @@ The Tech Radar data is used throughout the application to:
 3. Highlight technologies in project listings
 4. Provide filtering options based on technology status
 5. Show historical movement of technologies between rings
+
+## Optional Entry Fields
+
+The application tolerates additional fields on entries (beyond the core `id`, `title`, `quadrant`, `timeline`, etc.).
+
+### `tags`
+
+To support showing "Related technologies" in the InfoBox (based on tag overlap), entries can optionally include a `tags` field:
+
+- Type: `string[]` (recommended)
+- Example: `"tags": ["data", "scripting", "etl"]`
+
+In the frontend, tag values are intended to come from a controlled vocabulary (see `frontend/src/constants/technologyTagConstants.js`). The stored values are the `value` strings.
+
+If `tags` is not present (or empty), the related-technologies section will not show for that item.

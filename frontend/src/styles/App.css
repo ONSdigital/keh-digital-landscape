@@ -680,6 +680,29 @@ text {
   color: #de001a;
 }
 
+.info-box-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.info-box-tag {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  border-radius: var(--radius);
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.info-box-tag-section h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
 /* Ensure SVG and its elements stack properly */
 .radar-container svg {
   overflow: visible;
