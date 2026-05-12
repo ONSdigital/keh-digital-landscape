@@ -80,11 +80,13 @@ class TechRadarService {
         if (entry.url && typeof entry.url !== 'string') return false;
         if (entry.links && !Array.isArray(entry.links)) return false;
 
-        // Tags validation (optional)
-        if ('tags' in entry) {
-          if (!Array.isArray(entry.tags)) return false;
-          const validTags = entry.tags.every(tag => typeof tag === 'string');
-          if (!validTags) return false;
+        // Validate tags if present
+        if (
+          'tags' in entry &&
+          (!Array.isArray(entry.tags) ||
+            !entry.tags.every(tag => typeof tag === 'string'))
+        ) {
+          return false;
         }
 
         return true;

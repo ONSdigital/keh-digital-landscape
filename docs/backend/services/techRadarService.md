@@ -12,15 +12,6 @@ The service manages technology radar operations:
 - Integration with S3 storage
 - Error handling and logging
 
-## Tags Support
-
-Tech Radar entries may optionally include a `tags` field:
-
-- Type: `string[]`
-- Stored in: `onsRadarSkeleton.json` (S3)
-
-When entries are updated via the review/admin update endpoints, `tags` are validated and persisted alongside the rest of the entry fields.
-
 ## Dependencies
 
 The service integrates with:

@@ -552,8 +552,8 @@ const ReviewPage = () => {
     };
 
     const tags = newTechnologyTags
-      .map(t => t?.value)
-      .filter(v => typeof v === 'string' && v.length > 0);
+      .map(tag => tag?.value)
+      .filter(value => typeof value === 'string' && value.length > 0);
 
     const newEntry = {
       id: `tech-${Date.now()}`,

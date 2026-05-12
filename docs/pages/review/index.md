@@ -49,7 +49,7 @@ When reviewers make changes to technologies, their email address is automaticall
 
 1. Click "Add Technology" button
 2. Enter technology name and select appropriate category
-3. (Optional) Select tags to help group related technologies
+3. Select tags to help group related technologies
 4. Your email will be automatically recorded as the author
 5. Confirm to add the technology to the Review ring
 

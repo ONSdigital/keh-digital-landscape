@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
@@ -20,26 +20,15 @@ import MultiSelect from '../MultiSelect/MultiSelect';
 
 const tagsToOptions = (tags, tagOptions = []) => {
   if (!Array.isArray(tags)) return [];
-  const values = tags.filter(t => typeof t === 'string' && t.length > 0);
 
-  return values.map(value => {
-    const lower = String(value).toLowerCase();
-    const match = Array.isArray(tagOptions)
-      ? tagOptions.find(o => String(o.value).toLowerCase() === lower)
-      : undefined;
-
-    return match || { label: value, value };
-  });
+  return tags
+    .filter(tag => typeof tag === 'string' && tag.length > 0)
+    .map(tag => tagOptions.find(option => option.value === tag))
+    .filter(option => option !== undefined);
 };
 
 const getTagLabel = (tag, tagOptions = []) => {
-  if (typeof tag !== 'string' || tag.length === 0) return '';
-  const lower = tag.toLowerCase();
-  const match = Array.isArray(tagOptions)
-    ? tagOptions.find(o => String(o.value).toLowerCase() === lower)
-    : undefined;
-
-  return match?.label || tag;
+  return tagOptions.find(option => option.value === tag)?.label || tag;
 };
 
 const InfoBox = ({
@@ -324,31 +313,19 @@ const InfoBox = ({
         {localTags && localTags.length > 0 ? (
           <div className="info-box-tags" aria-label="Technology tags">
             {localTags.map(tagValue => {
-              const cleaned = String(tagValue).trim();
-              if (!cleaned) return null;
+              const cleanedTag = String(tagValue).trim();
+              if (!cleanedTag) return null;
               return (
-                <span key={cleaned} className="info-box-tag">
-                  {getTagLabel(cleaned, tagOptions)}
+                <span key={cleanedTag} className="info-box-tag">
+                  {getTagLabel(cleanedTag, tagOptions)}
                 </span>
               );
             })}
           </div>
         ) : (
-          <p style={{ marginTop: '6px' }}>No tags set</p>
+          <p> No tags set</p>
         )}
       </div>
-
-      {isEditing && isAdmin && tagOptions.length > 0 && (
-        <div>
-          <h4 style={{ margin: 0 }}>Edit tags</h4>
-          <MultiSelect
-            options={tagOptions}
-            value={editedTags}
-            onChange={setEditedTags}
-            placeholder="Select tags..."
-          />
-        </div>
-      )}
 
       {selectedDirectorate !== 'Digital Services (DS)' && (
         <small style={{ marginTop: '4px' }}>{positionMessage}</small>
@@ -437,7 +414,8 @@ const InfoBox = ({
       {selectedTimelineItem && (
         <div className="info-box-timeline-item">
           <span className="info-box-timeline-item-title">
-            Review {' - '} {formatTimelineDate(selectedTimelineItem.date)}
+            Review {' - '}
+            {formatTimelineDate(selectedTimelineItem.date)}
           </span>
           <div className="timeline-description">
             <MarkdownText text={selectedTimelineItem.description} />
@@ -451,47 +429,33 @@ const InfoBox = ({
         </div>
       )}
 
-      {relatedItems && relatedItems.length > 0 ? (
-        <div className="info-box-projects">
-          <div className="info-box-projects-header">
-            <h4>
-              <strong>Related technologies</strong>
-            </h4>
+      {Array.isArray(localTags) && localTags.length > 0 && (
+        <div className="info-box-related-technologies">
+          <div className="info-box-related-technologies-header">
+            <h3>Related technologies</h3>
           </div>
-          <p>Click a technology to view its details</p>
-          <ul tabIndex={0}>
-            {relatedItems.map(item => (
-              <li
-                key={item.id || item.title}
-                onClick={() => onRelatedItemClick && onRelatedItemClick(item)}
-                className="info-box-project-item clickable-tech"
-                role={onRelatedItemClick ? 'button' : undefined}
-                tabIndex={0}
-                onKeyDown={e => {
-                  if (!onRelatedItemClick) return;
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onRelatedItemClick(item);
-                  }
-                }}
-              >
-                {item.title}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        Array.isArray(localTags) &&
-        localTags.length > 0 && (
-          <div className="info-box-projects">
-            <div className="info-box-projects-header">
-              <h4>
-                <strong>Related technologies</strong>
-              </h4>
-            </div>
+
+          {relatedItems?.length > 0 ? (
+            <>
+              <p>Click a technology to view its details</p>
+
+              <ul tabIndex={0}>
+                {relatedItems.map(item => (
+                  <li
+                    key={item.id || item.title}
+                    className="info-box-related-technologies-item clickable-tech"
+                    tabIndex={0}
+                    onClick={() => onRelatedItemClick?.(item)}
+                  >
+                    {item.title}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
             <p>No related technologies found</p>
-          </div>
-        )
+          )}
+        </div>
       )}
 
       {projectsForTech.length > 0 && (
