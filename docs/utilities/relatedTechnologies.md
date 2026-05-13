@@ -15,7 +15,7 @@ export const getRelatedTechnologiesByTags = ({
   limit = 6,
   getRing,
   quadrantBonus = 0.25,
-  ringBonus = 0.1,
+  ringBonus = 0.25, // bonus is set if in adopt ring
 } = {}) => {
   // Implementation details
 };

@@ -79,7 +79,7 @@ Updates a specific technology entry in the radar dataset.
   quadrant: string,      // Technology quadrant
   isNew: boolean,        // Whether this is a new entry
   description: string,   // Technology description
-  tags: string[]         // Optional tags (must be an array of strings if provided)
+  tags: string[]         // Technology tags (optional)
 }
 ```
 

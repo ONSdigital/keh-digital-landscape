@@ -16,7 +16,6 @@ import {
   FaTimes,
 } from 'react-icons/fa';
 import { MarkdownText } from '../../utilities/markdownRenderer';
-import MultiSelect from '../MultiSelect/MultiSelect';
 
 const tagsToOptions = (tags, tagOptions = []) => {
   if (!Array.isArray(tags)) return [];

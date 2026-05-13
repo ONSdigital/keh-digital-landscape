@@ -24,7 +24,7 @@ When reviewers make changes to technologies, their email address is automaticall
 
 - Drag-and-drop interface for moving technologies between rings
 - Add new technologies through a guided dialogue
-- Edit technology details including name, category, and optional tags
+- Edit technology details including name, category, and tags
 - Filter technologies by category
 - Search functionality for quick access
 - View details using [InfoBox](../../components/infoBox.md)

@@ -882,7 +882,6 @@ const ReviewPage = () => {
             ...entries.trial,
             ...entries.assess,
             ...entries.hold,
-            ...entries.review,
           ],
           limit: 6,
         })}
