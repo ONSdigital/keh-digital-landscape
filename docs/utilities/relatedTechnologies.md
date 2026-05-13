@@ -31,7 +31,7 @@ export const getRelatedTechnologiesByTags = ({
 - Scores candidates based on:
   - number of overlapping tag values
   - optional bonus if the candidate is in the same quadrant
-  - optional bonus if the candidate is in the same ring (determined by `getRing`, defaulting to the most recent `ringId`)
+  - optional bonus if the candidate is in the adopt ring
 
 ## Data Expectations
 
