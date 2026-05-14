@@ -1,51 +1,57 @@
 // Controlled vocabulary for tagging technologies.
-// Values are stored on entries as `tags: string[]`.
 
 export const TECHNOLOGY_TAG_OPTIONS = [
-  // General domains
-  { label: 'Frontend', value: 'frontend' },
-  { label: 'Backend', value: 'backend' },
-  { label: 'FullStack', value: 'fullstack' },
-  { label: 'Data', value: 'data' },
-  { label: 'DevOps', value: 'devops' },
-  { label: 'Security', value: 'security' },
+  // 1. PROGRAMMING & LANGUAGE
+  { label: 'Programming Language', value: 'programming-language' }, // Python, Java, Go, R,
 
-  // Programming languages
-  { label: 'Programming Language', value: 'programming-language' },
-  { label: 'Scripting Language', value: 'scripting-language' },
-  { label: 'Systems Language', value: 'systems-language' },
-  { label: 'Query Language', value: 'query-language' },
+  // 2. FRAMEWORKS & LIBRARIES
+  { label: 'Frontend Framework', value: 'frontend-framework' }, // Angular, React, Vue
+  { label: 'Application Framework', value: 'application-framework' }, // Django, Spring Boot, FastAPI, Express
+  { label: 'UI Component Library', value: 'ui-component-library' }, // Material UI, ONS Design System
 
-  // Delivery & quality
-  { label: 'CI/CD', value: 'ci-cd' },
-  { label: 'Testing', value: 'testing' },
+  // API styles
+  { label: 'GraphQL API', value: 'graphql-api' }, // GraphQL, Apollo
 
-  // Infrastructure
-  { label: 'Cloud', value: 'cloud' },
-  { label: 'Containers', value: 'containers' },
-  { label: 'Kubernetes', value: 'kubernetes' },
-  { label: 'Infrastructure as Code', value: 'iac' },
+  // 4. DATA & ANALYTICS & STORAGE
+  { label: 'Data Processing', value: 'data-processing' }, // Pandas, Spark,
+  { label: 'Machine Learning', value: 'machine-learning' }, // TensorFlow, PyTorch
+  { label: 'Relational Database', value: 'relational-database' }, // PostgreSQL, MySQL
+  { label: 'Document Database', value: 'document-database' }, // MongoDB
+  { label: 'Caching', value: 'caching' }, // Redis, Memcached
 
-  // Data and storage
-  { label: 'Datastore', value: 'datastore' },
-  { label: 'SQL', value: 'sql' },
-  { label: 'NoSQL', value: 'nosql' },
-  { label: 'Caching', value: 'caching' },
+  { label: 'Event Streaming', value: 'event-streaming' }, // Kafka
+  { label: 'Queues & Messaging', value: 'queues-messaging' }, // RabbitMQ, SQS
 
-  // Integration
-  { label: 'API', value: 'api' },
-  { label: 'Microservices', value: 'microservices' },
-  { label: 'Batch', value: 'batch' },
-  { label: 'Streaming', value: 'streaming' },
-  { label: 'Messaging', value: 'messaging' },
-  { label: 'Webhooks', value: 'webhooks' },
+  // 5. DEVOPS & SOFTWARE DELIVERY
+  { label: 'CI/CD', value: 'ci-cd' }, // GitHub Actions, Jenkins, GitLab CI, Concourse
+  { label: 'Source Control', value: 'source-control' }, // GitHub, GitLab, Bitbucket
+  { label: 'Infrastructure as Code', value: 'iac' }, // Terraform, CloudFormation
 
-  // Tools
-  { label: 'Observability Tools', value: 'observability-tools' },
-  { label: 'Monitoring Tools', value: 'monitoring-tools' },
-  { label: 'Logging Tools', value: 'logging-tools' },
-  { label: 'Security Tools', value: 'security-tools' },
-  { label: 'Developer Tools', value: 'developer-tools' },
-  { label: 'Linting Tools', value: 'linting-tools' },
-  { label: 'Supporting Tools', value: 'supporting-tools' },
+  { label: 'Container Runtime', value: 'container-runtime' }, // Docker, Podman
+  { label: 'Container Registry', value: 'container-registry' }, // Docker Hub, ECR, GCR
+
+  // 6. TESTING & QUALITY ASSURANCE
+  { label: 'Unit Testing', value: 'unit-testing' }, // Pytest, JUnit
+  { label: 'Integration Testing', value: 'integration-testing' }, // Spring tests, API tests
+  { label: 'E2E Testing', value: 'e2e-testing' }, // Cypress, Playwright, Selenium
+
+  // 7. CLOUD & INFRASTRUCTURE
+  { label: 'Cloud Provider', value: 'cloud-provider' }, // AWS, GCP, Azure
+  { label: 'Cloud Service', value: 'cloud-service' }, // Lambda, S3, BigQuery
+
+  // 8.  DEV TOOLING & PRODUCTIVITY
+  { label: 'Linting Tools', value: 'linting-tools' }, // ESLint, Pylint, Ruff
+  { label: 'Documentation Tools', value: 'documentation-tools' }, // Roxygen2, Mkdocs
+  { label: 'Package Manager', value: 'package-manager' }, // npm, Poetry, renv
+
+  { label: 'Monitoring Tools', value: 'monitoring-tools' }, // Prometheus, Datadog
+  { label: 'Logging Tools', value: 'logging-tools' }, // Splunk, ELK
+  { label: 'Tracing Tools', value: 'tracing-tools' }, // OpenTelemetry
+
+  { label: 'Security Tools', value: 'security-tools' }, // SonarQube, static analysis tools,
+
+  // 9. DEVELOPER EXPERIENCE & AI TOOLS
+  { label: 'IDE / Editor Tools', value: 'ide-editor-tools' }, // VS Code, PyCharm, IntelliJ
+  { label: 'AI Code Assistant', value: 'ai-code-assistant' }, // GitHub Copilot,
+  { label: 'AI Agent Tool', value: 'ai-agent-tool' }, // Copilot CLI, agent-based dev tools
 ];
