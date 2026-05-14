@@ -1,11 +1,3 @@
-const getValidTags = tags => {
-  if (!Array.isArray(tags)) {
-    return [];
-  }
-
-  return tags.filter(tag => typeof tag === 'string' && tag.length > 0);
-};
-
 const getOverlapCount = (selectedTagSet, candidateTags) => {
   let overlap = 0;
 
@@ -47,7 +39,7 @@ export const getRelatedTechnologiesByTags = ({
     return [];
   }
 
-  const selectedTags = getValidTags(selectedEntry.tags);
+  const selectedTags = selectedEntry.tags || [];
 
   if (selectedTags.length === 0) {
     return [];
@@ -70,7 +62,7 @@ export const getRelatedTechnologiesByTags = ({
       continue;
     }
 
-    const candidateTags = getValidTags(candidate.tags);
+    const candidateTags = candidate.tags || [];
 
     if (candidateTags.length === 0) {
       continue;

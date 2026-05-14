@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
@@ -27,7 +27,7 @@ const InfoBox = ({
   setTimelineAscending,
   selectedTimelineItem,
   setSelectedTimelineItem,
-  projectsForTech = [],
+  projectsForTech,
   handleProjectClick,
   relatedItems = [],
   onRelatedItemClick,
@@ -42,20 +42,15 @@ const InfoBox = ({
   const [editedTitle, setEditedTitle] = useState('');
   const [editedCategory, setEditedCategory] = useState('');
   const [editedTags, setEditedTags] = useState([]);
-
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState(initialPosition);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-
   const [localTitle, setLocalTitle] = useState(selectedItem?.title || '');
   const [localCategory, setLocalCategory] = useState(
     selectedItem?.description || ''
   );
-  const [localTags, setLocalTags] = useState(
-    Array.isArray(selectedItem?.tags) ? selectedItem.tags : []
-  );
+  const [localTags, setLocalTags] = useState(selectedItem?.tags || []);
   const [showProjects, setShowProjects] = useState(true);
-
   const infoBoxRef = useRef(null);
 
   const handleMouseDown = e => {
@@ -130,7 +125,7 @@ const InfoBox = ({
     if (selectedItem) {
       setLocalTitle(selectedItem.title);
       setLocalCategory(selectedItem.description);
-      setLocalTags(Array.isArray(selectedItem.tags) ? selectedItem.tags : []);
+      setLocalTags(selectedItem.tags);
     }
   }, [selectedItem]);
 
