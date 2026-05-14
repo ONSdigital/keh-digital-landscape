@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 import {
   IoArrowUpOutline,
@@ -16,19 +16,7 @@ import {
   FaTimes,
 } from 'react-icons/fa';
 import { MarkdownText } from '../../utilities/markdownRenderer';
-
-const tagsToOptions = (tags, tagOptions = []) => {
-  if (!Array.isArray(tags)) return [];
-
-  return tags
-    .filter(tag => typeof tag === 'string' && tag.length > 0)
-    .map(tag => tagOptions.find(option => option.value === tag))
-    .filter(option => option !== undefined);
-};
-
-const getTagLabel = (tag, tagOptions = []) => {
-  return tagOptions.find(option => option.value === tag)?.label || tag;
-};
+import MultiSelect from '../MultiSelect/MultiSelect';
 
 const InfoBox = ({
   isAdmin = false,
@@ -154,9 +142,16 @@ const InfoBox = ({
   }, [selectedItem, setSelectedTimelineItem]);
 
   const handleEditClick = () => {
+    // Filter out invalid tags and convert to option objects
+    const selectedTags = [];
+    for (const tagValue of selectedItem.tags ?? []) {
+      const match = tagOptions.find(option => option.value === tagValue);
+      if (match) selectedTags.push(match);
+    }
+
     setEditedTitle(selectedItem.title);
     setEditedCategory(selectedItem.description);
-    setEditedTags(tagsToOptions(selectedItem.tags, tagOptions));
+    setEditedTags(selectedTags);
     setIsEditing(true);
   };
 
@@ -316,7 +311,7 @@ const InfoBox = ({
               if (!cleanedTag) return null;
               return (
                 <span key={cleanedTag} className="info-box-tag">
-                  {getTagLabel(cleanedTag, tagOptions)}
+                  {cleanedTag}
                 </span>
               );
             })}
@@ -325,6 +320,18 @@ const InfoBox = ({
           <p> No tags set</p>
         )}
       </div>
+
+      {isEditing && isAdmin && tagOptions.length > 0 && (
+        <div>
+          <h4 style={{ margin: 0 }}>Edit tags</h4>
+          <MultiSelect
+            options={tagOptions}
+            value={editedTags}
+            onChange={setEditedTags}
+            placeholder="Select tags..."
+          />
+        </div>
+      )}
 
       {selectedDirectorate !== 'Digital Services (DS)' && (
         <small style={{ marginTop: '4px' }}>{positionMessage}</small>
