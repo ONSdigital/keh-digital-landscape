@@ -616,12 +616,6 @@ const ReviewPage = () => {
   };
 
   const handleConfirmModalYes = () => {
-    const ringTimeline =
-      Array.isArray(selectedItem?.filteredTimeline) &&
-      selectedItem.filteredTimeline.length > 0
-        ? selectedItem.filteredTimeline
-        : selectedItem.timeline;
-
     const currentRing =
       selectedItem.timeline[
         selectedItem.timeline.length - 1
@@ -633,11 +627,16 @@ const ReviewPage = () => {
       moved: 0,
       ringId: currentRing,
       date: now,
-      description: `Changed from ${selectedItem.title} (${selectedItem.description}) to ${editedItem.title} (${editedItem.description})${
-        Array.isArray(editedItem.tags) && editedItem.tags.length > 0
-          ? `; Tags: ${editedItem.tags.join(', ')}`
+      description: `Changed from ${selectedItem.title} (${selectedItem.description}) ${
+        selectedItem.tags.length > 0
+          ? `; Tags: ${selectedItem.tags.join(', ')}`
           : ''
-      }`,
+      } 
+        to ${editedItem.title} (${editedItem.description}) ${
+          editedItem.tags.length > 0
+            ? `; Tags: ${editedItem.tags.join(', ')}`
+            : ''
+        }`,
       author: currentUser?.user?.email || null,
     };
 
