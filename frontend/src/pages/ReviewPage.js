@@ -38,7 +38,7 @@ const ReviewPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [newTechnology, setNewTechnology] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [newTechnologyTags, setNewTechnologyTags] = useState([]);
+  const [technologyTags, setTechnologyTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedCategory, setEditedCategory] = useState('');
@@ -551,15 +551,11 @@ const ReviewPage = () => {
       Infrastructure: '4',
     };
 
-    const tags = newTechnologyTags
-      .map(tag => tag?.value)
-      .filter(value => typeof value === 'string' && value.length > 0);
-
     const newEntry = {
       id: `tech-${Date.now()}`,
       title: newTechnology.trim(),
       description: selectedCategory,
-      ...(tags.length > 0 ? { tags } : {}),
+      ...(technologyTags.length > 0 ? { technologyTags } : {}),
       key: newTechnology.trim().toLowerCase().replace(/\s+/g, ''),
       url: '#',
       quadrant: categoryToQuadrant[selectedCategory],
@@ -600,26 +596,18 @@ const ReviewPage = () => {
     setEditedCategory('');
   };
 
-  const handleConfirmEdit = (title, category, tagsInput) => {
-    const nextTitle = typeof title === 'string' ? title : '';
-    const nextCategory = typeof category === 'string' ? category : '';
-    const tags = Array.isArray(tagsInput)
-      ? tagsInput.filter(t => typeof t === 'string' && t.length > 0)
-      : [];
-
-    setEditedTitle(nextTitle);
-    setEditedCategory(nextCategory);
-    setEditedTags(tags);
-    setEditedItem({
+  const handleConfirmEdit = (title, category, tags) => {
+    const updatedItem = {
       ...selectedItem,
-      title: nextTitle,
-      description: nextCategory,
-      quadrant: categoryToQuadrant[nextCategory],
+      title,
+      description: category,
+      quadrant: categoryToQuadrant[category],
       tags,
-    });
+    };
+
+    setEditedItem(updatedItem);
     setShowConfirmModal(true);
   };
-
   const categoryToQuadrant = {
     Languages: '1',
     Frameworks: '2',
@@ -628,11 +616,6 @@ const ReviewPage = () => {
   };
 
   const handleConfirmModalYes = () => {
-    if (!editedItem) {
-      setShowConfirmModal(false);
-      return;
-    }
-
     const ringTimeline =
       Array.isArray(selectedItem?.filteredTimeline) &&
       selectedItem.filteredTimeline.length > 0
@@ -640,7 +623,9 @@ const ReviewPage = () => {
         : selectedItem.timeline;
 
     const currentRing =
-      ringTimeline[ringTimeline.length - 1].ringId.toLowerCase();
+      selectedItem.timeline[
+        selectedItem.timeline.length - 1
+      ].ringId.toLowerCase();
 
     // Create timeline entry for the change
     const now = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
@@ -650,7 +635,7 @@ const ReviewPage = () => {
       date: now,
       description: `Changed from ${selectedItem.title} (${selectedItem.description}) to ${editedItem.title} (${editedItem.description})${
         Array.isArray(editedItem.tags) && editedItem.tags.length > 0
-          ? `; tags: ${editedItem.tags.join(', ')}`
+          ? `; Tags: ${editedItem.tags.join(', ')}`
           : ''
       }`,
       author: currentUser?.user?.email || null,
@@ -729,7 +714,7 @@ const ReviewPage = () => {
     }));
     setNewTechnology('');
     setSelectedCategory('');
-    setNewTechnologyTags([]);
+    setTechnologyTags([]);
     setPendingNewTechnology(null);
     setShowAddConfirmModal(false);
 
@@ -888,6 +873,9 @@ const ReviewPage = () => {
         onRelatedItemClick={handleItemClick}
         tagOptions={TECHNOLOGY_TAG_OPTIONS}
         onEditConfirm={(title, category, tags) => {
+          setEditedTitle(title);
+          setEditedCategory(category);
+          setEditedTags(tags);
           handleConfirmEdit(title, category, tags);
         }}
         onEditCancel={handleCancelEdit}
@@ -1274,8 +1262,8 @@ const ReviewPage = () => {
                   <label>Tags</label>
                   <MultiSelect
                     options={TECHNOLOGY_TAG_OPTIONS}
-                    value={newTechnologyTags}
-                    onChange={setNewTechnologyTags}
+                    value={technologyTags}
+                    onChange={setTechnologyTags}
                     placeholder="Select tags..."
                   />
                 </div>
