@@ -38,6 +38,8 @@ DISABLE_LINTERS:
   # Disable due to poor configuration options
   - ACTION_ACTIONLINT
 
+  - ACTION_ZIZMOR
+
   # Disable since Ruff is used more widely in our code
   - PYTHON_FLAKE8
   - PYTHON_PYRIGHT
