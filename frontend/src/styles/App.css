@@ -1392,6 +1392,11 @@ text {
   background: hsl(var(--muted));
 }
 
+.info-box-related-technologies {
+  margin-top: 4px;
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 12px;
+}
 .info-box-related-technologies h3 {
   margin: 0;
   font-size: 14px;
