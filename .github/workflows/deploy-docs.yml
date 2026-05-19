@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e1148
+      - uses: actions/checkout@ 34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]

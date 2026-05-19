@@ -25,7 +25,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@34e1148
+      - uses: actions/checkout@ 34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Setup Node.js
         uses: actions/setup-python@a0853c2
         with:
@@ -42,7 +42,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@34e1148
+      - uses: actions/checkout@ 34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Setup Node.js
         uses: actions/setup-python@a0853c2
         with:

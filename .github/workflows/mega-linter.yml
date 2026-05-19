@@ -56,7 +56,7 @@ jobs:
     steps:
       # Git Checkout
       - name: Checkout Code
-        uses: actions/checkout@34e1148
+        uses: actions/checkout@ 34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
 
@@ -75,7 +75,7 @@ jobs:
 
         # You can override MegaLinter flavor used to have faster performances
         # More info at https://megalinter.io/latest/flavors/
-        uses: oxsecurity/megalinter@0e3ce9b
+        uses: oxsecurity/megalinter@ 0e3ce9b9c8c10effb9b269509cc47ca17cae31c7
         id: ml
 
         # All available variables are described in documentation
@@ -101,7 +101,7 @@ jobs:
 
       # Upload MegaLinter artifacts
       - name: Archive production artifacts
-        uses: actions/upload-artifact@ea165f8
+        uses: actions/upload-artifact@ ea165f8d65b6e75b540449e92b4886f43607fa02
         if: success() || failure()
         with:
           name: MegaLinter reports
