@@ -1,0 +1,4 @@
+[[IgnoredVulns]]
+id = "GHSA-5239-wwwm-4pmq"
+# ignoreUntil = 2026-08-01 # Ignore until August 1st
+reason = "Bumping Pygments to 2.20 breaks MkDocs build. No current fixes upstream, suppressing until August 2026."
