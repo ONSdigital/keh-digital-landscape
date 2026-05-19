@@ -38,8 +38,6 @@ DISABLE_LINTERS:
   # Disable due to poor configuration options
   - ACTION_ACTIONLINT
 
-  - ACTION_ZIZMOR
-
   # Disable since Ruff is used more widely in our code
   - PYTHON_FLAKE8
   - PYTHON_PYRIGHT
@@ -76,3 +74,5 @@ PYTHON_PYLINT_ARGUMENTS:
 PYTHON_BANDIT_ARGUMENTS:
   - --skip
   - B101,B311
+
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES: - GITHUB_TOKEN
