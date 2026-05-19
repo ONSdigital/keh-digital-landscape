@@ -25,9 +25,9 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e1148
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-python@a0853c2
         with:
           node-version: '24'
 
@@ -42,15 +42,15 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e1148
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-python@a0853c2
         with:
           node-version: '24'
       - name: Install Prettier
         run: npm install prettier
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3 # Pin to latest version 3 of terraform
+        uses: hashicorp/setup-terraform@b9cd54a # Pin to latest version 3 of terraform
         with:
           terraform_version: '1.14.3'
       - name: Check code formatting with Prettier

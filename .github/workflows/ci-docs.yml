@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e1148
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-python@a0853c2
         with:
           node-version: '24'
       - name: Run Markdown linting
@@ -28,12 +28,12 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@34e1148
+      - uses: actions/setup-python@a26af69
         with:
           python-version: 3.x
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852
         with:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
