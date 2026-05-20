@@ -1,0 +1,4 @@
+[[IgnoredVulns]]
+id = "PYSEC-2026-89"
+ignoreUntil = 2026-08-01 # Ignore until August 1st
+reason = "python-markdown 3.10.2 is affected by this vuln. No current fix as of 20-05-26."
