@@ -100,21 +100,17 @@ To run the project locally, do the following:
    make install-dev
    ```
 
-2. Export the required environment variables
+2. Sign in with AWS SSO, and export the correct profile for this service:
+
+   **Note:** See the Developer Onboarding Guide on the "Using AWS SSO for Local Development" page on Confluence to set up service profile selection on your local machine.
 
    ```bash
-   # AWS
-   export AWS_ACCESS_KEY_ID=<your_access_key>
-   export AWS_SECRET_ACCESS_KEY=<your_secret_key>
-   export AWS_SECRET_NAME=<your_secret_name>
-   export AWS_REGION=<your_region>
+   aws sso login
 
-   # Github
-   export GITHUB_APP_ID=<your_github_app_id>
-   export GITHUB_APP_CLIENT_ID=<your_github_app_client_id>
-   export GITHUB_APP_CLIENT_SECRET=<your_github_app_client_secret>
-   export GITHUB_ORG=<your_github_organisation>
+   export AWS_PROFILE=keh-digital-landscape
    ```
+
+   This allows you to assume the AWS IAM role for service, enabling the most secure development experience. This also means you will have limited permissions until you exit out of the profile.
 
    Alternatively, you can use the `.env.example` files. Copy the `.env.example` files to `.env` in both the frontend and backend directories and fill in the values.
 
@@ -137,6 +133,12 @@ To run the project locally, do the following:
    ```
 
    **Note:** If running in separate terminals, ensure the environment variables are exported in both terminals.
+
+4. To exit the profile:
+
+   ```bash
+   unset AWS_PROFILE
+   ```
 
 ### Local Authentication
 

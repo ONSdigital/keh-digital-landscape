@@ -11,6 +11,20 @@ resource "aws_iam_role" "ecs_task_role" {
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         }
+      },
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${var.aws_account_id}:root"
+        }
+        Condition = {
+          ArnLike = {
+            "aws:PrincipalArn" = [
+              "arn:aws:iam::${var.aws_account_id}:role/aws-reserved/sso.amazonaws.com/eu-west-2/AWSReservedSSO_Standard_Administrator_Access_*"
+            ]
+          }
+        }
       }
     ]
   })
@@ -131,57 +145,4 @@ resource "aws_iam_role_policy_attachment" "ecs_s3_copilot_read_only_attach" {
 resource "aws_iam_role_policy_attachment" "ecs_secretsmanager_access_attach" {
   role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.secretsmanager_access.arn
-}
-
-# IAM User Group
-resource "aws_iam_group" "group" {
-  name = "${var.domain}-${var.service_subdomain}-user-group"
-  path = "/"
-}
-
-# Attach managed policies to user group
-resource "aws_iam_group_policy_attachment" "group_task_logs_attach" {
-  group      = aws_iam_group.group.name
-  policy_arn = aws_iam_policy.task_logs_policy.arn
-}
-
-resource "aws_iam_group_policy_attachment" "group_s3_read_and_write_attach" {
-  group      = aws_iam_group.group.name
-  policy_arn = aws_iam_policy.s3_read_and_write.arn
-}
-
-resource "aws_iam_group_policy_attachment" "group_s3_copilot_read_only_attach" {
-  group      = aws_iam_group.group.name
-  policy_arn = aws_iam_policy.s3_copilot_read_only.arn
-}
-
-resource "aws_iam_group_policy_attachment" "group_secretsmanager_access_attach" {
-  group      = aws_iam_group.group.name
-  policy_arn = aws_iam_policy.secretsmanager_access.arn
-}
-
-# IAM User
-resource "aws_iam_user" "user" {
-  name = "${var.domain}-${var.service_subdomain}"
-  path = "/"
-}
-
-# Assign IAM User to group
-resource "aws_iam_user_group_membership" "user_group_attach" {
-  user = aws_iam_user.user.name
-
-  groups = [
-    aws_iam_group.group.name
-  ]
-}
-
-# IAM Key Rotation Module
-
-module "iam_key_rotation" {
-  source = "git::https://github.com/ONS-Innovation/keh-aws-iam-key-rotation.git?ref=v0.1.1"
-
-  iam_username          = aws_iam_user.user.name
-  access_key_secret_arn = aws_secretsmanager_secret.access_key.arn
-  secret_key_secret_arn = aws_secretsmanager_secret.secret_key.arn
-  rotation_in_days      = 45
 }
