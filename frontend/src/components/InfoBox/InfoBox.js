@@ -125,7 +125,7 @@ const InfoBox = ({
     if (selectedItem) {
       setLocalTitle(selectedItem.title);
       setLocalCategory(selectedItem.description);
-      setLocalTags(selectedItem.tags);
+      setLocalTags(selectedItem?.tags);
     }
   }, [selectedItem]);
 

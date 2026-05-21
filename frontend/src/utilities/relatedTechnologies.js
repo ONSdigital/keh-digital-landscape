@@ -1,3 +1,6 @@
+/**
+ * Count overlapping tags between the selected entry and a candidate entry.
+ */
 const getOverlapCount = (selectedTagSet, candidateTags) => {
   let overlap = 0;
 
@@ -10,12 +13,18 @@ const getOverlapCount = (selectedTagSet, candidateTags) => {
   return overlap;
 };
 
+/**
+ * Determine whether two radar entries belong to the same quadrant.
+ */
 const isSameQuadrant = (a, b) => {
   return (
     a?.quadrant && b?.quadrant && String(a.quadrant) === String(b.quadrant)
   );
 };
 
+/**
+ * Get the current ring for an entry from its latest timeline item.
+ */
 const defaultGetRing = entry => {
   const timeline = entry?.filteredTimeline || entry?.timeline || [];
 
@@ -25,7 +34,8 @@ const defaultGetRing = entry => {
 };
 
 /**
- * Computes related technologies based on tag overlap.
+ * Get related technologies ranked by tag overlap with optional scoring bonuses.
+ * @returns {Object[]} - The ranked list of related technologies.
  */
 export const getRelatedTechnologiesByTags = ({
   selectedEntry,

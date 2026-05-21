@@ -555,7 +555,7 @@ const ReviewPage = () => {
       id: `tech-${Date.now()}`,
       title: newTechnology.trim(),
       description: selectedCategory,
-      ...(technologyTags.length > 0 ? { technologyTags } : {}),
+      tags: technologyTags.length > 0 ? technologyTags : [],
       key: newTechnology.trim().toLowerCase().replace(/\s+/g, ''),
       url: '#',
       quadrant: categoryToQuadrant[selectedCategory],
@@ -628,12 +628,12 @@ const ReviewPage = () => {
       ringId: currentRing,
       date: now,
       description: `Changed from ${selectedItem.title} (${selectedItem.description}) ${
-        selectedItem.tags.length > 0
+        Array.isArray(selectedItem.tags) && selectedItem.tags.length > 0
           ? `; Tags: ${selectedItem.tags.join(', ')}`
           : ''
       } 
         to ${editedItem.title} (${editedItem.description}) ${
-          editedItem.tags.length > 0
+          Array.isArray(editedItem.tags) && editedItem.tags.length > 0
             ? `; Tags: ${editedItem.tags.join(', ')}`
             : ''
         }`,

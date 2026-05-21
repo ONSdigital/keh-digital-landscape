@@ -1,6 +1,6 @@
 # Related Technologies Utility
 
-The Related Technologies utility provides a helper for computing "related" Tech Radar entries based on tag overlap.
+This utility ranks related Tech Radar entries using tag overlap, with small bonuses for entries in the same quadrant and entries in the adopt ring.
 
 ## Core Functionality
 
@@ -14,7 +14,7 @@ export const getRelatedTechnologiesByTags = ({
   candidates,
   limit = 6,
   getRing,
-  quadrantBonus = 0.25,
+  quadrantBonus = 0.25, // bonus is set if in the same quadrant
   ringBonus = 0.25, // bonus is set if in adopt ring
 } = {}) => {
   // Implementation details
@@ -28,10 +28,48 @@ export const getRelatedTechnologiesByTags = ({
   - `candidates` is missing/empty
   - `selectedEntry.tags` is missing/empty
 - Excludes the selected entry from results (by matching `id` when present)
-- Scores candidates based on:
-  - number of overlapping tag values
-  - optional bonus if the candidate is in the same quadrant
-  - optional bonus if the candidate is in the adopt ring
+- Only includes candidates with at least one overlapping tag
+- Scores candidates using:
+  - the number of overlapping tags
+  - an optional bonus when the candidate is in the same quadrant
+  - an optional bonus when the candidate is in the adopt ring
+- Sorts matches by score, then by raw overlap count, then by title
+
+### Scoring Formula
+
+Each candidate starts with its overlap count, then optional bonuses are added:
+
+```text
+score = overlap count + quadrant bonus + ring bonus
+```
+
+Where:
+
+- `overlap count` is the number of tags shared between the selected entry and the candidate
+- `quadrant bonus` is `0.25` when both entries are in the same quadrant, otherwise `0`
+- `ring bonus` is `0.25` when the candidate is currently in the `adopt` ring, otherwise `0`
+
+Example:
+
+- shares `2` tags with the selected entry
+- is in the same quadrant
+- is in the `adopt` ring
+
+Its score is:
+
+```text
+2 + 0.25 + 0.25 = 2.5
+```
+
+Another candidate that shares the same `2` tags but gets no bonuses would score:
+
+```text
+2 + 0 + 0 = 2
+```
+
+The first candidate therefore ranks above the second.
+
+If two candidates have the same final score, the utility prefers the one with the higher raw overlap count. If they are still tied, it falls back to alphabetical order by title.
 
 ## Data Expectations
 

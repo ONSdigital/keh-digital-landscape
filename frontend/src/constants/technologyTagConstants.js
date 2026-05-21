@@ -37,7 +37,15 @@ export const TECHNOLOGY_TAG_OPTIONS = [
 
   // 7. CLOUD & INFRASTRUCTURE
   { label: 'Cloud Provider', value: 'cloud-provider' }, // AWS, GCP, Azure
-  { label: 'Cloud Service', value: 'cloud-service' }, // Lambda, S3, BigQuery
+
+  { label: 'Compute Services', value: 'cloud-compute' }, // AWS EC2, Azure VM, GCP Compute Engine
+  { label: 'Serverless / FaaS', value: 'serverless' }, // AWS Lambda, Azure Functions, Google Cloud Functions
+  { label: 'Cloud Storage', value: 'cloud-storage' }, // S3, Azure Blob Storage, Google Cloud Storage
+  { label: 'Cloud Database', value: 'cloud-database' }, // DynamoDB, RDS, Cloud SQL, Firestore, BigQuery
+  { label: 'Cloud Networking', value: 'cloud-networking' }, // VPC, API Gateway, Load Balancers, CloudFront, CDN
+  { label: 'Cloud Messaging', value: 'cloud-messaging' }, // SQS, SNS, Pub/Sub, EventBridge
+  { label: 'Cloud Security', value: 'cloud-security' }, // IAM, Cognito, Key Vault
+  { label: 'Cloud Observability', value: 'cloud-observability' }, // CloudWatch, Stackdriver, Azure Monitor
 
   // 8.  DEV TOOLING & PRODUCTIVITY
   { label: 'Linting Tools', value: 'linting-tools' }, // ESLint, Pylint, Ruff
@@ -47,7 +55,6 @@ export const TECHNOLOGY_TAG_OPTIONS = [
   { label: 'Monitoring Tools', value: 'monitoring-tools' }, // Prometheus, Datadog
   { label: 'Logging Tools', value: 'logging-tools' }, // Splunk, ELK
   { label: 'Tracing Tools', value: 'tracing-tools' }, // OpenTelemetry
-
   { label: 'Security Tools', value: 'security-tools' }, // SonarQube, static analysis tools,
 
   // 9. DEVELOPER EXPERIENCE & AI TOOLS

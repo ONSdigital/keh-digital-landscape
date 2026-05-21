@@ -5,7 +5,7 @@ import { reviewPositionCases } from './data/reviewPositionCases';
 import { directorateData } from './data/directorateData';
 
 // Function to intercept and mock the API call
-const interceptAPICall = async ({ page }) => {
+const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
   // Function to intercept and mock the API radarData call
   const interceptAPIJsonCall = async ({ page }) => {
     // Intercept and mock the teams API response with teamsDummyData
@@ -13,7 +13,7 @@ const interceptAPICall = async ({ page }) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(radarData),
+        body: JSON.stringify(mockedRadarData),
       });
     });
   };
@@ -232,4 +232,92 @@ test('Technology cards show coloured border for directorate-specific positions',
       }
     }
   }
+});
+
+test('Related technologies update when tags are edited', async ({ page }) => {
+  const relatedTagsRadarData = {
+    ...radarData,
+    entries: radarData.entries.map(entry => {
+      if (entry.id === 'test-r') {
+        return {
+          ...entry,
+          tags: ['statistics'],
+        };
+      }
+
+      if (entry.id === 'test-java') {
+        return {
+          ...entry,
+          tags: ['machine-learning'],
+        };
+      }
+
+      return entry;
+    }),
+  };
+
+  await interceptAPICall({
+    page,
+    mockedRadarData: relatedTagsRadarData,
+  });
+
+  // Open technology card
+  await page.locator('#technology-test-r').click();
+
+  // Ensure info panel is visible
+  await expect(page.locator('.info-box')).toBeVisible();
+
+  const relatedItemsLocator = page.locator(
+    '.info-box-related-technologies .info-box-related-technologies-item'
+  );
+
+  // Initially no related technologies
+  await expect(relatedItemsLocator).toHaveCount(0);
+
+  // Open edit mode
+  await page.getByRole('button', { name: /edit/i }).click();
+
+  // Open tags multiselect
+  await page.locator('[placeholder="Select tags..."]').click();
+
+  // Add Machine Learning tag
+  await page
+    .locator('.multi-select-option')
+    .filter({ hasText: 'Machine Learning' })
+    .click();
+
+  const infoBox = page.locator('.info-box');
+
+  await infoBox
+    .getByRole('combobox', { name: 'Search options' })
+    .press('Escape');
+  await expect(
+    infoBox.getByRole('listbox', { name: 'Available options' })
+  ).toHaveCount(0);
+
+  // Save edit
+  await page.locator('.info-box .edit-confirm-button').click();
+
+  const confirmModal = page.locator('.admin-modal').filter({
+    hasText: 'Are you sure you want to update this technology?',
+  });
+
+  await expect(confirmModal).toBeVisible();
+  await expect(
+    confirmModal.getByText('Are you sure you want to update this technology?')
+  ).toBeVisible();
+  await confirmModal.getByRole('button', { name: 'Confirm' }).click();
+
+  await expect(
+    page.locator('text=Technology updated successfully')
+  ).toBeVisible();
+
+  // Verify tag appears
+  await expect(page.getByLabel('Technology tags')).toContainText(
+    'machine-learning'
+  );
+
+  // Related technology should now appear
+  await expect(relatedItemsLocator).toHaveCount(1);
+  await expect(relatedItemsLocator).toHaveText(['Java']);
 });
