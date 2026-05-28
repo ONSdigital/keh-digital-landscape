@@ -78,7 +78,8 @@ Updates a specific technology entry in the radar dataset.
   ring: string,          // Technology ring (adopt/trial/assess/hold)
   quadrant: string,      // Technology quadrant
   isNew: boolean,        // Whether this is a new entry
-  description: string    // Technology description
+  description: string,   // Technology description
+  tags: string[]         // Technology tags (optional)
 }
 ```
 
@@ -89,6 +90,7 @@ Updates a specific technology entry in the radar dataset.
 - Ensures required fields are present
 - Validates ring values against allowed options
 - Checks for duplicate entries
+- Validates tags (if provided) as `string[]`
 - Maintains data integrity
 
 **Example:**

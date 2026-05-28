@@ -24,7 +24,7 @@ When reviewers make changes to technologies, their email address is automaticall
 
 - Drag-and-drop interface for moving technologies between rings
 - Add new technologies through a guided dialogue
-- Edit technology details including name and category
+- Edit technology details including name, category, and tags
 - Filter technologies by category
 - Search functionality for quick access
 - View details using [InfoBox](../../components/infoBox.md)
@@ -49,8 +49,9 @@ When reviewers make changes to technologies, their email address is automaticall
 
 1. Click "Add Technology" button
 2. Enter technology name and select appropriate category
-3. Your email will be automatically recorded as the author
-4. Confirm to add the technology to the Review ring
+3. Select tags to help group related technologies
+4. Your email will be automatically recorded as the author
+5. Confirm to add the technology to the Review ring
 
 ### Saving Changes
 

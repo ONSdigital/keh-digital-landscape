@@ -11,6 +11,8 @@ import {
 import ProjectModal from '../components/Projects/ProjectModal';
 import InfoBox from '../components/InfoBox/InfoBox';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
+import { getRelatedTechnologiesByTags } from '../utilities/relatedTechnologies';
+import { TECHNOLOGY_TAG_OPTIONS } from '../constants/technologyTagConstants';
 import { getDirectorates } from '../utilities/getDirectorates';
 import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
 import {
@@ -828,6 +830,13 @@ function RadarPage() {
               setSelectedTimelineItem={setSelectedTimelineItem}
               projectsForTech={projectsForTech}
               handleProjectClick={handleProjectClick}
+              tagOptions={TECHNOLOGY_TAG_OPTIONS}
+              relatedItems={getRelatedTechnologiesByTags({
+                selectedEntry: selectedBlip || lockedBlip,
+                candidates: Object.values(numberedEntries).flat(),
+                limit: 6,
+              })}
+              onRelatedItemClick={entry => handleBlipClick(entry, true)}
               isHighlighted={getShouldBeHighlighted(
                 (selectedBlip || lockedBlip)?.timeline || []
               )}

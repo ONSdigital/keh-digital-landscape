@@ -10,6 +10,8 @@ import ProjectModal from '../components/Projects/ProjectModal';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
 import { useData } from '../contexts/dataContext';
 import { MarkdownText } from '../utilities/markdownRenderer';
+import { getRelatedTechnologiesByTags } from '../utilities/relatedTechnologies';
+import { TECHNOLOGY_TAG_OPTIONS } from '../constants/technologyTagConstants';
 import { format, set } from 'date-fns';
 import { getDirectorates } from '../utilities/getDirectorates';
 import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
@@ -36,9 +38,11 @@ const ReviewPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [newTechnology, setNewTechnology] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [technologyTags, setTechnologyTags] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState('');
   const [editedCategory, setEditedCategory] = useState('');
+  const [editedTags, setEditedTags] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showAddConfirmModal, setShowAddConfirmModal] = useState(false);
@@ -551,6 +555,7 @@ const ReviewPage = () => {
       id: `tech-${Date.now()}`,
       title: newTechnology.trim(),
       description: selectedCategory,
+      tags: technologyTags.length > 0 ? technologyTags : [],
       key: newTechnology.trim().toLowerCase().replace(/\s+/g, ''),
       url: '#',
       quadrant: categoryToQuadrant[selectedCategory],
@@ -591,16 +596,18 @@ const ReviewPage = () => {
     setEditedCategory('');
   };
 
-  const handleConfirmEdit = () => {
-    setShowConfirmModal(true);
-    setEditedItem({
+  const handleConfirmEdit = (title, category, tags) => {
+    const updatedItem = {
       ...selectedItem,
-      title: editedTitle,
-      description: editedCategory,
-      quadrant: categoryToQuadrant[editedCategory],
-    });
-  };
+      title,
+      description: category,
+      quadrant: categoryToQuadrant[category],
+      tags,
+    };
 
+    setEditedItem(updatedItem);
+    setShowConfirmModal(true);
+  };
   const categoryToQuadrant = {
     Languages: '1',
     Frameworks: '2',
@@ -620,16 +627,26 @@ const ReviewPage = () => {
       moved: 0,
       ringId: currentRing,
       date: now,
-      description: `Changed from ${selectedItem.title} (${selectedItem.description}) to ${editedTitle} (${editedCategory})`,
+      description: `Changed from ${selectedItem.title} (${selectedItem.description}) ${
+        Array.isArray(selectedItem.tags) && selectedItem.tags.length > 0
+          ? `; Tags: ${selectedItem.tags.join(', ')}`
+          : ''
+      } 
+        to ${editedItem.title} (${editedItem.description}) ${
+          Array.isArray(editedItem.tags) && editedItem.tags.length > 0
+            ? `; Tags: ${editedItem.tags.join(', ')}`
+            : ''
+        }`,
       author: currentUser?.user?.email || null,
     };
 
     // Update the item with new values and timeline
     const updatedItem = {
       ...selectedItem,
-      title: editedTitle,
-      description: editedCategory,
-      quadrant: categoryToQuadrant[editedCategory],
+      title: editedItem.title,
+      description: editedItem.description,
+      tags: editedItem.tags,
+      quadrant: editedItem.quadrant,
       timeline: [...selectedItem.timeline, timelineEntry],
     };
 
@@ -645,6 +662,7 @@ const ReviewPage = () => {
     setShowConfirmModal(false);
     setEditedTitle('');
     setEditedCategory('');
+    setEditedTags([]);
     setEditedItem(null);
 
     // Track the edit as a change so Save button becomes enabled
@@ -695,6 +713,7 @@ const ReviewPage = () => {
     }));
     setNewTechnology('');
     setSelectedCategory('');
+    setTechnologyTags([]);
     setPendingNewTechnology(null);
     setShowAddConfirmModal(false);
 
@@ -840,10 +859,23 @@ const ReviewPage = () => {
         setSelectedTimelineItem={setExpandedTimelineEntry}
         projectsForTech={projectsForTech}
         handleProjectClick={handleProjectClick}
-        onEditConfirm={(title, category) => {
+        relatedItems={getRelatedTechnologiesByTags({
+          selectedEntry: selectedItem,
+          candidates: [
+            ...entries.adopt,
+            ...entries.trial,
+            ...entries.assess,
+            ...entries.hold,
+          ],
+          limit: 6,
+        })}
+        onRelatedItemClick={handleItemClick}
+        tagOptions={TECHNOLOGY_TAG_OPTIONS}
+        onEditConfirm={(title, category, tags) => {
           setEditedTitle(title);
           setEditedCategory(category);
-          handleConfirmEdit();
+          setEditedTags(tags);
+          handleConfirmEdit(title, category, tags);
         }}
         onEditCancel={handleCancelEdit}
         isHighlighted={highlightedTechnologies.includes(selectedItem.id)}
@@ -1224,6 +1256,15 @@ const ReviewPage = () => {
                     <option value="Supporting Tools">Supporting Tools</option>
                     <option value="Infrastructure">Infrastructure</option>
                   </select>
+                </div>
+                <div className="admin-modal-field">
+                  <label>Tags</label>
+                  <MultiSelect
+                    options={TECHNOLOGY_TAG_OPTIONS}
+                    value={technologyTags}
+                    onChange={setTechnologyTags}
+                    placeholder="Select tags..."
+                  />
                 </div>
               </div>
               <div className="modal-buttons">

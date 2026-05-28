@@ -680,6 +680,29 @@ text {
   color: #de001a;
 }
 
+.info-box-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.info-box-tag {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  border-radius: var(--radius);
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.info-box-tag-section h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
 /* Ensure SVG and its elements stack properly */
 .radar-container svg {
   overflow: visible;
@@ -1367,6 +1390,42 @@ text {
 .timeline-sort-button:hover {
   color: hsl(var(--foreground));
   background: hsl(var(--muted));
+}
+
+.info-box-related-technologies {
+  margin-top: 4px;
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 12px;
+}
+.info-box-related-technologies h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+.info-box-related-technologies ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}
+
+.info-box-related-technologies-item {
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 4px;
+  background-color: hsl(var(--muted));
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.info-box-related-technologies-item:hover {
+  background-color: hsl(var(--muted) / 80%);
 }
 
 .tooltip-content {

@@ -32,7 +32,9 @@ Each technology is placed in one of four rings:
 - Using the [Info Box](../../components/infoBox.md) component, you can view:
   - Current adoption status
   - Timeline of changes
+  - Tags (when present)
   - Related projects
+  - Related technologies (when tags are set)
 
 ### Navigation
 

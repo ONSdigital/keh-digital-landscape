@@ -80,6 +80,15 @@ class TechRadarService {
         if (entry.url && typeof entry.url !== 'string') return false;
         if (entry.links && !Array.isArray(entry.links)) return false;
 
+        // Validate tags if present
+        if (
+          'tags' in entry &&
+          (!Array.isArray(entry.tags) ||
+            !entry.tags.every(tag => typeof tag === 'string'))
+        ) {
+          return false;
+        }
+
         return true;
       });
 

@@ -51,6 +51,7 @@ nav:
           - Banner Management: components/admin/bannerManagement.md
   - Utilities:
       - Technology Status: utilities/technologyStatus.md
+      - Related Technologies: utilities/relatedTechnologies.md
       - Tech Radar Data: utilities/techRadarData.md
       - Project Data: utilities/projectData.md
       - Repository Data: utilities/repositoryData.md
