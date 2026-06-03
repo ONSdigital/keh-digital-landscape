@@ -70,7 +70,7 @@ test('Check that directorate dropdown is present and has expected options', asyn
   await interceptAPICall({ page });
 
   // Check that the directorate selector is present
-  const directorateSelector = page.locator('select#directorate-select');
+  const directorateSelector = page.locator('select#directorate-select', { waitUntil: 'domcontentloaded' });
   await expect(directorateSelector).toBeVisible();
 
   // Check that all the directorates are present
