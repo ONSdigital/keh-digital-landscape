@@ -44,7 +44,6 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
   await interceptAPIJsonCall({ page });
   await interceptAPICSVCall({ page });
   await interceptAPIDirectoratesCall({ page });
-  await page.goto('http://localhost:3000/review/dashboard');
 
   // Clear all cookies
   await page.context().clearCookies();
@@ -61,8 +60,10 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
       sameSite: 'Lax',
     },
   ]);
-  await page.reload();
+
+  await page.goto('http://localhost:3000/review/dashboard', { waitUntil: 'domcontentloaded' });
 };
+
 
 test('Check that directorate dropdown is present and has expected options', async ({
   page,
@@ -70,7 +71,7 @@ test('Check that directorate dropdown is present and has expected options', asyn
   await interceptAPICall({ page });
 
   // Check that the directorate selector is present
-  const directorateSelector = page.locator('select#directorate-select', { waitUntil: 'domcontentloaded' });
+  const directorateSelector = page.locator('select#directorate-select');
   await expect(directorateSelector).toBeVisible();
 
   // Check that all the directorates are present
