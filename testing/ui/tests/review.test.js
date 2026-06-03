@@ -61,9 +61,10 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
     },
   ]);
 
-  await page.goto('http://localhost:3000/review/dashboard', { waitUntil: 'domcontentloaded' });
+  await page.goto('http://localhost:3000/review/dashboard', {
+    waitUntil: 'domcontentloaded',
+  });
 };
-
 
 test('Check that directorate dropdown is present and has expected options', async ({
   page,
