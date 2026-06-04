@@ -964,12 +964,6 @@ textarea.technology-input {
   outline: none;
 }
 
-/* Style for when the container is focused */
-.admin-container:focus {
-  outline: 1px solid hsl(var(--primary));
-  outline-offset: -2px;
-}
-
 @media screen and (width <= 1200px) {
   .admin-container {
     padding: 16px;
