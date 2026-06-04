@@ -61,9 +61,7 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
     },
   ]);
 
-  await page.goto('http://localhost:3000/review/dashboard', {
-    waitUntil: 'domcontentloaded',
-  });
+  await page.goto('http://localhost:3000/review/dashboard', { waitUntil: 'load' });
 };
 
 test('Check that directorate dropdown is present and has expected options', async ({
@@ -72,7 +70,7 @@ test('Check that directorate dropdown is present and has expected options', asyn
   await interceptAPICall({ page });
 
   // Check that the directorate selector is present
-  const directorateSelector = page.locator('select#directorate-select');
+  const directorateSelector = page.getByLabel('Select Directorate');
   await expect(directorateSelector).toBeVisible();
 
   // Check that all the directorates are present
