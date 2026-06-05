@@ -268,6 +268,80 @@ test.describe('add banner', () => {
   });
 });
 
+test.describe('banner type selector', () => {
+  test('info type should be selected by default', async ({ page }) => {
+    await expect(
+      page.locator('input[aria-label="Info banner type"]')
+    ).toBeChecked();
+    await expect(
+      page.locator('input[aria-label="Warning banner type"]')
+    ).not.toBeChecked();
+    await expect(
+      page.locator('input[aria-label="Error banner type"]')
+    ).not.toBeChecked();
+    await expect(page.locator('#info-type-option')).toHaveClass(/selected/);
+    await expect(page.locator('#warning-type-option')).not.toHaveClass(
+      /selected/
+    );
+    await expect(page.locator('#error-type-option')).not.toHaveClass(
+      /selected/
+    );
+  });
+
+  const bannerTypes = [
+    { type: 'info', ariaLabel: 'Info banner type' },
+    { type: 'warning', ariaLabel: 'Warning banner type' },
+    { type: 'error', ariaLabel: 'Error banner type' },
+  ];
+
+  for (const { type, ariaLabel } of bannerTypes) {
+    test(`clicking ${type} type should select it and deselect others`, async ({
+      page,
+    }) => {
+      await page.locator(`#${type}-type-option`).click();
+
+      await expect(
+        page.locator(`input[aria-label="${ariaLabel}"]`)
+      ).toBeChecked();
+      await expect(page.locator(`#${type}-type-option`)).toHaveClass(
+        /selected/
+      );
+
+      for (const {
+        type: otherType,
+        ariaLabel: otherAriaLabel,
+      } of bannerTypes.filter(t => t.type !== type)) {
+        await expect(
+          page.locator(`input[aria-label="${otherAriaLabel}"]`)
+        ).not.toBeChecked();
+        await expect(page.locator(`#${otherType}-type-option`)).not.toHaveClass(
+          /selected/
+        );
+      }
+    });
+  }
+
+  test('selecting a type should be reflected in the saved banner', async ({
+    page,
+  }) => {
+    const bannerData = {
+      title: 'Type Test Banner',
+      description: 'Testing banner type selection.',
+      type: 'warning',
+      pages: ['radar'],
+    };
+
+    await fillInBannerForm(page, bannerData);
+    await page.locator('#save-banner-button').click();
+    await page.locator('#confirm-banner-button').click();
+
+    const newBannerIndex = banners.messages.length - 1;
+    const bannerTypeLocator = page.locator(`#banner-type-${newBannerIndex}`);
+
+    await expect(bannerTypeLocator).toHaveText('warning');
+  });
+});
+
 test.describe('banner actions', () => {
   test('hide button should hide banner on specified pages', async ({
     page,

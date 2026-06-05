@@ -995,6 +995,14 @@ textarea.technology-input {
   transition: all 0.2s ease;
 }
 
+.banner-type-option input[type='radio'] {
+  margin: 0;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
 .banner-type-option:hover {
   background: hsl(var(--accent));
 }
