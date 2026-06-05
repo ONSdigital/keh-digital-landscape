@@ -168,30 +168,51 @@ const BannerManage = () => {
           <div className="admin-modal-field">
             <label>Type</label>
             <div className="banner-type-selector">
-              <div
+              <label
                 id="info-type-option"
                 className={`banner-type-option ${bannerType === 'info' ? 'selected' : ''}`}
-                onClick={() => setBannerType('info')}
               >
+                <input
+                  type="radio"
+                  name="bannerType"
+                  value="info"
+                  checked={bannerType === 'info'}
+                  onChange={() => setBannerType('info')}
+                  aria-label="Info banner type"
+                />
                 <span className="banner-type-indicator info" />
                 Info
-              </div>
-              <div
+              </label>
+              <label
                 id="warning-type-option"
                 className={`banner-type-option ${bannerType === 'warning' ? 'selected' : ''}`}
-                onClick={() => setBannerType('warning')}
               >
+                <input
+                  type="radio"
+                  name="bannerType"
+                  value="warning"
+                  checked={bannerType === 'warning'}
+                  onChange={() => setBannerType('warning')}
+                  aria-label="Warning banner type"
+                />
                 <span className="banner-type-indicator warning" />
                 Warning
-              </div>
-              <div
+              </label>
+              <label
                 id="error-type-option"
                 className={`banner-type-option ${bannerType === 'error' ? 'selected' : ''}`}
-                onClick={() => setBannerType('error')}
               >
+                <input
+                  type="radio"
+                  name="bannerType"
+                  value="error"
+                  checked={bannerType === 'error'}
+                  onChange={() => setBannerType('error')}
+                  aria-label="Error banner type"
+                />
                 <span className="banner-type-indicator error" />
                 Error
-              </div>
+              </label>
             </div>
           </div>
 
