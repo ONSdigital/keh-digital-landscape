@@ -22,8 +22,9 @@ const logger = winston.createLogger({
   ],
 });
 
-// Add CloudWatch transport if AWS credentials are available
-if (process.env.AWS_REGION) {
+// Add CloudWatch transport only in non-development environments.
+// In local development we dont send logs to AWS.
+if (process.env.NODE_ENV !== 'development' && process.env.AWS_REGION) {
   logger.add(
     new WinstonCloudWatch({
       logGroupName:
