@@ -38,8 +38,30 @@ dev-ci: 		## Run the application in CI mode (without traps)
 frontend: 		## Start the frontend development server
 	cd frontend && npm start
 
+.PHONY: sso-login
+sso-login: 		## Log in to AWS SSO
+	aws sso login
+
+.PHONY: data
+data: sso-login		## Download seed data from S3 dev buckets into backend/data/
+	aws s3 cp s3://sdp-dev-digital-landscape/onsRadarSkeleton.json backend/data/main/
+	aws s3 cp s3://sdp-dev-digital-landscape/repositories.json backend/data/main/
+	aws s3 cp s3://sdp-dev-digital-landscape/messages.json backend/data/main/
+	aws s3 cp s3://sdp-dev-digital-landscape/directorates.json backend/data/main/
+	aws s3 cp s3://sdp-dev-digital-landscape/AddressBook/addressBookEmailKey.json backend/data/main/AddressBook/
+	aws s3 cp s3://sdp-dev-digital-landscape/AddressBook/addressBookIDKey.json backend/data/main/AddressBook/
+	aws s3 cp s3://sdp-dev-digital-landscape/AddressBook/addressBookUsernameKey.json backend/data/main/AddressBook/
+	aws s3 cp s3://sdp-dev-tech-audit-tool-api/new_project_data.json backend/data/tat/
+	aws s3 cp s3://sdp-dev-tech-audit-tool-api/array_data.json backend/data/tat/
+	aws s3 cp s3://sdp-dev-copilot-usage-dashboard/admin_teams.json backend/data/copilot/
+	aws s3 cp s3://sdp-dev-copilot-usage-dashboard/organisation_history.json backend/data/copilot/
+	aws s3 cp s3://sdp-dev-copilot-usage-dashboard/archive/pre-feb25/historic_usage_data_feb25.json backend/data/copilot/archive/pre-feb25/
+	aws s3 cp s3://sdp-dev-copilot-usage-dashboard/archive/pre-mar26/copilot_teams.json backend/data/copilot/archive/pre-mar26/
+	aws s3 cp s3://sdp-dev-copilot-usage-dashboard/archive/pre-mar26/historic_usage_data_mar26.json backend/data/copilot/archive/pre-mar26/
+	aws s3 cp s3://sdp-dev-copilot-usage-dashboard/archive/pre-mar26/teams_history.json backend/data/copilot/archive/pre-mar26/
+
 .PHONY: backend
-backend: 		## Start the backend development server
+backend: data		## Download seed data then start the backend development server
 	cd backend && export NODE_ENV=development && npm run dev
 
 ## 

@@ -18,6 +18,11 @@
 .env.test.local
 .env.production.local
 
+# Local development data (downloaded from S3 for local use — not for committing)
+# Seed files committed in backend/data/ are excluded from this rule via negation below.
+backend/data/**
+
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
