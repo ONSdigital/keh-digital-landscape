@@ -41,12 +41,13 @@ To submit a technology to be changed or added to the Tech Radar, please visit th
   - [Prerequisites](#prerequisites)
   - [Makefile](#makefile)
   - [Running the Project](#running-the-project)
-    - [Local Authentication](#local-authentication)
-    - [Alerts (Azure Webhook) _(Optional)_](#alerts-azure-webhook-optional)
-      - [Backend endpoint](#backend-endpoint)
-      - [Backend configuration (environment variables)](#backend-configuration-environment-variables)
-      - [Frontend configuration (environment variables)](#frontend-configuration-environment-variables)
-      - [Frontend usage](#frontend-usage)
+      - [Local Development Data](#local-development-data)
+      - [Local Authentication](#local-authentication)
+      - [Alerts (Azure Webhook) _(Optional)_](#alerts-azure-webhook-optional)
+         - [Backend endpoint](#backend-endpoint)
+         - [Backend configuration (environment variables)](#backend-configuration-environment-variables)
+         - [Frontend configuration (environment variables)](#frontend-configuration-environment-variables)
+         - [Frontend usage](#frontend-usage)
   - [Deployment](#deployment)
     - [Deployment with Concourse](#deployment-with-concourse)
       - [Allowlisting your IP](#allowlisting-your-ip)
@@ -122,7 +123,11 @@ To run the project locally, do the following:
    make dev
    ```
 
-   This will run both the frontend and backend locally on ports 3000 and 5001 respectively.
+   This starts the frontend and backend in parallel. As part of the backend
+   startup flow, `make dev` also runs AWS SSO login, downloads the latest seed
+   data into `backend/data`, sets `NODE_ENV=development`, and then starts the
+   backend locally. The frontend and backend run on ports 3000 and 5001
+   respectively.
 
    Sometimes it can be useful to run the frontend and backend separately (i.e. to separate the logs). This can be done with the following commands (each in their own terminal):
 
@@ -139,6 +144,24 @@ To run the project locally, do the following:
    ```bash
    unset AWS_PROFILE
    ```
+
+### Local Development Data
+
+When the backend runs in local development (`NODE_ENV=development`), it reads seed data from `backend/data` instead of the deployed AWS S3 buckets.
+
+The local data is grouped into the following directories:
+
+- `backend/data/main`: Digital Landscape data such as `directorates.json`, `messages.json`, `onsRadarSkeleton.json`, `repositories.json`, and the `AddressBook` lookup files.
+- `backend/data/tat`: Tech Audit Tool data including `new_project_data.json` and `array_data.json`.
+- `backend/data/copilot`: Copilot usage data including `admin_teams.json`, `organisation_history.json`, and archived historic usage snapshots.
+
+If you want to refresh the local seed data without starting the application, run the following command:
+
+```bash
+make data
+```
+
+For the full directory structure and the AWS CLI commands used to populate these files locally, see [backend/data/README.md](./backend/data/README.md).
 
 ### Local Authentication
 
