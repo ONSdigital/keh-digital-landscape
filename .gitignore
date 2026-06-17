@@ -20,7 +20,8 @@
 
 # Local development data (downloaded from S3 for local use — not for committing)
 # Seed files committed in backend/data/ are excluded from this rule via negation below.
-backend/data/**
+backend/data/**/*.json
+!backend/data/README.md
 
 
 npm-debug.log*
