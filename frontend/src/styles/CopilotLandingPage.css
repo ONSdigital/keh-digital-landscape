@@ -1,0 +1,86 @@
+.copilot-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 32px;
+}
+
+.copilot-section-title {
+  font-size: 24px;
+  width: 60%;
+  font-weight: 500;
+}
+
+.copilot-nav-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 60%;
+}
+
+.copilot-nav-card {
+  background: hsl(var(--card) / 80%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  padding: 16px 20px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.copilot-nav-card:hover {
+  background-color: hsl(var(--muted) / 95%);
+  box-shadow:
+    0 0 0 1px hsl(var(--foreground) / 5%),
+    0 10px 10px hsl(var(--foreground) / 5%),
+    0 12px 24px hsl(var(--foreground) / 5%);
+}
+
+.copilot-nav-card svg {
+  color: hsl(var(--primary));
+  width: 24px;
+  height: 24px;
+}
+
+.copilot-nav-card h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.copilot-nav-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.copilot-nav-card-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.copilot-nav-card-title h1 {
+  padding-left: 2rem;
+}
+
+.copilot-nav-card-title svg {
+  padding-left: 2rem;
+  scale: 1.2;
+}
+
+.copilot-nav-card-arrow {
+  color: hsl(var(--primary));
+  width: 24px;
+  height: 24px;
+  opacity: 0.5;
+}
