@@ -9,7 +9,7 @@
 .copilot-section-title {
   font-size: 24px;
   width: 60%;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .copilot-nav-cards {
@@ -53,7 +53,7 @@
 
 .copilot-nav-card h4 {
   font-size: 1.6rem;
-  font-weight: bold;
+  font-weight: 300;
 }
 
 .copilot-nav-card-body {
@@ -82,5 +82,5 @@
   color: hsl(var(--primary));
   width: 24px;
   height: 24px;
-  opacity: 0.5;
+  opacity: 0.7;
 }
