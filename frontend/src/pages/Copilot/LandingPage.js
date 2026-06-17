@@ -19,7 +19,7 @@ function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
       <div className="copilot-nav-card-body">
         <div className="copilot-nav-card-title">
           <Icon />
-          <h1>{title}</h1>
+          <h4>{title}</h4>
         </div>
         <div className="copilot-nav-card-stats">{previewStats}</div>
       </div>
@@ -46,7 +46,7 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={VscGraphLine}
               title="General Usage"
-              href="/copilot/general"
+              href="#"
             />
           </div>
         </div>
@@ -57,17 +57,17 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={VscLightbulbEmpty}
               title="IDE Code Completions"
-              href="/copilot/completions"
+              href="#"
             />
             <CopilotNavCard
               icon={VscCommentDiscussionSparkle}
               title="Copilot Chat"
-              href="/copilot/chat"
+              href="#"
             />
             <CopilotNavCard
               icon={RiRobot2Line}
               title="Agent Edits"
-              href="/copilot/agent"
+              href="#"
             />
           </div>
         </div>
@@ -78,7 +78,7 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={BsArchive}
               title="Legacy Usage"
-              href="/copilot/legacy"
+              href="#"
             />
           </div>
         </div>
