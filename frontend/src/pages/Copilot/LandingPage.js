@@ -64,22 +64,14 @@ function CopilotDashboardLandingPage() {
               title="Copilot Chat"
               href="#"
             />
-            <CopilotNavCard
-              icon={RiRobot2Line}
-              title="Agent Edits"
-              href="#"
-            />
+            <CopilotNavCard icon={RiRobot2Line} title="Agent Edits" href="#" />
           </div>
         </div>
 
         <div className="copilot-section">
           <h3 className="copilot-section-title">Other</h3>
           <div className="copilot-nav-cards">
-            <CopilotNavCard
-              icon={BsArchive}
-              title="Legacy Usage"
-              href="#"
-            />
+            <CopilotNavCard icon={BsArchive} title="Legacy Usage" href="#" />
           </div>
         </div>
       </div>
