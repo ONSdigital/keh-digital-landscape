@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright/test';
 
 test('Landing page sections are displayed correctly', async ({ page }) => {
-  await page.goto('/copilot/home');
+  await page.goto('http://localhost:3000/copilot/home');
 
   // Cards are in the right sections
   const summarySection = page
