@@ -12,20 +12,20 @@ environment on AWS.
 ```
 data/
 ├── main/                            # Mirrors the sdp-dev-digital-landscape S3 bucket
-│   ├── directorates.json            
-│   ├── messages.json                
-│   ├── onsRadarSkeleton.json        
-│   ├── repositories.json            
+│   ├── directorates.json
+│   ├── messages.json
+│   ├── onsRadarSkeleton.json
+│   ├── repositories.json
 │   └── AddressBook/
 │       ├── addressBookEmailKey.json
 │       ├── addressBookIDKey.json
 │       └── addressBookUsernameKey.json
 ├── tat/                             # Mirrors the sdp-dev-tech-audit-tool-api S3 bucket
-│   ├── array_data.json              
-│   └── new_project_data.json       
+│   ├── array_data.json
+│   └── new_project_data.json
 └── copilot/                         # Mirrors the sdp-dev-copilot-usage-dashboard S3 bucket
-    ├── admin_teams.json             
-    ├── organisation_history.json    
+    ├── admin_teams.json
+    ├── organisation_history.json
     └── archive/
         ├── pre-feb25/
         │   └── historic_usage_data_feb25.json
@@ -41,7 +41,7 @@ If you need realistic data locally, you can download files from the Dev S3
 buckets (using the AWS CLI with appropriate permissions) and place them here:
 
 login with sso
- ```aws sso login```
+`aws sso login`
 
 ```sh
 aws s3 cp s3://sdp-dev-digital-landscape/onsRadarSkeleton.json backend/data/main/
