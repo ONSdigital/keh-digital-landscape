@@ -34,10 +34,10 @@ function CopilotDashboardLandingPage() {
   return (
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
-          title="GitHub Copilot Usage Dashboard"
-          description="Analyse usage statistics organisation-wide and by team"
-          tabs={([])}
-        />
+        title="GitHub Copilot Usage Dashboard"
+        description="Analyse usage statistics organisation-wide and by team"
+        tabs={[]}
+      />
 
       <div className="copilot-page">
         <div className="copilot-section">
