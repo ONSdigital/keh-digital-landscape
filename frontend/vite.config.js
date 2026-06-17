@@ -1,14 +1,20 @@
-import { defineConfig } from 'vite';
+import { defineConfig, transformWithOxc } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.[jt]sx?$/,
-    exclude: [],
-  },
+  plugins: [
+    {
+      name: 'jsx-in-js',
+      enforce: 'pre',
+      transform(code, id) {
+        if (id.endsWith('.js') && !id.includes('node_modules')) {
+          return transformWithOxc(code, id.replace(/\.js$/, '.jsx'));
+        }
+      },
+    },
+    react(),
+  ],
   optimizeDeps: {
     esbuildOptions: {
       loader: {
