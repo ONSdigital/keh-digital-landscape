@@ -31,10 +31,13 @@ router.post('/log', async (req, res) => {
     const logType = req.body.type;
 
     if (!['error', 'warning', 'info'].includes(logType)) {
+      // Clean up the logType to prevent XSS attacks
+      const sanitizedLogType = String(logType).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
       return res
         .status(400)
         .send(
-          `Invalid log type: ${logType}. Must be one of 'error', 'warning', or 'info'.`
+          `Invalid log type: ${sanitizedLogType}. Must be one of 'error', 'warning', or 'info'.`
         );
     }
 
