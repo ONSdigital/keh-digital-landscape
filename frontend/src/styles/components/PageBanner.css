@@ -32,7 +32,7 @@
   gap: 4px;
 }
 
-.banner-review-title h1 {
+.banner-review-title h2 {
   font-size: 24px;
   font-weight: 600;
   color: hsl(var(--foreground));

@@ -10,6 +10,9 @@ const ReviewDashboard = lazy(() => import('./pages/ReviewPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const AddressBookPage = lazy(() => import('./pages/AddressBookPage'));
 const CopilotDashboard = lazy(() => import('./pages/CopilotPage'));
+const CopilotDashboardLandingPage = lazy(
+  () => import('./pages/Copilot/LandingPage')
+);
 
 import { getDirectorates } from './utilities/getDirectorates';
 
@@ -66,6 +69,7 @@ const App = () => {
         <Route path="/copilot/org/:view" element={<CopilotDashboard />} />
         <Route path="/copilot/team/:teamSlug" element={<CopilotDashboard />} />
         <Route path="/copilot/:scope" element={<CopilotDashboard />} />
+        <Route path="/copilot/home" element={<CopilotDashboardLandingPage />} />
       </Routes>
     </Suspense>
   );
