@@ -13,13 +13,10 @@ import {
 } from 'vitest';
 import fetch from 'node-fetch';
 import { createRequire } from 'module';
-
-vi.mock('../services/alertService');
+import express from 'express';
+import alertsRouter from './alerts';
 
 const require = createRequire(import.meta.url);
-const express = require('express');
-const alertsRouter = require('./alerts');
-const postToWebhook = require('../services/alertService');
 const logger = require('../config/logger');
 
 describe('Alert routes', () => {
@@ -39,6 +36,7 @@ describe('Alert routes', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   // Mock logger to prevent actual logging during tests
@@ -55,7 +53,16 @@ describe('Alert routes', () => {
 
   describe('POST /api/alert', () => {
     it('returns 200 when webhook posts successfully', async () => {
-      vi.mocked(postToWebhook).mockResolvedValue('Alert sent');
+      const fetchMock = vi.fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ access_token: 'token' }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: async () => 'Alert sent',
+        });
+      vi.stubGlobal('fetch', fetchMock);
 
       const res = await fetch(`${baseUrl}/api/alert`, {
         method: 'POST',
@@ -77,9 +84,7 @@ describe('Alert routes', () => {
     });
 
     it('returns 500 when alertService throws', async () => {
-      vi.mocked(postToWebhook).mockRejectedValue(
-        new Error('Webhook failed')
-      );
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Webhook failed')));
 
       const res = await fetch(`${baseUrl}/api/alert`, {
         method: 'POST',
@@ -93,7 +98,7 @@ describe('Alert routes', () => {
     });
 
     it('returns generic error message when alertService throws without message', async () => {
-      vi.mocked(postToWebhook).mockRejectedValue({});
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue({}));
 
       const res = await fetch(`${baseUrl}/api/alert`, {
         method: 'POST',
