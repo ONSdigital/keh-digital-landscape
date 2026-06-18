@@ -6,7 +6,7 @@ function PageBanner({ title, description, tabs, activeTab, onTabChange }) {
     <div className="banner-details">
       <div className="banner-header-left">
         <div className="banner-review-title">
-          <h1>{title}</h1>
+          <h2>{title}</h2>
           <span>{description}</span>
         </div>
       </div>
