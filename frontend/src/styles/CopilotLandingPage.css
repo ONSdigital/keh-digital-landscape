@@ -7,7 +7,7 @@
 }
 
 .copilot-section-title {
-  font-size: 24px;
+  font-size: 1.2rem;
   width: 60%;
   font-weight: 600;
 }
@@ -51,9 +51,9 @@
   height: 24px;
 }
 
-.copilot-nav-card h4 {
-  font-size: 1.6rem;
-  font-weight: 300;
+.copilot-nav-card p {
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .copilot-nav-card-body {
@@ -69,13 +69,13 @@
   align-items: center;
 }
 
-.copilot-nav-card-title h4 {
-  padding-left: 2rem;
+.copilot-nav-card-title p {
+  padding-left: 1.2rem;
 }
 
 .copilot-nav-card-title svg {
-  padding-left: 2rem;
-  scale: 1.2;
+  padding-left: 3rem;
+  scale: 0.85;
 }
 
 .copilot-nav-card-arrow {

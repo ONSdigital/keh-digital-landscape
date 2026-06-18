@@ -19,7 +19,7 @@ function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
       <div className="copilot-nav-card-body">
         <div className="copilot-nav-card-title">
           <Icon />
-          <h4>{title}</h4>
+          <p>{title}</p>
         </div>
         <div className="copilot-nav-card-stats">{previewStats}</div>
       </div>
