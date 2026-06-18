@@ -53,7 +53,8 @@ describe('Alert routes', () => {
 
   describe('POST /api/alert', () => {
     it('returns 200 when webhook posts successfully', async () => {
-      const fetchMock = vi.fn()
+      const fetchMock = vi
+        .fn()
         .mockResolvedValueOnce({
           ok: true,
           json: async () => ({ access_token: 'token' }),
@@ -84,7 +85,10 @@ describe('Alert routes', () => {
     });
 
     it('returns 500 when alertService throws', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Webhook failed')));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockRejectedValue(new Error('Webhook failed'))
+      );
 
       const res = await fetch(`${baseUrl}/api/alert`, {
         method: 'POST',
@@ -185,7 +189,12 @@ describe('Alert routes', () => {
       const res = await fetch(`${baseUrl}/api/log`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'debug', status: 200, event: 'x', description: 'y' }),
+        body: JSON.stringify({
+          type: 'debug',
+          status: 200,
+          event: 'x',
+          description: 'y',
+        }),
       });
 
       expect(res.status).toBe(400);
@@ -198,7 +207,12 @@ describe('Alert routes', () => {
       const res = await fetch(`${baseUrl}/api/log`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: '<script>alert(1)</script>', status: 200, event: 'x', description: 'y' }),
+        body: JSON.stringify({
+          type: '<script>alert(1)</script>',
+          status: 200,
+          event: 'x',
+          description: 'y',
+        }),
       });
 
       expect(res.status).toBe(400);

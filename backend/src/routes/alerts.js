@@ -32,7 +32,9 @@ router.post('/log', async (req, res) => {
 
     if (!['error', 'warning', 'info'].includes(logType)) {
       // Clean up the logType to prevent XSS attacks
-      const sanitizedLogType = String(logType).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const sanitizedLogType = String(logType)
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 
       return res
         .status(400)
