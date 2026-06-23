@@ -20,13 +20,107 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 
 function LegacyDataVisualisation({ data, isLoading }) {
   if (isLoading) {
     return (
       <div>
         <h2>Legacy Copilot Data</h2>
-        <p>Loading...</p>
+        <p>
+          This section visualises the legacy Copilot data for previous revisions
+          of the dashboard. For each legacy dataset, the GitHub API endpoints
+          were different, so the available metrics vary and may not be directly
+          comparable. Each dataset is visualised separately, with the available
+          metrics for that dataset shown in the cards and graphs.
+        </p>
+
+        <div>
+          <h3>January 2025 - March 2026</h3>
+
+          <h4>IDE Code Completions</h4>
+
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+
+          <div
+            className="skeleton"
+            style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
+          />
+
+          <h4>IDE Chats</h4>
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+        </div>
+
+        <div className="copilot-graph-container copilot-graph-container--stacked">
+          <div
+            className="skeleton"
+            style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
+          />
+
+          <h4>User Metrics</h4>
+
+          <div className="skeleton" style={{ height: 300, borderRadius: 8 }} />
+        </div>
+
+        <div>
+          <h3>May 2024 - January 2025</h3>
+
+          <h4>IDE Code Completions</h4>
+
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+
+          <div
+            className="skeleton"
+            style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
+          />
+
+          <h4>IDE Chats</h4>
+          <div className="copilot-chat-grid">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+
+          <div className="copilot-graph-container copilot-graph-container--stacked">
+            <div
+              className="skeleton"
+              style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
+            />
+
+            <h4>User Metrics</h4>
+
+            <div
+              className="skeleton"
+              style={{ height: 300, borderRadius: 8 }}
+            />
+          </div>
+        </div>
       </div>
     );
   }
@@ -107,225 +201,227 @@ function LegacyDataVisualisation({ data, isLoading }) {
         metrics for that dataset shown in the cards and graphs.
       </p>
 
-      <div>
-        <h3>
-          {formattedMarStartDate} - {formattedMarEndDate}
-        </h3>
+      <div data-testid="mar-dataset">
+        <div>
+          <h3>
+            {formattedMarStartDate} - {formattedMarEndDate}
+          </h3>
 
-        <h4>IDE Code Completions</h4>
+          <h4>IDE Code Completions</h4>
 
-        <div className="copilot-chat-grid">
-          <div className="stat-card" key="mar-code-suggestions">
-            <h2>Total Suggestions</h2>
-            <p>{formatNumberWithCommas(marDataTotals.suggestions)}</p>
+          <div className="copilot-chat-grid">
+            <div className="stat-card" key="mar-code-suggestions">
+              <h2>Total Suggestions</h2>
+              <p>{formatNumberWithCommas(marDataTotals.suggestions)}</p>
+            </div>
+            <div className="stat-card" key="mar-code-acceptances">
+              <h2>Total Acceptances</h2>
+              <p>{formatNumberWithCommas(marDataTotals.acceptances)}</p>
+            </div>
+            <div className="stat-card" key="mar-acceptance-rate">
+              <h2>Acceptance Rate</h2>
+              <p>
+                {getPercentage(
+                  marDataTotals.acceptances / marDataTotals.suggestions
+                )}
+              </p>
+            </div>
           </div>
-          <div className="stat-card" key="mar-code-acceptances">
-            <h2>Total Acceptances</h2>
-            <p>{formatNumberWithCommas(marDataTotals.acceptances)}</p>
+          <div className="copilot-chat-grid">
+            <div className="stat-card" key="mar-lines-suggested">
+              <h2>Total Lines Suggested</h2>
+              <p>{formatNumberWithCommas(marDataTotals.linesSuggested)}</p>
+            </div>
+            <div className="stat-card" key="mar-lines-accepted">
+              <h2>Total Lines Accepted</h2>
+              <p>{formatNumberWithCommas(marDataTotals.linesAccepted)}</p>
+            </div>
+            <div className="stat-card" key="mar-line-acceptance-rate">
+              <h2>Line Acceptance Rate</h2>
+              <p>
+                {getPercentage(
+                  marDataTotals.linesAccepted / marDataTotals.linesSuggested
+                )}
+              </p>
+            </div>
           </div>
-          <div className="stat-card" key="mar-acceptance-rate">
-            <h2>Acceptance Rate</h2>
-            <p>
-              {getPercentage(
-                marDataTotals.acceptances / marDataTotals.suggestions
-              )}
-            </p>
+
+          <AcceptanceGraph data={marCompletionGraphData} />
+
+          <h4>IDE Chats</h4>
+          <div className="copilot-chat-grid">
+            <div className="stat-card" key="mar-chats">
+              <h2>Total Chats</h2>
+              <p>{formatNumberWithCommas(marDataTotals.chats)}</p>
+            </div>
+            <div className="stat-card" key="mar-chat-insertions">
+              <h2>Total Chat Insertions</h2>
+              <p>{formatNumberWithCommas(marDataTotals.chatInsertions)}</p>
+            </div>
+            <div className="stat-card" key="mar-chat-copies">
+              <h2>Total Chat Copies</h2>
+              <p>{formatNumberWithCommas(marDataTotals.chatCopies)}</p>
+            </div>
+          </div>
+          <div className="copilot-chat-grid">
+            <div className="stat-card" key="mar-chat-insertion-rate">
+              <h2>Chat Insertion Rate</h2>
+              <p>
+                {getPercentage(
+                  marDataTotals.chatInsertions / marDataTotals.chats
+                )}
+              </p>
+            </div>
+            <div className="stat-card" key="mar-chat-copy-rate">
+              <h2>Chat Copy Rate</h2>
+              <p>
+                {getPercentage(marDataTotals.chatCopies / marDataTotals.chats)}
+              </p>
+            </div>
           </div>
         </div>
-        <div className="copilot-chat-grid">
-          <div className="stat-card" key="mar-lines-suggested">
-            <h2>Total Lines Suggested</h2>
-            <p>{formatNumberWithCommas(marDataTotals.linesSuggested)}</p>
-          </div>
-          <div className="stat-card" key="mar-lines-accepted">
-            <h2>Total Lines Accepted</h2>
-            <p>{formatNumberWithCommas(marDataTotals.linesAccepted)}</p>
-          </div>
-          <div className="stat-card" key="mar-line-acceptance-rate">
-            <h2>Line Acceptance Rate</h2>
-            <p>
-              {getPercentage(
-                marDataTotals.linesAccepted / marDataTotals.linesSuggested
-              )}
-            </p>
-          </div>
-        </div>
 
-        <AcceptanceGraph data={marCompletionGraphData} />
+        <div className="copilot-graph-container copilot-graph-container--stacked">
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart
+              width={400}
+              height={300}
+              data={marChatGraphData}
+              margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid stroke="#f5f5f5" vertical={false} />
+              <XAxis
+                dataKey="date"
+                interval={marChatGraphData.length - 2}
+                tickLine={false}
+                axisLine={{ stroke: '#f5f5f5' }}
+              />
+              <Legend verticalAlign="top" align="left" height={36} />
+              <Bar
+                radius={[10, 10, 0, 0]}
+                dataKey="chats"
+                barSize={20}
+                fill="#70c4e6"
+                yAxisId="left"
+                legendType="rect"
+                name="Chats"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="chatInsertionRate"
+                stroke="#3B7AD9"
+                yAxisId="right"
+                legendType="rect"
+                name="Insertion Rate"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="chatCopyRate"
+                stroke="#0f766e"
+                yAxisId="right"
+                legendType="rect"
+                name="Copy Rate"
+              />
+              <YAxis
+                tickLine={false}
+                yAxisId="left"
+                axisLine={{ stroke: '#f5f5f5' }}
+                domain={[0, 'dataMax + 5']}
+                tickCount={5}
+                tickFormatter={value => formatNumberWithCommas(value)}
+              />
+              <YAxis
+                tickLine={false}
+                yAxisId="right"
+                orientation="right"
+                axisLine={{ stroke: '#f5f5f5' }}
+                domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
+                tickFormatter={value => `${value.toFixed(0)}%`}
+                tickCount={5}
+              />
+              <Tooltip
+                wrapperStyle={{ color: 'black' }}
+                formatter={(value, name) =>
+                  name === 'Chats'
+                    ? formatNumberWithCommas(value)
+                    : `${value.toFixed(2)}%`
+                }
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
 
-        <h4>IDE Chats</h4>
-        <div className="copilot-chat-grid">
-          <div className="stat-card" key="mar-chats">
-            <h2>Total Chats</h2>
-            <p>{formatNumberWithCommas(marDataTotals.chats)}</p>
-          </div>
-          <div className="stat-card" key="mar-chat-insertions">
-            <h2>Total Chat Insertions</h2>
-            <p>{formatNumberWithCommas(marDataTotals.chatInsertions)}</p>
-          </div>
-          <div className="stat-card" key="mar-chat-copies">
-            <h2>Total Chat Copies</h2>
-            <p>{formatNumberWithCommas(marDataTotals.chatCopies)}</p>
-          </div>
-        </div>
-        <div className="copilot-chat-grid">
-          <div className="stat-card" key="mar-chat-insertion-rate">
-            <h2>Chat Insertion Rate</h2>
-            <p>
-              {getPercentage(
-                marDataTotals.chatInsertions / marDataTotals.chats
-              )}
-            </p>
-          </div>
-          <div className="stat-card" key="mar-chat-copy-rate">
-            <h2>Chat Copy Rate</h2>
-            <p>
-              {getPercentage(marDataTotals.chatCopies / marDataTotals.chats)}
-            </p>
-          </div>
+          <h4>User Metrics</h4>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart
+              width={400}
+              height={300}
+              data={marUserMetricsGraphData}
+              margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid stroke="#f5f5f5" vertical={false} />
+              <XAxis
+                dataKey="date"
+                interval={marUserMetricsGraphData.length - 2}
+                tickLine={false}
+                axisLine={{ stroke: '#f5f5f5' }}
+              />
+              <Legend verticalAlign="top" align="left" height={36} />
+              <Bar
+                radius={[10, 10, 0, 0]}
+                dataKey="totalUsers"
+                barSize={20}
+                fill="#70c4e6"
+                yAxisId="left"
+                legendType="rect"
+                name="Total Users"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="completionUsers"
+                stroke="#3B7AD9"
+                yAxisId="left"
+                legendType="rect"
+                name="Completion Users"
+              />
+              <Line
+                dot={false}
+                strokeWidth={2}
+                strokeLinecap="round"
+                type="monotone"
+                dataKey="chatUsers"
+                stroke="#0f766e"
+                yAxisId="left"
+                legendType="rect"
+                name="Chat Users"
+              />
+              <YAxis
+                tickLine={false}
+                yAxisId="left"
+                axisLine={{ stroke: '#f5f5f5' }}
+                domain={[0, 'dataMax + 5']}
+                tickCount={5}
+                tickFormatter={value => formatNumberWithCommas(value)}
+              />
+              <Tooltip
+                wrapperStyle={{ color: 'black' }}
+                formatter={value => formatNumberWithCommas(value)}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="copilot-graph-container copilot-graph-container--stacked">
-        <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart
-            width={400}
-            height={300}
-            data={marChatGraphData}
-            margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid stroke="#f5f5f5" vertical={false} />
-            <XAxis
-              dataKey="date"
-              interval={marChatGraphData.length - 2}
-              tickLine={false}
-              axisLine={{ stroke: '#f5f5f5' }}
-            />
-            <Legend verticalAlign="top" align="left" height={36} />
-            <Bar
-              radius={[10, 10, 0, 0]}
-              dataKey="chats"
-              barSize={20}
-              fill="#70c4e6"
-              yAxisId="left"
-              legendType="rect"
-              name="Chats"
-            />
-            <Line
-              dot={false}
-              strokeWidth={2}
-              strokeLinecap="round"
-              type="monotone"
-              dataKey="chatInsertionRate"
-              stroke="#3B7AD9"
-              yAxisId="right"
-              legendType="rect"
-              name="Insertion Rate"
-            />
-            <Line
-              dot={false}
-              strokeWidth={2}
-              strokeLinecap="round"
-              type="monotone"
-              dataKey="chatCopyRate"
-              stroke="#0f766e"
-              yAxisId="right"
-              legendType="rect"
-              name="Copy Rate"
-            />
-            <YAxis
-              tickLine={false}
-              yAxisId="left"
-              axisLine={{ stroke: '#f5f5f5' }}
-              domain={[0, 'dataMax + 5']}
-              tickCount={5}
-              tickFormatter={value => formatNumberWithCommas(value)}
-            />
-            <YAxis
-              tickLine={false}
-              yAxisId="right"
-              orientation="right"
-              axisLine={{ stroke: '#f5f5f5' }}
-              domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
-              tickFormatter={value => `${value.toFixed(0)}%`}
-              tickCount={5}
-            />
-            <Tooltip
-              wrapperStyle={{ color: 'black' }}
-              formatter={(value, name) =>
-                name === 'Chats'
-                  ? formatNumberWithCommas(value)
-                  : `${value.toFixed(2)}%`
-              }
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-
-        <h4>User Metrics</h4>
-
-        <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart
-            width={400}
-            height={300}
-            data={marUserMetricsGraphData}
-            margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid stroke="#f5f5f5" vertical={false} />
-            <XAxis
-              dataKey="date"
-              interval={marUserMetricsGraphData.length - 2}
-              tickLine={false}
-              axisLine={{ stroke: '#f5f5f5' }}
-            />
-            <Legend verticalAlign="top" align="left" height={36} />
-            <Bar
-              radius={[10, 10, 0, 0]}
-              dataKey="totalUsers"
-              barSize={20}
-              fill="#70c4e6"
-              yAxisId="left"
-              legendType="rect"
-              name="Total Users"
-            />
-            <Line
-              dot={false}
-              strokeWidth={2}
-              strokeLinecap="round"
-              type="monotone"
-              dataKey="completionUsers"
-              stroke="#3B7AD9"
-              yAxisId="left"
-              legendType="rect"
-              name="Completion Users"
-            />
-            <Line
-              dot={false}
-              strokeWidth={2}
-              strokeLinecap="round"
-              type="monotone"
-              dataKey="chatUsers"
-              stroke="#0f766e"
-              yAxisId="left"
-              legendType="rect"
-              name="Chat Users"
-            />
-            <YAxis
-              tickLine={false}
-              yAxisId="left"
-              axisLine={{ stroke: '#f5f5f5' }}
-              domain={[0, 'dataMax + 5']}
-              tickCount={5}
-              tickFormatter={value => formatNumberWithCommas(value)}
-            />
-            <Tooltip
-              wrapperStyle={{ color: 'black' }}
-              formatter={value => formatNumberWithCommas(value)}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div>
+      <div data-testid="feb-dataset">
         <h3>
           {formattedFebStartDate} - {formattedFebEndDate}
         </h3>
