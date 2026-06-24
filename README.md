@@ -161,8 +161,6 @@ If you want to refresh the local seed data without starting the application, run
 make data
 ```
 
-For the full directory structure and the AWS CLI commands used to populate these files locally, see [backend/data/README.md](./backend/data/README.md).
-
 ### Local Authentication
 
 When running the backend locally, it bypasses the Application Load Balance (ALB) authentication which is applied within AWS. Instead, the backend makes use of a `developer` user that is found in the `backend/src/services/cognitoService.js` file with the helper function `getDevUser()`.
