@@ -1,14 +1,14 @@
 .copilot-back-button {
   display: flex;
   align-items: center;
-  justify-content: center;
   height: 28px;
   color: hsl(var(--primary));
   background: transparent;
-  border: none;
+  border: 2px solid hsl(var(--primary) / 15%);
   cursor: pointer;
   border-radius: 0.5rem;
-  padding: 0 6px;
+  padding-left: 24px;
+  padding-right: 24px;
   transition: all 0.3s ease;
 }
 
@@ -19,6 +19,17 @@
     0 10px 10px hsl(var(--foreground) / 5%),
     0 12px 24px hsl(var(--foreground) / 5%);
 }
+
+.copilot-back-button #text {
+  position: relative;
+  right: 2px;
+}
+
+.copilot-back-button svg {
+  position: relative;
+  right: 16px;
+}
+
 
 .copilot-chat-grid {
   display: grid;
