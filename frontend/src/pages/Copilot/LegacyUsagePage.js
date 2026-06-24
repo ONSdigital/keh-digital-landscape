@@ -7,7 +7,7 @@ import LegacyDataVisualisation from '../../components/Copilot/Dashboards/LegacyD
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/CopilotUsagePage.css';
 import '../../styles/components/Statistics.css';
-import { RxArrowLeft } from 'react-icons/rx';
+import { MdOutlineArrowBackIosNew } from "react-icons/md";
 
 function LegacyUsagePage() {
   const { legacyCopilotData, getLegacyUsageData } = useData();
@@ -34,8 +34,10 @@ function LegacyUsagePage() {
           <button
             className="copilot-back-button"
             onClick={() => navigate('/copilot/home')}
+            aria-label="Back to Copilot Dashboard Homepage"
           >
-            <RxArrowLeft size={20} />
+            <MdOutlineArrowBackIosNew size={12} />
+            <span id="text">Back</span>
           </button>
           <LegacyDataVisualisation
             data={legacyCopilotData}
