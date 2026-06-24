@@ -63,7 +63,3 @@ aws s3 cp s3://sdp-dev-copilot-usage-dashboard/archive/pre-mar26/historic_usage_
 aws s3 cp s3://sdp-dev-copilot-usage-dashboard/archive/pre-mar26/teams_history.json        backend/data/copilot/archive/pre-mar26/
 
 ```
-
-> **Note:** Files you download are git-ignored (see the `.gitignore` pattern
-> `backend/data/**/*.json` excluding the committed seeds). Committed seed files
-> contain only empty/minimal structures.
