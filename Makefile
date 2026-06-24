@@ -42,10 +42,6 @@ frontend: 		## Start the frontend development server
 backend:
 	cd backend && export NODE_ENV=development && npm run dev
 
-.PHONY: backend-ci
-backend-ci:		## Start the backend in development mode using checked-in local data
-	cd backend && export NODE_ENV=development && npm run dev
-
 ## 
 
 .PHONY: install

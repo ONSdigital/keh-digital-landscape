@@ -123,11 +123,7 @@ To run the project locally, do the following:
    make dev
    ```
 
-   This starts the frontend and backend in parallel. As part of the backend
-   startup flow, `make dev` also runs AWS SSO login, downloads the latest seed
-   data into `backend/data`, sets `NODE_ENV=development`, and then starts the
-   backend locally. The frontend and backend run on ports 3000 and 5001
-   respectively.
+   This will run both the frontend and backend locally on ports 3000 and 5001 respectively.
 
    Sometimes it can be useful to run the frontend and backend separately (i.e. to separate the logs). This can be done with the following commands (each in their own terminal):
 
@@ -154,12 +150,6 @@ The local data is grouped into the following directories:
 - `backend/data/main`: Digital Landscape data such as `directorates.json`, `messages.json`, `onsRadarSkeleton.json`, `repositories.json`, and the `AddressBook` lookup files.
 - `backend/data/tat`: Tech Audit Tool data including `new_project_data.json` and `array_data.json`.
 - `backend/data/copilot`: Copilot usage data including `admin_teams.json`, `organisation_history.json`, and archived historic usage snapshots.
-
-If you want to refresh the local seed data without starting the application, run the following command:
-
-```bash
-make data
-```
 
 ### Local Authentication
 
