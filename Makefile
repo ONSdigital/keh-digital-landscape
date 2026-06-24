@@ -32,7 +32,7 @@ dev: 			## Run the application
 
 .PHONY: dev-ci
 dev-ci: 		## Run the application in CI mode (without traps)
-	make frontend & make backend & wait
+	make frontend & make backend-ci & wait
 
 .PHONY: frontend
 frontend: 		## Start the frontend development server
@@ -62,6 +62,10 @@ data: sso-login		## Download seed data from S3 dev buckets into backend/data/
 
 .PHONY: backend
 backend: data		## Download seed data then start the backend development server
+	cd backend && export NODE_ENV=development && npm run dev
+
+.PHONY: backend-ci
+backend-ci:		## Start the backend in development mode using checked-in local data
 	cd backend && export NODE_ENV=development && npm run dev
 
 ## 
