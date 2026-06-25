@@ -60,9 +60,7 @@ describe('GET /addressbook/api/request', () => {
   });
 
   it('returns 400 when query is an empty string', async () => {
-    const res = await fetch(
-      `${baseUrl}/addressbook/api/request?q=`
-    );
+    const res = await fetch(`${baseUrl}/addressbook/api/request?q=`);
     expect(res.status).toBe(400);
     await expect(res.json()).resolves.toEqual({ error: 'Missing input' });
   });
@@ -72,9 +70,7 @@ describe('GET /addressbook/api/request', () => {
       mockUser,
     ]);
 
-    const res = await fetch(
-      `${baseUrl}/addressbook/api/request?q=jsmith`
-    );
+    const res = await fetch(`${baseUrl}/addressbook/api/request?q=jsmith`);
     expect(res.status).toBe(200);
     await expect(res.json()).resolves.toEqual([mockUser]);
     expect(addressBookService.formatAddressBookData).toHaveBeenCalledWith([
@@ -87,9 +83,7 @@ describe('GET /addressbook/api/request', () => {
       mockUser,
     ]);
 
-    const res = await fetch(
-      `${baseUrl}/addressbook/api/request?q=jsmith,jdoe`
-    );
+    const res = await fetch(`${baseUrl}/addressbook/api/request?q=jsmith,jdoe`);
     expect(res.status).toBe(200);
     expect(addressBookService.formatAddressBookData).toHaveBeenCalledWith([
       'jsmith',
@@ -117,9 +111,7 @@ describe('GET /addressbook/api/request', () => {
       new Error('S3 unavailable')
     );
 
-    const res = await fetch(
-      `${baseUrl}/addressbook/api/request?q=jsmith`
-    );
+    const res = await fetch(`${baseUrl}/addressbook/api/request?q=jsmith`);
     expect(res.status).toBe(500);
     await expect(res.json()).resolves.toEqual({
       error: 'Internal Server Error',

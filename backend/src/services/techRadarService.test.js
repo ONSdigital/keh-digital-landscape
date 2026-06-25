@@ -1,11 +1,4 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -16,12 +9,7 @@ const logger = require('../config/logger');
 
 const MOCK_RADAR_DATA = {
   quadrants: [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }],
-  rings: [
-    { id: 'adopt' },
-    { id: 'trial' },
-    { id: 'assess' },
-    { id: 'hold' },
-  ],
+  rings: [{ id: 'adopt' }, { id: 'trial' }, { id: 'assess' }, { id: 'hold' }],
   entries: [
     {
       id: 'existing-1',
@@ -78,9 +66,7 @@ describe('TechRadarService', () => {
     });
 
     it('logs and rethrows when S3 fails', async () => {
-      vi.spyOn(s3Service, 'getObject').mockRejectedValue(
-        new Error('S3 error')
-      );
+      vi.spyOn(s3Service, 'getObject').mockRejectedValue(new Error('S3 error'));
 
       await expect(techRadarService.getTechRadarData()).rejects.toThrow(
         'S3 error'
@@ -100,9 +86,9 @@ describe('TechRadarService', () => {
     });
 
     it('throws when entries is an empty array', async () => {
-      await expect(
-        techRadarService.updateTechRadarEntries([])
-      ).rejects.toThrow('Invalid or empty entries data');
+      await expect(techRadarService.updateTechRadarEntries([])).rejects.toThrow(
+        'Invalid or empty entries data'
+      );
     });
 
     it('throws when entries is not an array', async () => {

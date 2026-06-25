@@ -1,11 +1,4 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -140,8 +133,7 @@ describe('AddressBookService', () => {
   describe('filterAddressBookData', () => {
     it('resolves a username to its email and account ID', async () => {
       setupS3Mocks();
-      const result =
-        await addressBookService.filterAddressBookData(['jsmith']);
+      const result = await addressBookService.filterAddressBookData(['jsmith']);
       expect(result).toEqual([['jsmith', 'john.smith@ons.gov.uk', 'u123']]);
     });
 
@@ -150,15 +142,12 @@ describe('AddressBookService', () => {
       const result = await addressBookService.filterAddressBookData([
         'john.smith@ons.gov.uk',
       ]);
-      expect(result).toEqual([
-        ['jsmith', 'john.smith@ons.gov.uk', 'u123'],
-      ]);
+      expect(result).toEqual([['jsmith', 'john.smith@ons.gov.uk', 'u123']]);
     });
 
     it('returns undefined counterparts for an unknown username', async () => {
       setupS3Mocks();
-      const result =
-        await addressBookService.filterAddressBookData(['ghost']);
+      const result = await addressBookService.filterAddressBookData(['ghost']);
       expect(result).toEqual([['ghost', undefined, undefined]]);
     });
 
@@ -183,8 +172,7 @@ describe('AddressBookService', () => {
 
     it('returns formatted user info for a known username', async () => {
       setupS3Mocks();
-      const result =
-        await addressBookService.formatAddressBookData(['jsmith']);
+      const result = await addressBookService.formatAddressBookData(['jsmith']);
 
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -209,8 +197,7 @@ describe('AddressBookService', () => {
     it('excludes entries where required fields are missing', async () => {
       // Empty maps → all lookups return undefined
       setupS3Mocks({}, {}, {});
-      const result =
-        await addressBookService.formatAddressBookData(['ghost']);
+      const result = await addressBookService.formatAddressBookData(['ghost']);
       expect(result).toHaveLength(0);
     });
   });
