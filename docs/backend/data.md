@@ -45,7 +45,7 @@ buckets and place them into `backend/data`.
 aws sso login
 ```
 
-2. Copy the files into the correct folders:
+1. Copy the files into the correct folders:
 
 ```bash
 aws s3 cp s3://<S3 Object Path> backend/data/<path>
