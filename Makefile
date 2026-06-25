@@ -32,14 +32,14 @@ dev: 			## Run the application
 
 .PHONY: dev-ci
 dev-ci: 		## Run the application in CI mode (without traps)
-	make frontend & make backend-ci & wait
+	make frontend & make backend & wait
 
 .PHONY: frontend
 frontend: 		## Start the frontend development server
 	cd frontend && npm start
 
 .PHONY: backend
-backend:
+backend: 		## Start the backend development server
 	cd backend && export NODE_ENV=development && npm run dev
 
 ## 
