@@ -30,7 +30,6 @@
   right: 16px;
 }
 
-
 .copilot-chat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

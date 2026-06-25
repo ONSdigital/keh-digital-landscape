@@ -7,7 +7,7 @@ import LegacyDataVisualisation from '../../components/Copilot/Dashboards/LegacyD
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/CopilotUsagePage.css';
 import '../../styles/components/Statistics.css';
-import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 function LegacyUsagePage() {
   const { legacyCopilotData, getLegacyUsageData } = useData();
