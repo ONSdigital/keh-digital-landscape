@@ -1,10 +1,4 @@
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // Must set env before requiring the module so TOKEN_URL and WEBHOOK_URL are defined
 process.env.AZURE_TENANT_ID = 'test-tenant';

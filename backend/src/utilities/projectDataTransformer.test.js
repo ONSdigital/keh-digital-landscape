@@ -97,7 +97,9 @@ describe('projectDataTransformer utilities', () => {
         details: [
           {
             name: 'Project Alpha',
-            project_dependencies: [{ name: 'Project Beta', description: 'API' }],
+            project_dependencies: [
+              { name: 'Project Beta', description: 'API' },
+            ],
           },
         ],
       },
@@ -105,7 +107,9 @@ describe('projectDataTransformer utilities', () => {
         details: [
           {
             name: 'Project Gamma',
-            project_dependencies: [{ name: 'Project Beta', description: 'Data' }],
+            project_dependencies: [
+              { name: 'Project Beta', description: 'Data' },
+            ],
           },
         ],
       },
@@ -123,10 +127,15 @@ describe('projectDataTransformer utilities', () => {
 
   it('transformProjectToCSVFormat returns expected transformed shape', () => {
     const reverseDependencyMap = {
-      'Project Alpha': [{ name: 'Project Delta', description: 'Depends on alpha' }],
+      'Project Alpha': [
+        { name: 'Project Delta', description: 'Depends on alpha' },
+      ],
     };
 
-    const result = transformProjectToCSVFormat(baseProject, reverseDependencyMap);
+    const result = transformProjectToCSVFormat(
+      baseProject,
+      reverseDependencyMap
+    );
 
     expect(result.Project).toBe('Project Alpha');
     expect(result.Project_Short).toBe('alpha');
@@ -178,8 +187,13 @@ describe('projectDataTransformer utilities', () => {
       ],
     };
 
-    const transformed = transformProjectsToCSVFormat([baseProject, projectBeta]);
-    const beta = transformed.find(project => project.Project === 'Project Beta');
+    const transformed = transformProjectsToCSVFormat([
+      baseProject,
+      projectBeta,
+    ]);
+    const beta = transformed.find(
+      project => project.Project === 'Project Beta'
+    );
 
     expect(beta.Listed_As_Project_Dependency).toEqual([
       { name: 'Project Alpha', description: 'Uses beta API' },

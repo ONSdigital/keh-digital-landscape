@@ -1,11 +1,4 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -85,9 +78,7 @@ describe('checkCopilotAdminStatus', () => {
   it('uses the default copilot bucket name when env var is absent', async () => {
     delete process.env.COPILOT_BUCKET_NAME;
     vi.spyOn(githubService, 'getUserTeams').mockResolvedValue(USER_TEAMS);
-    const getObjectSpy = vi
-      .spyOn(s3Service, 'getObject')
-      .mockResolvedValue([]);
+    const getObjectSpy = vi.spyOn(s3Service, 'getObject').mockResolvedValue([]);
 
     await checkCopilotAdminStatus('token-123');
 
