@@ -45,6 +45,16 @@ const config = {
       url: '/admin/dashboard',
       authentication: [],
     },
+    {
+      name: 'GitHub Copilot Landing Page',
+      url: '/copilot/home',
+      authentication: [],
+    },
+    {
+      name: 'GitHub Copilot Legacy Usage',
+      url: '/copilot/legacy',
+      authentication: [],
+    },
   ],
 };
 

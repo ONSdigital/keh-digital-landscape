@@ -1,0 +1,49 @@
+.copilot-back-button {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  color: hsl(var(--primary));
+  background: transparent;
+  border: 2px solid hsl(var(--primary) / 15%);
+  cursor: pointer;
+  border-radius: 0.5rem;
+  padding-left: 24px;
+  padding-right: 24px;
+  transition: all 0.3s ease;
+}
+
+.copilot-back-button:hover {
+  background-color: hsl(var(--muted) / 95%);
+  box-shadow:
+    0 0 0 1px hsl(var(--foreground) / 5%),
+    0 10px 10px hsl(var(--foreground) / 5%),
+    0 12px 24px hsl(var(--foreground) / 5%);
+}
+
+.copilot-back-button #text {
+  position: relative;
+  right: 2px;
+}
+
+.copilot-back-button svg {
+  position: relative;
+  right: 16px;
+}
+
+.copilot-chat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  max-width: 100%;
+  padding-bottom: 20px;
+}
+
+.copilot-graph-container {
+  width: calc(100% - 16px);
+  height: calc(50vh - 16px);
+}
+
+.copilot-graph-container--stacked {
+  height: auto;
+  margin-bottom: 24px;
+}

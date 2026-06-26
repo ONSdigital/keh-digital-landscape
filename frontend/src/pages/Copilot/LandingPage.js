@@ -8,7 +8,7 @@ import { RiRobot2Line } from 'react-icons/ri';
 import { BsArchive } from 'react-icons/bs';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import Layout from '../../components/Layout/Layout';
-import '../../styles/CopilotLandingPage.css';
+import '../../styles/Copilot/CopilotLandingPage.css';
 import { RxDoubleArrowRight } from 'react-icons/rx';
 
 function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
@@ -71,7 +71,11 @@ function CopilotDashboardLandingPage() {
         <div className="copilot-section">
           <h3 className="copilot-section-title">Other</h3>
           <div className="copilot-nav-cards">
-            <CopilotNavCard icon={BsArchive} title="Legacy Usage" href="#" />
+            <CopilotNavCard
+              icon={BsArchive}
+              title="Legacy Usage"
+              href="/copilot/legacy"
+            />
           </div>
         </div>
       </div>
