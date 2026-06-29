@@ -101,7 +101,10 @@ router.get('/banners', async (req, res) => {
   try {
     try {
       // Try to get existing bannerMessages.json file
-      const messagesData = await s3Service.getObject('main', 'bannerMessages.json');
+      const messagesData = await s3Service.getObject(
+        'main',
+        'bannerMessages.json'
+      );
       res.json(messagesData);
     } catch (error) {
       // If file doesn't exist, return empty array

@@ -60,7 +60,10 @@ router.get('/tech-radar/json', async (req, res) => {
 router.get('/json', async (req, res) => {
   try {
     const { datetime, archived } = req.query;
-    const jsonData = await s3Service.getObject('main', 'repositoryStatistics.json');
+    const jsonData = await s3Service.getObject(
+      'main',
+      'repositoryStatistics.json'
+    );
 
     // First filter by date if provided
     let filteredRepos = jsonData.repositories;
@@ -166,7 +169,10 @@ router.get('/repository/project/json', async (req, res) => {
       .split(',')
       .map(repo => repo.toLowerCase().trim());
 
-    const jsonData = await s3Service.getObject('main', 'repositoryStatistics.json');
+    const jsonData = await s3Service.getObject(
+      'main',
+      'repositoryStatistics.json'
+    );
 
     // Filter repositories based on provided names
     let filteredRepos = jsonData.repositories.filter(repo =>
