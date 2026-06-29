@@ -95,21 +95,17 @@ describe('Admin banner routes', () => {
         message: 'Banner added successfully',
       });
 
-      expect(putObjectSpy).toHaveBeenCalledWith(
-        'main',
-        'bannerMessages.json',
-        {
-          messages: [
-            {
-              title: 'Planned downtime',
-              description: 'Service unavailable tonight',
-              type: 'warning',
-              pages: ['/projects'],
-              show: true,
-            },
-          ],
-        }
-      );
+      expect(putObjectSpy).toHaveBeenCalledWith('main', 'bannerMessages.json', {
+        messages: [
+          {
+            title: 'Planned downtime',
+            description: 'Service unavailable tonight',
+            type: 'warning',
+            pages: ['/projects'],
+            show: true,
+          },
+        ],
+      });
     });
   });
 
@@ -202,13 +198,9 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner visibility updated successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith(
-        'main',
-        'bannerMessages.json',
-        {
-          messages: [{ description: 'Notice', show: false, pages: ['/'] }],
-        }
-      );
+      expect(putObjectSpy).toHaveBeenCalledWith('main', 'bannerMessages.json', {
+        messages: [{ description: 'Notice', show: false, pages: ['/'] }],
+      });
     });
   });
 
@@ -261,13 +253,9 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner deleted successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith(
-        'main',
-        'bannerMessages.json',
-        {
-          messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
-        }
-      );
+      expect(putObjectSpy).toHaveBeenCalledWith('main', 'bannerMessages.json', {
+        messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
+      });
     });
   });
 });
