@@ -11,7 +11,7 @@ const BUCKET_DIR_MAP = {
   tat: 'tat',
   copilot: 'copilot',
   // Full AWS bucket names (used when env vars are absent)
-  'sdp-dev-digital-landscape': 'main',
+  'digital-landscape-synthetic-data': 'main',
   'sdp-dev-tech-audit-tool-api': 'tat',
   'sdp-dev-copilot-usage-dashboard': 'copilot',
 };
@@ -31,7 +31,7 @@ class LocalS3Service {
   _resolveDir(bucket) {
     // First check env-var-resolved bucket names
     const resolvedBuckets = {
-      main: process.env.BUCKET_NAME || 'sdp-dev-digital-landscape',
+      main: process.env.BUCKET_NAME || 'digital-landscape-synthetic-data',
       tat: process.env.TAT_BUCKET_NAME || 'sdp-dev-tech-audit-tool-api',
       copilot:
         process.env.COPILOT_BUCKET_NAME || 'sdp-dev-copilot-usage-dashboard',

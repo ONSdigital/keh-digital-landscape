@@ -147,7 +147,7 @@ When the backend runs in local development (`NODE_ENV=development`), it reads se
 
 The local data is grouped into the following directories:
 
-- `backend/data/main`: Digital Landscape data such as `directorates.json`, `messages.json`, `onsRadarSkeleton.json`, `repositories.json`, and the `AddressBook` lookup files.
+- `backend/data/main`: Digital Landscape data such as `directorates.json`, `bannerMessages.json`, `techRadarEntries.json`, `repositoryStatistics.json`, and the `AddressBook` lookup files.
 - `backend/data/tat`: Tech Audit Tool data including `new_project_data.json` and `array_data.json`.
 - `backend/data/copilot`: Copilot usage data including `admin_teams.json`, `organisation_history.json`, and archived historic usage snapshots.
 

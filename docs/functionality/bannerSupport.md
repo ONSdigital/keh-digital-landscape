@@ -48,7 +48,7 @@ The backend of the banner system is responsible for storing and managing the ban
 
 #### Data Structure
 
-All banners are stored in AWS S3 as a JSON file (`messages.json`). Each banner is represented as an object with the following properties:
+All banners are stored in AWS S3 as a JSON file (`bannerMessages.json`). Each banner is represented as an object with the following properties:
 
 ```json
 {
