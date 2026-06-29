@@ -7,7 +7,7 @@ const techRadarService = require('./techRadarService');
 const s3Service = require('./s3Service');
 const logger = require('../config/logger');
 
-const { TECH_RADAR_ENTRIES_FILENAME } = require("../constants")
+const { TECH_RADAR_ENTRIES_FILENAME } = require('../constants');
 
 const MOCK_RADAR_DATA = {
   quadrants: [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }],

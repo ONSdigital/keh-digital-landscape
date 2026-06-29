@@ -24,7 +24,7 @@ const adminRouter = require('./admin');
 const s3Service = require('../services/s3Service');
 const logger = require('../config/logger');
 
-const { BANNER_MESSAGES_FILENAME } = require("../constants")
+const { BANNER_MESSAGES_FILENAME } = require('../constants');
 
 describe('Admin banner routes', () => {
   let server;
@@ -97,17 +97,21 @@ describe('Admin banner routes', () => {
         message: 'Banner added successfully',
       });
 
-      expect(putObjectSpy).toHaveBeenCalledWith('main', BANNER_MESSAGES_FILENAME, {
-        messages: [
-          {
-            title: 'Planned downtime',
-            description: 'Service unavailable tonight',
-            type: 'warning',
-            pages: ['/projects'],
-            show: true,
-          },
-        ],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        BANNER_MESSAGES_FILENAME,
+        {
+          messages: [
+            {
+              title: 'Planned downtime',
+              description: 'Service unavailable tonight',
+              type: 'warning',
+              pages: ['/projects'],
+              show: true,
+            },
+          ],
+        }
+      );
     });
   });
 
@@ -200,9 +204,13 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner visibility updated successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith('main', BANNER_MESSAGES_FILENAME, {
-        messages: [{ description: 'Notice', show: false, pages: ['/'] }],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        BANNER_MESSAGES_FILENAME,
+        {
+          messages: [{ description: 'Notice', show: false, pages: ['/'] }],
+        }
+      );
     });
   });
 
@@ -255,9 +263,13 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner deleted successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith('main', BANNER_MESSAGES_FILENAME, {
-        messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        BANNER_MESSAGES_FILENAME,
+        {
+          messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
+        }
+      );
     });
   });
 });

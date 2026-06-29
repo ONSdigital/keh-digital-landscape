@@ -9,7 +9,7 @@ const { verifyJwt, requireAdmin } = require('../services/cognitoService');
 
 const router = express.Router();
 
-const { BANNER_MESSAGES_FILENAME } = require("../constants")
+const { BANNER_MESSAGES_FILENAME } = require('../constants');
 
 // Apply authentication middleware to all admin routes
 router.use(verifyJwt);
@@ -68,7 +68,10 @@ router.post('/banners/update', async (req, res) => {
 
     try {
       // Try to get existing banner messages json file
-      messagesData = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
+      messagesData = await s3Service.getObject(
+        'main',
+        BANNER_MESSAGES_FILENAME
+      );
     } catch (error) {
       // If file doesn't exist, create a new structure
       messagesData = { messages: [] };
@@ -139,7 +142,10 @@ router.post('/banners/toggle', async (req, res) => {
 
     let messagesData;
     try {
-      messagesData = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
+      messagesData = await s3Service.getObject(
+        'main',
+        BANNER_MESSAGES_FILENAME
+      );
     } catch (error) {
       logger.error('Error fetching messages:', error);
       return res.status(400).json({ error: 'Messages file not found' });
@@ -185,7 +191,10 @@ router.post('/banners/delete', async (req, res) => {
 
     let messagesData;
     try {
-      messagesData = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
+      messagesData = await s3Service.getObject(
+        'main',
+        BANNER_MESSAGES_FILENAME
+      );
     } catch (error) {
       logger.error('Error fetching messages:', error);
       return res.status(400).json({ error: 'Messages file not found' });

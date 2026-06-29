@@ -8,7 +8,11 @@ const { healthCheckLimiter } = require('../config/rateLimiter');
 
 const router = express.Router();
 
-const { BANNER_MESSAGES_FILENAME, TECH_RADAR_ENTRIES_FILENAME, REPOSITORY_STATISTICS_FILENAME } = require("../constants")
+const {
+  BANNER_MESSAGES_FILENAME,
+  TECH_RADAR_ENTRIES_FILENAME,
+  REPOSITORY_STATISTICS_FILENAME,
+} = require('../constants');
 
 /**
  * Endpoint for fetching project data and converting it to CSV format.
@@ -40,7 +44,10 @@ router.get('/csv', async (req, res) => {
  */
 router.get('/tech-radar/json', async (req, res) => {
   try {
-    const jsonData = await s3Service.getObject('main', TECH_RADAR_ENTRIES_FILENAME);
+    const jsonData = await s3Service.getObject(
+      'main',
+      TECH_RADAR_ENTRIES_FILENAME
+    );
     res.json(jsonData);
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
