@@ -1,12 +1,14 @@
 const s3Service = require('./s3Service');
 const logger = require('../config/logger');
 
+const { TECH_RADAR_ENTRIES_FILENAME } = require("../constants")
+
 /**
  * TechRadarService class for managing tech radar data
  */
 class TechRadarService {
   constructor() {
-    this.radarKey = 'techRadarEntries.json';
+    this.radarKey = TECH_RADAR_ENTRIES_FILENAME;
   }
 
   /**

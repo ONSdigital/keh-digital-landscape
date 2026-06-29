@@ -9,6 +9,8 @@ const { verifyJwt, requireAdmin } = require('../services/cognitoService');
 
 const router = express.Router();
 
+const { BANNER_MESSAGES_FILENAME } = require("../constants")
+
 // Apply authentication middleware to all admin routes
 router.use(verifyJwt);
 router.use(requireAdmin);
@@ -65,12 +67,12 @@ router.post('/banners/update', async (req, res) => {
     let messagesData;
 
     try {
-      // Try to get existing bannerMessages.json file
-      messagesData = await s3Service.getObject('main', 'bannerMessages.json');
+      // Try to get existing banner messages json file
+      messagesData = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
     } catch (error) {
       // If file doesn't exist, create a new structure
       messagesData = { messages: [] };
-      logger.error('Creating new bannerMessages.json file: ', error);
+      logger.error(`Creating new ${BANNER_MESSAGES_FILENAME} file: `, error);
     }
 
     // Add the new banner to messages
@@ -83,7 +85,7 @@ router.post('/banners/update', async (req, res) => {
     });
 
     // Save the updated data
-    await s3Service.putObject('main', 'bannerMessages.json', messagesData);
+    await s3Service.putObject('main', BANNER_MESSAGES_FILENAME, messagesData);
     res.json({ message: 'Banner added successfully' });
   } catch (error) {
     logger.error('Error updating banner messages:', { error: error.message });
@@ -100,10 +102,10 @@ router.post('/banners/update', async (req, res) => {
 router.get('/banners', async (req, res) => {
   try {
     try {
-      // Try to get existing bannerMessages.json file
+      // Try to get existing banner messages json file
       const messagesData = await s3Service.getObject(
         'main',
-        'bannerMessages.json'
+        BANNER_MESSAGES_FILENAME
       );
       res.json(messagesData);
     } catch (error) {
@@ -137,7 +139,7 @@ router.post('/banners/toggle', async (req, res) => {
 
     let messagesData;
     try {
-      messagesData = await s3Service.getObject('main', 'bannerMessages.json');
+      messagesData = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
     } catch (error) {
       logger.error('Error fetching messages:', error);
       return res.status(400).json({ error: 'Messages file not found' });
@@ -156,7 +158,7 @@ router.post('/banners/toggle', async (req, res) => {
     messagesData.messages[index].show = show;
 
     // Save the updated data
-    await s3Service.putObject('main', 'bannerMessages.json', messagesData);
+    await s3Service.putObject('main', BANNER_MESSAGES_FILENAME, messagesData);
     res.json({ message: 'Banner visibility updated successfully' });
   } catch (error) {
     logger.error('Error toggling banner visibility:', { error: error.message });
@@ -183,7 +185,7 @@ router.post('/banners/delete', async (req, res) => {
 
     let messagesData;
     try {
-      messagesData = await s3Service.getObject('main', 'bannerMessages.json');
+      messagesData = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
     } catch (error) {
       logger.error('Error fetching messages:', error);
       return res.status(400).json({ error: 'Messages file not found' });
@@ -202,7 +204,7 @@ router.post('/banners/delete', async (req, res) => {
     messagesData.messages.splice(index, 1);
 
     // Save the updated data
-    await s3Service.putObject('main', 'bannerMessages.json', messagesData);
+    await s3Service.putObject('main', BANNER_MESSAGES_FILENAME, messagesData);
     res.json({ message: 'Banner deleted successfully' });
   } catch (error) {
     logger.error('Error deleting banner:', { error: error.message });
