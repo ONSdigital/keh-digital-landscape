@@ -58,8 +58,7 @@ router.post('/logout', (req, res) => {
     // Construct the proper Cognito logout URL
     // The domain output is just the domain name, we need to construct the full URL
     const cognitoDomain =
-      process.env.COGNITO_USER_POOL_DOMAIN ||
-      'digital-landscape-synthetic-data';
+      process.env.COGNITO_USER_POOL_DOMAIN || 'sdp-dev-digital-landscape';
     const region = process.env.AWS_REGION || 'eu-west-2';
     const clientId = process.env.COGNITO_USER_POOL_CLIENT_ID;
 

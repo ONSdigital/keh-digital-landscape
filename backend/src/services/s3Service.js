@@ -16,7 +16,7 @@ class S3Service {
 
     // Bucket configurations
     this.buckets = {
-      main: process.env.BUCKET_NAME || 'digital-landscape-synthetic-data',
+      main: process.env.BUCKET_NAME || 'sdp-dev-digital-landscape',
       tat: process.env.TAT_BUCKET_NAME || 'sdp-dev-tech-audit-tool-api',
       copilot:
         process.env.COPILOT_BUCKET_NAME || 'sdp-dev-copilot-usage-dashboard',
