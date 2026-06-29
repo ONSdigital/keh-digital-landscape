@@ -86,5 +86,10 @@ class S3Service {
   }
 }
 
-// Export a singleton instance
-module.exports = new S3Service();
+// In local development, use the filesystem-based service so that no code
+// can accidentally read from or write to the AWS Dev environment.
+if (process.env.NODE_ENV === 'development') {
+  module.exports = require('./localS3Service');
+} else {
+  module.exports = new S3Service();
+}
