@@ -61,7 +61,7 @@ describe('TechRadarService', () => {
       expect(result).toEqual(MOCK_RADAR_DATA);
       expect(s3Service.getObject).toHaveBeenCalledWith(
         'main',
-        'onsRadarSkeleton.json'
+        'techRadarEntries.json'
       );
     });
 
