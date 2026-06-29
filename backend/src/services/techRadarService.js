@@ -6,7 +6,7 @@ const logger = require('../config/logger');
  */
 class TechRadarService {
   constructor() {
-    this.radarKey = 'onsRadarSkeleton.json';
+    this.radarKey = 'techRadarEntries.json';
   }
 
   /**

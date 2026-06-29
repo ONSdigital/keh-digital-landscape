@@ -69,7 +69,7 @@ describe('Admin banner routes', () => {
       });
     });
 
-    it('creates a new messages structure when messages.json does not exist', async () => {
+    it('creates a new messages structure when bannerMessages.json does not exist', async () => {
       vi.spyOn(s3Service, 'getObject').mockRejectedValue(
         new Error('Not found')
       );
@@ -95,22 +95,26 @@ describe('Admin banner routes', () => {
         message: 'Banner added successfully',
       });
 
-      expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [
-          {
-            title: 'Planned downtime',
-            description: 'Service unavailable tonight',
-            type: 'warning',
-            pages: ['/projects'],
-            show: true,
-          },
-        ],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        'bannerMessages.json',
+        {
+          messages: [
+            {
+              title: 'Planned downtime',
+              description: 'Service unavailable tonight',
+              type: 'warning',
+              pages: ['/projects'],
+              show: true,
+            },
+          ],
+        }
+      );
     });
   });
 
   describe('GET /admin/api/banners', () => {
-    it('returns all messages when messages.json exists', async () => {
+    it('returns all messages when bannerMessages.json exists', async () => {
       vi.spyOn(s3Service, 'getObject').mockResolvedValue({
         messages: [{ description: 'Banner one', pages: ['/'] }],
       });
@@ -123,7 +127,7 @@ describe('Admin banner routes', () => {
       });
     });
 
-    it('returns empty messages array when messages.json does not exist', async () => {
+    it('returns empty messages array when bannerMessages.json does not exist', async () => {
       vi.spyOn(s3Service, 'getObject').mockRejectedValue(
         new Error('Not found')
       );
@@ -198,9 +202,13 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner visibility updated successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [{ description: 'Notice', show: false, pages: ['/'] }],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        'bannerMessages.json',
+        {
+          messages: [{ description: 'Notice', show: false, pages: ['/'] }],
+        }
+      );
     });
   });
 
@@ -253,9 +261,13 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner deleted successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        'bannerMessages.json',
+        {
+          messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
+        }
+      );
     });
   });
 });
