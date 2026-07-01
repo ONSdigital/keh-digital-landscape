@@ -1,27 +1,15 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
-import LegacyDataVisualisation from '../../components/Copilot/Dashboards/LegacyData';
+import GeneralUsageDashboard from '../../components/Copilot/Dashboards/GeneralUsage';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
+import '../../styles/Copilot/GeneralUsagePage.css';
 import '../../styles/components/Statistics.css';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
-function LegacyUsagePage() {
-  const { legacyCopilotData, getLegacyUsageData } = useData();
-  const [isLegacyLoading, setIsLegacyLoading] = useState(false);
+function GeneralUsagePage() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      setIsLegacyLoading(true);
-      await getLegacyUsageData();
-      setIsLegacyLoading(false);
-      console.log('Legacy Copilot Data:', legacyCopilotData);
-    })();
-  }, []);
 
   return (
     <Layout headerProps={{ hideSearch: true }}>
@@ -40,9 +28,12 @@ function LegacyUsagePage() {
             <MdOutlineArrowBackIosNew size={12} />
             <span id="text">Back</span>
           </button>
-          <LegacyDataVisualisation
-            data={legacyCopilotData}
-            isLoading={isLegacyLoading}
+          <GeneralUsageDashboard
+            data={{
+              chatUsers: { count: 177, total: 203 },
+              agentAdoption: { count: 162, total: 203 },
+            }}
+            isLoading={false}
           />
         </div>
       </div>
@@ -50,4 +41,4 @@ function LegacyUsagePage() {
   );
 }
 
-export default LegacyUsagePage;
+export default GeneralUsagePage;
