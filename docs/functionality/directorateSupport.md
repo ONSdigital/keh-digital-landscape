@@ -60,7 +60,7 @@ This has been decided so that user don't have to position every technology for e
 
 To give a high level picture of how this works, all directorates use the Digital Services radar as a base, and then apply any specific positions on top of that.
 
-To facilitate technologies having different positions in different directorates, a `directorate` key has been added to timeline entries within `onsRadarSkeleton.json`.
+To facilitate technologies having different positions in different directorates, a `directorate` key has been added to timeline entries within `techRadarEntries.json`.
 
 ### Example Technology Entry
 

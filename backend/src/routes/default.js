@@ -8,6 +8,12 @@ const { healthCheckLimiter } = require('../config/rateLimiter');
 
 const router = express.Router();
 
+const {
+  BANNER_MESSAGES_FILENAME,
+  TECH_RADAR_ENTRIES_FILENAME,
+  REPOSITORY_STATISTICS_FILENAME,
+} = require('../constants');
+
 /**
  * Endpoint for fetching project data and converting it to CSV format.
  * @route GET /api/csv
@@ -38,7 +44,10 @@ router.get('/csv', async (req, res) => {
  */
 router.get('/tech-radar/json', async (req, res) => {
   try {
-    const jsonData = await s3Service.getObject('main', 'onsRadarSkeleton.json');
+    const jsonData = await s3Service.getObject(
+      'main',
+      TECH_RADAR_ENTRIES_FILENAME
+    );
     res.json(jsonData);
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
@@ -60,7 +69,10 @@ router.get('/tech-radar/json', async (req, res) => {
 router.get('/json', async (req, res) => {
   try {
     const { datetime, archived } = req.query;
-    const jsonData = await s3Service.getObject('main', 'repositories.json');
+    const jsonData = await s3Service.getObject(
+      'main',
+      REPOSITORY_STATISTICS_FILENAME
+    );
 
     // First filter by date if provided
     let filteredRepos = jsonData.repositories;
@@ -166,7 +178,10 @@ router.get('/repository/project/json', async (req, res) => {
       .split(',')
       .map(repo => repo.toLowerCase().trim());
 
-    const jsonData = await s3Service.getObject('main', 'repositories.json');
+    const jsonData = await s3Service.getObject(
+      'main',
+      REPOSITORY_STATISTICS_FILENAME
+    );
 
     // Filter repositories based on provided names
     let filteredRepos = jsonData.repositories.filter(repo =>
@@ -278,8 +293,8 @@ router.get('/banners', async (req, res) => {
     let messagesData = { messages: [] };
 
     try {
-      // Try to get existing messages.json file
-      const data = await s3Service.getObject('main', 'messages.json');
+      // Try to get existing banner messages json file
+      const data = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
 
       // Filter only active banners
       messagesData.messages = data.messages.filter(
@@ -288,7 +303,7 @@ router.get('/banners', async (req, res) => {
     } catch (error) {
       // If file doesn't exist, return empty array
       logger.error(
-        'No messages.json file found, returning empty array:',
+        `No ${BANNER_MESSAGES_FILENAME} file found, returning empty array:`,
         error
       );
       messagesData = { messages: [] };
@@ -312,8 +327,8 @@ router.get('/banners/all', async (req, res) => {
     let messagesData = { messages: [] };
 
     try {
-      // Try to get existing messages.json file
-      const data = await s3Service.getObject('main', 'messages.json');
+      // Try to get existing banner messages json file
+      const data = await s3Service.getObject('main', BANNER_MESSAGES_FILENAME);
 
       // Filter only active banners
       messagesData.messages = data.messages.filter(
@@ -322,7 +337,7 @@ router.get('/banners/all', async (req, res) => {
     } catch (error) {
       // If file doesn't exist, return empty array
       logger.error(
-        'No messages.json file found, returning empty array:',
+        `No ${BANNER_MESSAGES_FILENAME} file found, returning empty array:`,
         error
       );
       messagesData = { messages: [] };

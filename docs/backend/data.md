@@ -12,9 +12,9 @@ environment on AWS.
 backend/data/
 ├── main/                                # Mirrors the Digital Landscape S3 bucket
 │   ├── directorates.json
-│   ├── messages.json
-│   ├── onsRadarSkeleton.json
-│   ├── repositories.json
+│   ├── bannerMessages.json
+│   ├── techRadarEntries.json
+│   ├── repositoryStatistics.json
 │   └── AddressBook/
 │       ├── addressBookEmailKey.json
 │       ├── addressBookIDKey.json

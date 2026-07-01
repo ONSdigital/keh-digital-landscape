@@ -1,0 +1,9 @@
+const BANNER_MESSAGES_FILENAME = 'bannerMessages.json';
+const TECH_RADAR_ENTRIES_FILENAME = 'techRadarEntries.json';
+const REPOSITORY_STATISTICS_FILENAME = 'repositoryStatistics.json';
+
+module.exports = {
+  BANNER_MESSAGES_FILENAME,
+  TECH_RADAR_ENTRIES_FILENAME,
+  REPOSITORY_STATISTICS_FILENAME,
+};

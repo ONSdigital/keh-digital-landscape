@@ -24,6 +24,8 @@ const adminRouter = require('./admin');
 const s3Service = require('../services/s3Service');
 const logger = require('../config/logger');
 
+const { BANNER_MESSAGES_FILENAME } = require('../constants');
+
 describe('Admin banner routes', () => {
   let server;
   let baseUrl;
@@ -69,7 +71,7 @@ describe('Admin banner routes', () => {
       });
     });
 
-    it('creates a new messages structure when messages.json does not exist', async () => {
+    it(`creates a new messages structure when ${BANNER_MESSAGES_FILENAME} does not exist`, async () => {
       vi.spyOn(s3Service, 'getObject').mockRejectedValue(
         new Error('Not found')
       );
@@ -95,22 +97,26 @@ describe('Admin banner routes', () => {
         message: 'Banner added successfully',
       });
 
-      expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [
-          {
-            title: 'Planned downtime',
-            description: 'Service unavailable tonight',
-            type: 'warning',
-            pages: ['/projects'],
-            show: true,
-          },
-        ],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        BANNER_MESSAGES_FILENAME,
+        {
+          messages: [
+            {
+              title: 'Planned downtime',
+              description: 'Service unavailable tonight',
+              type: 'warning',
+              pages: ['/projects'],
+              show: true,
+            },
+          ],
+        }
+      );
     });
   });
 
   describe('GET /admin/api/banners', () => {
-    it('returns all messages when messages.json exists', async () => {
+    it(`returns all messages when ${BANNER_MESSAGES_FILENAME} exists`, async () => {
       vi.spyOn(s3Service, 'getObject').mockResolvedValue({
         messages: [{ description: 'Banner one', pages: ['/'] }],
       });
@@ -123,7 +129,7 @@ describe('Admin banner routes', () => {
       });
     });
 
-    it('returns empty messages array when messages.json does not exist', async () => {
+    it(`returns empty messages array when ${BANNER_MESSAGES_FILENAME} does not exist`, async () => {
       vi.spyOn(s3Service, 'getObject').mockRejectedValue(
         new Error('Not found')
       );
@@ -198,9 +204,13 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner visibility updated successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [{ description: 'Notice', show: false, pages: ['/'] }],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        BANNER_MESSAGES_FILENAME,
+        {
+          messages: [{ description: 'Notice', show: false, pages: ['/'] }],
+        }
+      );
     });
   });
 
@@ -253,9 +263,13 @@ describe('Admin banner routes', () => {
       await expect(res.json()).resolves.toEqual({
         message: 'Banner deleted successfully',
       });
-      expect(putObjectSpy).toHaveBeenCalledWith('main', 'messages.json', {
-        messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
-      });
+      expect(putObjectSpy).toHaveBeenCalledWith(
+        'main',
+        BANNER_MESSAGES_FILENAME,
+        {
+          messages: [{ description: 'Keep me', show: true, pages: ['/'] }],
+        }
+      );
     });
   });
 });
