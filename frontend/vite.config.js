@@ -1,6 +1,30 @@
 import { defineConfig, transformWithOxc } from 'vite';
 import react from '@vitejs/plugin-react';
 
+function manualChunks(id) {
+  if (!id.includes('node_modules')) {
+    return undefined;
+  }
+
+  if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-router-dom/')) {
+    return 'vendor-react';
+  }
+
+  if (id.includes('/recharts/')) {
+    return 'vendor-charts';
+  }
+
+  if (id.includes('/ag-grid-react/') || id.includes('/ag-grid-community/')) {
+    return 'vendor-grid';
+  }
+
+  if (id.includes('/react-icons/')) {
+    return 'vendor-icons';
+  }
+
+  return undefined;
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -51,12 +75,7 @@ export default defineConfig({
     modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-charts': ['recharts'],
-          'vendor-grid': ['ag-grid-react'],
-          'vendor-icons': ['react-icons'],
-        },
+        manualChunks,
       },
     },
   },
