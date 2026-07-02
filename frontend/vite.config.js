@@ -6,7 +6,11 @@ function manualChunks(id) {
     return undefined;
   }
 
-  if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-router-dom/')) {
+  if (
+    id.includes('/react/') ||
+    id.includes('/react-dom/') ||
+    id.includes('/react-router-dom/')
+  ) {
     return 'vendor-react';
   }
 
