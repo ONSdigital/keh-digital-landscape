@@ -1,4 +1,6 @@
 import { getPercentage } from '../../../utilities/getPercentage';
+import AcceptanceGraph from '../Breakdowns/AcceptanceGraph';
+
 
 function Card({ title, numerator, denominator }) {
   const ratio = denominator > 0 ? numerator / denominator : 0;
@@ -7,7 +9,7 @@ function Card({ title, numerator, denominator }) {
 
   return (
     <div className="usage-card">
-      <h3 className="usage-card-title">{title}</h3>
+      <h2 className="usage-card-title">{title}</h2>
       <div className="usage-card-body">
         <p className="usage-card-percentage">{percentage}</p>
         <p className="usage-card-description">{description}</p>
@@ -25,7 +27,7 @@ function Card({ title, numerator, denominator }) {
 function GeneralUsageDashboard({ data, isLoading }) {
   return (
     <div className="copilot-dashboard">
-      <h2>User Adoption</h2>
+      <h3>User Adoption</h3>
       <div className="usage-cards-grid">
         {isLoading ? (
           <>
@@ -47,6 +49,7 @@ function GeneralUsageDashboard({ data, isLoading }) {
           </>
         )}
       </div>
+      <h3>Acceptance Rate</h3>
     </div>
   );
 }
