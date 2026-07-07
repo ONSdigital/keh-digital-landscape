@@ -56,7 +56,7 @@ resource "aws_lb_target_group" "backend_tg" {
 
 # Use the module to get highest current priority
 module "alb_listener_priority" {
-  source                = "git::https://github.com/ONS-Innovation/keh-alb-listener-tf-module.git?ref=v1.1.0"
+  source                = "git::https://github.com/ONS-Innovation/keh-alb-listener-tf-module.git?ref=v1.0.0"
   aws_access_key_id     = var.aws_access_key_id
   aws_secret_access_key = var.aws_secret_access_key
   region                = var.region
