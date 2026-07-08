@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from 'react';
+=======
+import { useEffect, useState } from 'react';
+>>>>>>> c8b9628 (feat: added the new page and linked it to the landing page)
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
+<<<<<<< HEAD
 import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
 import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotdata/processCodeCompletionData';
 import '../../styles/ReviewPage.css';
@@ -55,6 +60,37 @@ function CodeCompletionsPage() {
 
       <div className="admin-container">
         <div className="copilot-page-controls">
+=======
+import LegacyDataVisualisation from '../../components/Copilot/Dashboards/LegacyData';
+import '../../styles/ReviewPage.css';
+import '../../styles/Copilot/CopilotUsagePage.css';
+import '../../styles/components/Statistics.css';
+import { MdOutlineArrowBackIosNew } from 'react-icons/md';
+
+// TODO: Change to get code completions data
+function CodeCompletionsPage() {
+//   const { legacyCopilotData, getLegacyUsageData } = useData();
+//   const [isLegacyLoading, setIsLegacyLoading] = useState(false);
+  const navigate = useNavigate();
+
+//   useEffect(() => {
+//     (async () => {
+//       setIsLegacyLoading(true);
+//       await getLegacyUsageData();
+//       setIsLegacyLoading(false);
+//     })();
+//   }, []);
+
+  return (
+    <Layout headerProps={{ hideSearch: true }}>
+      <div className="admin-page">
+        <PageBanner
+          title="GitHub Copilot Code Completions Dashboard"
+          description="Analyse Copilot Code Completion data statistics"
+          tabs={[]}
+        />
+        <div className="admin-container">
+>>>>>>> c8b9628 (feat: added the new page and linked it to the landing page)
           <button
             className="copilot-back-button"
             onClick={() => navigate('/copilot/home')}
@@ -63,6 +99,7 @@ function CodeCompletionsPage() {
             <MdOutlineArrowBackIosNew size={12} />
             <span id="text">Back</span>
           </button>
+<<<<<<< HEAD
           <div className="copilot-settings" ref={settingsRef}>
             <button
               className="copilot-settings-button"
@@ -110,6 +147,14 @@ function CodeCompletionsPage() {
           isLoading={isLoading}
           chartDisplaySettings={chartDisplaySettings}
         />
+=======
+          {/* TODO: CHANGE TO CODE COMPLETION COMPONENT */}
+          {/* <LegacyDataVisualisation
+            data={legacyCopilotData}
+            isLoading={isLegacyLoading}
+          /> */}
+        </div>
+>>>>>>> c8b9628 (feat: added the new page and linked it to the landing page)
       </div>
     </Layout>
   );
