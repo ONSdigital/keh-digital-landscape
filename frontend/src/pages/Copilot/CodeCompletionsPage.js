@@ -46,7 +46,6 @@ function CodeCompletionsPage() {
   const processedData = historicUsageData
     ? processCodeCompletionData(historicUsageData)
     : null;
-
   return (
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
