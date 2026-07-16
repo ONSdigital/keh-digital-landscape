@@ -51,15 +51,38 @@
   height: 10px;
   background: hsl(var(--muted));
   border-radius: 999px;
+  border: 1px solid hsl(var(--border));
   overflow: hidden;
 }
 
 .usage-card-bar-fill {
   height: 100%;
-  background: hsl(var(--primary));
   border-radius: 999px;
+  width: 0%;
+  transition: width 0.8s ease-out;
 }
 
 .usage-card.skeleton {
   height: 140px;
+}
+
+.usage-pie-charts-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.usage-pie-chart-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 20px;
+  flex: 1;
+}
+
+.usage-pie-chart-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  margin: 0 0 8px 0;
 }

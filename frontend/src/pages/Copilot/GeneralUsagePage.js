@@ -1,7 +1,10 @@
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import GeneralUsageDashboard from '../../components/Copilot/Dashboards/GeneralUsage';
+import { processGeneralUsageData } from '../../utilities/generalUsageCopilotData/processGeneralUsageCopilotData';
+import { getOrgHistoryData } from '../../utilities/getOrgHistoryData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/Copilot/GeneralUsagePage.css';
@@ -10,6 +13,19 @@ import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 function GeneralUsagePage() {
   const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const rawData = await getOrgHistoryData();
+      if (rawData) {
+        setData(processGeneralUsageData(rawData));
+      }
+      setIsLoading(false);
+    }
+    fetchData();
+  }, []);
 
   return (
     <Layout headerProps={{ hideSearch: true }}>
@@ -29,11 +45,19 @@ function GeneralUsagePage() {
             <span id="text">Back</span>
           </button>
           <GeneralUsageDashboard
-            data={{
-              chatUsers: { count: 177, total: 203 },
-              agentAdoption: { count: 162, total: 203 },
-            }}
-            isLoading={false}
+            data={
+              data
+                ? {
+                    chatUsers: data.userAdoption.chatUsers,
+                    agentAdoption: data.userAdoption.agentAdoption,
+                    engagedUsersOvertime: data.engagedUsersOvertime,
+                    modelUsage: data.modelUsage,
+                    ideUsage: data.ideUsage,
+                    codeImpact: data.codeImpact,
+                  }
+                : null
+            }
+            isLoading={isLoading}
           />
         </div>
       </div>

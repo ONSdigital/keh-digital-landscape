@@ -42,8 +42,9 @@ Copilot Dashboard */
 }
 
 .copilot-graph-container {
-  width: calc(100% - 16px);
-  height: calc(50vh - 16px);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
 }
 
 .copilot-graph-container--stacked {
@@ -51,3 +52,9 @@ Copilot Dashboard */
   margin-bottom: 24px;
 }
 
+.copilot-tooltip-paragraph {
+  white-space: normal;
+  display: inline-block;
+  max-width: 280px;
+  text-align: left;
+}

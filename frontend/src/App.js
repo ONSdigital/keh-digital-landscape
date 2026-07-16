@@ -18,7 +18,7 @@ const CopilotDashboardLegacyUsagePage = lazy(
 );
 const CopilotDashboardGeneralUsagePage = lazy(
   () => import('./pages/Copilot/GeneralUsagePage')
-)
+);
 
 import { getDirectorates } from './utilities/getDirectorates';
 
