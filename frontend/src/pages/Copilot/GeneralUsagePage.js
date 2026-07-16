@@ -14,17 +14,17 @@ import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 function GeneralUsagePage() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
+    (async () => {
+      setIsLoading(true);
       const rawData = await getOrgHistoryData();
       if (rawData) {
         setData(processGeneralUsageData(rawData));
       }
       setIsLoading(false);
-    }
-    fetchData();
+    })();
   }, []);
 
   return (

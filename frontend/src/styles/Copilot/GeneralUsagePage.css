@@ -66,6 +66,15 @@
   height: 140px;
 }
 
+.copilot-graph-container.skeleton {
+  height: 600px;
+  border-radius: var(--radius);
+}
+
+.usage-pie-chart-card.skeleton {
+  height: 320px;
+}
+
 .usage-pie-charts-grid {
   display: flex;
   flex-direction: row;

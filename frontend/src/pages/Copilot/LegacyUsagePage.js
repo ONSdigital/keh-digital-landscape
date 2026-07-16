@@ -19,7 +19,6 @@ function LegacyUsagePage() {
       setIsLegacyLoading(true);
       await getLegacyUsageData();
       setIsLegacyLoading(false);
-      console.log('Legacy Copilot Data:', legacyCopilotData);
     })();
   }, []);
 
