@@ -13,9 +13,7 @@ test('General Usage page shows skeleton loading state', async ({ page }) => {
   await expect(page.locator('.usage-card.skeleton').first()).toBeVisible();
 });
 
-test('General Usage page displays correct page structure', async ({
-  page,
-}) => {
+test('General Usage page displays correct page structure', async ({ page }) => {
   await page.goto('http://localhost:3000/copilot/general');
   await expect(page.locator('.usage-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
@@ -25,9 +23,7 @@ test('General Usage page displays correct page structure', async ({
   await expect(
     page.getByRole('heading', { name: 'User Adoption' })
   ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Chat Users' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Chat Users' })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Agent Adoption' })
   ).toBeVisible();
