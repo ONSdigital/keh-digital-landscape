@@ -31,7 +31,7 @@ function Card({ title, numerator, denominator }) {
 
   return (
     <div className="usage-card">
-      <h2 className="usage-card-title">{title}</h2>
+      <h4 className="usage-card-title">{title}</h4>
       <div className="usage-card-body">
         <p className="usage-card-percentage">
           {Math.round(animatedPercentage)}%
