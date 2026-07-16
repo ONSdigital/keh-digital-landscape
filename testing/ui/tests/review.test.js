@@ -323,3 +323,73 @@ test('Related technologies update when tags are edited', async ({ page }) => {
   await expect(relatedItemsLocator).toHaveCount(1);
   await expect(relatedItemsLocator).toHaveText(['Java']);
 });
+
+test('Adding a technology with tags saves tag values', async ({ page }) => {
+  let savedRequestEntries = null;
+
+  await page.route('**/review/api/tech-radar/update', async route => {
+    const request = route.request();
+    const body = request.postDataJSON();
+    savedRequestEntries = body?.entries ?? null;
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ message: 'Tech radar updated successfully' }),
+    });
+  });
+
+  await interceptAPICall({ page });
+
+  const techName = `Playwright Added Tech ${Date.now()}`;
+
+  await page.getByRole('button', { name: 'Add Technology' }).click();
+  const addFormModal = page.locator('.admin-modal:has(.technology-input)');
+
+  await page.getByLabel('Enter Technology Name').fill(techName);
+  await page.getByLabel('Select Category').selectOption('Frameworks');
+
+  await page.locator('[placeholder="Select tags..."]').click();
+  await page
+    .locator('.multi-select-option')
+    .filter({ hasText: 'Machine Learning' })
+    .click();
+
+  await page
+    .locator('.multi-select-option')
+    .filter({ hasText: 'Data Processing' })
+    .click();
+
+  await addFormModal
+    .getByRole('combobox', { name: 'Search options' })
+    .press('Escape');
+
+  const addConfirmModal = page.locator('.admin-modal').filter({
+    hasText: 'Are you sure you want to add this technology?',
+  });
+
+  await addFormModal.getByRole('button', { name: 'Add Technology' }).click();
+  await expect(addConfirmModal).toBeVisible();
+  await addConfirmModal.getByRole('button', { name: 'Yes' }).click();
+
+  await expect(page.locator(`text=${techName}`)).toBeVisible();
+
+  const saveConfirmModal = page.locator('.admin-modal').filter({
+    hasText: 'Are you sure you want to save all changes to the Tech Radar?',
+  });
+
+  await page.getByRole('button', { name: 'Save Changes' }).click();
+  await expect(saveConfirmModal).toBeVisible();
+  await saveConfirmModal.getByRole('button', { name: 'Yes' }).click();
+
+  await expect(page.locator('text=Changes saved successfully!')).toBeVisible();
+
+  expect(Array.isArray(savedRequestEntries)).toBe(true);
+
+  const addedEntry = savedRequestEntries.find(
+    entry => entry.title === techName
+  );
+  expect(addedEntry).toBeTruthy();
+  expect(addedEntry.tags).toEqual(['machine-learning', 'data-processing']);
+  expect(addedEntry.tags.every(tag => typeof tag === 'string')).toBe(true);
+});

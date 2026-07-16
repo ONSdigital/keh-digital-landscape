@@ -555,7 +555,7 @@ const ReviewPage = () => {
       id: `tech-${Date.now()}`,
       title: newTechnology.trim(),
       description: selectedCategory,
-      tags: technologyTags.length > 0 ? technologyTags : [],
+      tags: technologyTags.map(tag => tag.value),
       key: newTechnology.trim().toLowerCase().replace(/\s+/g, ''),
       url: '#',
       quadrant: categoryToQuadrant[selectedCategory],
