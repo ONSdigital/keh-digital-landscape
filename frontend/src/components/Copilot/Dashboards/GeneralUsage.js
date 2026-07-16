@@ -15,9 +15,14 @@ function Card({ title, numerator, denominator }) {
   const [barWidth, setBarWidth] = useState(0);
   const description = `${numerator} out of ${denominator} active users this month`;
 
-  const barColor = title === 'Chat Users'
-    ? (isDark ? '#ff6b00' : '#0e58c5')
-    : (isDark ? '#ffad66' : '#90b6ef');
+  const barColor =
+    title === 'Chat Users'
+      ? isDark
+        ? '#ff6b00'
+        : '#0e58c5'
+      : isDark
+        ? '#ffad66'
+        : '#90b6ef';
 
   useEffect(() => {
     const rafId = requestAnimationFrame(() => setBarWidth(ratio * 100));
@@ -76,7 +81,17 @@ function GeneralUsageDashboard({ data, isLoading }) {
           <br></br>
           <h3>
             Engaged Users Overtime
-            <Tooltip title={<span className="copilot-tooltip-paragraph">Monthly unique active users across all Copilot features. Chat Users and Agent Users are subsets of All Active Users.<br /><br />Counts are deduplicated by GitHub within each month.</span>}>
+            <Tooltip
+              title={
+                <span className="copilot-tooltip-paragraph">
+                  Monthly unique active users across all Copilot features. Chat
+                  Users and Agent Users are subsets of All Active Users.
+                  <br />
+                  <br />
+                  Counts are deduplicated by GitHub within each month.
+                </span>
+              }
+            >
               <span className="info-icon">
                 <IoInformationCircleOutline />
               </span>
@@ -86,7 +101,17 @@ function GeneralUsageDashboard({ data, isLoading }) {
           <br></br>
           <h3>
             Model & IDE Usage Amongst Developers
-            <Tooltip title={<span className="copilot-tooltip-paragraph">Left: share of user-initiated interactions by model.<br /><br />Right: share of user-initiated interactions by development environments.</span>}>
+            <Tooltip
+              title={
+                <span className="copilot-tooltip-paragraph">
+                  Left: share of user-initiated interactions by model.
+                  <br />
+                  <br />
+                  Right: share of user-initiated interactions by development
+                  environments.
+                </span>
+              }
+            >
               <span className="info-icon">
                 <IoInformationCircleOutline />
               </span>
@@ -96,7 +121,14 @@ function GeneralUsageDashboard({ data, isLoading }) {
           <br></br>
           <h3>
             Code Impact By Language
-            <Tooltip title={<span className="copilot-tooltip-paragraph">Share of total lines added and deleted across all Copilot features.</span>}>
+            <Tooltip
+              title={
+                <span className="copilot-tooltip-paragraph">
+                  Share of total lines added and deleted across all Copilot
+                  features.
+                </span>
+              }
+            >
               <span className="info-icon">
                 <IoInformationCircleOutline />
               </span>
