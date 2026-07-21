@@ -8,23 +8,11 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useTheme } from '../../../contexts/ThemeContext';
-
-const BLUE_PALETTE = ['#052962', '#0e58c5', '#4a8de8', '#90b6ef'];
-const ORANGE_PALETTE = ['#ff6b00', '#ff8c33', '#ffad66', '#ffce99'];
-
-function generateShades(count, isDark) {
-  const palette = isDark ? ORANGE_PALETTE : BLUE_PALETTE;
-  if (count <= palette.length) return palette.slice(0, count);
-  const hue = isDark ? 30 : 218;
-  return Array.from({ length: count }, (_, i) => {
-    const lightness = 40 + (i / (count - 1)) * 35;
-    return `hsl(${hue}, 85%, ${lightness}%)`;
-  });
-}
+import { getChartPalette } from '../../../utilities/copilotChartColours';
 
 function CodeImpactByLanguage({ data }) {
   const { theme } = useTheme();
-  const colors = generateShades(data.length, theme === 'dark');
+  const colours = getChartPalette(data.length, theme === 'dark');
 
   return (
     <div className="usage-pie-chart-card">
@@ -44,7 +32,7 @@ function CodeImpactByLanguage({ data }) {
             isAnimationActive
           >
             {data.map((entry, index) => (
-              <Cell key={`lang-${index}`} fill={colors[index]} />
+              <Cell key={`lang-${index}`} fill={colours[index]} />
             ))}
           </Pie>
           <Tooltip formatter={value => `${value}%`} />

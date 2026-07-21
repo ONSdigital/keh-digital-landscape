@@ -1,55 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import useCountUp from '../../../hooks/useCountUp';
+import { COPILOT_CHART_PALETTE } from '../../../constants/copilotConstants';
 import Tooltip from '../../Tooltip/Tooltip';
 import { useTheme } from '../../../contexts/ThemeContext';
 import NewEngagedUsersGraph from '../Breakdowns/NewEngagedUsersGraph';
 import ModelIdeUsage from '../Breakdowns/ModelIdeUsage';
 import CodeImpactByLanguage from '../Breakdowns/CodeImpactByLanguage';
-
-function Card({ title, numerator, denominator }) {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  const ratio = denominator > 0 ? numerator / denominator : 0;
-  const animatedPercentage = useCountUp(ratio * 100);
-  const [barWidth, setBarWidth] = useState(0);
-  const description = `${numerator} out of ${denominator} active users this month`;
-
-  const barColor =
-    title === 'Chat Users'
-      ? isDark
-        ? '#ff6b00'
-        : '#0e58c5'
-      : isDark
-        ? '#ffad66'
-        : '#90b6ef';
-
-  useEffect(() => {
-    const rafId = requestAnimationFrame(() => setBarWidth(ratio * 100));
-    return () => cancelAnimationFrame(rafId);
-  }, [ratio]);
-
-  return (
-    <div className="usage-card">
-      <h4 className="usage-card-title">{title}</h4>
-      <div className="usage-card-body">
-        <p className="usage-card-percentage">
-          {Math.round(animatedPercentage)}%
-        </p>
-        <p className="usage-card-description">{description}</p>
-      </div>
-      <div className="usage-card-bar">
-        <div
-          className="usage-card-bar-fill"
-          style={{
-            width: `${barWidth}%`,
-            backgroundColor: barColor,
-          }}
-        />
-      </div>
-    </div>
-  );
-}
+import PercentageCard from '../Breakdowns/PercentageCard';
 
 function GeneralUsageDashboard({ data, isLoading }) {
   const loading = isLoading || !data;
@@ -65,15 +23,17 @@ function GeneralUsageDashboard({ data, isLoading }) {
           </>
         ) : (
           <>
-            <Card
-              title="Chat Users"
+            <PercentageCard
+              title="Chat Mode Adoption"
               numerator={data.chatUsers.count}
               denominator={data.chatUsers.total}
+              paletteIndex={1}
             />
-            <Card
-              title="Agent Adoption"
+            <PercentageCard
+              title="Agent Mode Adoption"
               numerator={data.agentAdoption.count}
               denominator={data.agentAdoption.total}
+              paletteIndex={2}
             />
           </>
         )}

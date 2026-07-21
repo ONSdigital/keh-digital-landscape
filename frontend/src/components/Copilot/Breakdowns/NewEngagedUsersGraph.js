@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { getChartPalette } from '../../../utilities/copilotChartColours';
 import {
   ResponsiveContainer,
   LineChart,
@@ -16,10 +17,11 @@ const NewEngagedUsersGraph = ({ data }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const colors = {
-    allActiveUsers: isDark ? '#ff6b00' : '#052962',
-    chatUsers: isDark ? '#ff8c33' : '#0e58c5',
-    agentUsers: isDark ? '#ffce99' : '#90b6ef',
+  const palette = getChartPalette(3, isDark);
+  const colours = {
+    allActiveUsers: palette[0],
+    chatUsers: palette[1],
+    agentUsers: palette[2],
   };
 
   return (
@@ -43,7 +45,7 @@ const NewEngagedUsersGraph = ({ data }) => {
             strokeLinecap="round"
             type="monotone"
             dataKey="allActiveUsers"
-            stroke={colors.allActiveUsers}
+            stroke={colours.allActiveUsers}
             yAxisId="left"
             legendType="rect"
             name="All Active Users"
@@ -54,7 +56,7 @@ const NewEngagedUsersGraph = ({ data }) => {
             strokeLinecap="round"
             type="monotone"
             dataKey="chatUsers"
-            stroke={colors.chatUsers}
+            stroke={colours.chatUsers}
             yAxisId="left"
             legendType="rect"
             name="Chat Users"
@@ -65,7 +67,7 @@ const NewEngagedUsersGraph = ({ data }) => {
             strokeLinecap="round"
             type="monotone"
             dataKey="agentUsers"
-            stroke={colors.agentUsers}
+            stroke={colours.agentUsers}
             yAxisId="left"
             legendType="rect"
             name="Agent Users"

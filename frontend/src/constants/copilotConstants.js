@@ -99,3 +99,31 @@ export const LANGUAGE_NAMES = {
   yml: 'YAML',
   zsh: 'Zsh',
 };
+
+/**
+ * ONS-compliant colour palette for the Copilot Dashboard.
+ * Follows the ONS standard category palette order.
+ * See:
+ * - https://service-manual.ons.gov.uk/brand-guidelines/colours
+ * - https://service-manual.ons.gov.uk/data-visualisation/colours/using-colours-in-charts
+ */
+export const COPILOT_CHART_PALETTE = {
+  light: [
+    '#206095', // Ocean blue
+    '#a8bd3a', // Spring green
+    '#871a5b', // Beetroot purple
+    '#f66068', // Coral pink
+    '#27a0cc', // Sky blue
+    '#003c57', // Night blue
+    '#746cb1', // Lavender purple
+  ],
+  dark: [
+    '#27a0cc', // Sky blue
+    '#4cbfc1', // Aqua teal 70% tint
+    '#a8bd3a', // Spring green
+    '#746cb1', // Lavender purple
+    '#f66068', // Coral pink
+    '#4d87aa', // Ocean blue 70% tint
+    '#22d0b6', // Mint green
+  ],
+};
