@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Custom hook to animate a count up effect for a given target number over a specified duration.
+ * @param {number} target - The target number to count up to
+ * @param {number} duration - The duration of the count up animation in milliseconds
+ * @returns {number} - The current animated value
+ */
 function useCountUp(target, duration = 800) {
   const [value, setValue] = useState(0);
 
