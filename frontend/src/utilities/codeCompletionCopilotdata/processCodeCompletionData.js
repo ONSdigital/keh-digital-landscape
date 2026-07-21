@@ -1,6 +1,20 @@
 // This file is responsible for processing the Copilot usage data and formatting it into relevant data for the code completion dashboard
 
 /**
+ * Returns the Monday (week start) for a given date string as 'YYYY-MM-DD'
+ * @param {string} dateStr
+ * @returns {string}
+ */
+function getWeekStart(dateStr) {
+  const date = new Date(dateStr);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust to Monday
+  const monday = new Date(date);
+  monday.setDate(diff);
+  return monday.toISOString().split('T')[0];
+}
+
+/**
  * Process the Copilot data and format it into useful data for graphs and data cards
  * @param {Object} data
  * @returns {Object} An object containing the total Copilot suggestions and suggested lines of code,
@@ -36,13 +50,16 @@ export function processCodeCompletionData(data) {
     },
   };
 
-  // Dictionary for Acceptance graph (suggestions vs acceptances), format: { day_date: [suggestions, acceptances, acceptance_rate] }
+  // Weekly buckets for graph data — keyed by Monday date string
+  const weeklyGraphData = {};
+
+  // Dictionary for Acceptance graph (suggestions vs acceptances), format: { date: 'YYYY-MM-DD', suggestions, acceptances, acceptanceRate }
   let suggestedGraph = [];
 
-  // Dictionary for (Optional) Acceptance graph (lines of code suggested vs lines of code accepted), format: { day_date: [locSuggestions, locAcceptances, acceptance_rate] }
+  // Dictionary for (Optional) Acceptance graph (lines of code suggested vs lines of code accepted), format: { date: 'YYYY-MM-DD', locSuggestions, locAcceptances, acceptanceRate }
   let suggestedLOCGraph = [];
 
-  // Dictionary for Average LOC size line graph (average lines of code per suggestion vs average lines of code per acceptance), format: { day_date: [locSuggestions, locAcceptances] }
+  // Dictionary for Average LOC size line graph (average lines of code per suggestion vs average lines of code per acceptance), format: { date: 'YYYY-MM-DD', avgLOCSuggested, avgLOCAccepted }
   let averageSuggestedLOCGraph = [];
 
   // Dictionary for percentage of suggestions/acceptances using 'x' language, format: {language: percentageUsed}
@@ -93,37 +110,20 @@ export function processCodeCompletionData(data) {
       numberLOCAcceptances += 1;
     }
 
-    // Suggested Graph data
-    let suggestionsVSAcceptances = [
-      daySuggested,
-      dayAccepted,
-      (dayAccepted / daySuggested) * 100,
-    ];
-
-    suggestedGraph.push({
-      [day.day]: suggestionsVSAcceptances,
-    });
-
-    // Suggested LOC Graph data
-    let suggestionsLOCVSAcceptancesLOC = [
-      dayLOCSuggested,
-      dayLOCAccepted,
-      (dayLOCAccepted / dayLOCSuggested) * 100,
-    ];
-
-    suggestedLOCGraph.push({
-      [day.day]: suggestionsLOCVSAcceptancesLOC,
-    });
-
-    // Average LOC Suggested vs Accepted Graph data
-    let averageSuggestionsVSAcceptancesLOC = [
-      dayLOCSuggested / daySuggested,
-      dayLOCAccepted / dayAccepted,
-    ];
-
-    averageSuggestedLOCGraph.push({
-      [day.day]: averageSuggestionsVSAcceptancesLOC,
-    });
+    // Accumulate into weekly buckets for graph data
+    const weekKey = getWeekStart(day.day);
+    if (!weeklyGraphData[weekKey]) {
+      weeklyGraphData[weekKey] = {
+        suggestions: 0,
+        acceptances: 0,
+        locSuggested: 0,
+        locAccepted: 0,
+      };
+    }
+    weeklyGraphData[weekKey].suggestions += daySuggested;
+    weeklyGraphData[weekKey].acceptances += dayAccepted;
+    weeklyGraphData[weekKey].locSuggested += dayLOCSuggested;
+    weeklyGraphData[weekKey].locAccepted += dayLOCAccepted;
 
     // Pie Chart Language
     const languages = day.totals_by_language_feature ?? [];
@@ -146,6 +146,33 @@ export function processCodeCompletionData(data) {
         (langAcceptanceCounts[lang] ?? 0) +
         (pieChartLanguage.code_acceptance_activity_count ?? 0);
     }
+  }
+
+  // Convert weekly buckets into sorted graph arrays
+  for (const weekKey of Object.keys(weeklyGraphData).sort()) {
+    const w = weeklyGraphData[weekKey];
+    const weekAcceptanceRate = w.suggestions > 0 ? (w.acceptances / w.suggestions) * 100 : 0;
+    const weekLOCAcceptanceRate = w.locSuggested > 0 ? (w.locAccepted / w.locSuggested) * 100 : 0;
+
+    suggestedGraph.push({
+      date: weekKey,
+      suggestions: w.suggestions,
+      acceptances: w.acceptances,
+      acceptanceRate: weekAcceptanceRate,
+    });
+
+    suggestedLOCGraph.push({
+      date: weekKey,
+      locSuggestions: w.locSuggested,
+      locAcceptances: w.locAccepted,
+      acceptanceRate: weekLOCAcceptanceRate,
+    });
+
+    averageSuggestedLOCGraph.push({
+      date: weekKey,
+      avgLOCSuggested: w.suggestions > 0 ? w.locSuggested / w.suggestions : 0,
+      avgLOCAccepted: w.acceptances > 0 ? w.locAccepted / w.acceptances : 0,
+    });
   }
 
   for (const [lang, count] of Object.entries(langSuggestionCounts)) {
@@ -181,7 +208,4 @@ export function processCodeCompletionData(data) {
   };
 
   return codeCompletionMetrics;
-
-  // TODO: Logic to add values from organisation_history.json (S3 or backend/data/copilot)
-  // TODO: Add all dictionaries and values to the 'codeCompletionMetrics' dictionary
 }
