@@ -31,9 +31,11 @@ test('General Usage page displays correct page structure', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'User Adoption' })
   ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Chat Users' })).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'Agent Adoption' })
+    page.getByRole('heading', { name: 'Chat Mode Adoption' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Agent Mode Adoption' })
   ).toBeVisible();
   await expect(page.locator('.usage-card')).toHaveCount(2);
 

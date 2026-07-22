@@ -76,6 +76,7 @@ test('Check that directorate dropdown is present and has expected options', asyn
   await expect(directorateSelector).toBeVisible();
 
   // Check that all the directorates are present
+  await expect(directorateSelector.locator('option')).toHaveCount(3);
   const options = await directorateSelector.locator('option').all();
   const optionValues = await Promise.all(
     options.map(option => option.getAttribute('value'))
