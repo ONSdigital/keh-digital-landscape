@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from 'react';
 =======
 import { useEffect, useState } from 'react';
 >>>>>>> c8b9628 (feat: added the new page and linked it to the landing page)
+=======
+import { useEffect, useRef, useState } from 'react';
+>>>>>>> 778a00d (feat: added the addition of weekend usage)
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
@@ -24,7 +28,10 @@ function CodeCompletionsPage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
     includeWeekendUsage: false,
+<<<<<<< HEAD
     locUsage: false,
+=======
+>>>>>>> 778a00d (feat: added the addition of weekend usage)
   });
   const settingsRef = useRef(null);
 
@@ -90,6 +97,7 @@ function CodeCompletionsPage() {
           tabs={[]}
         />
         <div className="admin-container">
+<<<<<<< HEAD
 >>>>>>> c8b9628 (feat: added the new page and linked it to the landing page)
           <button
             className="copilot-back-button"
@@ -141,6 +149,52 @@ function CodeCompletionsPage() {
               </div>
             )}
           </div>
+=======
+          <div className="copilot-page-controls">
+            <button
+              className="copilot-back-button"
+              onClick={() => navigate('/copilot/home')}
+              aria-label="Back to Copilot Dashboard Homepage"
+            >
+              <MdOutlineArrowBackIosNew size={12} />
+              <span id="text">Back</span>
+            </button>
+            <div className="copilot-settings" ref={settingsRef}>
+              <button
+                className="copilot-settings-button"
+                onClick={() => setIsSettingsOpen(prev => !prev)}
+                aria-label="Open chart display settings"
+                aria-expanded={isSettingsOpen}
+                aria-controls="copilot-settings-menu"
+              >
+                <IoSettingsOutline size={18} />
+              </button>
+              {isSettingsOpen && (
+                <div className="copilot-settings-menu" id="copilot-settings-menu">
+                  <label className="copilot-settings-checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={chartDisplaySettings.includeWeekendUsage}
+                      onChange={event =>
+                        setChartDisplaySettings(prev => ({
+                          ...prev,
+                          includeWeekendUsage: event.target.checked,
+                        }))
+                      }
+                    />
+                    Include weekend usage
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
+          {!isLoading && processedData && (
+            <SuggestionsAcceptanceGraph
+              data={processedData.suggestedGraph}
+              includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+            />
+          )}
+>>>>>>> 778a00d (feat: added the addition of weekend usage)
         </div>
         <CodeCompletionsDashboard
           data={processedData}
