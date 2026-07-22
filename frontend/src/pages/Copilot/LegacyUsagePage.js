@@ -5,7 +5,7 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import LegacyDataVisualisation from '../../components/Copilot/Dashboards/LegacyData';
 import '../../styles/ReviewPage.css';
-import '../../styles/Copilot/CopilotUsagePage.css';
+import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 

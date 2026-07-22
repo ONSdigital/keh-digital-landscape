@@ -55,6 +55,11 @@ const config = {
       url: '/copilot/legacy',
       authentication: [],
     },
+    {
+      name: 'GitHub Copilot General Usage',
+      url: '/copilot/general',
+      authentication: [],
+    },
   ],
 };
 

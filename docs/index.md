@@ -59,5 +59,7 @@ The terraform code is undocumented within this documentation as it reflects simi
 - [Tech Radar Documentation](pages/radar/index.md)
 - [Statistics Documentation](pages/statistics/index.md)
 - [Projects Documentation](pages/projects/index.md)
+- [Copilot Dashboard Documentation](pages/copilot/index.md)
+- [GitHub Address Book Documentation](pages/addressbook/index.md)
 - [Review Documentation](pages/review/index.md)
 - [Admin Documentation](pages/admin/index.md)

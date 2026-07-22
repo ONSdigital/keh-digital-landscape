@@ -1,3 +1,14 @@
+/* This file contains CSS styles for re-usable page-level styles used across all pages of the
+Copilot Dashboard */
+
+.copilot-dashboard-section {
+  margin-bottom: 64px;
+}
+
+.copilot-dashboard-section-bottom {
+  padding-bottom: 32px;
+}
+
 .copilot-back-button {
   display: flex;
   align-items: center;
@@ -20,7 +31,7 @@
     0 12px 24px hsl(var(--foreground) / 5%);
 }
 
-.copilot-back-button #text {
+.copilot-back-button #back-button-text {
   position: relative;
   right: 2px;
 }
@@ -39,11 +50,20 @@
 }
 
 .copilot-graph-container {
-  width: calc(100% - 16px);
-  height: calc(50vh - 16px);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
 }
 
 .copilot-graph-container--stacked {
   height: auto;
   margin-bottom: 24px;
+}
+
+.copilot-tooltip-paragraph {
+  white-space: normal;
+  display: inline-block;
+  max-width: 280px;
+  text-align: left;
+  margin: 0;
 }
