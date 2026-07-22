@@ -8,7 +8,7 @@ import { RiRobot2Line } from 'react-icons/ri';
 import { BsArchive } from 'react-icons/bs';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import Layout from '../../components/Layout/Layout';
-import '../../styles/Copilot/CopilotLandingPage.css';
+import '../../styles/Copilot/LandingPage.css';
 import { RxDoubleArrowRight } from 'react-icons/rx';
 
 function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
@@ -46,7 +46,7 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={VscGraphLine}
               title="General Usage"
-              href="#"
+              href="/copilot/general"
             />
           </div>
         </div>

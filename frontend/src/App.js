@@ -16,12 +16,14 @@ const CopilotDashboardLandingPage = lazy(
 const CopilotDashboardLegacyUsagePage = lazy(
   () => import('./pages/Copilot/LegacyUsagePage')
 );
-const CopilotCodeCompletionspage = lazy(
+const CopilotDashboardGeneralUsagePage = lazy(
+  () => import('./pages/Copilot/GeneralUsagePage')
+);
+const CopilotCodeCompletionsPage = lazy(
   () => import('./pages/Copilot/CodeCompletionsPage')
 );
 
 import { getDirectorates } from './utilities/getDirectorates';
-import CodeCompletionsPage from './pages/Copilot/CodeCompletionsPage';
 
 // Get the default directorate from the directorates data
 const directorates = await getDirectorates();
@@ -83,7 +85,11 @@ const App = () => {
         />
         <Route
           path="/copilot/code-completions"
-          element={<CodeCompletionsPage />}
+          element={<CopilotCodeCompletionsPage />}
+        />
+        <Route
+          path="/copilot/general"
+          element={<CopilotDashboardGeneralUsagePage />}
         />
       </Routes>
     </Suspense>
