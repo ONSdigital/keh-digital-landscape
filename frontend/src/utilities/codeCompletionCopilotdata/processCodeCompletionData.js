@@ -1,20 +1,6 @@
 // This file is responsible for processing the Copilot usage data and formatting it into relevant data for the code completion dashboard
 
 /**
- * Returns the Monday (week start) for a given date string as 'YYYY-MM-DD'
- * @param {string} dateStr
- * @returns {string}
- */
-function getWeekStart(dateStr) {
-  const date = new Date(dateStr);
-  const day = date.getDay();
-  const diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust to Monday
-  const monday = new Date(date);
-  monday.setDate(diff);
-  return monday.toISOString().split('T')[0];
-}
-
-/**
  * Process the Copilot data and format it into useful data for graphs and data cards
  * @param {Object} data
  * @returns {Object} An object containing the total Copilot suggestions and suggested lines of code,
@@ -49,9 +35,6 @@ export function processCodeCompletionData(data) {
       averageLOCAccepted: 0,
     },
   };
-
-  // Weekly buckets for graph data — keyed by Monday date string
-  const weeklyGraphData = {};
 
   // Dictionary for Acceptance graph (suggestions vs acceptances), format: { date: 'YYYY-MM-DD', suggestions, acceptances, acceptanceRate }
   let suggestedGraph = [];
@@ -110,20 +93,30 @@ export function processCodeCompletionData(data) {
       numberLOCAcceptances += 1;
     }
 
-    // Accumulate into weekly buckets for graph data
-    const weekKey = getWeekStart(day.day);
-    if (!weeklyGraphData[weekKey]) {
-      weeklyGraphData[weekKey] = {
-        suggestions: 0,
-        acceptances: 0,
-        locSuggested: 0,
-        locAccepted: 0,
-      };
-    }
-    weeklyGraphData[weekKey].suggestions += daySuggested;
-    weeklyGraphData[weekKey].acceptances += dayAccepted;
-    weeklyGraphData[weekKey].locSuggested += dayLOCSuggested;
-    weeklyGraphData[weekKey].locAccepted += dayLOCAccepted;
+    const dayAcceptanceRate =
+      daySuggested > 0 ? (dayAccepted / daySuggested) * 100 : 0;
+    const dayLOCAcceptanceRate =
+      dayLOCSuggested > 0 ? (dayLOCAccepted / dayLOCSuggested) * 100 : 0;
+
+    suggestedGraph.push({
+      date: day.day,
+      suggestions: daySuggested,
+      acceptances: dayAccepted,
+      acceptanceRate: dayAcceptanceRate,
+    });
+
+    suggestedLOCGraph.push({
+      date: day.day,
+      locSuggestions: dayLOCSuggested,
+      locAcceptances: dayLOCAccepted,
+      acceptanceRate: dayLOCAcceptanceRate,
+    });
+
+    averageSuggestedLOCGraph.push({
+      date: day.day,
+      avgLOCSuggested: daySuggested > 0 ? dayLOCSuggested / daySuggested : 0,
+      avgLOCAccepted: dayAccepted > 0 ? dayLOCAccepted / dayAccepted : 0,
+    });
 
     // Pie Chart Language
     const languages = day.totals_by_language_feature ?? [];
@@ -146,33 +139,6 @@ export function processCodeCompletionData(data) {
         (langAcceptanceCounts[lang] ?? 0) +
         (pieChartLanguage.code_acceptance_activity_count ?? 0);
     }
-  }
-
-  // Convert weekly buckets into sorted graph arrays
-  for (const weekKey of Object.keys(weeklyGraphData).sort()) {
-    const w = weeklyGraphData[weekKey];
-    const weekAcceptanceRate = w.suggestions > 0 ? (w.acceptances / w.suggestions) * 100 : 0;
-    const weekLOCAcceptanceRate = w.locSuggested > 0 ? (w.locAccepted / w.locSuggested) * 100 : 0;
-
-    suggestedGraph.push({
-      date: weekKey,
-      suggestions: w.suggestions,
-      acceptances: w.acceptances,
-      acceptanceRate: weekAcceptanceRate,
-    });
-
-    suggestedLOCGraph.push({
-      date: weekKey,
-      locSuggestions: w.locSuggested,
-      locAcceptances: w.locAccepted,
-      acceptanceRate: weekLOCAcceptanceRate,
-    });
-
-    averageSuggestedLOCGraph.push({
-      date: weekKey,
-      avgLOCSuggested: w.suggestions > 0 ? w.locSuggested / w.suggestions : 0,
-      avgLOCAccepted: w.acceptances > 0 ? w.locAccepted / w.acceptances : 0,
-    });
   }
 
   for (const [lang, count] of Object.entries(langSuggestionCounts)) {

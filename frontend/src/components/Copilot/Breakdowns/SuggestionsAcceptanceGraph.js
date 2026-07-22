@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -12,11 +12,71 @@ import {
 } from 'recharts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+import GraphSelect from '../../GraphSelect/GraphSelect';
+
+const TIME_BREAKDOWN_OPTIONS = [
+  { value: 'day', label: 'Days' },
+  { value: 'week', label: 'Weeks' },
+  { value: 'month', label: 'Months' },
+];
+
+function getWeekStart(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(date);
+  monday.setDate(diff);
+  return monday.toISOString().split('T')[0];
+}
+
+function getMonthStart(dateString) {
+  const date = new Date(dateString);
+  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+  return monthStart.toISOString().split('T')[0];
+}
+
+function aggregateByTimeBreakdown(rows, breakdown) {
+  if (breakdown === 'day') {
+    return rows;
+  }
+
+  const grouped = new Map();
+
+  for (const row of rows) {
+    const key =
+      breakdown === 'week' ? getWeekStart(row.date) : getMonthStart(row.date);
+
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        date: key,
+        suggestions: 0,
+        acceptances: 0,
+      });
+    }
+
+    const current = grouped.get(key);
+    current.suggestions += row.suggestions ?? 0;
+    current.acceptances += row.acceptances ?? 0;
+  }
+
+  return Array.from(grouped.values()).map(entry => ({
+    ...entry,
+    acceptanceRate:
+      entry.suggestions > 0
+        ? (entry.acceptances / entry.suggestions) * 100
+        : 0,
+  }));
+}
 
 const SuggestionsAcceptanceGraph = ({ data }) => {
-  const recentData = data?.slice(-6) ?? [];
+  const [timeBreakdown, setTimeBreakdown] = useState('day');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  const recentData = useMemo(() => {
+    const groupedData = aggregateByTimeBreakdown(data, timeBreakdown);
+    return groupedData.slice(-7);
+  }, [data, timeBreakdown]);
 
   const colors = {
     primary: isDark ? '#ff6b00' : '#052962',
@@ -25,8 +85,29 @@ const SuggestionsAcceptanceGraph = ({ data }) => {
     text: isDark ? '#ffffff' : '#8c8c8c',
   };
 
+  const formatXAxisDate = value => {
+    const date = new Date(value);
+
+    if (timeBreakdown === 'month') {
+      return date.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: '2-digit',
+      });
+    }
+
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+    });
+  };
+
   return (
     <div className="copilot-graph-container">
+      <GraphSelect
+        options={TIME_BREAKDOWN_OPTIONS}
+        value={timeBreakdown}
+        onChange={setTimeBreakdown}
+      />
       <ResponsiveContainer>
         <ComposedChart
           width={400}
@@ -41,12 +122,7 @@ const SuggestionsAcceptanceGraph = ({ data }) => {
             interval={0}
             tick={{ fill: colors.text }}
             tickLine={false}
-            tickFormatter={value =>
-              new Date(value).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-              })
-            }
+            tickFormatter={formatXAxisDate}
           />
           <Legend
             verticalAlign="top"
@@ -102,12 +178,7 @@ const SuggestionsAcceptanceGraph = ({ data }) => {
           />
           <Tooltip
             wrapperStyle={{ color: 'black' }}
-            labelFormatter={value =>
-              new Date(value).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-              })
-            }
+            labelFormatter={value => formatXAxisDate(value)}
             formatter={(value, name) =>
               name === 'Acceptance Rate'
                 ? `${value.toFixed(2)}%`
