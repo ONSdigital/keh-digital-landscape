@@ -4,6 +4,7 @@ import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import SuggestionsAcceptanceGraph from '../../components/Copilot/Breakdowns/SuggestionsAcceptanceGraph';
+import AverageLOCSuggestionsAcceptance from '../../components/Copilot/Breakdowns/AverageLOCSuggestionsAcceptance';
 import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotdata/processCodeCompletionData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/CopilotUsagePage.css';
@@ -18,6 +19,7 @@ function CodeCompletionsPage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
     includeWeekendUsage: false,
+    locUsage: false,
   });
   const settingsRef = useRef(null);
 
@@ -87,15 +89,42 @@ function CodeCompletionsPage() {
                     />
                     Include weekend usage
                   </label>
+                  <label className="copilot-settings-checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={chartDisplaySettings.locUsage}
+                      onChange={event =>
+                        setChartDisplaySettings(prev => ({
+                          ...prev,
+                          locUsage: event.target.checked,
+                        }))
+                      }
+                    />
+                    Include LOC usage
+                  </label>
                 </div>
               )}
             </div>
           </div>
           {!isLoading && processedData && (
-            <SuggestionsAcceptanceGraph
-              data={processedData.suggestedGraph}
-              includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-            />
+            <>
+              <SuggestionsAcceptanceGraph
+                data={processedData.suggestedGraph}
+                includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+                LOC={false}
+              />
+              {chartDisplaySettings.locUsage && (
+                <SuggestionsAcceptanceGraph
+                  data={processedData.suggestedLOCGraph}
+                  includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+                  LOC={true}
+                />
+              )}
+              <AverageLOCSuggestionsAcceptance
+                data={processedData.averageSuggestedLOCGraph}
+                includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+              />
+            </>
           )}
         </div>
       </div>

@@ -9,6 +9,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  LineChart,
 } from 'recharts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
@@ -35,7 +36,7 @@ function getMonthStart(dateString) {
   return monthStart.toISOString().split('T')[0];
 }
 
-function aggregateByTimeBreakdown(rows, breakdown, suggestionsKey = 'suggestions', acceptancesKey = 'acceptances') {
+function aggregateByTimeBreakdown(rows, breakdown) {
   if (breakdown === 'day') {
     return rows;
   }
@@ -49,20 +50,20 @@ function aggregateByTimeBreakdown(rows, breakdown, suggestionsKey = 'suggestions
     if (!grouped.has(key)) {
       grouped.set(key, {
         date: key,
-        [suggestionsKey]: 0,
-        [acceptancesKey]: 0,
+        suggestions: 0,
+        acceptances: 0,
       });
     }
 
     const current = grouped.get(key);
-    current[suggestionsKey] += row[suggestionsKey] ?? 0;
-    current[acceptancesKey] += row[acceptancesKey] ?? 0;
+    current.suggestions += row.suggestions ?? 0;
+    current.acceptances += row.acceptances ?? 0;
   }
 
   return Array.from(grouped.values()).map(entry => ({
     ...entry,
     acceptanceRate:
-      entry[suggestionsKey] > 0 ? (entry[acceptancesKey] / entry[suggestionsKey]) * 100 : 0,
+      entry.suggestions > 0 ? (entry.acceptances / entry.suggestions) * 100 : 0,
   }));
 }
 
@@ -74,15 +75,13 @@ function removeWeekendData(rows) {
   });
 }
 
-const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false, LOC = false }) => {
+const AverageLOCSuggestionsAcceptance = ({ data, includeWeekendUsage = false }) => {
   const [timeBreakdown, setTimeBreakdown] = useState('day');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
   const recentData = useMemo(() => {
-    const suggestionsKey = LOC ? 'locSuggestions' : 'suggestions';
-    const acceptancesKey = LOC ? 'locAcceptances' : 'acceptances';
-    const groupedData = aggregateByTimeBreakdown(data, timeBreakdown, suggestionsKey, acceptancesKey);
+    const groupedData = aggregateByTimeBreakdown(data, timeBreakdown);
     const filtered =
       timeBreakdown === 'day' && !includeWeekendUsage
         ? removeWeekendData(groupedData)
@@ -121,12 +120,11 @@ const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false, LOC = f
         onChange={setTimeBreakdown}
       />
       <ResponsiveContainer>
-        <ComposedChart
+        <LineChart
           width={400}
           height={300}
           data={recentData}
           margin={{ top: 20, right: 10, left: 10, bottom: 0 }}
-          barGap={6}
         >
           <CartesianGrid vertical={false} />
           <XAxis
@@ -144,19 +142,19 @@ const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false, LOC = f
           />
           <Bar
             radius={[10, 10, 0, 0]}
-            dataKey={LOC ? 'locSuggestions' : 'suggestions'}
+            dataKey="suggestions"
             fill={colors.primary}
             yAxisId="left"
             legendType="rect"
-            name={LOC ? 'LOC Suggestions' : 'Suggestions'}
+            name="Suggestions"
           />
           <Bar
             radius={[10, 10, 0, 0]}
-            dataKey={LOC ? 'locAcceptances' : 'acceptances'}
+            dataKey="acceptances"
             fill={colors.secondary}
             yAxisId="left"
             legendType="rect"
-            name={LOC ? 'LOC Acceptances' : 'Acceptances'}
+            name="Acceptances"
           />
           <Line
             dot={false}
@@ -197,10 +195,10 @@ const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false, LOC = f
                 : formatNumberWithCommas(value)
             }
           />
-        </ComposedChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
 };
 
-export default SuggestionsAcceptanceGraph;
+export default AverageLOCSuggestionsAcceptance;
