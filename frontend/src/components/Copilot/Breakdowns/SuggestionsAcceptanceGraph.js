@@ -66,15 +66,27 @@ function aggregateByTimeBreakdown(rows, breakdown) {
   }));
 }
 
-const SuggestionsAcceptanceGraph = ({ data }) => {
+function removeWeekendData(rows) {
+  return rows.filter(row => {
+    const date = new Date(`${row.date}T00:00:00`);
+    const day = date.getDay();
+    return day !== 0 && day !== 6;
+  });
+}
+
+const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false }) => {
   const [timeBreakdown, setTimeBreakdown] = useState('day');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
   const recentData = useMemo(() => {
     const groupedData = aggregateByTimeBreakdown(data, timeBreakdown);
-    return groupedData.slice(-7);
-  }, [data, timeBreakdown]);
+    const filtered =
+      timeBreakdown === 'day' && !includeWeekendUsage
+        ? removeWeekendData(groupedData)
+        : groupedData;
+    return filtered.slice(-7);
+  }, [data, includeWeekendUsage, timeBreakdown]);
 
   const colors = {
     primary: isDark ? '#ff6b00' : '#052962',
