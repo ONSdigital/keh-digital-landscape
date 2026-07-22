@@ -1,6 +1,14 @@
 /* This file contains CSS styles for re-usable page-level styles used across all pages of the
 Copilot Dashboard */
 
+.copilot-dashboard-section {
+  margin-bottom: 64px;
+}
+
+.copilot-dashboard-section-bottom {
+  padding-bottom: 32px;
+}
+
 .copilot-back-button {
   display: flex;
   align-items: center;
