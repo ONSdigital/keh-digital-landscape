@@ -23,8 +23,9 @@ function CodeCompletionsPage() {
     })();
   }, []);
 
-  const processedData =
-    historicUsageData ? processCodeCompletionData(historicUsageData) : null;
+  const processedData = historicUsageData
+    ? processCodeCompletionData(historicUsageData)
+    : null;
 
   return (
     <Layout headerProps={{ hideSearch: true }}>

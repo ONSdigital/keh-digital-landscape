@@ -62,9 +62,7 @@ function aggregateByTimeBreakdown(rows, breakdown) {
   return Array.from(grouped.values()).map(entry => ({
     ...entry,
     acceptanceRate:
-      entry.suggestions > 0
-        ? (entry.acceptances / entry.suggestions) * 100
-        : 0,
+      entry.suggestions > 0 ? (entry.acceptances / entry.suggestions) * 100 : 0,
   }));
 }
 

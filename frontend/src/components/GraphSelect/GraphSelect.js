@@ -17,7 +17,13 @@ const GraphSelect = ({ options, value, onChange }) => {
   const borderColor = isDark ? '#555555' : '#cccccc';
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '10px' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-start',
+        marginTop: '10px',
+      }}
+    >
       <select
         aria-label="Select graph option"
         value={value}
