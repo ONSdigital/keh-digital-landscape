@@ -38,7 +38,7 @@ const NewEngagedUsersGraph = ({ data }) => {
             tickLine={false}
             axisLine={{ stroke: 'hsl(var(--border))' }}
           />
-          <Legend verticalAlign="top" align="left" height={36} />
+          <Legend verticalAlign="top" align="center" height={36} />
           <Line
             dot={false}
             strokeWidth={4}
