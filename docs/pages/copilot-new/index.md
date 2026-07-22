@@ -57,7 +57,6 @@ Each dataset is visualised separately as the metrics are not directly comparable
 
 - **May 2024 - January 2025** (February schema): IDE Code Completions metrics and IDE Chat metrics (chat turns and chat acceptances), plus user metrics over time.
 
-
 ## Data Processing
 
 All data is fetched from the backend and processed on the frontend. See the processing utilities for full detail:
