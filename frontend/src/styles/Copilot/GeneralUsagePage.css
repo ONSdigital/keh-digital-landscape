@@ -89,9 +89,16 @@
   flex: 1;
 }
 
+.usage-pie-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
 .usage-pie-chart-title {
   font-size: 14px;
   font-weight: 500;
   color: hsl(var(--muted-foreground));
-  margin: 0 0 8px 0;
+  margin: 0;
 }

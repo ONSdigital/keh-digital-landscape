@@ -46,13 +46,13 @@ function GeneralUsageDashboard({ data, isLoading }) {
           {!loading && (
             <Tooltip
               title={
-                <span className="copilot-tooltip-paragraph">
+                <p className="copilot-tooltip-paragraph">
                   Monthly unique active users across all Copilot features. Chat
                   Users and Agent Users are subsets of All Active Users.
                   <br />
                   <br />
                   Counts are deduplicated by GitHub within each month.
-                </span>
+                </p>
               }
             >
               <span className="info-icon">
@@ -68,26 +68,7 @@ function GeneralUsageDashboard({ data, isLoading }) {
         )}
       </div>
       <div className="copilot-dashboard-section">
-        <h3>
-          Model & IDE Usage Amongst Developers
-          {!loading && (
-            <Tooltip
-              title={
-                <span className="copilot-tooltip-paragraph">
-                  Left: share of user-initiated interactions by model.
-                  <br />
-                  <br />
-                  Right: share of user-initiated interactions by development
-                  environments.
-                </span>
-              }
-            >
-              <span className="info-icon">
-                <IoInformationCircleOutline />
-              </span>
-            </Tooltip>
-          )}
-        </h3>
+        <h3>Model & IDE Usage Amongst Developers</h3>
         {loading ? (
           <div className="usage-pie-charts-grid">
             <div className="usage-pie-chart-card skeleton" />
@@ -103,15 +84,15 @@ function GeneralUsageDashboard({ data, isLoading }) {
           {!loading && (
             <Tooltip
               title={
-                <span className="copilot-tooltip-paragraph">
+                <p className="copilot-tooltip-paragraph">
                   Share of total lines added and deleted across all Copilot
                   features.
-                </span>
+                </p>
               }
             >
-              <span className="info-icon">
+              <div className="info-icon">
                 <IoInformationCircleOutline />
-              </span>
+              </div>
             </Tooltip>
           )}
         </h3>

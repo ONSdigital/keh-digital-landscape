@@ -3,12 +3,14 @@ import {
   PieChart,
   Pie,
   Cell,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
+import Tooltip from '../../Tooltip/Tooltip';
 
 function ModelIdeUsage({ modelData, ideData }) {
   const { theme } = useTheme();
@@ -19,7 +21,20 @@ function ModelIdeUsage({ modelData, ideData }) {
   return (
     <div className="usage-pie-charts-grid">
       <div className="usage-pie-chart-card">
-        <h4 className="usage-pie-chart-title">Model Usage</h4>
+        <div className="usage-pie-chart-header">
+          <h4 className="usage-pie-chart-title">Model Usage</h4>
+          <Tooltip
+            title={
+              <span className="copilot-tooltip-paragraph">
+                Share of user-initiated interactions by AI model.
+              </span>
+            }
+          >
+            <div className="info-icon">
+              <IoInformationCircleOutline />
+            </div>
+          </Tooltip>
+        </div>
         <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie
@@ -39,13 +54,26 @@ function ModelIdeUsage({ modelData, ideData }) {
                 <Cell key={`model-${index}`} fill={modelColours[index]} />
               ))}
             </Pie>
-            <Tooltip formatter={value => `${value}%`} />
+            <RechartsTooltip formatter={value => `${value}%`} />
             <Legend iconType="circle" iconSize={10} />
           </PieChart>
         </ResponsiveContainer>
       </div>
       <div className="usage-pie-chart-card">
-        <h4 className="usage-pie-chart-title">IDE Usage</h4>
+        <div className="usage-pie-chart-header">
+          <h4 className="usage-pie-chart-title">IDE Usage</h4>
+          <Tooltip
+            title={
+              <span className="copilot-tooltip-paragraph">
+                Share of user-initiated interactions by development environment.
+              </span>
+            }
+          >
+            <div className="info-icon">
+              <IoInformationCircleOutline />
+            </div>
+          </Tooltip>
+        </div>
         <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie
@@ -65,7 +93,7 @@ function ModelIdeUsage({ modelData, ideData }) {
                 <Cell key={`ide-${index}`} fill={ideColours[index]} />
               ))}
             </Pie>
-            <Tooltip formatter={value => `${value}%`} />
+            <RechartsTooltip formatter={value => `${value}%`} />
             <Legend iconType="circle" iconSize={10} />
           </PieChart>
         </ResponsiveContainer>

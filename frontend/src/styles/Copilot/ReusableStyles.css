@@ -31,7 +31,7 @@ Copilot Dashboard */
     0 12px 24px hsl(var(--foreground) / 5%);
 }
 
-.copilot-back-button #text {
+.copilot-back-button #back-button-text {
   position: relative;
   right: 2px;
 }
@@ -65,4 +65,5 @@ Copilot Dashboard */
   display: inline-block;
   max-width: 280px;
   text-align: left;
+  margin: 0;
 }

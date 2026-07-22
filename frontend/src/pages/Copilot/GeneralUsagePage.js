@@ -42,7 +42,7 @@ function GeneralUsagePage() {
             aria-label="Back to Copilot Dashboard Homepage"
           >
             <MdOutlineArrowBackIosNew size={12} />
-            <span id="text">Back</span>
+            <span id="back-button-text">Back</span>
           </button>
           <GeneralUsageDashboard
             data={
