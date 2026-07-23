@@ -47,8 +47,8 @@ function CodeCompletionsPage() {
   return (
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
-        title="GitHub Copilot Code Completions Dashboard"
-        description="Analyse Copilot Code Completion data statistics"
+        title="GitHub Copilot Usage Dashboard"
+        description="Analyse Copilot usage statistics organisation-wide and by team"
         tabs={[]}
       />
 

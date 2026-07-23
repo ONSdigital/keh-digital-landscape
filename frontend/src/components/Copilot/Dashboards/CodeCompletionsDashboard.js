@@ -2,37 +2,52 @@ import React from 'react';
 import '../../../styles/components/Statistics.css';
 import '../../../styles/CopilotPage.css';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
-import CompletionsCards from '../Breakdowns/CompletionsCards';
 import SuggestionsAcceptanceGraph from '../Breakdowns/SuggestionsAcceptanceGraph';
 import AverageLOCSuggestionsAcceptance from '../Breakdowns/AverageLOCSuggestionsAcceptance';
 import LanguageBreakdownChart from '../Breakdowns/LanguageBreakdownChart';
+import { getPercentage } from '../../../utilities/getPercentage';
+import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 
-function mapSuggestionCardsToCompletionCards(suggestedCards) {
+function mapSuggestionCardsToDashboardCards(suggestedCards) {
   if (!suggestedCards) {
     return {
-      totalSuggestions: 0,
+      totalSuggestionInstances: 0,
       totalAcceptances: 0,
-      acceptanceRate: 0,
+      overallAcceptanceRate: 0,
       totalLinesSuggested: 0,
       totalLinesAccepted: 0,
-      lineAcceptanceRate: 0,
+      overallLineAcceptanceRate: 0,
+      averageLocPerSuggestion: 0,
+      averageLocPerAcceptance: 0,
     };
   }
 
   return {
-    totalSuggestions: suggestedCards.suggestions?.totalSuggestions ?? 0,
+    totalSuggestionInstances: suggestedCards.suggestions?.totalSuggestions ?? 0,
     totalAcceptances: suggestedCards.suggestions?.totalAcceptances ?? 0,
-    acceptanceRate: suggestedCards.suggestions?.acceptanceRate ?? 0,
+    overallAcceptanceRate: suggestedCards.suggestions?.acceptanceRate ?? 0,
     totalLinesSuggested: suggestedCards.loc?.totalLOCSuggestions ?? 0,
     totalLinesAccepted: suggestedCards.loc?.totalLOCAcceptances ?? 0,
-    lineAcceptanceRate: suggestedCards.loc?.acceptanceLOCRate ?? 0,
+    overallLineAcceptanceRate: suggestedCards.loc?.acceptanceLOCRate ?? 0,
+    averageLocPerSuggestion:
+      suggestedCards.average?.averageLOCSuggestions ?? 0,
+    averageLocPerAcceptance: suggestedCards.average?.averageLOCAccepted ?? 0,
   };
+}
+
+function DashboardStatCard({ title, value }) {
+  return (
+    <div className="stat-card">
+      <h2>{title}</h2>
+      <p>{value}</p>
+    </div>
+  );
 }
 
 function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
-  const completionCards = mapSuggestionCardsToCompletionCards(
+  const dashboardCards = mapSuggestionCardsToDashboardCards(
     data?.suggestedCards
   );
 
@@ -41,23 +56,34 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
       <h2>IDE Code Completions</h2>
 
       <div className="copilot-dashboard-section">
-        <h3>Summary</h3>
+        <h3>Overall Usage</h3>
         {loading ? (
           <div className="copilot-grid">
             <SkeletonStatCard />
             <SkeletonStatCard />
             <SkeletonStatCard />
-            <SkeletonStatCard />
-            <SkeletonStatCard />
-            <SkeletonStatCard />
           </div>
         ) : (
-          <CompletionsCards completions={completionCards} prefix="Total" />
+          <div className="copilot-grid">
+            <DashboardStatCard
+              title="Total Suggestion Instances"
+              value={formatNumberWithCommas(
+                Math.round(dashboardCards.totalSuggestionInstances)
+              )}
+            />
+            <DashboardStatCard
+              title="Total Acceptances"
+              value={formatNumberWithCommas(
+                Math.round(dashboardCards.totalAcceptances)
+              )}
+            />
+            <DashboardStatCard
+              title="Overall Acceptance Rate"
+              value={getPercentage(dashboardCards.overallAcceptanceRate)}
+            />
+          </div>
         )}
-      </div>
 
-      <div className="copilot-dashboard-section">
-        <h3>Suggestions, Acceptances and Acceptance Rate</h3>
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
@@ -69,21 +95,36 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
         )}
       </div>
 
-      <div className="copilot-dashboard-section">
-        <h3>Average LOC Per Suggestion and Acceptance</h3>
-        {loading ? (
-          <div className="copilot-graph-container skeleton" />
-        ) : (
-          <AverageLOCSuggestionsAcceptance
-            data={data.averageSuggestedLOCGraph}
-            includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-          />
-        )}
-      </div>
-
       {chartDisplaySettings.locUsage && (
         <div className="copilot-dashboard-section">
           <h3>LOC Suggestions, LOC Acceptances and LOC Acceptance Rate</h3>
+          {loading ? (
+            <div className="copilot-grid">
+              <SkeletonStatCard />
+              <SkeletonStatCard />
+              <SkeletonStatCard />
+            </div>
+          ) : (
+            <div className="copilot-grid">
+              <DashboardStatCard
+                title="Total Lines Suggested"
+                value={formatNumberWithCommas(
+                  Math.round(dashboardCards.totalLinesSuggested)
+                )}
+              />
+              <DashboardStatCard
+                title="Total Lines Accepted"
+                value={formatNumberWithCommas(
+                  Math.round(dashboardCards.totalLinesAccepted)
+                )}
+              />
+              <DashboardStatCard
+                title="Overall Line Acceptance Rate"
+                value={getPercentage(dashboardCards.overallLineAcceptanceRate)}
+              />
+            </div>
+          )}
+
           {loading ? (
             <div className="copilot-graph-container skeleton" />
           ) : (
@@ -95,6 +136,36 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           )}
         </div>
       )}
+
+      <div className="copilot-dashboard-section">
+        <h3>Suggestion vs Acceptance Size</h3>
+        {loading ? (
+          <div className="copilot-grid-average">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+          </div>
+        ) : (
+          <div className="copilot-grid-average">
+            <DashboardStatCard
+              title="Average LoC per suggestion"
+              value={dashboardCards.averageLocPerSuggestion.toFixed(2)}
+            />
+            <DashboardStatCard
+              title="Average LoC per acceptance"
+              value={dashboardCards.averageLocPerAcceptance.toFixed(2)}
+            />
+          </div>
+        )}
+
+        {loading ? (
+          <div className="copilot-graph-container skeleton" />
+        ) : (
+          <AverageLOCSuggestionsAcceptance
+            data={data.averageSuggestedLOCGraph}
+            includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+          />
+        )}
+      </div>
 
       <div className="copilot-dashboard-section-bottom">
         <h3>Language Breakdown</h3>
