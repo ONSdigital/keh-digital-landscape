@@ -7,6 +7,10 @@ test('Legacy Usage page routes correctly', async ({ page }) => {
 });
 
 test('Legacy Usage page shows skeleton loading state', async ({ page }) => {
+  await page.route('**/copilot/api/org/legacy*', async route => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await route.continue();
+  });
   await page.goto('http://localhost:3000/copilot/legacy');
   await expect(page.locator('.stat-card.skeleton').first()).toBeVisible();
 });
@@ -70,7 +74,7 @@ test('Legacy Usage page displays the January 2025 - March 2026 dataset correctly
   ).toBeVisible();
 
   // 2 graph containers: 1 AcceptanceGraph + 1 stacked (chat + user metrics)
-  await expect(section.locator('.copilot-graph-container')).toHaveCount(2);
+  await expect(section.locator('.copilot-graph-container--old')).toHaveCount(2);
 });
 
 test('Legacy Usage page displays the May 2024 - January 2025 dataset correctly', async ({
@@ -126,7 +130,7 @@ test('Legacy Usage page displays the May 2024 - January 2025 dataset correctly',
   ).toBeVisible();
 
   // 2 graph containers: 1 AcceptanceGraph + 1 stacked (chat + user metrics)
-  await expect(section.locator('.copilot-graph-container')).toHaveCount(2);
+  await expect(section.locator('.copilot-graph-container--old')).toHaveCount(2);
 });
 
 test('Legacy Usage page back button navigates to landing page', async ({
