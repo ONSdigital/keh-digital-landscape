@@ -162,12 +162,12 @@ export function processCodeCompletionData(data) {
   suggestedCards.suggestions.totalSuggestions = suggestionsSum;
   suggestedCards.suggestions.totalAcceptances = acceptancesSum;
   suggestedCards.suggestions.acceptanceRate =
-    suggestionsSum > 0 ? (acceptancesSum / suggestionsSum) * 100 : 0;
+    suggestionsSum > 0 ? (acceptancesSum / suggestionsSum) : 0;
 
   suggestedCards.loc.totalLOCSuggestions = suggestionsLOCSum;
   suggestedCards.loc.totalLOCAcceptances = acceptancesLOCSum;
   suggestedCards.loc.acceptanceLOCRate =
-    suggestionsLOCSum > 0 ? (acceptancesLOCSum / suggestionsLOCSum) * 100 : 0;
+    suggestionsLOCSum > 0 ? (acceptancesLOCSum / suggestionsLOCSum) : 0;
 
   suggestedCards.average.averageLOCSuggestions =
     numberLOCSuggestions > 0 ? suggestionsLOCSum / numberLOCSuggestions : 0;

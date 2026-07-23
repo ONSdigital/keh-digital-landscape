@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
-import SuggestionsAcceptanceGraph from '../../components/Copilot/Breakdowns/SuggestionsAcceptanceGraph';
-import AverageLOCSuggestionsAcceptance from '../../components/Copilot/Breakdowns/AverageLOCSuggestionsAcceptance';
-import LanguageBreakdownChart from '../../components/Copilot/Breakdowns/LanguageBreakdownChart';
+import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
 import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotdata/processCodeCompletionData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/CopilotUsagePage.css';
@@ -106,30 +104,11 @@ function CodeCompletionsPage() {
             )}
           </div>
         </div>
-        {!isLoading && processedData && (
-          <>
-            <h2>IDE Code Completions</h2>
-            <SuggestionsAcceptanceGraph
-              data={processedData.suggestedGraph}
-              includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-              LOC={false}
-            />
-            {chartDisplaySettings.locUsage && (
-              <SuggestionsAcceptanceGraph
-                data={processedData.suggestedLOCGraph}
-                includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-                LOC={true}
-              />
-            )}
-            <AverageLOCSuggestionsAcceptance
-              data={processedData.averageSuggestedLOCGraph}
-              includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-            />
-            <LanguageBreakdownChart
-              languageData={processedData.languagesUsedPieChart}
-            />
-          </>
-        )}
+        <CodeCompletionsDashboard
+          data={processedData}
+          isLoading={isLoading}
+          chartDisplaySettings={chartDisplaySettings}
+        />
       </div>
     </Layout>
   );
