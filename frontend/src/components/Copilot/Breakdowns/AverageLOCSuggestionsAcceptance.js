@@ -14,6 +14,7 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import GraphSelect from '../../GraphSelect/GraphSelect';
+import { getChartPalette } from '../../../utilities/copilotChartColours';
 
 const TIME_BREAKDOWN_OPTIONS = [
   { value: 'day', label: 'Days' },
@@ -96,11 +97,11 @@ const AverageLOCSuggestionsAcceptance = ({
     return filtered.slice(-7);
   }, [data, includeWeekendUsage, timeBreakdown]);
 
+  const palette = getChartPalette(2, isDark);
   const colors = {
-    primary: isDark ? '#ff6b00' : '#052962',
-    secondary: isDark ? '#ff8c33' : '#0e58c5',
-    tertiary: isDark ? '#ffce99' : '#90b6ef',
-    text: isDark ? '#ffffff' : '#8c8c8c',
+    primary: palette[0],
+    secondary: palette[1],
+    text: 'hsl(var(--muted-foreground))',
   };
 
   const formatXAxisDate = value => {
@@ -154,7 +155,7 @@ const AverageLOCSuggestionsAcceptance = ({
             strokeLinecap="round"
             type="monotone"
             dataKey="avgLOCSuggested"
-            stroke={colors.tertiary}
+            stroke={colors.primary}
             yAxisId="left"
             legendType="line"
             name="Average LOC Per Suggestion"
@@ -180,7 +181,6 @@ const AverageLOCSuggestionsAcceptance = ({
             tickFormatter={value => formatNumberWithCommas(value)}
           />
           <Tooltip
-            wrapperStyle={{ color: 'black' }}
             labelFormatter={formatXAxisDate}
             formatter={value => value.toFixed(2)}
           />

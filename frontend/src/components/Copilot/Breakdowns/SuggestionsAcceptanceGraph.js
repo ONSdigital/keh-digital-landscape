@@ -110,7 +110,7 @@ const SuggestionsAcceptanceGraph = ({
     primary: isDark ? '#ff6b00' : '#052962',
     secondary: isDark ? '#ff8c33' : '#0e58c5',
     tertiary: isDark ? '#ffce99' : '#90b6ef',
-    text: isDark ? '#ffffff' : '#8c8c8c',
+    text: 'hsl(var(--muted-foreground))',
   };
 
   const formatXAxisDate = value => {
@@ -205,7 +205,6 @@ const SuggestionsAcceptanceGraph = ({
             tickFormatter={value => `${value.toFixed(0)}%`}
           />
           <Tooltip
-            wrapperStyle={{ color: 'black' }}
             labelFormatter={value => formatXAxisDate(value)}
             formatter={(value, name) =>
               name === 'Acceptance Rate'

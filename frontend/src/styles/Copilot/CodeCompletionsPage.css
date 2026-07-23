@@ -1,0 +1,82 @@
+/* This file contains CSS styles specific to the Copilot Code Completions Page */
+
+.copilot-page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.copilot-settings {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.copilot-settings-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  color: hsl(var(--primary));
+  background: transparent;
+  border: 2px solid hsl(var(--primary) / 15%);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.copilot-settings-button:hover {
+  background-color: hsl(var(--muted) / 95%);
+  box-shadow:
+    0 0 0 1px hsl(var(--foreground) / 5%),
+    0 10px 10px hsl(var(--foreground) / 5%),
+    0 12px 24px hsl(var(--foreground) / 5%);
+}
+
+.copilot-settings-menu {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  min-width: 220px;
+  z-index: 10;
+  padding: 12px;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  box-shadow: 0 10px 30px hsl(var(--foreground) / 10%);
+}
+
+.copilot-settings-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  user-select: none;
+}
+
+.copilot-settings-checkbox-label input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+}
+
+.copilot-dashboard .copilot-graph-container {
+  border: none;
+}
+
+@media (width <= 640px) {
+  .copilot-page-controls {
+    gap: 8px;
+  }
+
+  .copilot-settings-menu {
+    right: 0;
+    left: auto;
+    min-width: 200px;
+  }
+}

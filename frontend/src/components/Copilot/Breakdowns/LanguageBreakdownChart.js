@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import GraphSelect from '../../GraphSelect/GraphSelect';
+import { getChartPalette } from '../../../utilities/copilotChartColours';
 
 const LANGUAGE_MODE_OPTIONS = [
   { value: 'suggestions', label: 'Suggestions' },
@@ -26,23 +27,7 @@ const LanguageBreakdownChart = ({ languageData }) => {
   const [selectedMode, setSelectedMode] = useState('suggestions');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-
-  const colors = {
-    primary: isDark ? '#ff6b00' : '#052962',
-    secondary: isDark ? '#ff8c33' : '#0e58c5',
-    tertiary: isDark ? '#ffce99' : '#90b6ef',
-    text: isDark ? '#ffffff' : '#8c8c8c',
-  };
-
-  const colorPalette = [
-    colors.primary,
-    colors.secondary,
-    colors.tertiary,
-    isDark ? '#ffc080' : '#355f98',
-    isDark ? '#ffb366' : '#4b78b2',
-    isDark ? '#ffd7b3' : '#739fd9',
-    isDark ? '#ffe9d6' : '#aac8f4',
-  ];
+  const colorPalette = getChartPalette(MAX_LANGUAGE_SLICES, isDark);
 
   const pieData = useMemo(() => {
     const selectedRows = languageData?.[selectedMode] ?? [];
@@ -102,11 +87,10 @@ const LanguageBreakdownChart = ({ languageData }) => {
             cx="50%"
             cy="54%"
             outerRadius={135}
+            innerRadius={78}
+            label={false}
             labelLine={false}
             isAnimationActive
-            label={({ name, percent }) =>
-              `${name} ${((percent ?? 0) * 100).toFixed(1)}%`
-            }
           >
             {pieData.map((entry, index) => (
               <Cell
@@ -118,8 +102,11 @@ const LanguageBreakdownChart = ({ languageData }) => {
           </Pie>
           <Legend iconType="circle" iconSize={10} />
           <Tooltip
-            formatter={value => `${Number(value).toFixed(1)}%`}
-            labelStyle={{ color: colors.text }}
+            formatter={(value, _name, item) => [
+              `${Number(value).toFixed(1)}%`,
+              item?.payload?.name ?? '',
+            ]}
+            labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
           />
         </RechartsPieChart>
       </ResponsiveContainer>
