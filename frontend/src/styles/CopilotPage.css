@@ -308,7 +308,7 @@ html:not(.dark)
   color: hsl(var(--primary));
 }
 
-.copilot-graph-container {
+.copilot-graph-container--old {
   width: calc(100% - 16px);
   height: calc(50vh - 16px);
 }
