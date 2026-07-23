@@ -140,7 +140,7 @@ const AverageLOCSuggestionsAcceptance = ({
             tick={{ fill: colors.text }}
             tickLine={false}
             tickFormatter={formatXAxisDate}
-            padding={{left: 35, right: 35}}
+            padding={{ left: 35, right: 35 }}
           />
           <Legend
             verticalAlign="top"
