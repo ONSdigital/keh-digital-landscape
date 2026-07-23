@@ -54,87 +54,84 @@ function CodeCompletionsPage() {
         description="Analyse Copilot Code Completion data statistics"
         tabs={[]}
       />
-      
-        <div className="admin-container">
-          <div className="copilot-page-controls">
+
+      <div className="admin-container">
+        <div className="copilot-page-controls">
+          <button
+            className="copilot-back-button"
+            onClick={() => navigate('/copilot/home')}
+            aria-label="Back to Copilot Dashboard Homepage"
+          >
+            <MdOutlineArrowBackIosNew size={12} />
+            <span id="text">Back</span>
+          </button>
+          <div className="copilot-settings" ref={settingsRef}>
             <button
-              className="copilot-back-button"
-              onClick={() => navigate('/copilot/home')}
-              aria-label="Back to Copilot Dashboard Homepage"
+              className="copilot-settings-button"
+              onClick={() => setIsSettingsOpen(prev => !prev)}
+              aria-label="Open chart display settings"
+              aria-expanded={isSettingsOpen}
+              aria-controls="copilot-settings-menu"
             >
-              <MdOutlineArrowBackIosNew size={12} />
-              <span id="text">Back</span>
+              <IoSettingsOutline size={18} />
             </button>
-            <div className="copilot-settings" ref={settingsRef}>
-              <button
-                className="copilot-settings-button"
-                onClick={() => setIsSettingsOpen(prev => !prev)}
-                aria-label="Open chart display settings"
-                aria-expanded={isSettingsOpen}
-                aria-controls="copilot-settings-menu"
-              >
-                <IoSettingsOutline size={18} />
-              </button>
-              {isSettingsOpen && (
-                <div
-                  className="copilot-settings-menu"
-                  id="copilot-settings-menu"
-                >
-                  <label className="copilot-settings-checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={chartDisplaySettings.includeWeekendUsage}
-                      onChange={event =>
-                        setChartDisplaySettings(prev => ({
-                          ...prev,
-                          includeWeekendUsage: event.target.checked,
-                        }))
-                      }
-                    />
-                    Include weekend usage
-                  </label>
-                  <label className="copilot-settings-checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={chartDisplaySettings.locUsage}
-                      onChange={event =>
-                        setChartDisplaySettings(prev => ({
-                          ...prev,
-                          locUsage: event.target.checked,
-                        }))
-                      }
-                    />
-                    Include LOC usage
-                  </label>
-                </div>
-              )}
-            </div>
+            {isSettingsOpen && (
+              <div className="copilot-settings-menu" id="copilot-settings-menu">
+                <label className="copilot-settings-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={chartDisplaySettings.includeWeekendUsage}
+                    onChange={event =>
+                      setChartDisplaySettings(prev => ({
+                        ...prev,
+                        includeWeekendUsage: event.target.checked,
+                      }))
+                    }
+                  />
+                  Include weekend usage
+                </label>
+                <label className="copilot-settings-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={chartDisplaySettings.locUsage}
+                    onChange={event =>
+                      setChartDisplaySettings(prev => ({
+                        ...prev,
+                        locUsage: event.target.checked,
+                      }))
+                    }
+                  />
+                  Include LOC usage
+                </label>
+              </div>
+            )}
           </div>
-          {!isLoading && processedData && (
-            <>
-              <h2>IDE Code Completions</h2>
-              <SuggestionsAcceptanceGraph
-                data={processedData.suggestedGraph}
-                includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-                LOC={false}
-              />
-              {chartDisplaySettings.locUsage && (
-                <SuggestionsAcceptanceGraph
-                  data={processedData.suggestedLOCGraph}
-                  includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-                  LOC={true}
-                />
-              )}
-              <AverageLOCSuggestionsAcceptance
-                data={processedData.averageSuggestedLOCGraph}
-                includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
-              />
-              <LanguageBreakdownChart
-                languageData={processedData.languagesUsedPieChart}
-              />
-            </>
-          )}
         </div>
+        {!isLoading && processedData && (
+          <>
+            <h2>IDE Code Completions</h2>
+            <SuggestionsAcceptanceGraph
+              data={processedData.suggestedGraph}
+              includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+              LOC={false}
+            />
+            {chartDisplaySettings.locUsage && (
+              <SuggestionsAcceptanceGraph
+                data={processedData.suggestedLOCGraph}
+                includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+                LOC={true}
+              />
+            )}
+            <AverageLOCSuggestionsAcceptance
+              data={processedData.averageSuggestedLOCGraph}
+              includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
+            />
+            <LanguageBreakdownChart
+              languageData={processedData.languagesUsedPieChart}
+            />
+          </>
+        )}
+      </div>
     </Layout>
   );
 }
