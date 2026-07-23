@@ -35,7 +35,12 @@ function getMonthStart(dateString) {
   return monthStart.toISOString().split('T')[0];
 }
 
-function aggregateByTimeBreakdown(rows, breakdown, suggestionsKey = 'suggestions', acceptancesKey = 'acceptances') {
+function aggregateByTimeBreakdown(
+  rows,
+  breakdown,
+  suggestionsKey = 'suggestions',
+  acceptancesKey = 'acceptances'
+) {
   if (breakdown === 'day') {
     return rows;
   }
@@ -62,7 +67,9 @@ function aggregateByTimeBreakdown(rows, breakdown, suggestionsKey = 'suggestions
   return Array.from(grouped.values()).map(entry => ({
     ...entry,
     acceptanceRate:
-      entry[suggestionsKey] > 0 ? (entry[acceptancesKey] / entry[suggestionsKey]) * 100 : 0,
+      entry[suggestionsKey] > 0
+        ? (entry[acceptancesKey] / entry[suggestionsKey]) * 100
+        : 0,
   }));
 }
 
@@ -74,7 +81,11 @@ function removeWeekendData(rows) {
   });
 }
 
-const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false, LOC = false }) => {
+const SuggestionsAcceptanceGraph = ({
+  data,
+  includeWeekendUsage = false,
+  LOC = false,
+}) => {
   const [timeBreakdown, setTimeBreakdown] = useState('day');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -82,7 +93,12 @@ const SuggestionsAcceptanceGraph = ({ data, includeWeekendUsage = false, LOC = f
   const recentData = useMemo(() => {
     const suggestionsKey = LOC ? 'locSuggestions' : 'suggestions';
     const acceptancesKey = LOC ? 'locAcceptances' : 'acceptances';
-    const groupedData = aggregateByTimeBreakdown(data, timeBreakdown, suggestionsKey, acceptancesKey);
+    const groupedData = aggregateByTimeBreakdown(
+      data,
+      timeBreakdown,
+      suggestionsKey,
+      acceptancesKey
+    );
     const filtered =
       timeBreakdown === 'day' && !includeWeekendUsage
         ? removeWeekendData(groupedData)

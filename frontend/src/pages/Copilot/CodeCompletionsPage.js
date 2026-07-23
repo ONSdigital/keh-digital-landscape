@@ -75,7 +75,10 @@ function CodeCompletionsPage() {
                 <IoSettingsOutline size={18} />
               </button>
               {isSettingsOpen && (
-                <div className="copilot-settings-menu" id="copilot-settings-menu">
+                <div
+                  className="copilot-settings-menu"
+                  id="copilot-settings-menu"
+                >
                   <label className="copilot-settings-checkbox-label">
                     <input
                       type="checkbox"

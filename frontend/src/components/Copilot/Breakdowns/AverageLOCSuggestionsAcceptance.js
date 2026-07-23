@@ -75,7 +75,10 @@ function removeWeekendData(rows) {
   });
 }
 
-const AverageLOCSuggestionsAcceptance = ({ data, includeWeekendUsage = false }) => {
+const AverageLOCSuggestionsAcceptance = ({
+  data,
+  includeWeekendUsage = false,
+}) => {
   const [timeBreakdown, setTimeBreakdown] = useState('day');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
