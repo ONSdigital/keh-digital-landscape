@@ -140,60 +140,41 @@ const AverageLOCSuggestionsAcceptance = ({ data, includeWeekendUsage = false }) 
             height={36}
             wrapperStyle={{ paddingBottom: '10px' }}
           />
-          <Bar
-            radius={[10, 10, 0, 0]}
-            dataKey="suggestions"
-            fill={colors.primary}
+          <Line
+            dot={false}
+            strokeWidth={5}
+            strokeLinecap="round"
+            type="monotone"
+            dataKey="avgLOCSuggested"
+            stroke={colors.tertiary}
             yAxisId="left"
-            legendType="rect"
-            name="Suggestions"
-          />
-          <Bar
-            radius={[10, 10, 0, 0]}
-            dataKey="acceptances"
-            fill={colors.secondary}
-            yAxisId="left"
-            legendType="rect"
-            name="Acceptances"
+            legendType="line"
+            name="Average LOC Per Suggestion"
           />
           <Line
             dot={false}
-            strokeWidth={15}
+            strokeWidth={5}
             strokeLinecap="round"
             type="monotone"
-            dataKey="acceptanceRate"
-            stroke={colors.tertiary}
-            yAxisId="right"
+            dataKey="avgLOCAccepted"
+            stroke={colors.secondary}
+            yAxisId="left"
             legendType="line"
-            name="Acceptance Rate"
+            name="Average LOC Per Acceptance"
           />
           <YAxis
             tickLine={false}
             yAxisId="left"
             tick={{ fill: colors.text }}
             axisLine={{ stroke: '' }}
-            domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
+            domain={[0, dataMax => Math.ceil(dataMax / 10) * 3]}
             tickCount={5}
             tickFormatter={value => formatNumberWithCommas(value)}
           />
-          <YAxis
-            tickLine={false}
-            yAxisId="right"
-            tick={{ fill: colors.text }}
-            orientation="right"
-            axisLine={{ stroke: '' }}
-            domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
-            tickCount={5}
-            tickFormatter={value => `${value.toFixed(0)}%`}
-          />
           <Tooltip
             wrapperStyle={{ color: 'black' }}
-            labelFormatter={value => formatXAxisDate(value)}
-            formatter={(value, name) =>
-              name === 'Acceptance Rate'
-                ? `${value.toFixed(2)}%`
-                : formatNumberWithCommas(value)
-            }
+            labelFormatter={formatXAxisDate}
+            formatter={value => value.toFixed(2)}
           />
         </LineChart>
       </ResponsiveContainer>
