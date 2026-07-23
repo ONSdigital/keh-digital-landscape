@@ -60,6 +60,7 @@ export function processCodeCompletionData(data) {
   let numberLOCAcceptances = 0;
 
   let totalGeneratedSuggestions = 0;
+  let totalGeneratedAcceptances = 0;
   const langSuggestionCounts = {};
   const langAcceptanceCounts = {};
 
@@ -129,6 +130,10 @@ export function processCodeCompletionData(data) {
       (sum, item) => sum + (item.code_generation_activity_count ?? 0),
       0
     );
+    totalGeneratedAcceptances += completionLangRows.reduce(
+      (sum, item) => sum + (item.code_acceptance_activity_count ?? 0),
+      0
+    );
 
     for (const pieChartLanguage of completionLangRows) {
       const lang = pieChartLanguage.language;
@@ -143,27 +148,31 @@ export function processCodeCompletionData(data) {
 
   for (const [lang, count] of Object.entries(langSuggestionCounts)) {
     languagesUsedPieChart.suggestions.push({
-      [lang]: count / totalGeneratedSuggestions,
+      [lang]:
+        totalGeneratedSuggestions > 0 ? count / totalGeneratedSuggestions : 0,
     });
     languagesUsedPieChart.acceptances.push({
-      [lang]: (langAcceptanceCounts[lang] ?? 0) / totalGeneratedSuggestions,
+      [lang]:
+        totalGeneratedAcceptances > 0
+          ? (langAcceptanceCounts[lang] ?? 0) / totalGeneratedAcceptances
+          : 0,
     });
   }
 
   suggestedCards.suggestions.totalSuggestions = suggestionsSum;
   suggestedCards.suggestions.totalAcceptances = acceptancesSum;
   suggestedCards.suggestions.acceptanceRate =
-    (acceptancesSum / suggestionsSum) * 100;
+    suggestionsSum > 0 ? (acceptancesSum / suggestionsSum) * 100 : 0;
 
   suggestedCards.loc.totalLOCSuggestions = suggestionsLOCSum;
   suggestedCards.loc.totalLOCAcceptances = acceptancesLOCSum;
   suggestedCards.loc.acceptanceLOCRate =
-    (acceptancesLOCSum / suggestionsLOCSum) * 100;
+    suggestionsLOCSum > 0 ? (acceptancesLOCSum / suggestionsLOCSum) * 100 : 0;
 
   suggestedCards.average.averageLOCSuggestions =
-    suggestionsLOCSum / numberLOCSuggestions;
+    numberLOCSuggestions > 0 ? suggestionsLOCSum / numberLOCSuggestions : 0;
   suggestedCards.average.averageLOCAccepted =
-    acceptancesLOCSum / numberLOCAcceptances;
+    numberLOCAcceptances > 0 ? acceptancesLOCSum / numberLOCAcceptances : 0;
 
   codeCompletionMetrics = {
     suggestedCards: suggestedCards,

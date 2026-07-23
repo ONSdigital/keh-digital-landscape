@@ -5,6 +5,7 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import SuggestionsAcceptanceGraph from '../../components/Copilot/Breakdowns/SuggestionsAcceptanceGraph';
 import AverageLOCSuggestionsAcceptance from '../../components/Copilot/Breakdowns/AverageLOCSuggestionsAcceptance';
+import LanguageBreakdownChart from '../../components/Copilot/Breakdowns/LanguageBreakdownChart';
 import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotdata/processCodeCompletionData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/CopilotUsagePage.css';
@@ -48,12 +49,12 @@ function CodeCompletionsPage() {
 
   return (
     <Layout headerProps={{ hideSearch: true }}>
-      <div className="admin-page">
-        <PageBanner
-          title="GitHub Copilot Code Completions Dashboard"
-          description="Analyse Copilot Code Completion data statistics"
-          tabs={[]}
-        />
+      <PageBanner
+        title="GitHub Copilot Code Completions Dashboard"
+        description="Analyse Copilot Code Completion data statistics"
+        tabs={[]}
+      />
+      
         <div className="admin-container">
           <div className="copilot-page-controls">
             <button
@@ -111,6 +112,7 @@ function CodeCompletionsPage() {
           </div>
           {!isLoading && processedData && (
             <>
+              <h2>IDE Code Completions</h2>
               <SuggestionsAcceptanceGraph
                 data={processedData.suggestedGraph}
                 includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
@@ -127,10 +129,12 @@ function CodeCompletionsPage() {
                 data={processedData.averageSuggestedLOCGraph}
                 includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
               />
+              <LanguageBreakdownChart
+                languageData={processedData.languagesUsedPieChart}
+              />
             </>
           )}
         </div>
-      </div>
     </Layout>
   );
 }
