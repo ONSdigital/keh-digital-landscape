@@ -50,20 +50,24 @@ function aggregateByTimeBreakdown(rows, breakdown) {
     if (!grouped.has(key)) {
       grouped.set(key, {
         date: key,
-        suggestions: 0,
-        acceptances: 0,
+        avgLOCSuggestedSum: 0,
+        avgLOCAcceptedSum: 0,
+        dayCount: 0,
       });
     }
 
     const current = grouped.get(key);
-    current.suggestions += row.suggestions ?? 0;
-    current.acceptances += row.acceptances ?? 0;
+    current.avgLOCSuggestedSum += row.avgLOCSuggested ?? 0;
+    current.avgLOCAcceptedSum += row.avgLOCAccepted ?? 0;
+    current.dayCount += 1;
   }
 
   return Array.from(grouped.values()).map(entry => ({
-    ...entry,
-    acceptanceRate:
-      entry.suggestions > 0 ? (entry.acceptances / entry.suggestions) * 100 : 0,
+    date: entry.date,
+    avgLOCSuggested:
+      entry.dayCount > 0 ? entry.avgLOCSuggestedSum / entry.dayCount : 0,
+    avgLOCAccepted:
+      entry.dayCount > 0 ? entry.avgLOCAcceptedSum / entry.dayCount : 0,
   }));
 }
 
@@ -127,7 +131,7 @@ const AverageLOCSuggestionsAcceptance = ({
           width={400}
           height={300}
           data={recentData}
-          margin={{ top: 20, right: 10, left: 10, bottom: 0 }}
+          margin={{ top: 10, right: 50, left: 10, bottom: 0 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
@@ -136,6 +140,7 @@ const AverageLOCSuggestionsAcceptance = ({
             tick={{ fill: colors.text }}
             tickLine={false}
             tickFormatter={formatXAxisDate}
+            padding={{left: 35, right: 35}}
           />
           <Legend
             verticalAlign="top"
