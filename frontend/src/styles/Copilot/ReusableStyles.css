@@ -61,8 +61,6 @@ Copilot Dashboard */
 
 .copilot-graph-container {
   background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
 }
 
 .copilot-tooltip-paragraph {
