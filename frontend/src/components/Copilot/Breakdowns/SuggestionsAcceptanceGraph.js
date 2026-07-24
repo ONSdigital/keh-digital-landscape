@@ -41,6 +41,10 @@ function aggregateByTimeBreakdown(
   suggestionsKey = 'suggestions',
   acceptancesKey = 'acceptances'
 ) {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
   if (breakdown === 'day') {
     return rows;
   }
@@ -74,6 +78,10 @@ function aggregateByTimeBreakdown(
 }
 
 function removeWeekendData(rows) {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
   return rows.filter(row => {
     const date = new Date(`${row.date}T00:00:00`);
     const day = date.getDay();
@@ -91,6 +99,10 @@ const SuggestionsAcceptanceGraph = ({
   const isDark = theme === 'dark';
 
   const recentData = useMemo(() => {
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
     const suggestionsKey = LOC ? 'locSuggestions' : 'suggestions';
     const acceptancesKey = LOC ? 'locAcceptances' : 'acceptances';
     const groupedData = aggregateByTimeBreakdown(
@@ -136,7 +148,7 @@ const SuggestionsAcceptanceGraph = ({
         value={timeBreakdown}
         onChange={setTimeBreakdown}
       />
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300}>
         <ComposedChart
           width={400}
           height={300}

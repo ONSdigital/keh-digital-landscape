@@ -38,6 +38,10 @@ function getMonthStart(dateString) {
 }
 
 function aggregateByTimeBreakdown(rows, breakdown) {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
   if (breakdown === 'day') {
     return rows;
   }
@@ -73,6 +77,10 @@ function aggregateByTimeBreakdown(rows, breakdown) {
 }
 
 function removeWeekendData(rows) {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
   return rows.filter(row => {
     const date = new Date(`${row.date}T00:00:00`);
     const day = date.getDay();
@@ -89,6 +97,10 @@ const AverageLOCSuggestionsAcceptance = ({
   const isDark = theme === 'dark';
 
   const recentData = useMemo(() => {
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
     const groupedData = aggregateByTimeBreakdown(data, timeBreakdown);
     const filtered =
       timeBreakdown === 'day' && !includeWeekendUsage
@@ -127,7 +139,7 @@ const AverageLOCSuggestionsAcceptance = ({
         value={timeBreakdown}
         onChange={setTimeBreakdown}
       />
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart
           width={400}
           height={300}

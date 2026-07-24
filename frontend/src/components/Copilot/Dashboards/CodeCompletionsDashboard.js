@@ -29,8 +29,7 @@ function mapSuggestionCardsToDashboardCards(suggestedCards) {
     totalLinesSuggested: suggestedCards.loc?.totalLOCSuggestions ?? 0,
     totalLinesAccepted: suggestedCards.loc?.totalLOCAcceptances ?? 0,
     overallLineAcceptanceRate: suggestedCards.loc?.acceptanceLOCRate ?? 0,
-    averageLocPerSuggestion:
-      suggestedCards.average?.averageLOCSuggestions ?? 0,
+    averageLocPerSuggestion: suggestedCards.average?.averageLOCSuggestions ?? 0,
     averageLocPerAcceptance: suggestedCards.average?.averageLOCAccepted ?? 0,
   };
 }
