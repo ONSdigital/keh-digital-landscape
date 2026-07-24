@@ -131,15 +131,18 @@ Copilot Dashboard */
   padding-bottom: 20px;
 }
 
-.copilot-graph-container {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
+.copilot-graph-container--old {
+  width: calc(100% - 16px);
+  height: calc(50vh - 16px);
 }
 
 .copilot-graph-container--stacked {
   height: auto;
   margin-bottom: 24px;
+}
+
+.copilot-graph-container {
+  background: hsl(var(--card));
 }
 
 .copilot-tooltip-paragraph {
