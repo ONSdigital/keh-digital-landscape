@@ -68,7 +68,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container copilot-graph-container--stacked">
+        <div className="copilot-graph-container--old copilot-graph-container--stacked">
           <div
             className="skeleton"
             style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
@@ -107,7 +107,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
             <SkeletonStatCard />
           </div>
 
-          <div className="copilot-graph-container copilot-graph-container--stacked">
+          <div className="copilot-graph-container--old copilot-graph-container--stacked">
             <div
               className="skeleton"
               style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
@@ -281,7 +281,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container copilot-graph-container--stacked">
+        <div className="copilot-graph-container--old copilot-graph-container--stacked">
           <ResponsiveContainer width="100%" height={300}>
             <ComposedChart
               width={400}
@@ -487,7 +487,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container copilot-graph-container--stacked">
+        <div className="copilot-graph-container--old copilot-graph-container--stacked">
           <ResponsiveContainer width="100%" height={300}>
             <ComposedChart
               width={400}
