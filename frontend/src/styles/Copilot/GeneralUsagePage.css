@@ -7,13 +7,26 @@
 }
 
 .usage-card {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
+  position: relative;
+  background: hsl(var(--background));
+  box-shadow: 0 0 0 1px hsl(var(--foreground) / 4%);
   border-radius: var(--radius);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  z-index: 1;
+}
+
+.usage-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    0 10px 15px -5px hsl(var(--foreground) / 6%),
+    0 4px 6px -2px hsl(var(--foreground) / 4%);
+  z-index: -1;
 }
 
 .usage-card-title {
@@ -81,8 +94,6 @@
 =======
 .usage-pie-chart-card {
   background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: var(--radius);
   padding: 20px;
   flex: 1;
 }
