@@ -7,6 +7,7 @@ import AverageLOCSuggestionsAcceptance from '../Breakdowns/AverageLOCSuggestions
 import LanguageBreakdownChart from '../Breakdowns/LanguageBreakdownChart';
 import { getPercentage } from '../../../utilities/getPercentage';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+import useCountUp from '../../../hooks/useCountUp';
 
 function mapSuggestionCardsToDashboardCards(suggestedCards) {
   if (!suggestedCards) {
@@ -34,11 +35,21 @@ function mapSuggestionCardsToDashboardCards(suggestedCards) {
   };
 }
 
-function DashboardStatCard({ title, value }) {
+function DashboardStatCard({ title, value, displayMode = 'count' }) {
+  const numericValue = Number.isFinite(value) ? value : 0;
+  const animatedValue = useCountUp(numericValue);
+
+  const formattedValue =
+    displayMode === 'percentage'
+      ? getPercentage(animatedValue)
+      : displayMode === 'fixed2'
+        ? animatedValue.toFixed(2)
+        : formatNumberWithCommas(Math.round(animatedValue));
+
   return (
     <div className="stat-card">
       <h2>{title}</h2>
-      <p>{value}</p>
+      <p>{formattedValue}</p>
     </div>
   );
 }
@@ -66,19 +77,18 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           <div className="copilot-grid">
             <DashboardStatCard
               title="Total Suggestion Instances"
-              value={formatNumberWithCommas(
-                Math.round(dashboardCards.totalSuggestionInstances)
-              )}
+              value={dashboardCards.totalSuggestionInstances}
+              displayMode="count"
             />
             <DashboardStatCard
               title="Total Acceptances"
-              value={formatNumberWithCommas(
-                Math.round(dashboardCards.totalAcceptances)
-              )}
+              value={dashboardCards.totalAcceptances}
+              displayMode="count"
             />
             <DashboardStatCard
               title="Overall Acceptance Rate"
-              value={getPercentage(dashboardCards.overallAcceptanceRate)}
+              value={dashboardCards.overallAcceptanceRate}
+              displayMode="percentage"
             />
           </div>
         )}
@@ -106,19 +116,18 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
             <div className="copilot-grid">
               <DashboardStatCard
                 title="Total Lines Suggested"
-                value={formatNumberWithCommas(
-                  Math.round(dashboardCards.totalLinesSuggested)
-                )}
+                value={dashboardCards.totalLinesSuggested}
+                displayMode="count"
               />
               <DashboardStatCard
                 title="Total Lines Accepted"
-                value={formatNumberWithCommas(
-                  Math.round(dashboardCards.totalLinesAccepted)
-                )}
+                value={dashboardCards.totalLinesAccepted}
+                displayMode="count"
               />
               <DashboardStatCard
                 title="Overall Line Acceptance Rate"
-                value={getPercentage(dashboardCards.overallLineAcceptanceRate)}
+                value={dashboardCards.overallLineAcceptanceRate}
+                displayMode="percentage"
               />
             </div>
           )}
@@ -146,11 +155,13 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           <div className="copilot-grid-average">
             <DashboardStatCard
               title="Average LoC per suggestion"
-              value={dashboardCards.averageLocPerSuggestion.toFixed(2)}
+              value={dashboardCards.averageLocPerSuggestion}
+              displayMode="fixed2"
             />
             <DashboardStatCard
               title="Average LoC per acceptance"
-              value={dashboardCards.averageLocPerAcceptance.toFixed(2)}
+              value={dashboardCards.averageLocPerAcceptance}
+              displayMode="fixed2"
             />
           </div>
         )}
