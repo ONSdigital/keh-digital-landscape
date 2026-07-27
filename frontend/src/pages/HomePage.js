@@ -4,18 +4,9 @@ import { useData } from '../contexts/dataContext';
 import Changelog from '../components/HomePage/Changelog';
 import RecentBanners from '../components/HomePage/RecentBanners';
 import BugReport from '../components/BugReport/Home';
-import {
-  TbEditCircle,
-  TbUserShield,
-  TbUsers,
-  TbChartBar,
-  TbHelp,
-  TbAddressBook,
-} from 'react-icons/tb';
-import { MdOutlineRadar } from 'react-icons/md';
-import { VscCopilot } from 'react-icons/vsc';
 import '../styles/HomePage.css';
 import Layout from '../components/Layout/Layout';
+import { homePageNavigationItems } from '../constants/navigationConstants';
 
 /**
  * HomePage component for displaying the home page.
@@ -53,72 +44,31 @@ function HomePage() {
             </div>
 
             <div className="navigation-cards">
-              <div className="nav-card" onClick={() => navigate('/radar')}>
-                <div className="nav-card-header">
-                  <MdOutlineRadar />
-                  <h2>Tech Radar</h2>
-                </div>
-                <p>
-                  Explore the technology radar, including adoption status and
-                  trends over time.
-                </p>
-              </div>
+              {homePageNavigationItems.map(item => {
+                const cardContent = (
+                  <>
+                    <div className="nav-card-header">
+                      <item.icon />
+                      <h2>{item.label}</h2>
+                    </div>
+                    <p>{item.description}</p>
+                  </>
+                );
 
-              <div className="nav-card" onClick={() => navigate('/statistics')}>
-                <div className="nav-card-header">
-                  <TbChartBar />
-                  <h2>Statistics</h2>
-                </div>
-                <p>
-                  Analyse repository statistics and language usage across the
-                  organisation.
-                </p>
-              </div>
-
-              <div className="nav-card" onClick={() => navigate('/projects')}>
-                <div className="nav-card-header">
-                  <TbUsers />
-                  <h2>Projects</h2>
-                </div>
-                <p>
-                  View all projects and their technology stacks across the
-                  organisation.
-                </p>
-              </div>
-
-              <a className="nav-card" href="/copilot">
-                <div className="nav-card-header">
-                  <VscCopilot />
-                  <h2>GitHub Copilot</h2>
-                </div>
-                <p>
-                  Analyse GitHub Copilot usage statistics organisation-wide and
-                  by team.
-                </p>
-              </a>
-
-              <a className="nav-card" href="/addressbook">
-                <div className="nav-card-header">
-                  <TbAddressBook />
-                  <h2>GitHub Address Book</h2>
-                </div>
-                <p>Translate GitHub Usernames to ONS Staff or vice versa.</p>
-              </a>
-
-              <a className="nav-card" href="/review/dashboard">
-                <div className="nav-card-header">
-                  <TbEditCircle />
-                  <h2>Review</h2>
-                </div>
-                <p>Authorised users can update the data on the Tech Radar.</p>
-              </a>
-              <a className="nav-card" href="/admin/dashboard">
-                <div className="nav-card-header">
-                  <TbUserShield />
-                  <h2>Admin</h2>
-                </div>
-                <p>Manage system-wide settings and configurations.</p>
-              </a>
+                return item.homeUseAnchor ? (
+                  <a key={item.path} className="nav-card" href={item.path}>
+                    {cardContent}
+                  </a>
+                ) : (
+                  <div
+                    key={item.path}
+                    className="nav-card"
+                    onClick={() => navigate(item.path)}
+                  >
+                    {cardContent}
+                  </div>
+                );
+              })}
             </div>
 
             <RecentBanners />

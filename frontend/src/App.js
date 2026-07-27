@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-
 const Home = lazy(() => import('./pages/HomePage'));
 const Radar = lazy(() => import('./pages/RadarPage'));
 const Statistics = lazy(() => import('./pages/StatisticsPage'));
@@ -9,6 +8,7 @@ const Projects = lazy(() => import('./pages/ProjectsPage'));
 const ReviewDashboard = lazy(() => import('./pages/ReviewPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const AddressBookPage = lazy(() => import('./pages/AddressBookPage'));
+const PolicyReportsPage = lazy(() => import('./pages/PolicyReportsPage'));
 const CopilotDashboard = lazy(() => import('./pages/CopilotPage'));
 const CopilotDashboardLandingPage = lazy(
   () => import('./pages/Copilot/LandingPage')
@@ -51,6 +51,7 @@ const App = () => {
           element={<Navigate to="/copilot/org/historic" replace />}
         />
         <Route path="/addressbook" element={<AddressBookPage />} />
+        <Route path="/github-policy-reports" element={<PolicyReportsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route
           path="/review/dashboard"
