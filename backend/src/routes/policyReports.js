@@ -21,22 +21,23 @@ router.get('/config', async (req, res) => {
 
 // GET /generateReport
 router.get('/generateReport', async (req, res) => {
-
   const reportType = req.query.type;
 
-	if (!reportType) {
-		logger.warn('Report type not specified');
-		return res.status(400).json({ error: 'Report type is required' });
-	}
+  if (!reportType) {
+    logger.warn('Report type not specified');
+    return res.status(400).json({ error: 'Report type is required' });
+  }
 
-	if (!REPORT_TYPES.includes(reportType)) {
-		logger.warn('Invalid report type specified');
-		return res.status(400).json({ error: 'Invalid report type' });
-	}
+  if (!REPORT_TYPES.includes(reportType)) {
+    logger.warn('Invalid report type specified');
+    return res.status(400).json({ error: 'Invalid report type' });
+  }
 
   try {
     // Placeholder for report generation logic
-    const reportData = { message: `${reportType} report generated successfully` };
+    const reportData = {
+      message: `${reportType} report generated successfully`,
+    };
     return res.json(reportData);
   } catch (error) {
     logger.error('Error generating policy report', { error: error.message });

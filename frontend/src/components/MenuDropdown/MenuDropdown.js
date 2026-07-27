@@ -87,7 +87,11 @@ function MenuDropdown({ setShowHelpModal }) {
               <button
                 key={item.path}
                 onClick={() => handleNavClick(item.path)}
-                className={isNavigationItemActive(item, location.pathname) ? 'active' : ''}
+                className={
+                  isNavigationItemActive(item, location.pathname)
+                    ? 'active'
+                    : ''
+                }
               >
                 <item.icon size={16} />
                 {item.label}
