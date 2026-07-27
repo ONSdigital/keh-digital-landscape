@@ -1,0 +1,435 @@
+.policy-reports-page-shell {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  background: hsl(var(--background));
+}
+
+.policy-reports-page-main {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.policy-reports-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px hsl(var(--foreground) / 4%);
+}
+
+.policy-reports-card-body {
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.policy-reports-stage-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.policy-reports-stage-kicker {
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.policy-reports-stage-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.policy-reports-stage-gate-note {
+  margin: 6px 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.policy-reports-stage-hidden-note {
+  border: 1px dashed hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 12px;
+  background: hsl(var(--secondary) / 45%);
+}
+
+.policy-reports-section-label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.policy-reports-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.policy-reports-flow-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.policy-reports-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.policy-reports-field-wide {
+  grid-column: 1 / -1;
+}
+
+.policy-reports-field label {
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+
+.policy-reports-text-input,
+.policy-reports-select-input,
+.policy-reports-date-input {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font: inherit;
+  padding: 8px 10px;
+}
+
+.policy-reports-text-input:focus,
+.policy-reports-select-input:focus,
+.policy-reports-date-input:focus {
+  outline: 2px solid hsl(var(--ring) / 18%);
+  outline-offset: 1px;
+  border-color: hsl(var(--ring));
+}
+
+.policy-reports-disclaimer-banner {
+  margin-top: 12px;
+  background: hsl(var(--info-box) / 18%);
+  border: 1px solid hsl(var(--info-box-border) / 55%);
+  color: hsl(var(--foreground));
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.policy-reports-access-block {
+  border: 1px dashed hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 12px;
+  background: hsl(var(--secondary) / 45%);
+}
+
+.policy-reports-access-head {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.policy-reports-auth-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.policy-reports-pill {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary));
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.policy-reports-signed-in-text {
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.policy-reports-btn {
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-radius: var(--radius);
+  min-height: 36px;
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.policy-reports-btn:hover {
+  background: hsl(var(--muted));
+}
+
+.policy-reports-btn-primary {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.policy-reports-btn-primary:hover {
+  background: hsl(var(--primary) / 92%);
+}
+
+.policy-reports-btn:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.policy-reports-focus-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--background));
+  padding: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.policy-reports-focus-card:hover {
+  border-color: hsl(var(--foreground) / 22%);
+}
+
+.policy-reports-focus-card h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.policy-reports-collapsible {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--background));
+  padding: 10px 12px;
+}
+
+.policy-reports-collapsible-summary {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  list-style: none;
+}
+
+.policy-reports-collapsible-summary::-webkit-details-marker {
+  display: none;
+}
+
+.policy-reports-collapsible-summary::before {
+  content: '+';
+  display: inline-block;
+  width: 14px;
+  margin-right: 8px;
+  color: hsl(var(--muted-foreground));
+}
+
+.policy-reports-collapsible[open] .policy-reports-collapsible-summary::before {
+  content: '-';
+}
+
+.policy-reports-collapsible-content {
+  margin-top: 8px;
+}
+
+.policy-reports-collapsible-hint {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}
+
+.policy-reports-collapsible-hint-collapse {
+  display: none;
+}
+
+.policy-reports-collapsible[open]
+  .policy-reports-collapsible-hint-expand {
+  display: none;
+}
+
+.policy-reports-collapsible[open]
+  .policy-reports-collapsible-hint-collapse {
+  display: inline;
+}
+
+.policy-reports-restricted-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.policy-reports-restricted-header h3 {
+  margin: 0;
+}
+
+.policy-reports-restricted-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.policy-reports-restricted-hint {
+  margin: 0;
+}
+
+.policy-reports-restricted-header .policy-reports-pill {
+  margin-left: auto;
+}
+
+.policy-reports-restricted-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.policy-reports-login-cta {
+  text-align: center;
+}
+
+.policy-reports-login-cta-inner {
+  display: flex;
+  justify-content: center;
+}
+
+.policy-reports-login-hint {
+  margin-top: 10px !important;
+  text-wrap: balance;
+}
+
+.policy-reports-resource-list {
+  display: grid;
+  gap: 8px;
+}
+
+.policy-reports-resource-item {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 10px;
+  background: hsl(var(--card));
+  transition: background 0.2s ease;
+}
+
+.policy-reports-resource-item:hover {
+  background: hsl(var(--secondary) / 45%);
+}
+
+.policy-reports-resource-item strong {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.policy-reports-resource-item input[type='checkbox'] {
+  accent-color: hsl(var(--primary));
+}
+
+.policy-reports-resource-item span {
+  display: block;
+  margin-top: 4px;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+}
+
+.policy-reports-resource-item-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.policy-reports-selection-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.policy-reports-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.policy-reports-selection-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--secondary));
+}
+
+.policy-reports-hint {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+}
+
+.policy-reports-hint-tight {
+  margin: 6px 0 0;
+}
+
+.policy-reports-no-margin {
+  margin: 0;
+}
+
+.policy-reports-no-bottom-margin {
+  margin-bottom: 0;
+}
+
+.policy-reports-actions-row {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.policy-reports-space-top-xs {
+  margin-top: 8px;
+}
+
+.policy-reports-space-top-sm {
+  margin-top: 14px;
+}
+
+.policy-reports-space-top-md {
+  margin-top: 18px;
+}
+
+@media (width <= 768px) {
+  .policy-reports-page-shell {
+    padding: 12px;
+  }
+
+  .policy-reports-card-body {
+    padding: 14px;
+  }
+
+  .policy-reports-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .policy-reports-stage-title {
+    font-size: 18px;
+  }
+}
