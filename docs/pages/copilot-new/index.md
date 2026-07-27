@@ -18,14 +18,14 @@ The landing page is designed around **progressive disclosure**: users see just e
 
 ## Structure
 
-| Section              | Route                  |
-| -------------------- | ---------------------- |
-| Landing Page         | `/copilot/home`        |
-| General Usage        | `/copilot/general`     |
-| IDE Code Completions | `/copilot/code-completions` |
-| Copilot Chat         | `/copilot/chat`        |
-| Agent Edits          | `/copilot/agent`       |
-| Legacy Usage         | `/copilot/legacy`      |
+| Section              | Route                          |
+| -------------------- | ------------------------------ |
+| Landing Page         | `/copilot/home`                |
+| General Usage        | `/copilot/general`             |
+| IDE Code Completions | `/copilot/code-completions`    |
+| Copilot Chat         | `/copilot/chat`                |
+| Agent Edits          | `/copilot/agent`               |
+| Legacy Usage         | `/copilot/legacy`              |
 
 ## Features
 
