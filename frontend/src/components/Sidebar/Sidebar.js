@@ -5,19 +5,13 @@ import HelpModal from '../Header/HelpModal';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import UserProfile from '../UserProfile/UserProfile';
 import Modal from '../BugReport/Modal';
-import { MdOutlineRadar } from 'react-icons/md';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import { TbHelp, TbBug } from 'react-icons/tb';
 import {
-  TbSmartHome,
-  TbEditCircle,
-  TbUserShield,
-  TbUsers,
-  TbChartBar,
-  TbHelp,
-  TbBug,
-  TbAddressBook,
-} from 'react-icons/tb';
-import { VscCopilot } from 'react-icons/vsc';
+  generalNavigationItems,
+  restrictedNavigationItems,
+  isNavigationItemActive,
+} from '../../constants/navigationConstants';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -44,61 +38,18 @@ const Sidebar = () => {
     setShowBugReportModal(false);
   };
 
-  const generalNavItems = [
-    { path: '/', label: 'Home', icon: <TbSmartHome />, isLink: true },
-    {
-      path: '/radar',
-      label: 'Tech Radar',
-      icon: <MdOutlineRadar />,
-      isLink: true,
-    },
-    {
-      path: '/statistics',
-      label: 'Statistics',
-      icon: <TbChartBar />,
-      isLink: true,
-    },
-    { path: '/projects', label: 'Projects', icon: <TbUsers />, isLink: true },
-    {
-      path: '/copilot',
-      label: 'GitHub Copilot',
-      icon: <VscCopilot />,
-      isLink: true,
-      hasChildren: true,
-    },
-    {
-      path: '/addressbook',
-      label: 'GitHub Address Book',
-      icon: <TbAddressBook />,
-      isLink: true,
-    },
-  ];
-
-  const restrictedNavItems = [
-    {
-      path: '/review/dashboard',
-      label: 'Review',
-      icon: <TbEditCircle />,
-      isLink: false,
-    },
-    {
-      path: '/admin/dashboard',
-      label: 'Admin',
-      icon: <TbUserShield />,
-      isLink: false,
-    },
-  ];
-
   const renderNavItems = items => {
     return items.map(item =>
       item.isLink ? (
         <Link
           key={item.path}
           to={item.path}
-          className={`sidebar-link ${item.hasChildren ? (location.pathname.includes(item.path) ? 'active' : '') : location.pathname === item.path ? 'active' : ''}`}
+          className={`sidebar-link ${isNavigationItemActive(item, location.pathname) ? 'active' : ''}`}
           aria-label={item.label}
         >
-          <span className="sidebar-icon">{item.icon}</span>
+          <span className="sidebar-icon">
+            <item.icon />
+          </span>
           {!isCollapsed && <span className="sidebar-label">{item.label}</span>}
         </Link>
       ) : (
@@ -108,7 +59,9 @@ const Sidebar = () => {
           className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
           aria-label={item.label}
         >
-          <span className="sidebar-icon">{item.icon}</span>
+          <span className="sidebar-icon">
+            <item.icon />
+          </span>
           {!isCollapsed && <span className="sidebar-label">{item.label}</span>}
         </a>
       )
@@ -118,14 +71,14 @@ const Sidebar = () => {
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <nav className="sidebar-nav">
-        {renderNavItems(generalNavItems)}
+        {renderNavItems(generalNavigationItems)}
 
         {/* Restricted Section */}
         <div className="sidebar-section">
           {!isCollapsed && (
             <div className="sidebar-section-title">Restricted</div>
           )}
-          {renderNavItems(restrictedNavItems)}
+          {renderNavItems(restrictedNavigationItems)}
         </div>
       </nav>
       <div className="sidebar-footer">
