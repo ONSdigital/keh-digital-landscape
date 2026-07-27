@@ -188,7 +188,7 @@ const SuggestionsAcceptanceGraph = ({
           />
           <Line
             dot={false}
-            strokeWidth={15}
+            strokeWidth={5}
             strokeLinecap="round"
             type="monotone"
             dataKey="acceptanceRate"
