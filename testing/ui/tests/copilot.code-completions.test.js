@@ -6,7 +6,9 @@ test('Code Completions page routes correctly from landing page', async ({
 }) => {
   await page.goto('http://localhost:3000/copilot/home');
   await page.getByText('IDE Code Completions').click();
-  await expect(page).toHaveURL('http://localhost:3000/copilot/code-completions');
+  await expect(page).toHaveURL(
+    'http://localhost:3000/copilot/code-completions'
+  );
 });
 
 test('Code Completions page shows skeleton loading state', async ({ page }) => {
@@ -23,7 +25,9 @@ test('Code Completions page shows skeleton loading state', async ({ page }) => {
     .toBeGreaterThan(0);
 });
 
-test('Code Completions page displays correct page structure', async ({ page }) => {
+test('Code Completions page displays correct page structure', async ({
+  page,
+}) => {
   await page.route('**/copilot/api/org/historic', async route => {
     await route.fulfill({
       status: 200,
@@ -40,7 +44,9 @@ test('Code Completions page displays correct page structure', async ({ page }) =
   await expect(
     page.getByRole('heading', { name: 'IDE Code Completions' })
   ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Overall Usage' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Overall Usage' })
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Suggestion vs Acceptance Size' })
   ).toBeVisible();
