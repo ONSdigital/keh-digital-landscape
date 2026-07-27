@@ -10,6 +10,7 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 import GraphSelect from '../../GraphSelect/GraphSelect';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
+import { LANGUAGE_NAMES } from '../../../constants/copilotConstants';
 import '../../../styles/Copilot/ReusableStyles.css';
 
 const LANGUAGE_MODE_OPTIONS = [
@@ -20,8 +21,8 @@ const LANGUAGE_MODE_OPTIONS = [
 const MAX_LANGUAGE_SLICES = 7;
 
 function formatLanguageName(name) {
-  const lowerName = name.toLowerCase();
-  return lowerName.charAt(0).toUpperCase() + lowerName.slice(1);
+  const normalizedName = name.toLowerCase();
+  return LANGUAGE_NAMES[normalizedName] || normalizedName.toUpperCase();
 }
 
 const LanguageBreakdownChart = ({ languageData }) => {
@@ -33,20 +34,22 @@ const LanguageBreakdownChart = ({ languageData }) => {
   const pieData = useMemo(() => {
     const selectedRows = languageData?.[selectedMode] ?? [];
 
-    const flattenedRows = selectedRows
-      .map(item => {
-        const [name, ratio] = Object.entries(item)[0] ?? [];
+    const aggregatedByLanguage = selectedRows.reduce((acc, item) => {
+      const [name, ratio] = Object.entries(item)[0] ?? [];
 
-        if (!name || name.toLowerCase() === 'unknown') {
-          return null;
-        }
+      if (!name || name.toLowerCase() === 'unknown') {
+        return acc;
+      }
 
-        return {
-          name: formatLanguageName(name),
-          value: typeof ratio === 'number' ? ratio * 100 : 0,
-        };
-      })
-      .filter(Boolean)
+      const formattedName = formatLanguageName(name);
+      const value = typeof ratio === 'number' ? ratio * 100 : 0;
+
+      acc[formattedName] = (acc[formattedName] || 0) + value;
+      return acc;
+    }, {});
+
+    const flattenedRows = Object.entries(aggregatedByLanguage)
+      .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
 
     const topRows = flattenedRows.slice(0, MAX_LANGUAGE_SLICES);
