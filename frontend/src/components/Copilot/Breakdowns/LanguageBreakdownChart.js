@@ -73,10 +73,7 @@ const LanguageBreakdownChart = ({ languageData }) => {
   }, [colorPalette, isDark, languageData, selectedMode]);
 
   return (
-    <div
-      className="usage-pie-chart-card"
-      style={{ touchAction: 'pan-y' }}
-    >
+    <div className="usage-pie-chart-card" style={{ touchAction: 'pan-y' }}>
       <GraphSelect
         options={LANGUAGE_MODE_OPTIONS}
         value={selectedMode}
