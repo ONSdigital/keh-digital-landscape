@@ -257,13 +257,11 @@
   display: none;
 }
 
-.policy-reports-collapsible[open]
-  .policy-reports-collapsible-hint-expand {
+.policy-reports-collapsible[open] .policy-reports-collapsible-hint-expand {
   display: none;
 }
 
-.policy-reports-collapsible[open]
-  .policy-reports-collapsible-hint-collapse {
+.policy-reports-collapsible[open] .policy-reports-collapsible-hint-collapse {
   display: inline;
 }
 

@@ -32,13 +32,14 @@ const SelectableEntityReport = ({
     </div>
 
     <p className="policy-reports-hint policy-reports-space-top-xs">
-      Showing first {resultCap} matches from up to {totalAccessible} {pluralLabel}.
+      Showing first {resultCap} matches from up to {totalAccessible}{' '}
+      {pluralLabel}.
     </p>
 
     <div className="policy-reports-selection-summary policy-reports-space-top-xs">
       <span className="policy-reports-hint">
-        {selectedItems.length} {selectedItems.length === 1 ? singularLabel : pluralLabel}{' '}
-        selected
+        {selectedItems.length}{' '}
+        {selectedItems.length === 1 ? singularLabel : pluralLabel} selected
       </span>
       <button
         className="policy-reports-btn"
@@ -84,7 +85,10 @@ const SelectableEntityReport = ({
     )}
 
     <div className="policy-reports-auth-row policy-reports-actions-row">
-      <button className="policy-reports-btn policy-reports-btn-primary" type="button">
+      <button
+        className="policy-reports-btn policy-reports-btn-primary"
+        type="button"
+      >
         {generateButtonLabel}
       </button>
     </div>
