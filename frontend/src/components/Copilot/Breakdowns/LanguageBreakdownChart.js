@@ -10,6 +10,7 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 import GraphSelect from '../../GraphSelect/GraphSelect';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
+import '../../../styles/Copilot/ReusableStyles.css';
 
 const LANGUAGE_MODE_OPTIONS = [
   { value: 'suggestions', label: 'Suggestions' },
@@ -70,7 +71,7 @@ const LanguageBreakdownChart = ({ languageData }) => {
 
   return (
     <div
-      className="copilot-graph-container copilot-graph-container--stacked"
+      className="usage-pie-chart-card"
       style={{ touchAction: 'pan-y' }}
     >
       <GraphSelect
@@ -86,8 +87,9 @@ const LanguageBreakdownChart = ({ languageData }) => {
             nameKey="name"
             cx="50%"
             cy="54%"
-            outerRadius={135}
-            innerRadius={78}
+            stroke={'hsl(var(--muted))'}
+            outerRadius={90}
+            innerRadius={50}
             label={false}
             labelLine={false}
             isAnimationActive

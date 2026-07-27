@@ -160,3 +160,13 @@ Copilot Dashboard */
   text-align: left;
   margin: 0;
 }
+
+.usage-pie-chart-card {
+  background: hsl(var(--card));
+  padding: 20px;
+  flex: 1;
+}
+
+.usage-pie-chart-card.skeleton {
+  height: 320px;
+}

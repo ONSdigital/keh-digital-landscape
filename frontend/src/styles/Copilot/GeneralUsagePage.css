@@ -84,20 +84,10 @@
   border-radius: var(--radius);
 }
 
-.usage-pie-chart-card.skeleton {
-  height: 320px;
-}
-
 .usage-pie-charts-grid {
   display: flex;
   flex-direction: row;
   gap: 16px;
-}
-
-.usage-pie-chart-card {
-  background: hsl(var(--card));
-  padding: 20px;
-  flex: 1;
 }
 
 .usage-pie-chart-header {
