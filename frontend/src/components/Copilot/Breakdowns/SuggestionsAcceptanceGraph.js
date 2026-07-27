@@ -13,6 +13,7 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import GraphSelect from '../../GraphSelect/GraphSelect';
+import { getChartPalette } from '../../../utilities/copilotChartColours';
 
 const TIME_BREAKDOWN_OPTIONS = [
   { value: 'day', label: 'Days' },
@@ -118,10 +119,11 @@ const SuggestionsAcceptanceGraph = ({
     return filtered.slice(-7);
   }, [data, includeWeekendUsage, timeBreakdown]);
 
+  const palette = getChartPalette(3, isDark);
   const colors = {
-    primary: isDark ? '#ff6b00' : '#052962',
-    secondary: isDark ? '#ff8c33' : '#0e58c5',
-    tertiary: isDark ? '#ffce99' : '#90b6ef',
+    primary: palette[0],
+    secondary: palette[1],
+    tertiary: palette[2],
     text: 'hsl(var(--muted-foreground))',
   };
 
@@ -176,7 +178,7 @@ const SuggestionsAcceptanceGraph = ({
             fill={colors.primary}
             yAxisId="left"
             legendType="rect"
-            name={LOC ? 'LOC Suggestions' : 'Suggestions'}
+            name={LOC ? 'LoC Suggestions' : 'Suggestions'}
           />
           <Bar
             radius={[10, 10, 0, 0]}
@@ -184,7 +186,7 @@ const SuggestionsAcceptanceGraph = ({
             fill={colors.secondary}
             yAxisId="left"
             legendType="rect"
-            name={LOC ? 'LOC Acceptances' : 'Acceptances'}
+            name={LOC ? 'LoC Acceptances' : 'Acceptances'}
           />
           <Line
             dot={false}

@@ -170,7 +170,7 @@ const AverageLOCSuggestionsAcceptance = ({
             stroke={colors.primary}
             yAxisId="left"
             legendType="line"
-            name="Average LOC Per Suggestion"
+            name="Average LoC Per Suggestion"
           />
           <Line
             dot={false}
@@ -181,7 +181,7 @@ const AverageLOCSuggestionsAcceptance = ({
             stroke={colors.secondary}
             yAxisId="left"
             legendType="line"
-            name="Average LOC Per Acceptance"
+            name="Average LoC Per Acceptance"
           />
           <YAxis
             tickLine={false}

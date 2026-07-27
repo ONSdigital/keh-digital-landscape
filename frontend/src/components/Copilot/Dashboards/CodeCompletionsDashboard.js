@@ -96,7 +96,6 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
 
       {chartDisplaySettings.locUsage && (
         <div className="copilot-dashboard-section">
-          <h3>LOC Suggestions, LOC Acceptances and LOC Acceptance Rate</h3>
           {loading ? (
             <div className="copilot-grid">
               <SkeletonStatCard />

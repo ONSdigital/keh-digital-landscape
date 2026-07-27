@@ -99,7 +99,7 @@ function CodeCompletionsPage() {
                       }))
                     }
                   />
-                  Include LOC usage
+                  Include LoC usage
                 </label>
               </div>
             )}
