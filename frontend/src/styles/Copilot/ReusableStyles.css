@@ -3,10 +3,12 @@ Copilot Dashboard */
 
 .copilot-dashboard-section {
   margin-bottom: 64px;
+  margin-top: 50px;
 }
 
 .copilot-dashboard-section-bottom {
   padding-bottom: 32px;
+  margin-top: 20px;
 }
 
 .copilot-back-button {
@@ -129,6 +131,12 @@ Copilot Dashboard */
   gap: 16px;
   max-width: 100%;
   padding-bottom: 20px;
+}
+
+.copilot-dashboard-section .copilot-grid,
+.copilot-dashboard-section .copilot-grid-average,
+.copilot-dashboard-section .usage-cards-grid {
+  margin-bottom: 75px;
 }
 
 .copilot-graph-container--old {
