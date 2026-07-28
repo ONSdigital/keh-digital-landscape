@@ -16,7 +16,7 @@ const getPolicyReportsConfig = async () => {
 
     // Extract unique organisation names (first-level directories under audit-results/)
     const organisationSet = new Set();
-    allObjects.forEach((obj) => {
+    allObjects.forEach(obj => {
       const relativePath = obj.Key.replace(AUDIT_PREFIX, '');
       const parts = relativePath.split('/');
       if (parts.length > 1 && parts[0]) {
@@ -42,18 +42,18 @@ const getPolicyReportsConfig = async () => {
  * @param {string} organisation - The organisation folder name in S3
  * @returns {Promise<Array<{name: string, lastModified: number}>>}
  */
-const getDatasetsByOrganisation = async (organisation) => {
+const getDatasetsByOrganisation = async organisation => {
   try {
     const orgPrefix = `${AUDIT_PREFIX}${organisation}/`;
     const objects = await s3Service.listObjects(BUCKET, orgPrefix);
 
     const datasets = objects
-      .filter((obj) => {
+      .filter(obj => {
         const relativePath = obj.Key.replace(orgPrefix, '');
         // Only direct JSON files (no subdirectories)
         return relativePath.endsWith('.json') && !relativePath.includes('/');
       })
-      .map((obj) => {
+      .map(obj => {
         const lastModified = obj.LastModified;
         return {
           name: lastModified.toISOString(),

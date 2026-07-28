@@ -19,16 +19,14 @@ export const fetchPolicyReportsConfig = async () => {
   }
 };
 
-export const fetchDatasetsByOrganisation = async (organisation) => {
+export const fetchDatasetsByOrganisation = async organisation => {
   try {
     const response = await customFetch(
       `/policy-reports/api/datasets?organisation=${encodeURIComponent(organisation)}`
     );
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch datasets: ${response.statusText}`
-      );
+      throw new Error(`Failed to fetch datasets: ${response.statusText}`);
     }
 
     const data = await response.json();

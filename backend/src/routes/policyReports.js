@@ -29,7 +29,9 @@ router.get('/datasets', async (req, res) => {
   const { organisation } = req.query;
 
   if (!organisation) {
-    return res.status(400).json({ error: 'organisation query parameter is required' });
+    return res
+      .status(400)
+      .json({ error: 'organisation query parameter is required' });
   }
 
   try {
