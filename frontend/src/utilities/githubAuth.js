@@ -93,7 +93,10 @@ export const loginWithGitHub = async ({ redirectPath, formState } = {}) => {
 
   // Persist form state if provided
   if (formState && (formState.organisation || formState.sourceDataset)) {
-    sessionStorage.setItem(GITHUB_AUTH_FORM_STORAGE_KEY, JSON.stringify(formState));
+    sessionStorage.setItem(
+      GITHUB_AUTH_FORM_STORAGE_KEY,
+      JSON.stringify(formState)
+    );
   }
 
   const baseUrl = `${getBackendUrl()}${SHARED_GITHUB_AUTH_BASE}/login`;
@@ -178,7 +181,10 @@ export const handleAuthCallback = async ({ redirectPath } = {}) => {
 
   // Restore codeVerifier temporarily for token exchange
   if (savedCodeVerifier) {
-    sessionStorage.setItem(GITHUB_AUTH_CODE_VERIFIER_STORAGE_KEY, savedCodeVerifier);
+    sessionStorage.setItem(
+      GITHUB_AUTH_CODE_VERIFIER_STORAGE_KEY,
+      savedCodeVerifier
+    );
   }
 
   const success = await exchangeCodeForToken(code, { redirectPath });
@@ -203,7 +209,7 @@ export const retrievePersistedFormState = () => {
   try {
     const stored = sessionStorage.getItem(GITHUB_AUTH_FORM_STORAGE_KEY);
     sessionStorage.removeItem(GITHUB_AUTH_FORM_STORAGE_KEY);
-    
+
     if (stored) {
       return JSON.parse(stored);
     }

@@ -6,7 +6,11 @@ const buildAuthRedirectUri = () => {
   return 'http://localhost:3000/github-policy-reports';
 };
 
-const buildGitHubAuthoriseUrl = ({ state, codeChallenge, codeChallengeMethod } = {}) => {
+const buildGitHubAuthoriseUrl = ({
+  state,
+  codeChallenge,
+  codeChallengeMethod,
+} = {}) => {
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_APP_CLIENT_ID,
     redirect_uri: buildAuthRedirectUri(),

@@ -20,7 +20,7 @@ The authentication system consists of three components working together:
 
 The system implements the GitHub web application flow with PKCE:
 
-```
+```text
 User                Frontend                Backend                GitHub
   |                     |                       |                    |
   |--Login Click------->|                       |                    |
@@ -297,7 +297,7 @@ import {
 } from '../utilities/githubAuth';
 ```
 
-2. Add authentication state:
+1. Add authentication state:
 
 ```javascript
 const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -305,11 +305,11 @@ const [isAuthLoading, setIsAuthLoading] = useState(true);
 const [username, setUsername] = useState(null);
 ```
 
-3. Add initialisation effect (see "Initialising on Page Load" above)
+1. Add initialisation effect (see "Initialising on Page Load" above)
 
-4. Add login and logout button handlers
+2. Add login and logout button handlers
 
-5. Conditionally render authenticated content:
+3. Conditionally render authenticated content:
 
 ```javascript
 {isAuthenticated ? (
@@ -325,7 +325,7 @@ Ensure these variables are set in the backend environment (this is application-w
 
 - `GITHUB_APP_CLIENT_ID` - GitHub App Client ID
 - `GITHUB_APP_CLIENT_SECRET` - GitHub App Client Secret
-- `FRONTEND_URL` - Frontend base URL (e.g., https://example.com) used for all auth redirects
+- `FRONTEND_URL` - Frontend base URL (e.g., <https://example.com>) used for all auth redirects
 - `NODE_ENV` - Set to 'production' for secure cookies
 
 ## Token Scope
