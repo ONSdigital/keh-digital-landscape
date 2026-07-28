@@ -36,16 +36,20 @@ export function processCodeCompletionData(data) {
     },
   };
 
-  // Dictionary for Acceptance graph (suggestions vs acceptances), format: { date: 'YYYY-MM-DD', suggestions, acceptances, acceptanceRate }
+  // List for Acceptance graph (suggestions vs acceptances), 
+  // Format: [{ date: 'YYYY-MM-DD', suggestions: daySuggested, acceptances: dayAccepted, acceptanceRate: dayAcceptanceRate }]
   let suggestedGraph = [];
 
-  // Dictionary for (Optional) Acceptance graph (lines of code suggested vs lines of code accepted), format: { date: 'YYYY-MM-DD', locSuggestions, locAcceptances, acceptanceRate }
+  // List for (Optional) Acceptance graph (lines of code suggested vs lines of code accepted), 
+  // Format: [{ date: 'YYYY-MM-DD', locSuggestions: dayLOCSuggested, locAcceptances: dayLOCAccepted, acceptanceRate: dayLOCAcceptanceRate, }]
   let suggestedLOCGraph = [];
 
-  // Dictionary for Average LOC size line graph (average lines of code per suggestion vs average lines of code per acceptance), format: { date: 'YYYY-MM-DD', avgLOCSuggested, avgLOCAccepted }
+  // List for Average LOC size line graph (average lines of code per suggestion vs average lines of code per acceptance), 
+  // Format: [{ date: 'YYYY-MM-DD', avgLOCSuggested: dayLOCSuggested / daySuggested, avgLOCAccepted: dayLOCAccepted / dayAccepted}]
   let averageSuggestedLOCGraph = [];
 
-  // Dictionary for percentage of suggestions/acceptances using 'x' language, format: {language: percentageUsed}
+  // Dictionary for percentage of suggestions/acceptances using 'x' language, 
+  // Format: {suggestions: [language: percentageUsed], acceptances: [language: percentageUsged]}
   let languagesUsedPieChart = {
     suggestions: [],
     acceptances: [],

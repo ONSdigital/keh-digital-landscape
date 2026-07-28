@@ -1,6 +1,16 @@
 import { test, expect } from 'playwright/test';
 import { copilotCodeCompletionsData } from './data/copilotCodeCompletionsData';
 
+async function mockCopilotAPI(page, data = copilotCodeCompletionsData) {
+  await page.route('**/copilot/api/org/historic', async route => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(data),
+    });
+  });
+}
+
 test('Code Completions page routes correctly from landing page', async ({
   page,
 }) => {
@@ -28,14 +38,7 @@ test('Code Completions page shows skeleton loading state', async ({ page }) => {
 test('Code Completions page displays correct page structure', async ({
   page,
 }) => {
-  await page.route('**/copilot/api/org/historic', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(copilotCodeCompletionsData),
-    });
-  });
-
+  await mockCopilotAPI(page);
   await page.goto('http://localhost:3000/copilot/code-completions');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
@@ -75,13 +78,7 @@ test('Code Completions page displays correct page structure', async ({
 test('Code Completions page reveals LoC cards when Include LoC usage is enabled', async ({
   page,
 }) => {
-  await page.route('**/copilot/api/org/historic', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(copilotCodeCompletionsData),
-    });
-  });
+  await mockCopilotAPI(page);
 
   await page.goto('http://localhost:3000/copilot/code-completions');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
