@@ -24,6 +24,8 @@ nav:
           - Tech Radar Service: backend/services/techRadarService.md
       - Utilities: backend/utilities.md
       - Local Development Data: backend/data.md
+  - Development Guides:
+      - Adding New Pages: developmentGuides/adding-new-pages.md
   - Contexts:
       - Theme: contexts/themeContext.md
       - Data: contexts/dataContext.md
