@@ -34,6 +34,11 @@ router.get('/datasets', async (req, res) => {
       .json({ error: 'organisation query parameter is required' });
   }
 
+  // Validate organisation name: only alphanumeric, hyphens, underscores
+  if (!/^[a-zA-Z0-9_-]+$/.test(organisation)) {
+    return res.status(400).json({ error: 'Invalid organisation name format' });
+  }
+
   try {
     const datasets = await getDatasetsByOrganisation(organisation);
     return res.status(200).json({ datasets });

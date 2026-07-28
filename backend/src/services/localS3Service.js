@@ -25,28 +25,6 @@ const BUCKET_DIR_MAP = {
  */
 class LocalS3Service {
   /**
-   * Resolve a path under DATA_DIR and block traversal outside that root.
-   * @param {...string} segments - Path segments to resolve under DATA_DIR
-   * @returns {string} Safe absolute path
-   */
-  _resolveSafePath(...segments) {
-    const rootPath = path.resolve(DATA_DIR);
-    const targetPath = path.resolve(rootPath, ...segments);
-    const relativePath = path.relative(rootPath, targetPath);
-
-    if (
-      relativePath === '' ||
-      (!relativePath.startsWith('..') && !path.isAbsolute(relativePath))
-    ) {
-      return targetPath;
-    }
-
-    const error = new Error('Invalid path: resolved path escapes data directory');
-    error.code = 'INVALID_PATH';
-    throw error;
-  }
-
-  /**
    * Resolve a bucket name or key to a local subdirectory name.
    * Falls back to using the raw bucket value if no mapping exists.
    * @param {string} bucket - Bucket key ('main', 'tat', 'copilot', 'policyAudit') or full AWS bucket name
@@ -87,7 +65,7 @@ class LocalS3Service {
    */
   async getObject(bucket, key) {
     const dir = this._resolveDir(bucket);
-    const filePath = this._resolveSafePath(dir, key);
+    const filePath = path.join(DATA_DIR, dir, key);
     try {
       const raw = await fs.readFile(filePath, 'utf-8');
       logger.info(`[LOCAL] Read ${dir}/${key}`);
@@ -109,7 +87,7 @@ class LocalS3Service {
    */
   async putObject(bucket, key, data) {
     const dir = this._resolveDir(bucket);
-    const filePath = this._resolveSafePath(dir, key);
+    const filePath = path.join(DATA_DIR, dir, key);
     const dirPath = path.dirname(filePath);
     try {
       await fs.mkdir(dirPath, { recursive: true });
@@ -162,13 +140,6 @@ class LocalS3Service {
             // Recursively walk subdirectories
             await walk(fullPath, relPath);
           } else if (entry.isFile()) {
-            // Validate fullPath stays within basePath to prevent traversal via symlinks
-            const normalizedFull = path.resolve(fullPath);
-            const normalizedBase = path.resolve(basePath);
-            if (!normalizedFull.startsWith(normalizedBase + path.sep) && normalizedFull !== normalizedBase) {
-              logger.warn(`[LOCAL] Path traversal attempt detected: ${normalizedFull}`);
-              continue;
-            }
             // Get file stats for LastModified
             const stats = await fs.stat(fullPath);
             results.push({
