@@ -74,7 +74,8 @@ const PolicyReportsPage = () => {
   const [teamOptions, setTeamOptions] = useState([]);
   const [repositoryResultCap, setRepositoryResultCap] = useState(0);
   const [teamResultCap, setTeamResultCap] = useState(0);
-  const [totalAccessibleRepositories, setTotalAccessibleRepositories] = useState(0);
+  const [totalAccessibleRepositories, setTotalAccessibleRepositories] =
+    useState(0);
   const [totalAccessibleTeams, setTotalAccessibleTeams] = useState(0);
 
   // Suppress unused-variable warnings until the setters are wired to a future fetch
@@ -240,7 +241,9 @@ const PolicyReportsPage = () => {
                         className="policy-reports-select-input"
                         name="comparison-dataset"
                         value={comparisonDataset}
-                        onChange={event => setComparisonDataset(event.target.value)}
+                        onChange={event =>
+                          setComparisonDataset(event.target.value)
+                        }
                       >
                         <option value="">Select comparison dataset</option>
                         {comparisonDatasetOptions.map(dataset => (
