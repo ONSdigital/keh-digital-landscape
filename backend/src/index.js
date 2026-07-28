@@ -23,6 +23,7 @@ const copilotRoutes = require('./routes/copilot');
 const userRoutes = require('./routes/user');
 const addressbookRoutes = require('./routes/addressBook');
 const alertsRoutes = require('./routes/alerts');
+const githubAuthRoutes = require('./routes/githubAuth');
 const policyReportsRoutes = require('./routes/policyReports');
 
 const app = express();
@@ -89,6 +90,7 @@ app.use('/copilot/api', externalApiLimiter, copilotRoutes);
 app.use('/user/api', userApiLimiter, userRoutes);
 app.use('/addressbook/api', userApiLimiter, addressbookRoutes);
 app.use('/alerts/api', externalApiLimiter, alertsRoutes);
+app.use('/api/github/auth', userApiLimiter, githubAuthRoutes);
 app.use('/policy-reports/api', userApiLimiter, policyReportsRoutes);
 
 // Error handling
