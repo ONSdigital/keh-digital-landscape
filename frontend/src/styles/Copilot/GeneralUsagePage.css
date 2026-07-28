@@ -84,21 +84,22 @@
   border-radius: var(--radius);
 }
 
+.usage-pie-chart-card.skeleton {
+  height: 320px;
+}
+
 .usage-pie-charts-grid {
   display: flex;
   flex-direction: row;
   gap: 16px;
 }
 
-<<<<<<< HEAD
-=======
 .usage-pie-chart-card {
   background: hsl(var(--card));
   padding: 20px;
   flex: 1;
 }
 
->>>>>>> 1819975 (KEH-2319: General Usage Page (#312))
 .usage-pie-chart-header {
   display: flex;
   align-items: center;
