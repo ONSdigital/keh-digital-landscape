@@ -8,7 +8,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "ag-grid-community": "35.1.0",
     "ag-grid-react": "^35.0.0",
-    "brace-expansion": "^1.1.16",
+    "brace-expansion": "^5.0.8",
     "date-fns": "^4.1.0",
     "http-proxy-middleware": "^4.1.1",
     "js-yaml": "^4.3.0",
