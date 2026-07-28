@@ -242,7 +242,9 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="source-dataset"
                     value={sourceDataset}
-                    disabled={!organisation || isDatasetsLoading || isRestoringFormState}
+                    disabled={
+                      !organisation || isDatasetsLoading || isRestoringFormState
+                    }
                     onChange={event => {
                       setSourceDataset(event.target.value);
                       setComparisonDataset('');
