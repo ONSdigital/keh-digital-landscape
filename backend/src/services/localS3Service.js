@@ -119,7 +119,15 @@ class LocalS3Service {
    */
   async listObjects(bucket, prefix = '') {
     const dir = this._resolveDir(bucket);
-    const basePath = path.join(DATA_DIR, dir, prefix);
+    const bucketRoot = path.resolve(DATA_DIR, dir);
+    const basePath = path.resolve(bucketRoot, prefix || '');
+    const isWithinBucketRoot =
+      basePath === bucketRoot || basePath.startsWith(`${bucketRoot}${path.sep}`);
+
+    if (!isWithinBucketRoot) {
+      logger.warn(`[LOCAL] Rejected unsafe prefix for ${dir}: ${prefix}`);
+      throw new Error('Invalid prefix path');
+    }
 
     try {
       const results = [];
