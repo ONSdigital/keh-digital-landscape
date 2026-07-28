@@ -3,30 +3,34 @@ import PageBanner from '../components/PageBanner/PageBanner';
 import Layout from '../components/Layout/Layout';
 import CollapsibleReportSection from '../components/policyReports/CollapsibleReportSection/CollapsibleReportSection';
 import SelectableEntityReport from '../components/policyReports/SelectableEntityReport/SelectableEntityReport';
-import { fetchPolicyReportsConfig } from '../utilities/getPolicyReportsConfig';
+import {
+  fetchPolicyReportsConfig,
+  fetchDatasetsByOrganisation,
+} from '../utilities/getPolicyReportsConfig';
 import '../styles/PolicyReportsPage.css';
 
 const PolicyReportsPage = () => {
   const [reportConfig, setReportConfig] = useState({
     organisationOptions: [],
-    sourceDatasetOptions: [],
-    comparisonDatasetOptions: [],
-    repositoryOptions: [],
-    teamOptions: [],
-    repositoryResultCap: 10,
-    teamResultCap: 10,
-    totalAccessibleRepositories: 0,
-    totalAccessibleTeams: 0,
   });
 
   const [organisation, setOrganisation] = useState('');
+  const [datasets, setDatasets] = useState([]);
+  const [isDatasetsLoading, setIsDatasetsLoading] = useState(false);
   const [sourceDataset, setSourceDataset] = useState('');
+  const [comparisonDataset, setComparisonDataset] = useState('');
   const [isGitHubAuthenticated, setIsGitHubAuthenticated] = useState(false);
   const [githubUsername] = useState('username');
   const [repositorySearch, setRepositorySearch] = useState('');
   const [teamSearch, setTeamSearch] = useState('');
   const [selectedRepositories, setSelectedRepositories] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
+
+  // Datasets older than the selected source are valid comparison targets
+  const selectedSourceDataset = datasets.find(d => d.name === sourceDataset);
+  const comparisonDatasetOptions = selectedSourceDataset
+    ? datasets.filter(d => d.lastModified < selectedSourceDataset.lastModified)
+    : [];
 
   const isStageTwoEnabled = Boolean(organisation && sourceDataset);
 
@@ -37,31 +41,61 @@ const PolicyReportsPage = () => {
 
       setReportConfig({
         organisationOptions: config.organisationOptions || [],
-        sourceDatasetOptions: config.sourceDatasetOptions || [],
-        comparisonDatasetOptions: config.comparisonDatasetOptions || [],
-        repositoryOptions: config.repositoryOptions || [],
-        teamOptions: config.teamOptions || [],
-        repositoryResultCap: config.repositoryResultCap || 10,
-        teamResultCap: config.teamResultCap || 10,
-        totalAccessibleRepositories: config.totalAccessibleRepositories || 0,
-        totalAccessibleTeams: config.totalAccessibleTeams || 0,
       });
     };
 
     loadPolicyReportsConfig();
   }, []);
 
-  const filteredRepositories = reportConfig.repositoryOptions
+  useEffect(() => {
+    if (!organisation) {
+      setDatasets([]);
+      setSourceDataset('');
+      setComparisonDataset('');
+      return;
+    }
+
+    const loadDatasets = async () => {
+      setIsDatasetsLoading(true);
+      setSourceDataset('');
+      setComparisonDataset('');
+      setSelectedRepositories([]);
+      setSelectedTeams([]);
+      setIsGitHubAuthenticated(false);
+      const fetched = await fetchDatasetsByOrganisation(organisation);
+      setDatasets(fetched);
+      setIsDatasetsLoading(false);
+    };
+
+    loadDatasets();
+  }, [organisation]);
+
+  const [repositoryOptions, setRepositoryOptions] = useState([]);
+  const [teamOptions, setTeamOptions] = useState([]);
+  const [repositoryResultCap, setRepositoryResultCap] = useState(0);
+  const [teamResultCap, setTeamResultCap] = useState(0);
+  const [totalAccessibleRepositories, setTotalAccessibleRepositories] = useState(0);
+  const [totalAccessibleTeams, setTotalAccessibleTeams] = useState(0);
+
+  // Suppress unused-variable warnings until the setters are wired to a future fetch
+  void setRepositoryOptions;
+  void setTeamOptions;
+  void setRepositoryResultCap;
+  void setTeamResultCap;
+  void setTotalAccessibleRepositories;
+  void setTotalAccessibleTeams;
+
+  const filteredRepositories = repositoryOptions
     .filter(repo =>
       repo.toLowerCase().includes(repositorySearch.trim().toLowerCase())
     )
-    .slice(0, reportConfig.repositoryResultCap);
+    .slice(0, repositoryResultCap || repositoryOptions.length);
 
-  const filteredTeams = reportConfig.teamOptions
+  const filteredTeams = teamOptions
     .filter(team =>
       team.toLowerCase().includes(teamSearch.trim().toLowerCase())
     )
-    .slice(0, reportConfig.teamResultCap);
+    .slice(0, teamResultCap || teamOptions.length);
 
   const toggleRepositorySelection = repositoryName => {
     setSelectedRepositories(prev =>
@@ -137,12 +171,25 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="source-dataset"
                     value={sourceDataset}
-                    onChange={event => setSourceDataset(event.target.value)}
+                    disabled={!organisation || isDatasetsLoading}
+                    onChange={event => {
+                      setSourceDataset(event.target.value);
+                      setComparisonDataset('');
+                      setSelectedRepositories([]);
+                      setSelectedTeams([]);
+                    }}
                   >
-                    <option value="">Select source dataset</option>
-                    {reportConfig.sourceDatasetOptions.map(dataset => (
-                      <option key={dataset} value={dataset}>
-                        {dataset}
+                    <option value="">
+                      {isDatasetsLoading
+                        ? 'Loading datasets…'
+                        : 'Select source dataset'}
+                    </option>
+                    {datasets.map(dataset => (
+                      <option key={dataset.name} value={dataset.name}>
+                        {new Date(dataset.name).toLocaleString('en-GB', {
+                          dateStyle: 'medium',
+                          timeStyle: 'short',
+                        })}
                       </option>
                     ))}
                   </select>
@@ -192,10 +239,16 @@ const PolicyReportsPage = () => {
                         id="comparison-dataset"
                         className="policy-reports-select-input"
                         name="comparison-dataset"
+                        value={comparisonDataset}
+                        onChange={event => setComparisonDataset(event.target.value)}
                       >
-                        {reportConfig.comparisonDatasetOptions.map(dataset => (
-                          <option key={dataset} value={dataset}>
-                            {dataset}
+                        <option value="">Select comparison dataset</option>
+                        {comparisonDatasetOptions.map(dataset => (
+                          <option key={dataset.name} value={dataset.name}>
+                            {new Date(dataset.name).toLocaleString('en-GB', {
+                              dateStyle: 'medium',
+                              timeStyle: 'short',
+                            })}
                           </option>
                         ))}
                       </select>
@@ -277,10 +330,8 @@ const PolicyReportsPage = () => {
                             searchPlaceholder="Type to filter accessible repositories"
                             searchValue={repositorySearch}
                             onSearchChange={setRepositorySearch}
-                            resultCap={reportConfig.repositoryResultCap}
-                            totalAccessible={
-                              reportConfig.totalAccessibleRepositories
-                            }
+                            resultCap={repositoryResultCap}
+                            totalAccessible={totalAccessibleRepositories}
                             selectedItems={selectedRepositories}
                             filteredItems={filteredRepositories}
                             onClearSelection={() => setSelectedRepositories([])}
@@ -302,8 +353,8 @@ const PolicyReportsPage = () => {
                             searchPlaceholder="Type to filter accessible teams"
                             searchValue={teamSearch}
                             onSearchChange={setTeamSearch}
-                            resultCap={reportConfig.teamResultCap}
-                            totalAccessible={reportConfig.totalAccessibleTeams}
+                            resultCap={teamResultCap}
+                            totalAccessible={totalAccessibleTeams}
                             selectedItems={selectedTeams}
                             filteredItems={filteredTeams}
                             onClearSelection={() => setSelectedTeams([])}
