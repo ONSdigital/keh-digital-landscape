@@ -383,13 +383,13 @@ test('Adding a technology with tags saves tag values', async ({ page }) => {
   await expect(saveConfirmModal).toBeVisible();
   await saveConfirmModal.getByRole('button', { name: 'Yes' }).click();
 
-  await expect(
-    page.locator('text=Changes saved successfully!')
-  ).toBeVisible();
+  await expect(page.locator('text=Changes saved successfully!')).toBeVisible();
 
   expect(Array.isArray(savedRequestEntries)).toBe(true);
 
-  const addedEntry = savedRequestEntries.find(entry => entry.title === techName);
+  const addedEntry = savedRequestEntries.find(
+    entry => entry.title === techName
+  );
   expect(addedEntry).toBeTruthy();
   expect(addedEntry.tags).toEqual(['machine-learning', 'data-processing']);
   expect(addedEntry.tags.every(tag => typeof tag === 'string')).toBe(true);
