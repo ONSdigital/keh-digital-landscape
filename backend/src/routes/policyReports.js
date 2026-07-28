@@ -1,6 +1,9 @@
 const logger = require('../config/logger');
 const express = require('express');
-const { getPolicyReportsConfig } = require('../services/policyReportsService');
+const {
+  getPolicyReportsConfig,
+  getDatasetsByOrganisation,
+} = require('../services/policyReportsService');
 
 const router = express.Router();
 
@@ -13,6 +16,28 @@ router.get('/config', async (req, res) => {
     return res.status(200).json(config);
   } catch (error) {
     logger.error('Error fetching policy report configuration', {
+      error: error.message,
+    });
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// GET /datasets?organisation=<org>
+// Returns all datasets for an organisation sorted newest-first.
+// The frontend derives comparison options by filtering to datasets older than the selected source.
+router.get('/datasets', async (req, res) => {
+  const { organisation } = req.query;
+
+  if (!organisation) {
+    return res.status(400).json({ error: 'organisation query parameter is required' });
+  }
+
+  try {
+    const datasets = await getDatasetsByOrganisation(organisation);
+    return res.status(200).json({ datasets });
+  } catch (error) {
+    logger.error('Error fetching datasets for organisation', {
+      organisation,
       error: error.message,
     });
     return res.status(500).json({ error: 'Internal Server Error' });
