@@ -7,6 +7,14 @@ import {
   fetchPolicyReportsConfig,
   fetchDatasetsByOrganisation,
 } from '../utilities/getPolicyReportsConfig';
+import {
+  checkAuthStatus,
+  handleAuthCallback,
+  loginWithGitHub,
+  logoutUser,
+  fetchGitHubUserProfile,
+  retrievePersistedFormState,
+} from '../utilities/githubAuth';
 import '../styles/PolicyReportsPage.css';
 
 const PolicyReportsPage = () => {
@@ -20,11 +28,18 @@ const PolicyReportsPage = () => {
   const [sourceDataset, setSourceDataset] = useState('');
   const [comparisonDataset, setComparisonDataset] = useState('');
   const [isGitHubAuthenticated, setIsGitHubAuthenticated] = useState(false);
-  const [githubUsername] = useState('username');
+  const [isGitHubAuthLoading, setIsGitHubAuthLoading] = useState(true);
+  const [githubUsername, setGithubUsername] = useState(null);
   const [repositorySearch, setRepositorySearch] = useState('');
   const [teamSearch, setTeamSearch] = useState('');
   const [selectedRepositories, setSelectedRepositories] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
+  const [persistedFormState, setPersistedFormState] = useState(null);
+
+  // Track whether we're in the process of restoring form state
+  const isRestoringFormState = persistedFormState !== null;
+
+  const oauthRedirectPath = '/github-policy-reports';
 
   // Datasets older than the selected source are valid comparison targets
   const selectedSourceDataset = datasets.find(d => d.name === sourceDataset);
@@ -48,6 +63,35 @@ const PolicyReportsPage = () => {
   }, []);
 
   useEffect(() => {
+    const initialiseGitHubAuth = async () => {
+      setIsGitHubAuthLoading(true);
+
+      await handleAuthCallback({ redirectPath: oauthRedirectPath });
+
+      const authenticated = await checkAuthStatus();
+
+      if (authenticated) {
+        const profile = await fetchGitHubUserProfile();
+        if (profile) {
+          setGithubUsername(profile.login);
+        }
+
+        // Store form state for restoration after datasets load
+        const formState = retrievePersistedFormState();
+        if (formState.organisation) {
+          setOrganisation(formState.organisation);
+          setPersistedFormState(formState);
+        }
+      }
+
+      setIsGitHubAuthenticated(authenticated);
+      setIsGitHubAuthLoading(false);
+    };
+
+    initialiseGitHubAuth();
+  }, []);
+
+  useEffect(() => {
     if (!organisation) {
       setDatasets([]);
       setSourceDataset('');
@@ -61,7 +105,6 @@ const PolicyReportsPage = () => {
       setComparisonDataset('');
       setSelectedRepositories([]);
       setSelectedTeams([]);
-      setIsGitHubAuthenticated(false);
       const fetched = await fetchDatasetsByOrganisation(organisation);
       setDatasets(fetched);
       setIsDatasetsLoading(false);
@@ -69,6 +112,14 @@ const PolicyReportsPage = () => {
 
     loadDatasets();
   }, [organisation]);
+
+  // Restore sourceDataset after datasets load for the restored organisation
+  useEffect(() => {
+    if (datasets.length > 0 && persistedFormState?.sourceDataset) {
+      setSourceDataset(persistedFormState.sourceDataset);
+      setPersistedFormState(null); // Clear after applying
+    }
+  }, [datasets, persistedFormState]);
 
   const [repositoryOptions, setRepositoryOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
@@ -114,6 +165,24 @@ const PolicyReportsPage = () => {
     );
   };
 
+  const handleGitHubLogin = async () => {
+    await loginWithGitHub({
+      redirectPath: oauthRedirectPath,
+      formState: {
+        organisation,
+        sourceDataset,
+      },
+    });
+  };
+
+  const handleGitHubLogout = async () => {
+    const success = await logoutUser();
+    if (success) {
+      setIsGitHubAuthenticated(false);
+      setGithubUsername(null);
+    }
+  };
+
   return (
     <Layout
       headerProps={{ hideSearch: true }}
@@ -154,6 +223,7 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="organisation"
                     value={organisation}
+                    disabled={isRestoringFormState}
                     onChange={event => setOrganisation(event.target.value)}
                   >
                     <option value="">Select organisation</option>
@@ -172,7 +242,7 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="source-dataset"
                     value={sourceDataset}
-                    disabled={!organisation || isDatasetsLoading}
+                    disabled={!organisation || isDatasetsLoading || isRestoringFormState}
                     onChange={event => {
                       setSourceDataset(event.target.value);
                       setComparisonDataset('');
@@ -288,12 +358,12 @@ const PolicyReportsPage = () => {
                       {isGitHubAuthenticated && (
                         <div className="policy-reports-restricted-auth-actions">
                           <span className="policy-reports-signed-in-text">
-                            Signed in as @{githubUsername}
+                            Signed in as @{githubUsername || 'user'}
                           </span>
                           <button
                             className="policy-reports-btn"
                             type="button"
-                            onClick={() => setIsGitHubAuthenticated(false)}
+                            onClick={handleGitHubLogout}
                           >
                             Log out
                           </button>
@@ -307,9 +377,12 @@ const PolicyReportsPage = () => {
                           <button
                             className="policy-reports-btn policy-reports-btn-primary"
                             type="button"
-                            onClick={() => setIsGitHubAuthenticated(true)}
+                            onClick={handleGitHubLogin}
+                            disabled={isGitHubAuthLoading}
                           >
-                            Log in with GitHub
+                            {isGitHubAuthLoading
+                              ? 'Checking GitHub authentication...'
+                              : 'Log in with GitHub'}
                           </button>
                         </div>
                         <p className="policy-reports-hint policy-reports-no-margin policy-reports-login-hint">

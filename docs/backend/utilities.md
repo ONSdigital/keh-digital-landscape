@@ -7,7 +7,8 @@ The backend utilities provide essential helper functions and transformers that s
 The utilities directory contains:
 
 - **Copilot Admin Authorisation** - Managing admin access and team list retrieval with caching
-- **GitHub App Authentication** - Secure authentication with GitHub APIs
+- **GitHub App Authentication (User)** - Secure user login with GitHub Apps (see [githubAuth.md](githubAuth.md) for full documentation)
+- **GitHub App Authentication (Server)** - Server-to-server authentication for GitHub API operations
 - **Project Data Transformation** - Converting between data formats
 - **Technology Array Management** - Updating technology arrays
 
