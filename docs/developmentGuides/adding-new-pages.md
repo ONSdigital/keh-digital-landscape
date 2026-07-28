@@ -83,7 +83,7 @@ In `backend/src/index.js`, import the new routes module and mount it under an ap
 Available rate limiters (defined in `backend/src/config/rateLimiter.js`):
 
 | Limiter | Intended use |
-|---|---|
+| --- | --- |
 | `generalApiLimiter` | Public/unauthenticated endpoints |
 | `userApiLimiter` | Authenticated user endpoints |
 | `adminApiLimiter` | Admin-only endpoints |
@@ -275,7 +275,7 @@ export const homePageNavigationItems = [
 **Navigation item fields:**
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `path` | `string` | React Router path |
 | `label` | `string` | Display name in sidebar and home page |
 | `description` | `string` | Subtitle shown on the home page card |
