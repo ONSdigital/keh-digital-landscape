@@ -15,6 +15,12 @@ import {
   fetchGitHubUserProfile,
   retrievePersistedFormState,
 } from '../utilities/githubAuth';
+import {
+  fetchDatasetRepositoriesForUser,
+} from '../utilities/policyReports/getRepositories';
+import {
+  fetchDatasetTeamsForUser,
+} from '../utilities/policyReports/getTeams';
 import '../styles/PolicyReportsPage.css';
 
 const PolicyReportsPage = () => {
@@ -123,19 +129,50 @@ const PolicyReportsPage = () => {
 
   const [repositoryOptions, setRepositoryOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
-  const [repositoryResultCap, setRepositoryResultCap] = useState(0);
-  const [teamResultCap, setTeamResultCap] = useState(0);
+  const [repositoryResultCap, setRepositoryResultCap] = useState(25);
+  const [teamResultCap, setTeamResultCap] = useState(25);
   const [totalAccessibleRepositories, setTotalAccessibleRepositories] =
     useState(0);
   const [totalAccessibleTeams, setTotalAccessibleTeams] = useState(0);
+  const [isLoadingAccessibleReposAndTeams, setIsLoadingAccessibleReposAndTeams] =
+    useState(false);
 
-  // Suppress unused-variable warnings until the setters are wired to a future fetch
-  void setRepositoryOptions;
-  void setTeamOptions;
-  void setRepositoryResultCap;
-  void setTeamResultCap;
-  void setTotalAccessibleRepositories;
-  void setTotalAccessibleTeams;
+  const ITEMS_PER_PAGE = 25;
+
+  // Load dataset repositories and teams the user has access to when dataset is selected
+  useEffect(() => {
+    if (!isGitHubAuthenticated || !organisation || !sourceDataset) {
+      setRepositoryOptions([]);
+      setTeamOptions([]);
+      setTotalAccessibleRepositories(0);
+      setTotalAccessibleTeams(0);
+      return;
+    }
+
+    const loadDatasetReposAndTeams = async () => {
+      setIsLoadingAccessibleReposAndTeams(true);
+      setRepositorySearch('');
+      setTeamSearch('');
+      setSelectedRepositories([]);
+      setSelectedTeams([]);
+      setRepositoryResultCap(ITEMS_PER_PAGE);
+      setTeamResultCap(ITEMS_PER_PAGE);
+
+      const repositories = await fetchDatasetRepositoriesForUser(
+        organisation,
+        sourceDataset
+      );
+      const teams = await fetchDatasetTeamsForUser(organisation, sourceDataset);
+
+      setRepositoryOptions(repositories);
+      setTeamOptions(teams);
+      setTotalAccessibleRepositories(repositories.length);
+      setTotalAccessibleTeams(teams.length);
+      setIsLoadingAccessibleReposAndTeams(false);
+    };
+
+    loadDatasetReposAndTeams();
+  }, [isGitHubAuthenticated, organisation, sourceDataset]);
 
   const filteredRepositories = repositoryOptions
     .filter(repo =>
@@ -163,6 +200,14 @@ const PolicyReportsPage = () => {
         ? prev.filter(item => item !== teamName)
         : [...prev, teamName]
     );
+  };
+
+  const handleLoadMoreRepositories = () => {
+    setRepositoryResultCap(prev => prev + ITEMS_PER_PAGE);
+  };
+
+  const handleLoadMoreTeams = () => {
+    setTeamResultCap(prev => prev + ITEMS_PER_PAGE);
   };
 
   const handleGitHubLogin = async () => {
@@ -259,7 +304,7 @@ const PolicyReportsPage = () => {
                     </option>
                     {datasets.map(dataset => (
                       <option key={dataset.name} value={dataset.name}>
-                        {new Date(dataset.name).toLocaleString('en-GB', {
+                        {new Date(dataset.displayName).toLocaleString('en-GB', {
                           dateStyle: 'medium',
                           timeStyle: 'short',
                         })}
@@ -320,7 +365,7 @@ const PolicyReportsPage = () => {
                         <option value="">Select comparison dataset</option>
                         {comparisonDatasetOptions.map(dataset => (
                           <option key={dataset.name} value={dataset.name}>
-                            {new Date(dataset.name).toLocaleString('en-GB', {
+                            {new Date(dataset.displayName).toLocaleString('en-GB', {
                               dateStyle: 'medium',
                               timeStyle: 'short',
                             })}
@@ -394,55 +439,68 @@ const PolicyReportsPage = () => {
                       </div>
                     ) : (
                       <>
-                        <p className="policy-reports-hint policy-reports-no-margin policy-reports-space-top-sm">
-                          Choose a report type to configure and generate.
-                        </p>
+                        {isLoadingAccessibleReposAndTeams ? (
+                          <div className="policy-reports-stage-hidden-note policy-reports-space-top-sm">
+                            <p className="policy-reports-stage-gate-note">
+                              Loading your accessible repositories and
+                              teams…
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="policy-reports-hint policy-reports-no-margin policy-reports-space-top-sm">
+                              Choose a report type to configure and generate.
+                            </p>
 
-                        <CollapsibleReportSection
-                          title="Repository report"
-                          className="policy-reports-space-top-xs"
-                        >
-                          <SelectableEntityReport
-                            searchId="repository-search"
-                            searchLabel="Search repositories"
-                            searchPlaceholder="Type to filter accessible repositories"
-                            searchValue={repositorySearch}
-                            onSearchChange={setRepositorySearch}
-                            resultCap={repositoryResultCap}
-                            totalAccessible={totalAccessibleRepositories}
-                            selectedItems={selectedRepositories}
-                            filteredItems={filteredRepositories}
-                            onClearSelection={() => setSelectedRepositories([])}
-                            onToggleSelection={toggleRepositorySelection}
-                            emptyStateMessage="No repositories match your search."
-                            generateButtonLabel="Generate Repository Report"
-                            singularLabel="repository"
-                            pluralLabel="repositories"
-                          />
-                        </CollapsibleReportSection>
+                            <CollapsibleReportSection
+                              title="Repository report"
+                              className="policy-reports-space-top-xs"
+                            >
+                              <SelectableEntityReport
+                                searchId="repository-search"
+                                searchLabel="Search repositories"
+                                searchPlaceholder="Type to filter accessible repositories"
+                                searchValue={repositorySearch}
+                                onSearchChange={setRepositorySearch}
+                                resultCap={repositoryResultCap}
+                                totalAccessible={totalAccessibleRepositories}
+                                selectedItems={selectedRepositories}
+                                filteredItems={filteredRepositories}
+                                onClearSelection={() => setSelectedRepositories([])}
+                                onToggleSelection={toggleRepositorySelection}
+                                onLoadMore={handleLoadMoreRepositories}
+                                emptyStateMessage="No repositories match your search."
+                                generateButtonLabel="Generate Repository Report"
+                                singularLabel="repository"
+                                pluralLabel="repositories"
+                              />
+                            </CollapsibleReportSection>
 
-                        <CollapsibleReportSection
-                          title="Team report"
-                          className="policy-reports-space-top-sm"
-                        >
-                          <SelectableEntityReport
-                            searchId="team-search"
-                            searchLabel="Search teams"
-                            searchPlaceholder="Type to filter accessible teams"
-                            searchValue={teamSearch}
-                            onSearchChange={setTeamSearch}
-                            resultCap={teamResultCap}
-                            totalAccessible={totalAccessibleTeams}
-                            selectedItems={selectedTeams}
-                            filteredItems={filteredTeams}
-                            onClearSelection={() => setSelectedTeams([])}
-                            onToggleSelection={toggleTeamSelection}
-                            emptyStateMessage="No teams match your search."
-                            generateButtonLabel="Generate Team Report"
-                            singularLabel="team"
-                            pluralLabel="teams"
-                          />
-                        </CollapsibleReportSection>
+                            <CollapsibleReportSection
+                              title="Team report"
+                              className="policy-reports-space-top-sm"
+                            >
+                              <SelectableEntityReport
+                                searchId="team-search"
+                                searchLabel="Search teams"
+                                searchPlaceholder="Type to filter accessible teams"
+                                searchValue={teamSearch}
+                                onSearchChange={setTeamSearch}
+                                resultCap={teamResultCap}
+                                totalAccessible={totalAccessibleTeams}
+                                selectedItems={selectedTeams}
+                                filteredItems={filteredTeams}
+                                onClearSelection={() => setSelectedTeams([])}
+                                onToggleSelection={toggleTeamSelection}
+                                onLoadMore={handleLoadMoreTeams}
+                                emptyStateMessage="No teams match your search."
+                                generateButtonLabel="Generate Team Report"
+                                singularLabel="team"
+                                pluralLabel="teams"
+                              />
+                            </CollapsibleReportSection>
+                          </>
+                        )}
                       </>
                     )}
                   </section>

@@ -47,20 +47,43 @@ const getDatasetsByOrganisation = async organisation => {
     const orgPrefix = `${AUDIT_PREFIX}${organisation}/`;
     const objects = await s3Service.listObjects(BUCKET, orgPrefix);
 
-    const datasets = objects
-      .filter(obj => {
-        const relativePath = obj.Key.replace(orgPrefix, '');
-        // Only direct JSON files (no subdirectories)
-        return relativePath.endsWith('.json') && !relativePath.includes('/');
-      })
-      .map(obj => {
-        const lastModified = obj.LastModified;
-        return {
-          name: lastModified.toISOString(),
-          lastModified: lastModified.getTime(),
-        };
-      })
-      .sort((a, b) => b.lastModified - a.lastModified);
+    const datasets = await Promise.all(
+      objects
+        .filter(obj => {
+          const relativePath = obj.Key.replace(orgPrefix, '');
+          // Only direct JSON files (no subdirectories)
+          return relativePath.endsWith('.json') && !relativePath.includes('/');
+        })
+        .map(async obj => {
+          const relativePath = obj.Key.replace(orgPrefix, '');
+          const filename = relativePath.replace('.json', ''); // Remove .json extension
+          const lastModified = obj.LastModified;
+
+          try {
+            // Read the file to extract the timestamp (already parsed JSON from s3Service)
+            const data = await s3Service.getObject(BUCKET, obj.Key);
+            const timestamp = data.timestamp || lastModified.toISOString();
+
+            return {
+              name: filename,
+              displayName: timestamp, // Human-readable timestamp
+              lastModified: lastModified.getTime(),
+            };
+          } catch (error) {
+            logger.warn(
+              `Could not extract timestamp from ${filename}, using file modification time`,
+              error
+            );
+            return {
+              name: filename,
+              displayName: lastModified.toISOString(),
+              lastModified: lastModified.getTime(),
+            };
+          }
+        })
+    );
+
+    datasets.sort((a, b) => b.lastModified - a.lastModified);
 
     logger.info(
       `Fetched ${datasets.length} datasets for organisation ${organisation}`
@@ -75,7 +98,44 @@ const getDatasetsByOrganisation = async organisation => {
   }
 };
 
+/**
+ * Fetches repository and team names from a specific dataset audit file.
+ * @param {string} organisation - The organisation folder name in S3
+ * @param {string} datasetName - The dataset filename (UUID) without .json extension
+ * @returns {Promise<{repositories: string[], teams: string[]}>}
+ */
+const getDatasetEntities = async (organisation, datasetName) => {
+  try {
+    if (!organisation || !datasetName) {
+      throw new Error('Organisation and dataset name are required');
+    }
+
+    const key = `${AUDIT_PREFIX}${organisation}/${datasetName}.json`;
+    const data = await s3Service.getObject(BUCKET, key);
+
+    const repositories = Object.keys(data.repositories || {});
+    const teams = Object.keys(data.teams || {});
+
+    logger.info(
+      `Fetched ${repositories.length} repositories and ${teams.length} teams from dataset ${datasetName}`,
+      { organisation }
+    );
+
+    return {
+      repositories: repositories.sort(),
+      teams: teams.sort(),
+    };
+  } catch (error) {
+    logger.error(
+      `Error fetching dataset entities for ${organisation}/${datasetName}:`,
+      error
+    );
+    throw error;
+  }
+};
+
 module.exports = {
   getPolicyReportsConfig,
   getDatasetsByOrganisation,
+  getDatasetEntities,
 };
