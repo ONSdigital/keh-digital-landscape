@@ -3,10 +3,8 @@ import PageBanner from '../components/PageBanner/PageBanner';
 import Layout from '../components/Layout/Layout';
 import CollapsibleReportSection from '../components/policyReports/CollapsibleReportSection/CollapsibleReportSection';
 import SelectableEntityReport from '../components/policyReports/SelectableEntityReport/SelectableEntityReport';
-import {
-  fetchPolicyReportsConfig,
-  fetchDatasetsByOrganisation,
-} from '../utilities/getPolicyReportsConfig';
+import { fetchPolicyReportOrganisationOptions } from '../utilities/policyReports/getOrganisations';
+import { fetchDatasetsByOrganisation } from '../utilities/policyReports/getDatasets';
 import {
   checkAuthStatus,
   handleAuthCallback,
@@ -80,7 +78,7 @@ const PolicyReportsPage = () => {
 
   useEffect(() => {
     const loadPolicyReportsConfig = async () => {
-      const config = await fetchPolicyReportsConfig();
+      const config = await fetchPolicyReportOrganisationOptions();
       if (!config) return;
 
       setReportConfig({
