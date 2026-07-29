@@ -357,7 +357,9 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="organisation"
                     value={organisation}
-                    disabled={isRestoringFormState || isLoadingAccessibleReposAndTeams}
+                    disabled={
+                      isRestoringFormState || isLoadingAccessibleReposAndTeams
+                    }
                     onChange={event => setOrganisation(event.target.value)}
                   >
                     <option value="">Select organisation</option>
