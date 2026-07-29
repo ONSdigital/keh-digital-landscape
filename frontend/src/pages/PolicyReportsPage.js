@@ -357,7 +357,7 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="organisation"
                     value={organisation}
-                    disabled={isRestoringFormState}
+                    disabled={isRestoringFormState || isLoadingAccessibleReposAndTeams}
                     onChange={event => setOrganisation(event.target.value)}
                   >
                     <option value="">Select organisation</option>
@@ -377,7 +377,10 @@ const PolicyReportsPage = () => {
                     name="source-dataset"
                     value={sourceDataset}
                     disabled={
-                      !organisation || isDatasetsLoading || isRestoringFormState
+                      !organisation ||
+                      isDatasetsLoading ||
+                      isRestoringFormState ||
+                      isLoadingAccessibleReposAndTeams
                     }
                     onChange={event => {
                       const nextSourceDataset = event.target.value;
