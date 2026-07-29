@@ -1,43 +1,6 @@
 import customFetch from '../customFetch';
 
 /**
- * Fetch teams in the given organisation that the user is a member of.
- * @param {string} organisation - GitHub organisation name
- * @returns {Promise<string[]>} Array of team slugs, or empty array on error
- */
-export const fetchUserTeamsInOrganisation = async organisation => {
-  try {
-    if (!organisation) {
-      return [];
-    }
-
-    const response = await customFetch(
-      `/policy-reports/api/user-teams?organisation=${encodeURIComponent(
-        organisation
-      )}`,
-      {
-        credentials: 'include',
-      }
-    );
-
-    if (!response.ok) {
-      console.error(
-        'Error fetching user teams:',
-        response.status,
-        response.statusText
-      );
-      return [];
-    }
-
-    const data = await response.json();
-    return data.teams || [];
-  } catch (error) {
-    console.error('Error fetching user teams:', error);
-    return [];
-  }
-};
-
-/**
  * Fetch teams from a dataset that the user is a member of.
  * Only returns teams that are in the dataset AND the user is a member of.
  * @param {string} organisation - GitHub organisation name
@@ -51,7 +14,7 @@ export const fetchDatasetTeamsForUser = async (organisation, dataset) => {
     }
 
     const response = await customFetch(
-      `/policy-reports/api/dataset-teams?organisation=${encodeURIComponent(
+      `/policy-reports/api/teams?organisation=${encodeURIComponent(
         organisation
       )}&dataset=${encodeURIComponent(dataset)}`,
       {
