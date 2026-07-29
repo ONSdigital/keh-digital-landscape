@@ -22,6 +22,7 @@ nav:
           - S3 Service: backend/services/s3Service.md
           - GitHub Service: backend/services/githubService.md
           - Tech Radar Service: backend/services/techRadarService.md
+      - GitHub Auth: backend/githubAuth.md
       - Utilities: backend/utilities.md
       - Local Development Data: backend/data.md
   - Development Guides:
