@@ -263,6 +263,25 @@ const PolicyReportsPage = () => {
     );
   };
 
+  const handleClearConfiguration = () => {
+    setOrganisation('');
+    setDatasets([]);
+    setSourceDataset('');
+    setComparisonDataset('');
+    setRepositoryOptions([]);
+    setTeamOptions([]);
+    setSelectedRepositories([]);
+    setSelectedTeams([]);
+    setTotalAccessibleRepositories(0);
+    setTotalAccessibleTeams(0);
+    setRepositorySearch('');
+    setTeamSearch('');
+    setRepositoryResultCap(ITEMS_PER_PAGE);
+    setTeamResultCap(ITEMS_PER_PAGE);
+    setGenerationMessage('');
+    setGenerationError('');
+  };
+
   const handleLoadMoreRepositories = () => {
     setRepositoryResultCap(prev => prev + ITEMS_PER_PAGE);
   };
@@ -357,9 +376,7 @@ const PolicyReportsPage = () => {
                     className="policy-reports-select-input"
                     name="organisation"
                     value={organisation}
-                    disabled={
-                      isRestoringFormState || isLoadingAccessibleReposAndTeams
-                    }
+                    disabled={isRestoringFormState || Boolean(sourceDataset)}
                     onChange={event => setOrganisation(event.target.value)}
                   >
                     <option value="">Select organisation</option>
@@ -410,6 +427,17 @@ const PolicyReportsPage = () => {
                   </select>
                 </div>
               </div>
+              {sourceDataset && (
+                <div className="policy-reports-space-top-sm">
+                  <button
+                    className="policy-reports-btn"
+                    type="button"
+                    onClick={handleClearConfiguration}
+                  >
+                    Clear configuration
+                  </button>
+                </div>
+              )}
             </div>
           </section>
 
