@@ -9,6 +9,9 @@ const {
   fetchUserRepositoriesInOrganisation,
   fetchUserTeamsInOrganisation,
 } = require('../utilities/githubQueries');
+const {
+  generatePlaceholderReport,
+} = require('../utilities/policyReportGenerator');
 
 const router = express.Router();
 
@@ -56,26 +59,29 @@ router.get('/datasets', async (req, res) => {
   }
 });
 
-// GET /generateReport
-router.get('/generateReport', async (req, res) => {
-  const reportType = req.query.type;
+// POST /generateReport
+router.post('/generateReport', async (req, res) => {
+  const { reportType, inputs } = req.body;
 
   if (!reportType) {
     logger.warn('Report type not specified');
     return res.status(400).json({ error: 'Report type is required' });
   }
 
-  if (!REPORT_TYPES.includes(reportType)) {
+  if (!REPORT_TYPES.includes(reportType.toLowerCase())) {
     logger.warn('Invalid report type specified');
     return res.status(400).json({ error: 'Invalid report type' });
   }
 
   try {
-    // Placeholder for report generation logic
-    const reportData = {
-      message: `${reportType} report generated successfully`,
-    };
-    return res.json(reportData);
+    const { html, fileName } = generatePlaceholderReport({
+      reportType,
+      inputs: inputs || {},
+    });
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    return res.send(html);
   } catch (error) {
     logger.error('Error generating policy report', { error: error.message });
     return res.status(500).json({ error: 'Internal Server Error' });
