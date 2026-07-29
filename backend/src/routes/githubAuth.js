@@ -11,7 +11,8 @@ const router = express.Router();
 // GET /login
 router.get('/login', (req, res) => {
   try {
-    const { state, code_challenge, code_challenge_method, redirectPath } = req.query;
+    const { state, code_challenge, code_challenge_method, redirectPath } =
+      req.query;
     const loginUrl = buildGitHubAuthoriseUrl({
       state,
       codeChallenge: code_challenge,
@@ -36,7 +37,11 @@ router.post('/token', async (req, res) => {
   }
 
   try {
-    const params = buildTokenExchangeParams({ code, codeVerifier, redirectPath });
+    const params = buildTokenExchangeParams({
+      code,
+      codeVerifier,
+      redirectPath,
+    });
 
     const tokenResponse = await fetch(
       'https://github.com/login/oauth/access_token',
