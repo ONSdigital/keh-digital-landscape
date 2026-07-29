@@ -1,19 +1,34 @@
-const buildAuthRedirectUri = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return `${process.env.FRONTEND_URL}/github-policy-reports`;
+const buildAuthRedirectUri = redirectPath => {
+  if (
+    typeof redirectPath !== 'string' ||
+    !redirectPath.startsWith('/') ||
+    redirectPath.startsWith('//')
+  ) {
+    throw new Error(`Invalid redirectPath: ${redirectPath}`);
   }
 
-  return 'http://localhost:3000/github-policy-reports';
+  const base =
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_URL
+      : 'http://localhost:3000';
+
+  // Note: The GitHub App will deal with any unexpected redirect paths,
+  // so we don't need to validate the redirectPath beyond the checks above.
+  // Any redirect paths used here, will need to be registered to our GitHub App
+  // in the GitHub Developer settings, otherwise GitHub will reject the OAuth flow.
+
+  return `${base}${redirectPath}`;
 };
 
 const buildGitHubAuthoriseUrl = ({
   state,
   codeChallenge,
   codeChallengeMethod,
+  redirectPath,
 } = {}) => {
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_APP_CLIENT_ID,
-    redirect_uri: buildAuthRedirectUri(),
+    redirect_uri: buildAuthRedirectUri(redirectPath),
     scope: 'user:email read:org',
     ...(state ? { state } : {}),
     ...(codeChallenge && codeChallengeMethod
@@ -27,12 +42,12 @@ const buildGitHubAuthoriseUrl = ({
   return `https://github.com/login/oauth/authorize?${params.toString()}`;
 };
 
-const buildTokenExchangeParams = ({ code, codeVerifier }) => {
+const buildTokenExchangeParams = ({ code, codeVerifier, redirectPath }) => {
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_APP_CLIENT_ID,
     client_secret: process.env.GITHUB_APP_CLIENT_SECRET,
     code,
-    redirect_uri: buildAuthRedirectUri(),
+    redirect_uri: buildAuthRedirectUri(redirectPath),
   });
 
   if (codeVerifier) {
