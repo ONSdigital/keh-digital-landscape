@@ -281,6 +281,8 @@ Form state is only saved during an active login flow. It is never persisted betw
 
 The backend authentication endpoints are already implemented and shared across all pages at `/api/github/auth/`. No page-specific backend route setup is required.
 
+> **Important:** The `redirectPath` for your new page (e.g. `/your-page-path`) must be registered as a callback URL in the GitHub App settings (GitHub Developer Settings → Your App → Callback URLs). GitHub will reject the OAuth flow for any unregistered redirect URI.
+
 ### Frontend Setup
 
 The frontend utility automatically uses the shared `/api/github/auth/` endpoint path. No per-page configuration needed.
