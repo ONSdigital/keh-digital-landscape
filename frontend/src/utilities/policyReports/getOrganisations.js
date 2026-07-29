@@ -3,7 +3,7 @@ import customFetch from '../customFetch';
 
 export const fetchPolicyReportOrganisationOptions = async () => {
   try {
-    const response = await customFetch('/policy-reports/api/config');
+    const response = await customFetch('/policy-reports/api/organisations');
 
     if (!response.ok) {
       throw new Error(

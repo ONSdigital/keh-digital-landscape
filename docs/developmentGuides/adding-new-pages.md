@@ -101,13 +101,13 @@ const policyReportsRoutes = require('./routes/policyReports');
 app.use('/policy-reports/api', generalApiLimiter, policyReportsRoutes);
 ```
 
-The full URL for the example route above becomes `GET /policy-reports/api/config`.
+The full URL for the example route above becomes `GET /policy-reports/api/organisations`.
 
 ---
 
 ## 3. Vite Dev Proxy
 
-During local development, the Vite dev server runs on port `3000` and the backend on port `5001`. The Vite proxy forwards matching URL paths to the backend, so that `customFetch('/policy-reports/api/config')` resolves correctly without CORS issues.
+During local development, the Vite dev server runs on port `3000` and the backend on port `5001`. The Vite proxy forwards matching URL paths to the backend, so that `customFetch('/policy-reports/api/organisations')` resolves correctly without CORS issues.
 
 Add the new path prefix to the proxy list in `frontend/vite.config.js`:
 
@@ -155,7 +155,7 @@ import customFetch from './customFetch';
 
 export const fetchPolicyReportsConfig = async () => {
   try {
-    const response = await customFetch('/policy-reports/api/config');
+    const response = await customFetch('/policy-reports/api/organisations');
 
     if (!response.ok) {
       throw new Error(
