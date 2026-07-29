@@ -3,10 +3,9 @@ import customFetch from './customFetch';
 const GITHUB_AUTH_STATE_STORAGE_KEY = 'githubAuthState';
 const GITHUB_AUTH_CODE_VERIFIER_STORAGE_KEY = 'githubAuthCodeVerifier';
 const GITHUB_AUTH_FORM_STORAGE_KEY = 'githubAuthFormState';
-const DEFAULT_REDIRECT_PATH = '/github-policy-reports';
 
 const getBackendUrl = () => import.meta.env.VITE_BACKEND_URL || '';
-const SHARED_GITHUB_AUTH_BASE = '/api/github/auth';
+const GITHUB_AUTH_BASE = '/api/github/auth';
 
 const normaliseRedirectPath = redirectPath => {
   if (
@@ -17,7 +16,7 @@ const normaliseRedirectPath = redirectPath => {
     return redirectPath;
   }
 
-  return DEFAULT_REDIRECT_PATH;
+  return window.location.pathname;
 };
 
 const createAuthState = () => {
@@ -78,7 +77,7 @@ const clearAuthParamsFromUrl = () => {
  * Redirect the user to begin GitHub App authentication flow with PKCE.
  * @param {Object} options
  * @param {string} options.redirectPath - Frontend path that should receive auth callback
- * @param {Object} options.formState - Form state to persist during auth (organisation, sourceDataset)
+ * @param {Object} options.formState - Optional page state to persist across the auth redirect
  */
 export const loginWithGitHub = async ({ redirectPath, formState } = {}) => {
   const safeRedirectPath = normaliseRedirectPath(
@@ -92,14 +91,14 @@ export const loginWithGitHub = async ({ redirectPath, formState } = {}) => {
   sessionStorage.setItem(GITHUB_AUTH_CODE_VERIFIER_STORAGE_KEY, codeVerifier);
 
   // Persist form state if provided
-  if (formState && (formState.organisation || formState.sourceDataset)) {
+  if (formState && Object.values(formState).some(Boolean)) {
     sessionStorage.setItem(
       GITHUB_AUTH_FORM_STORAGE_KEY,
       JSON.stringify(formState)
     );
   }
 
-  const baseUrl = `${getBackendUrl()}${SHARED_GITHUB_AUTH_BASE}/login`;
+  const baseUrl = `${getBackendUrl()}${GITHUB_AUTH_BASE}/login`;
   const params = new URLSearchParams({
     state,
     code_challenge: codeChallenge,
@@ -123,7 +122,7 @@ export const exchangeCodeForToken = async (code, { redirectPath } = {}) => {
       GITHUB_AUTH_CODE_VERIFIER_STORAGE_KEY
     );
 
-    const response = await customFetch(`${SHARED_GITHUB_AUTH_BASE}/token`, {
+    const response = await customFetch(`${GITHUB_AUTH_BASE}/token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -203,7 +202,7 @@ export const handleAuthCallback = async ({ redirectPath } = {}) => {
 
 /**
  * Retrieve and clear form state persisted during authentication.
- * @returns {{organisation: string|null, sourceDataset: string|null}}
+ * @returns {Object} The persisted state object, or an empty object if none was saved
  */
 export const retrievePersistedFormState = () => {
   try {
@@ -217,7 +216,7 @@ export const retrievePersistedFormState = () => {
     console.error('Error retrieving persisted form state:', error);
   }
 
-  return { organisation: null, sourceDataset: null };
+  return {};
 };
 
 /**
@@ -226,7 +225,7 @@ export const retrievePersistedFormState = () => {
  */
 export const checkAuthStatus = async () => {
   try {
-    const response = await customFetch(`${SHARED_GITHUB_AUTH_BASE}/status`, {
+    const response = await customFetch(`${GITHUB_AUTH_BASE}/status`, {
       credentials: 'include',
     });
 
@@ -244,7 +243,7 @@ export const checkAuthStatus = async () => {
  */
 export const fetchGitHubUserProfile = async () => {
   try {
-    const response = await customFetch(`${SHARED_GITHUB_AUTH_BASE}/user`, {
+    const response = await customFetch(`${GITHUB_AUTH_BASE}/user`, {
       credentials: 'include',
     });
 
@@ -262,7 +261,7 @@ export const fetchGitHubUserProfile = async () => {
  */
 export const logoutUser = async () => {
   try {
-    const response = await customFetch(`${SHARED_GITHUB_AUTH_BASE}/logout`, {
+    const response = await customFetch(`${GITHUB_AUTH_BASE}/logout`, {
       method: 'POST',
       credentials: 'include',
     });

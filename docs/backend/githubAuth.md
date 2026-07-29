@@ -254,10 +254,10 @@ Pass `formState` object to `loginWithGitHub()` with fields you want to preserve:
 
 ```javascript
 await loginWithGitHub({
-  redirectPath: '/policy-reports',
+  redirectPath: '/your-page-path',
   formState: {
-    organisation: 'my-org',
-    sourceDataset: 'dataset-name'
+    fieldOne: valueOne,
+    fieldTwo: valueTwo,
   }
 });
 ```
@@ -268,8 +268,8 @@ Retrieve persisted state after auth completes:
 
 ```javascript
 const persistedState = retrievePersistedFormState();
-if (persistedState.organisation) {
-  setOrganisation(persistedState.organisation);
+if (persistedState.fieldOne) {
+  setFieldOne(persistedState.fieldOne);
 }
 ```
 
@@ -363,7 +363,7 @@ These scopes enable the utility to fetch user profile information and access org
 
 **Cause:** Form state passed to `loginWithGitHub()` was null or empty
 
-**Solution:** Ensure formState object has non-null values for fields you want to persist. Only values that are truthy will be saved.
+**Solution:** Ensure formState object has at least one truthy value. Only truthy values will be saved.
 
 ## Implementation Notes
 
