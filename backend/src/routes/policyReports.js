@@ -1,7 +1,7 @@
 const logger = require('../config/logger');
 const express = require('express');
 const {
-  getPolicyReportsConfig,
+  getPolicyReportOrganisationOptions,
   getDatasetsByOrganisation,
   getDatasetEntities,
 } = require('../services/policyReportsService');
@@ -17,7 +17,7 @@ const REPORT_TYPES = ['organisation', 'repository', 'team'];
 // GET /config
 router.get('/config', async (req, res) => {
   try {
-    const config = await getPolicyReportsConfig();
+    const config = await getPolicyReportOrganisationOptions();
     return res.status(200).json(config);
   } catch (error) {
     logger.error('Error fetching policy report configuration', {

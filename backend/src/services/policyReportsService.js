@@ -5,12 +5,11 @@ const BUCKET = 'policyAudit';
 const AUDIT_PREFIX = 'audit-results/';
 
 /**
- * Fetches the initial policy reports configuration.
- * Returns organisation options (from S3) and static config.
- * Dataset options are fetched separately per-organisation via getDatasetsByOrganisation.
- * @returns {Promise<Object>}
+ * Fetches the list of organisations available for policy reporting.
+ * Derives organisation names from top-level directories under the S3 audit prefix.
+ * @returns {Promise<{organisationOptions: string[]}>}
  */
-const getPolicyReportsConfig = async () => {
+const getPolicyReportOrganisationOptions = async () => {
   try {
     const allObjects = await s3Service.listObjects(BUCKET, AUDIT_PREFIX);
 
@@ -135,7 +134,7 @@ const getDatasetEntities = async (organisation, datasetName) => {
 };
 
 module.exports = {
-  getPolicyReportsConfig,
+  getPolicyReportOrganisationOptions,
   getDatasetsByOrganisation,
   getDatasetEntities,
 };
