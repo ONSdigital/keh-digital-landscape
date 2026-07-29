@@ -89,9 +89,7 @@ router.get('/user-repositories', async (req, res) => {
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
-    return res
-      .status(401)
-      .json({ error: 'Not authenticated with GitHub' });
+    return res.status(401).json({ error: 'Not authenticated with GitHub' });
   }
 
   if (!organisation) {
@@ -127,9 +125,7 @@ router.get('/user-teams', async (req, res) => {
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
-    return res
-      .status(401)
-      .json({ error: 'Not authenticated with GitHub' });
+    return res.status(401).json({ error: 'Not authenticated with GitHub' });
   }
 
   if (!organisation) {
@@ -163,9 +159,7 @@ router.get('/dataset-repositories', async (req, res) => {
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
-    return res
-      .status(401)
-      .json({ error: 'Not authenticated with GitHub' });
+    return res.status(401).json({ error: 'Not authenticated with GitHub' });
   }
 
   if (!organisation || !dataset) {
@@ -217,9 +211,7 @@ router.get('/dataset-teams', async (req, res) => {
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
-    return res
-      .status(401)
-      .json({ error: 'Not authenticated with GitHub' });
+    return res.status(401).json({ error: 'Not authenticated with GitHub' });
   }
 
   if (!organisation || !dataset) {

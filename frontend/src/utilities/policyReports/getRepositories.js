@@ -44,7 +44,10 @@ export const fetchUserRepositoriesInOrganisation = async organisation => {
  * @param {string} dataset - Dataset name (ISO timestamp)
  * @returns {Promise<string[]>} Array of repository names, or empty array on error
  */
-export const fetchDatasetRepositoriesForUser = async (organisation, dataset) => {
+export const fetchDatasetRepositoriesForUser = async (
+  organisation,
+  dataset
+) => {
   try {
     if (!organisation || !dataset) {
       return [];

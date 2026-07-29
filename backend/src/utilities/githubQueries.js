@@ -123,9 +123,7 @@ const fetchUserTeamsInOrganisation = async (userToken, organisation) => {
 
     return teams.sort();
   } catch (error) {
-    throw new Error(
-      `Failed to fetch teams for organisation: ${error.message}`
-    );
+    throw new Error(`Failed to fetch teams for organisation: ${error.message}`);
   }
 };
 
