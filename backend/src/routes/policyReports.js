@@ -82,79 +82,10 @@ router.get('/generateReport', async (req, res) => {
   }
 });
 
-// GET /user-repositories?organisation=<org>
-// Returns repositories in the given organisation that the user has access to
-router.get('/user-repositories', async (req, res) => {
-  const { organisation } = req.query;
-  const userToken = req.cookies?.githubUserToken;
-
-  if (!userToken) {
-    return res.status(401).json({ error: 'Not authenticated with GitHub' });
-  }
-
-  if (!organisation) {
-    return res
-      .status(400)
-      .json({ error: 'organisation query parameter is required' });
-  }
-
-  // Validate organisation name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(organisation)) {
-    return res.status(400).json({ error: 'Invalid organisation name format' });
-  }
-
-  try {
-    const repositories = await fetchUserRepositoriesInOrganisation(
-      userToken,
-      organisation
-    );
-    return res.status(200).json({ repositories });
-  } catch (error) {
-    logger.error('Error fetching user repositories for organisation', {
-      organisation,
-      error: error.message,
-    });
-    return res.status(500).json({ error: 'Failed to fetch repositories' });
-  }
-});
-
-// GET /user-teams?organisation=<org>
-// Returns teams in the given organisation that the user is a member of
-router.get('/user-teams', async (req, res) => {
-  const { organisation } = req.query;
-  const userToken = req.cookies?.githubUserToken;
-
-  if (!userToken) {
-    return res.status(401).json({ error: 'Not authenticated with GitHub' });
-  }
-
-  if (!organisation) {
-    return res
-      .status(400)
-      .json({ error: 'organisation query parameter is required' });
-  }
-
-  // Validate organisation name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(organisation)) {
-    return res.status(400).json({ error: 'Invalid organisation name format' });
-  }
-
-  try {
-    const teams = await fetchUserTeamsInOrganisation(userToken, organisation);
-    return res.status(200).json({ teams });
-  } catch (error) {
-    logger.error('Error fetching user teams for organisation', {
-      organisation,
-      error: error.message,
-    });
-    return res.status(500).json({ error: 'Failed to fetch teams' });
-  }
-});
-
-// GET /dataset-repositories?organisation=<org>&dataset=<dataset>
+// GET /repositories?organisation=<org>&dataset=<dataset>
 // Returns repositories from the dataset that the user has access to
 // This filters the dataset repositories to only those the user can access
-router.get('/dataset-repositories', async (req, res) => {
+router.get('/repositories', async (req, res) => {
   const { organisation, dataset } = req.query;
   const userToken = req.cookies?.githubUserToken;
 
@@ -203,10 +134,10 @@ router.get('/dataset-repositories', async (req, res) => {
   }
 });
 
-// GET /dataset-teams?organisation=<org>&dataset=<dataset>
+// GET /teams?organisation=<org>&dataset=<dataset>
 // Returns teams from the dataset that the user is a member of
 // This filters the dataset teams to only those the user belongs to
-router.get('/dataset-teams', async (req, res) => {
+router.get('/teams', async (req, res) => {
   const { organisation, dataset } = req.query;
   const userToken = req.cookies?.githubUserToken;
 
