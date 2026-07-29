@@ -6,12 +6,14 @@ const escapeHtml = value =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 
-const normaliseForFileName = value =>
-  String(value)
-    .trim()
-    .toLowerCase()
+const normaliseForFileName = value => {
+  const normalisedValue = String(value).trim().toLowerCase().slice(0, 2000);
+
+  return normalisedValue
     .replaceAll(/[^a-z0-9]+/g, '-')
-    .replaceAll(/^-+|-+$/g, '');
+    .replaceAll(/^-+/g, '')
+    .replaceAll(/-+$/g, '');
+};
 
 const formatInputValue = value => {
   if (Array.isArray(value)) {
