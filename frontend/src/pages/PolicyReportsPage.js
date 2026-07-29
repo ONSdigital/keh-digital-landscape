@@ -15,12 +15,9 @@ import {
   fetchGitHubUserProfile,
   retrievePersistedFormState,
 } from '../utilities/githubAuth';
-import {
-  fetchDatasetRepositoriesForUser,
-} from '../utilities/policyReports/getRepositories';
-import {
-  fetchDatasetTeamsForUser,
-} from '../utilities/policyReports/getTeams';
+import { fetchDatasetRepositoriesForUser } from '../utilities/policyReports/getRepositories';
+import { fetchDatasetTeamsForUser } from '../utilities/policyReports/getTeams';
+import { generatePolicyReport } from '../utilities/policyReports/generatePolicyReport';
 import '../styles/PolicyReportsPage.css';
 
 const PolicyReportsPage = () => {
@@ -47,11 +44,37 @@ const PolicyReportsPage = () => {
 
   const oauthRedirectPath = '/github-policy-reports';
 
+  const getDatasetTimeValue = dataset =>
+    new Date(dataset.lastModified || dataset.displayName).getTime();
+
   // Datasets older than the selected source are valid comparison targets
   const selectedSourceDataset = datasets.find(d => d.name === sourceDataset);
   const comparisonDatasetOptions = selectedSourceDataset
-    ? datasets.filter(d => d.lastModified < selectedSourceDataset.lastModified)
+    ? datasets.filter(
+        dataset =>
+          getDatasetTimeValue(dataset) <
+          getDatasetTimeValue(selectedSourceDataset)
+      )
     : [];
+
+  const getDefaultComparisonDatasetName = selectedSourceDatasetName => {
+    if (!selectedSourceDatasetName) return '';
+
+    const currentSourceDataset = datasets.find(
+      dataset => dataset.name === selectedSourceDatasetName
+    );
+    if (!currentSourceDataset) return '';
+
+    const olderDatasets = datasets
+      .filter(
+        dataset =>
+          getDatasetTimeValue(dataset) <
+          getDatasetTimeValue(currentSourceDataset)
+      )
+      .sort((a, b) => getDatasetTimeValue(b) - getDatasetTimeValue(a));
+
+    return olderDatasets[0]?.name || selectedSourceDatasetName;
+  };
 
   const isStageTwoEnabled = Boolean(organisation && sourceDataset);
 
@@ -127,6 +150,41 @@ const PolicyReportsPage = () => {
     }
   }, [datasets, persistedFormState]);
 
+  useEffect(() => {
+    if (!sourceDataset) {
+      setComparisonDataset('');
+      return;
+    }
+
+    const currentSourceDataset = datasets.find(
+      dataset => dataset.name === sourceDataset
+    );
+    if (!currentSourceDataset) {
+      setComparisonDataset('');
+      return;
+    }
+
+    const validComparisonOptions = datasets.filter(
+      dataset =>
+        getDatasetTimeValue(dataset) < getDatasetTimeValue(currentSourceDataset)
+    );
+
+    if (validComparisonOptions.length === 0) {
+      if (comparisonDataset !== sourceDataset) {
+        setComparisonDataset(sourceDataset);
+      }
+      return;
+    }
+
+    const selectedComparisonStillValid = validComparisonOptions.some(
+      dataset => dataset.name === comparisonDataset
+    );
+
+    if (!selectedComparisonStillValid) {
+      setComparisonDataset(getDefaultComparisonDatasetName(sourceDataset));
+    }
+  }, [sourceDataset, datasets, comparisonDataset]);
+
   const [repositoryOptions, setRepositoryOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
   const [repositoryResultCap, setRepositoryResultCap] = useState(25);
@@ -134,8 +192,13 @@ const PolicyReportsPage = () => {
   const [totalAccessibleRepositories, setTotalAccessibleRepositories] =
     useState(0);
   const [totalAccessibleTeams, setTotalAccessibleTeams] = useState(0);
-  const [isLoadingAccessibleReposAndTeams, setIsLoadingAccessibleReposAndTeams] =
-    useState(false);
+  const [
+    isLoadingAccessibleReposAndTeams,
+    setIsLoadingAccessibleReposAndTeams,
+  ] = useState(false);
+  const [activeGenerationType, setActiveGenerationType] = useState(null);
+  const [generationMessage, setGenerationMessage] = useState('');
+  const [generationError, setGenerationError] = useState('');
 
   const ITEMS_PER_PAGE = 25;
 
@@ -228,6 +291,34 @@ const PolicyReportsPage = () => {
     }
   };
 
+  const handleGeneratePolicyReport = async ({ reportType, inputs }) => {
+    setActiveGenerationType(reportType);
+    setGenerationError('');
+    setGenerationMessage('');
+
+    try {
+      await generatePolicyReport({ reportType, inputs });
+      setGenerationMessage(
+        `${reportType} placeholder report downloaded successfully.`
+      );
+    } catch {
+      setGenerationError(
+        `Unable to generate ${reportType.toLowerCase()} placeholder report. Please try again.`
+      );
+    } finally {
+      setActiveGenerationType(null);
+    }
+  };
+
+  const isAnyReportGenerating = activeGenerationType !== null;
+  const hasOlderComparisonDatasets = comparisonDatasetOptions.length > 0;
+  const isUsingSourceAsComparison =
+    Boolean(sourceDataset) &&
+    !hasOlderComparisonDatasets &&
+    comparisonDataset === sourceDataset;
+  const isOrganisationReportGenerateDisabled =
+    isAnyReportGenerating || !comparisonDataset;
+
   return (
     <Layout
       headerProps={{ hideSearch: true }}
@@ -291,8 +382,11 @@ const PolicyReportsPage = () => {
                       !organisation || isDatasetsLoading || isRestoringFormState
                     }
                     onChange={event => {
-                      setSourceDataset(event.target.value);
-                      setComparisonDataset('');
+                      const nextSourceDataset = event.target.value;
+                      setSourceDataset(nextSourceDataset);
+                      setComparisonDataset(
+                        getDefaultComparisonDatasetName(nextSourceDataset)
+                      );
                       setSelectedRepositories([]);
                       setSelectedTeams([]);
                     }}
@@ -333,6 +427,19 @@ const PolicyReportsPage = () => {
                   Fill in the inputs, choose a report type and click the
                   corresponding button to generate a report.
                 </p>
+                {generationMessage && (
+                  <p
+                    className="policy-reports-generation-success"
+                    role="status"
+                  >
+                    {generationMessage}
+                  </p>
+                )}
+                {generationError && (
+                  <p className="policy-reports-generation-error" role="alert">
+                    {generationError}
+                  </p>
+                )}
               </div>
 
               {!isStageTwoEnabled ? (
@@ -355,20 +462,28 @@ const PolicyReportsPage = () => {
                       </label>
                       <select
                         id="comparison-dataset"
-                        className="policy-reports-select-input"
+                        className={`policy-reports-select-input ${isUsingSourceAsComparison ? 'policy-reports-select-input-highlight' : ''}`}
                         name="comparison-dataset"
                         value={comparisonDataset}
+                        disabled={!hasOlderComparisonDatasets}
                         onChange={event =>
                           setComparisonDataset(event.target.value)
                         }
                       >
-                        <option value="">Select comparison dataset</option>
+                        {!hasOlderComparisonDatasets && (
+                          <option value={sourceDataset}>
+                            No older datasets available
+                          </option>
+                        )}
                         {comparisonDatasetOptions.map(dataset => (
                           <option key={dataset.name} value={dataset.name}>
-                            {new Date(dataset.displayName).toLocaleString('en-GB', {
-                              dateStyle: 'medium',
-                              timeStyle: 'short',
-                            })}
+                            {new Date(dataset.displayName).toLocaleString(
+                              'en-GB',
+                              {
+                                dateStyle: 'medium',
+                                timeStyle: 'short',
+                              }
+                            )}
                           </option>
                         ))}
                       </select>
@@ -377,14 +492,55 @@ const PolicyReportsPage = () => {
                         against the chosen comparison dataset to demonstrate
                         changes in compliance over time.
                       </p>
+                      {isUsingSourceAsComparison && (
+                        <p className="policy-reports-hint policy-reports-hint-tight">
+                          No older datasets are available for this source. The
+                          source dataset will be used as the comparison for this
+                          report.
+                        </p>
+                      )}
                     </div>
                     <div className="policy-reports-auth-row policy-reports-actions-row">
                       <button
                         className="policy-reports-btn policy-reports-btn-primary"
                         type="button"
+                        disabled={isOrganisationReportGenerateDisabled}
+                        onClick={() =>
+                          handleGeneratePolicyReport({
+                            reportType: 'Organisation',
+                            inputs: {
+                              organisation,
+                              sourceDataset,
+                              comparisonDataset,
+                            },
+                          })
+                        }
                       >
-                        Generate Organisation Report
+                        {activeGenerationType === 'Organisation'
+                          ? 'Generating Organisation Report...'
+                          : 'Generate Organisation Report'}
                       </button>
+                      {activeGenerationType === 'Organisation' && (
+                        <span
+                          className="policy-reports-generation-status"
+                          role="status"
+                        >
+                          <span
+                            className="policy-reports-inline-spinner"
+                            aria-hidden="true"
+                          />
+                          Generating placeholder report...
+                        </span>
+                      )}
+                      {!comparisonDataset && (
+                        <span
+                          className="policy-reports-generation-error"
+                          role="alert"
+                        >
+                          A comparison dataset is required for organisation
+                          reports.
+                        </span>
+                      )}
                     </div>
                   </section>
 
@@ -442,8 +598,7 @@ const PolicyReportsPage = () => {
                         {isLoadingAccessibleReposAndTeams ? (
                           <div className="policy-reports-stage-hidden-note policy-reports-space-top-sm">
                             <p className="policy-reports-stage-gate-note">
-                              Loading your accessible repositories and
-                              teams…
+                              Loading your accessible repositories and teams…
                             </p>
                           </div>
                         ) : (
@@ -466,11 +621,31 @@ const PolicyReportsPage = () => {
                                 totalAccessible={totalAccessibleRepositories}
                                 selectedItems={selectedRepositories}
                                 filteredItems={filteredRepositories}
-                                onClearSelection={() => setSelectedRepositories([])}
+                                onClearSelection={() =>
+                                  setSelectedRepositories([])
+                                }
                                 onToggleSelection={toggleRepositorySelection}
                                 onLoadMore={handleLoadMoreRepositories}
                                 emptyStateMessage="No repositories match your search."
                                 generateButtonLabel="Generate Repository Report"
+                                generateButtonInProgressLabel="Generating Repository Report..."
+                                onGenerateReport={() =>
+                                  handleGeneratePolicyReport({
+                                    reportType: 'Repository',
+                                    inputs: {
+                                      organisation,
+                                      sourceDataset,
+                                      selectedRepositories,
+                                    },
+                                  })
+                                }
+                                isGenerating={
+                                  activeGenerationType === 'Repository'
+                                }
+                                isGenerateDisabled={
+                                  isAnyReportGenerating ||
+                                  selectedRepositories.length === 0
+                                }
                                 singularLabel="repository"
                                 pluralLabel="repositories"
                               />
@@ -495,6 +670,22 @@ const PolicyReportsPage = () => {
                                 onLoadMore={handleLoadMoreTeams}
                                 emptyStateMessage="No teams match your search."
                                 generateButtonLabel="Generate Team Report"
+                                generateButtonInProgressLabel="Generating Team Report..."
+                                onGenerateReport={() =>
+                                  handleGeneratePolicyReport({
+                                    reportType: 'Team',
+                                    inputs: {
+                                      organisation,
+                                      sourceDataset,
+                                      selectedTeams,
+                                    },
+                                  })
+                                }
+                                isGenerating={activeGenerationType === 'Team'}
+                                isGenerateDisabled={
+                                  isAnyReportGenerating ||
+                                  selectedTeams.length === 0
+                                }
                                 singularLabel="team"
                                 pluralLabel="teams"
                               />

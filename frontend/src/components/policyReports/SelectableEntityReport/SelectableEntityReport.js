@@ -15,10 +15,16 @@ const SelectableEntityReport = ({
   onLoadMore,
   emptyStateMessage,
   generateButtonLabel,
+  generateButtonInProgressLabel,
+  onGenerateReport,
+  isGenerating,
+  isGenerateDisabled,
   singularLabel,
   pluralLabel,
 }) => {
-  const hasMoreResults = filteredItems.length < totalAccessible && filteredItems.length >= resultCap;
+  const hasMoreResults =
+    filteredItems.length < totalAccessible && filteredItems.length >= resultCap;
+  const isSelectionRequired = selectedItems.length === 0;
 
   return (
     <>
@@ -104,9 +110,27 @@ const SelectableEntityReport = ({
         <button
           className="policy-reports-btn policy-reports-btn-primary"
           type="button"
+          onClick={onGenerateReport}
+          disabled={isGenerateDisabled}
         >
-          {generateButtonLabel}
+          {isGenerating
+            ? generateButtonInProgressLabel || 'Generating report...'
+            : generateButtonLabel}
         </button>
+        {isGenerating && (
+          <span className="policy-reports-generation-status" role="status">
+            <span
+              className="policy-reports-inline-spinner"
+              aria-hidden="true"
+            />
+            Generating placeholder report...
+          </span>
+        )}
+        {isSelectionRequired && (
+          <span className="policy-reports-generation-warning" role="alert">
+            Select at least one {singularLabel} to generate this report.
+          </span>
+        )}
       </div>
     </>
   );
