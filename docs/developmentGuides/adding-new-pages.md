@@ -35,14 +35,14 @@ Create a service file at `backend/src/services/<featureName>Service.js`. The ser
 ```js
 // backend/src/services/policyReportsService.js
 
-const getPolicyReportsConfig = async () => {
+const getPolicyReportOrganisationOptions = async () => {
   return {
     organisationOptions: ['ONSdigital', 'ONS-Innovation'],
     // ...
   };
 };
 
-module.exports = { getPolicyReportsConfig };
+module.exports = { getPolicyReportOrganisationOptions };
 ```
 
 ### Route
@@ -54,14 +54,16 @@ Create a route file at `backend/src/routes/<featureName>.js`. Import the service
 
 const logger = require('../config/logger');
 const express = require('express');
-const { getPolicyReportsConfig } = require('../services/policyReportsService');
+const {
+  getPolicyReportOrganisationOptions,
+} = require('../services/policyReportsService');
 
 const router = express.Router();
 
 // GET /config
 router.get('/config', async (req, res) => {
   try {
-    const config = await getPolicyReportsConfig();
+    const config = await getPolicyReportOrganisationOptions();
     return res.status(200).json(config);
   } catch (error) {
     logger.error('Error fetching policy report configuration', {
