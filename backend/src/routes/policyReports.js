@@ -17,8 +17,8 @@ const router = express.Router();
 
 const REPORT_TYPES = ['organisation', 'repository', 'team'];
 
-// GET /config
-router.get('/config', async (req, res) => {
+// GET /organisations
+router.get('/organisations', async (req, res) => {
   try {
     const config = await getPolicyReportOrganisationOptions();
     return res.status(200).json(config);
