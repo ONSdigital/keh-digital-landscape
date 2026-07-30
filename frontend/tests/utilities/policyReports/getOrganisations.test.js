@@ -24,7 +24,9 @@ describe('fetchPolicyReportOrganisationOptions', () => {
 
     const result = await fetchPolicyReportOrganisationOptions();
 
-    expect(customFetch).toHaveBeenCalledWith('/policy-reports/api/organisations');
+    expect(customFetch).toHaveBeenCalledWith(
+      '/policy-reports/api/organisations'
+    );
     expect(result).toEqual(mockData);
   });
 

@@ -23,7 +23,9 @@ describe('fetchDatasetsByOrganisation', () => {
       { name: '2024-01-15T10:00:00Z', displayName: '2024-01-15T10:00:00Z' },
       { name: '2024-01-01T10:00:00Z', displayName: '2024-01-01T10:00:00Z' },
     ];
-    customFetch.mockResolvedValue({ json: async () => ({ datasets: mockDatasets }) });
+    customFetch.mockResolvedValue({
+      json: async () => ({ datasets: mockDatasets }),
+    });
 
     const result = await fetchDatasetsByOrganisation('ONS-Innovation');
 
