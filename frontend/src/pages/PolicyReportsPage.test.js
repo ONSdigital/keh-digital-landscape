@@ -393,7 +393,7 @@ describe('PolicyReportsPage', () => {
 
       await waitFor(() =>
         expect(
-          screen.getByText(/organisation.*placeholder report downloaded/i)
+          screen.getByText(/organisation.*report downloaded/i)
         ).toBeInTheDocument()
       );
     });

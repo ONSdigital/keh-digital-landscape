@@ -336,11 +336,11 @@ const PolicyReportsPage = () => {
     try {
       await generatePolicyReport({ reportType, inputs });
       setGenerationMessage(
-        `${reportType} placeholder report downloaded successfully.`
+        `${reportType} report downloaded successfully.`
       );
     } catch {
       setGenerationError(
-        `Unable to generate ${reportType.toLowerCase()} placeholder report. Please try again.`
+        `Unable to generate ${reportType.toLowerCase()} report. Please try again.`
       );
     } finally {
       setActiveGenerationType(null);
@@ -575,7 +575,7 @@ const PolicyReportsPage = () => {
                             className="policy-reports-inline-spinner"
                             aria-hidden="true"
                           />
-                          Generating placeholder report...
+                          Generating report...
                         </span>
                       )}
                       {!comparisonDataset && (
