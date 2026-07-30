@@ -97,6 +97,10 @@ class S3Service {
   async listObjects(bucket, prefix = '') {
     try {
       const bucketName = this.buckets[bucket] || bucket;
+
+      // This will only return up to 1000 objects. For more, you would need to implement pagination.
+      // Due to the nature of the application, we are unlikely to have more than 1000 objects in a single prefix, so this is acceptable for now.
+      // AWS Docs: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html
       const command = new ListObjectsV2Command({
         Bucket: bucketName,
         Prefix: prefix,
