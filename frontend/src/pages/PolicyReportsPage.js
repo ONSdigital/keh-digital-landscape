@@ -335,9 +335,7 @@ const PolicyReportsPage = () => {
 
     try {
       await generatePolicyReport({ reportType, inputs });
-      setGenerationMessage(
-        `${reportType} report downloaded successfully.`
-      );
+      setGenerationMessage(`${reportType} report downloaded successfully.`);
     } catch {
       setGenerationError(
         `Unable to generate ${reportType.toLowerCase()} report. Please try again.`
