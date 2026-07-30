@@ -42,6 +42,22 @@ const PolicyReportsPage = () => {
 
   const oauthRedirectPath = '/github-policy-reports';
 
+  const formatDatasetDisplayLabel = dataset =>
+    new Date(dataset.displayName).toLocaleString('en-GB', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+
+  const getDatasetDisplayLabelByName = datasetName => {
+    const dataset = datasets.find(item => item.name === datasetName);
+
+    if (!dataset) {
+      return datasetName || 'Not provided';
+    }
+
+    return formatDatasetDisplayLabel(dataset);
+  };
+
   const getDatasetTimeValue = dataset =>
     new Date(dataset.displayName).getTime();
 
@@ -422,10 +438,7 @@ const PolicyReportsPage = () => {
                     </option>
                     {datasets.map(dataset => (
                       <option key={dataset.name} value={dataset.name}>
-                        {new Date(dataset.displayName).toLocaleString('en-GB', {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
-                        })}
+                        {formatDatasetDisplayLabel(dataset)}
                       </option>
                     ))}
                   </select>
@@ -512,13 +525,7 @@ const PolicyReportsPage = () => {
                         )}
                         {comparisonDatasetOptions.map(dataset => (
                           <option key={dataset.name} value={dataset.name}>
-                            {new Date(dataset.displayName).toLocaleString(
-                              'en-GB',
-                              {
-                                dateStyle: 'medium',
-                                timeStyle: 'short',
-                              }
-                            )}
+                            {formatDatasetDisplayLabel(dataset)}
                           </option>
                         ))}
                       </select>
@@ -546,7 +553,11 @@ const PolicyReportsPage = () => {
                             inputs: {
                               organisation,
                               sourceDataset,
+                              sourceDatasetDisplay:
+                                getDatasetDisplayLabelByName(sourceDataset),
                               comparisonDataset,
+                              comparisonDatasetDisplay:
+                                getDatasetDisplayLabelByName(comparisonDataset),
                             },
                           })
                         }
@@ -671,6 +682,10 @@ const PolicyReportsPage = () => {
                                     inputs: {
                                       organisation,
                                       sourceDataset,
+                                      sourceDatasetDisplay:
+                                        getDatasetDisplayLabelByName(
+                                          sourceDataset
+                                        ),
                                       selectedRepositories,
                                     },
                                   })
@@ -714,6 +729,10 @@ const PolicyReportsPage = () => {
                                     inputs: {
                                       organisation,
                                       sourceDataset,
+                                      sourceDatasetDisplay:
+                                        getDatasetDisplayLabelByName(
+                                          sourceDataset
+                                        ),
                                       selectedTeams,
                                     },
                                   })

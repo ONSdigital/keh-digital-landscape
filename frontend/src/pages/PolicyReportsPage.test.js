@@ -134,6 +134,12 @@ const DATASETS = [
   { name: '2024-01-01T10:00:00Z', displayName: '2024-01-01T10:00:00Z' },
 ];
 
+const formatDatasetLabel = displayName =>
+  new Date(displayName).toLocaleString('en-GB', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
 const setupDefaultMocks = ({
   orgOptions = ['ONS-Innovation'],
   datasets = DATASETS,
@@ -361,7 +367,17 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateBtn);
 
       expect(generatePolicyReport).toHaveBeenCalledWith(
-        expect.objectContaining({ reportType: 'Organisation' })
+        expect.objectContaining({
+          reportType: 'Organisation',
+          inputs: expect.objectContaining({
+            sourceDataset: DATASETS[0].name,
+            sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
+            comparisonDataset: DATASETS[1].name,
+            comparisonDatasetDisplay: formatDatasetLabel(
+              DATASETS[1].displayName
+            ),
+          }),
+        })
       );
     });
 
@@ -552,7 +568,13 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateRepoBtn);
 
       expect(generatePolicyReport).toHaveBeenCalledWith(
-        expect.objectContaining({ reportType: 'Repository' })
+        expect.objectContaining({
+          reportType: 'Repository',
+          inputs: expect.objectContaining({
+            sourceDataset: DATASETS[0].name,
+            sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
+          }),
+        })
       );
     });
 
@@ -568,7 +590,13 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateTeamBtn);
 
       expect(generatePolicyReport).toHaveBeenCalledWith(
-        expect.objectContaining({ reportType: 'Team' })
+        expect.objectContaining({
+          reportType: 'Team',
+          inputs: expect.objectContaining({
+            sourceDataset: DATASETS[0].name,
+            sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
+          }),
+        })
       );
     });
   });
