@@ -70,7 +70,7 @@ const SelectableEntityReport = ({
             >
               <strong>{item}</strong>
               <button
-                className="policy-reports-btn"
+                className="policy-reports-btn policy-reports-btn-compact"
                 type="button"
                 onClick={() => onToggleSelection(item)}
               >
@@ -101,7 +101,15 @@ const SelectableEntityReport = ({
         <div className="policy-reports-chip-list policy-reports-space-top-sm">
           {selectedItems.map(item => (
             <span key={item} className="policy-reports-selection-chip">
-              {item}
+              <span>{item}</span>
+              <button
+                className="policy-reports-chip-remove"
+                type="button"
+                onClick={() => onToggleSelection(item)}
+                aria-label={`Remove ${singularLabel} ${item}`}
+              >
+                x
+              </button>
             </span>
           ))}
         </div>
