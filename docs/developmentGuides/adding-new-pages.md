@@ -98,7 +98,7 @@ const policyReportsRoutes = require('./routes/policyReports');
 
 // ...
 
-app.use('/policy-reports/api', generalApiLimiter, policyReportsRoutes);
+app.use('/policy-reports/api', userApiLimiter, policyReportsRoutes);
 ```
 
 The full URL for the example route above becomes `GET /policy-reports/api/organisations`.
