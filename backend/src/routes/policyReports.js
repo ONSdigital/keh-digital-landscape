@@ -11,7 +11,8 @@ const REPORT_TYPES = ['organisation', 'repository', 'team'];
 // GET /organisations
 router.get('/organisations', async (req, res) => {
   try {
-    const config = await policyReportsService.getPolicyReportOrganisationOptions();
+    const config =
+      await policyReportsService.getPolicyReportOrganisationOptions();
     return res.status(200).json(config);
   } catch (error) {
     logger.error('Error fetching policy report configuration', {
@@ -39,7 +40,8 @@ router.get('/datasets', async (req, res) => {
   }
 
   try {
-    const datasets = await policyReportsService.getDatasetsByOrganisation(organisation);
+    const datasets =
+      await policyReportsService.getDatasetsByOrganisation(organisation);
     return res.status(200).json({ datasets });
   } catch (error) {
     logger.error('Error fetching datasets for organisation', {
@@ -108,14 +110,18 @@ router.get('/repositories', async (req, res) => {
 
   try {
     // Get repositories from the dataset
-    const datasetEntities = await policyReportsService.getDatasetEntities(organisation, dataset);
+    const datasetEntities = await policyReportsService.getDatasetEntities(
+      organisation,
+      dataset
+    );
     const datasetRepositories = new Set(datasetEntities.repositories);
 
     // Get repositories the user has access to
-    const userRepositories = await githubQueries.fetchUserRepositoriesInOrganisation(
-      userToken,
-      organisation
-    );
+    const userRepositories =
+      await githubQueries.fetchUserRepositoriesInOrganisation(
+        userToken,
+        organisation
+      );
     const userRepositoriesSet = new Set(userRepositories);
 
     // Find intersection: repos in dataset AND user has access to
@@ -160,7 +166,10 @@ router.get('/teams', async (req, res) => {
 
   try {
     // Get teams from the dataset
-    const datasetEntities = await policyReportsService.getDatasetEntities(organisation, dataset);
+    const datasetEntities = await policyReportsService.getDatasetEntities(
+      organisation,
+      dataset
+    );
     const datasetTeams = new Set(datasetEntities.teams);
 
     // Get teams the user is a member of

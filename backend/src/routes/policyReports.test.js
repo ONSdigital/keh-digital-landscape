@@ -126,7 +126,9 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(200);
       await expect(res.json()).resolves.toEqual({ datasets: mockDatasets });
-      expect(policyReportsService.getDatasetsByOrganisation).toHaveBeenCalledWith('my-org');
+      expect(
+        policyReportsService.getDatasetsByOrganisation
+      ).toHaveBeenCalledWith('my-org');
     });
 
     it('returns 500 when the service throws', async () => {
@@ -152,14 +154,11 @@ describe('Policy Reports routes', () => {
 
   describe('POST /policy-reports/api/generateReport', () => {
     it('returns 400 when reportType is missing', async () => {
-      const res = await fetch(
-        `${baseUrl}/policy-reports/api/generateReport`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ inputs: {} }),
-        }
-      );
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inputs: {} }),
+      });
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
@@ -168,14 +167,11 @@ describe('Policy Reports routes', () => {
     });
 
     it('returns 400 when reportType is not a recognised value', async () => {
-      const res = await fetch(
-        `${baseUrl}/policy-reports/api/generateReport`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reportType: 'unknown' }),
-        }
-      );
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: 'unknown' }),
+      });
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
@@ -192,17 +188,14 @@ describe('Policy Reports routes', () => {
         fileName: 'organisation-report.html',
       });
 
-      const res = await fetch(
-        `${baseUrl}/policy-reports/api/generateReport`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            reportType: 'organisation',
-            inputs: { organisation: 'my-org' },
-          }),
-        }
-      );
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: { organisation: 'my-org' },
+        }),
+      });
 
       expect(res.status).toBe(200);
       expect(res.headers.get('content-type')).toContain('text/html');
@@ -218,14 +211,11 @@ describe('Policy Reports routes', () => {
         fileName: 'team-report.html',
       });
 
-      const res = await fetch(
-        `${baseUrl}/policy-reports/api/generateReport`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reportType: 'TEAM' }),
-        }
-      );
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: 'TEAM' }),
+      });
 
       expect(res.status).toBe(200);
     });
@@ -238,14 +228,11 @@ describe('Policy Reports routes', () => {
         throw new Error('Generator failure');
       });
 
-      const res = await fetch(
-        `${baseUrl}/policy-reports/api/generateReport`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reportType: 'repository' }),
-        }
-      );
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: 'repository' }),
+      });
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
@@ -432,10 +419,9 @@ describe('Policy Reports routes', () => {
         repositories: [],
         teams: ['team-alpha', 'team-beta', 'team-gamma'],
       });
-      vi.spyOn(
-        githubQueries,
-        'fetchUserTeamsInOrganisation'
-      ).mockResolvedValue(['team-alpha', 'team-gamma', 'team-delta']);
+      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisation').mockResolvedValue(
+        ['team-alpha', 'team-gamma', 'team-delta']
+      );
 
       const res = await fetch(
         `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
@@ -453,10 +439,9 @@ describe('Policy Reports routes', () => {
         repositories: [],
         teams: ['team-x'],
       });
-      vi.spyOn(
-        githubQueries,
-        'fetchUserTeamsInOrganisation'
-      ).mockResolvedValue(['team-y']);
+      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisation').mockResolvedValue(
+        ['team-y']
+      );
 
       const res = await fetch(
         `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
