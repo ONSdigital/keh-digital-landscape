@@ -180,10 +180,7 @@ describe('Policy Reports routes', () => {
     });
 
     it('returns HTML with content-disposition for a valid organisation report', async () => {
-      vi.spyOn(
-        policyReportGenerator,
-        'generatePlaceholderReport'
-      ).mockReturnValue({
+      vi.spyOn(policyReportGenerator, 'generateReport').mockReturnValue({
         html: '<html><body>Report</body></html>',
         fileName: 'organisation-report.html',
       });
@@ -203,10 +200,7 @@ describe('Policy Reports routes', () => {
     });
 
     it('handles reportType case-insensitively', async () => {
-      vi.spyOn(
-        policyReportGenerator,
-        'generatePlaceholderReport'
-      ).mockReturnValue({
+      vi.spyOn(policyReportGenerator, 'generateReport').mockReturnValue({
         html: '<html></html>',
         fileName: 'team-report.html',
       });
@@ -221,12 +215,11 @@ describe('Policy Reports routes', () => {
     });
 
     it('returns 500 when the generator throws', async () => {
-      vi.spyOn(
-        policyReportGenerator,
-        'generatePlaceholderReport'
-      ).mockImplementation(() => {
-        throw new Error('Generator failure');
-      });
+      vi.spyOn(policyReportGenerator, 'generateReport').mockImplementation(
+        () => {
+          throw new Error('Generator failure');
+        }
+      );
 
       const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
         method: 'POST',

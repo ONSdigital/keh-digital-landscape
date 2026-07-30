@@ -67,7 +67,7 @@ router.post('/generateReport', async (req, res) => {
   }
 
   try {
-    const { html, fileName } = policyReportGenerator.generatePlaceholderReport({
+    const { html, fileName } = policyReportGenerator.generateReport({
       reportType,
       inputs: inputs || {},
     });
