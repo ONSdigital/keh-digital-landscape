@@ -43,7 +43,7 @@ const PolicyReportsPage = () => {
   const oauthRedirectPath = '/github-policy-reports';
 
   const getDatasetTimeValue = dataset =>
-    new Date(dataset.lastModified || dataset.displayName).getTime();
+    new Date(dataset.displayName).getTime();
 
   // Datasets older than the selected source are valid comparison targets
   const selectedSourceDataset = datasets.find(d => d.name === sourceDataset);
