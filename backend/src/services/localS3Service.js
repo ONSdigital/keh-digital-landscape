@@ -134,7 +134,7 @@ class LocalS3Service {
 
         for (const entry of entries) {
           const fullPath = path.join(currentPath, entry.name);
-          const relPath = path.join(relativePath, entry.name);
+          const relPath = path.posix.join(relativePath, entry.name);
 
           if (entry.isDirectory()) {
             // Recursively walk subdirectories
