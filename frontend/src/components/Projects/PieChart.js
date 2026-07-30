@@ -9,6 +9,22 @@ import {
 } from 'recharts';
 import { CLOUD_PROVIDERS } from '../../constants/projectConstants';
 
+const CustomTooltip = ({ active, payload, splitSemicolon }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{data.name}</p>
+        <p className="count">
+          {`${data.count} ${splitSemicolon ? 'instances' : 'projects'}`}{' '}
+          {data.value ? `(${data.value}%)` : ''}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 /**
  * PieChart component displays the percentage of projects by a specified category.
  *
@@ -339,23 +355,6 @@ const PieChart = ({
     cloudProviders,
   ]);
 
-  // Custom tooltip for the pie chart
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{data.name}</p>
-          <p className="count">
-            {`${data.count} ${splitSemicolon ? 'instances' : 'projects'}`}{' '}
-            {data.value ? `(${data.value}%)` : ''}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
   // Custom label renderer for the pie chart
   const renderCustomizedLabel = ({
     cx,
@@ -452,7 +451,9 @@ const PieChart = ({
                 </Cell>
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={<CustomTooltip splitSemicolon={splitSemicolon} />}
+            />
             <Legend
               iconType="circle"
               iconSize={10}

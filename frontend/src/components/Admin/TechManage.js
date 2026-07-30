@@ -180,7 +180,7 @@ const TechManage = () => {
   /**
    * Fetches array data from the backend
    */
-  const fetchArrayData = async () => {
+  async function fetchArrayData() {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
       const baseUrl = `${backendUrl}/admin/api/array-data`;
@@ -204,7 +204,7 @@ const TechManage = () => {
       console.error('Error fetching array data:', error);
       toast.error('Failed to load technology data');
     }
-  };
+  }
 
   /**
    * Checks if two technology names are similar using string similarity
@@ -373,7 +373,7 @@ const TechManage = () => {
   /**
    * Scans CSV data for technologies and compares against both data sources
    */
-  const scanForNewTechnologies = csvData => {
+  function scanForNewTechnologies(csvData) {
     // Create sets for both data sources (case insensitive)
     if (Object.keys(arrayData).length === 0) {
       console.log('Waiting for array data before scanning CSV...');
@@ -527,7 +527,7 @@ const TechManage = () => {
     });
 
     setUntrackedTechnologies(newTechnologies);
-  };
+  }
 
   /**
    * Gets quadrant options from radar data
@@ -889,7 +889,7 @@ const TechManage = () => {
   };
 
   // Filter technologies based on selected quadrants and search term
-  const getFilteredTechnologies = () => {
+  function getFilteredTechnologies() {
     let technologies = Array.from(untrackedTechnologies.entries());
 
     // Filter by search term
@@ -907,7 +907,7 @@ const TechManage = () => {
     }
 
     return technologies;
-  };
+  }
 
   // Filter reference list based on search term
   const getFilteredEditorContent = () => {
