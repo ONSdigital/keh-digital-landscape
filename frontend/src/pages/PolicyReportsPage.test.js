@@ -5,16 +5,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ── Module mocks ──────────────────────────────────────────────────────────────
 
-vi.mock('../../src/components/Layout/Layout', () => ({
+vi.mock('../components/Layout/Layout', () => ({
   default: ({ children }) => <div data-testid="layout">{children}</div>,
 }));
 
-vi.mock('../../src/components/PageBanner/PageBanner', () => ({
+vi.mock('../components/PageBanner/PageBanner', () => ({
   default: ({ title }) => <h1>{title}</h1>,
 }));
 
 vi.mock(
-  '../../src/components/policyReports/CollapsibleReportSection/CollapsibleReportSection',
+  '../components/policyReports/CollapsibleReportSection/CollapsibleReportSection',
   () => ({
     default: ({ title, children }) => (
       <section>
@@ -26,7 +26,7 @@ vi.mock(
 );
 
 vi.mock(
-  '../../src/components/policyReports/SelectableEntityReport/SelectableEntityReport',
+  '../components/policyReports/SelectableEntityReport/SelectableEntityReport',
   () => ({
     default: ({
       searchId,
@@ -76,23 +76,23 @@ vi.mock(
   })
 );
 
-vi.mock('../../src/utilities/policyReports/getOrganisations', () => ({
+vi.mock('../utilities/policyReports/getOrganisations', () => ({
   fetchPolicyReportOrganisationOptions: vi.fn(),
 }));
 
-vi.mock('../../src/utilities/policyReports/getDatasets', () => ({
+vi.mock('../utilities/policyReports/getDatasets', () => ({
   fetchDatasetsByOrganisation: vi.fn(),
 }));
 
-vi.mock('../../src/utilities/policyReports/getRepositories', () => ({
+vi.mock('../utilities/policyReports/getRepositories', () => ({
   fetchDatasetRepositoriesForUser: vi.fn(),
 }));
 
-vi.mock('../../src/utilities/policyReports/getTeams', () => ({
+vi.mock('../utilities/policyReports/getTeams', () => ({
   fetchDatasetTeamsForUser: vi.fn(),
 }));
 
-vi.mock('../../src/utilities/githubAuth', () => ({
+vi.mock('../utilities/githubAuth', () => ({
   checkAuthStatus: vi.fn(),
   handleAuthCallback: vi.fn(),
   loginWithGitHub: vi.fn(),
@@ -101,7 +101,7 @@ vi.mock('../../src/utilities/githubAuth', () => ({
   retrievePersistedFormState: vi.fn(),
 }));
 
-vi.mock('../../src/utilities/policyReports/generatePolicyReport', () => ({
+vi.mock('../utilities/policyReports/generatePolicyReport', () => ({
   generatePolicyReport: vi.fn(),
 }));
 
@@ -112,11 +112,11 @@ vi.mock('react-hot-toast', () => ({
 
 // ── Imports after mocks ───────────────────────────────────────────────────────
 
-import PolicyReportsPage from '../../src/pages/PolicyReportsPage';
-import { fetchPolicyReportOrganisationOptions } from '../../src/utilities/policyReports/getOrganisations';
-import { fetchDatasetsByOrganisation } from '../../src/utilities/policyReports/getDatasets';
-import { fetchDatasetRepositoriesForUser } from '../../src/utilities/policyReports/getRepositories';
-import { fetchDatasetTeamsForUser } from '../../src/utilities/policyReports/getTeams';
+import PolicyReportsPage from './PolicyReportsPage';
+import { fetchPolicyReportOrganisationOptions } from '../utilities/policyReports/getOrganisations';
+import { fetchDatasetsByOrganisation } from '../utilities/policyReports/getDatasets';
+import { fetchDatasetRepositoriesForUser } from '../utilities/policyReports/getRepositories';
+import { fetchDatasetTeamsForUser } from '../utilities/policyReports/getTeams';
 import {
   checkAuthStatus,
   handleAuthCallback,
@@ -124,8 +124,8 @@ import {
   logoutUser,
   fetchGitHubUserProfile,
   retrievePersistedFormState,
-} from '../../src/utilities/githubAuth';
-import { generatePolicyReport } from '../../src/utilities/policyReports/generatePolicyReport';
+} from '../utilities/githubAuth';
+import { generatePolicyReport } from '../utilities/policyReports/generatePolicyReport';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
