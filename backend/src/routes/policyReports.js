@@ -7,6 +7,7 @@ const policyReportGenerator = require('../utilities/policyReportGenerator');
 const router = express.Router();
 
 const REPORT_TYPES = ['organisation', 'repository', 'team'];
+const DATASET_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 
 // GET /organisations
 router.get('/organisations', async (req, res) => {
@@ -55,6 +56,7 @@ router.get('/datasets', async (req, res) => {
 // POST /generateReport
 router.post('/generateReport', async (req, res) => {
   const { reportType, inputs } = req.body;
+  const safeInputs = inputs || {};
 
   if (!reportType) {
     logger.warn('Report type not specified');
@@ -66,10 +68,48 @@ router.post('/generateReport', async (req, res) => {
     return res.status(400).json({ error: 'Invalid report type' });
   }
 
+  if (
+    safeInputs.sourceDataset &&
+    !DATASET_NAME_REGEX.test(safeInputs.sourceDataset)
+  ) {
+    logger.warn('Invalid source dataset value specified');
+    return res.status(400).json({ error: 'Invalid source dataset value' });
+  }
+
+  if (
+    safeInputs.comparisonDataset &&
+    !DATASET_NAME_REGEX.test(safeInputs.comparisonDataset)
+  ) {
+    logger.warn('Invalid comparison dataset value specified');
+    return res.status(400).json({ error: 'Invalid comparison dataset value' });
+  }
+
   try {
+    const reportInputs = { ...safeInputs };
+
+    if (safeInputs.organisation && safeInputs.sourceDataset) {
+      reportInputs.sourceDatasetData =
+        await policyReportsService.getDatasetAuditData(
+          safeInputs.organisation,
+          safeInputs.sourceDataset
+        );
+    }
+
+    if (
+      reportType.toLowerCase() === 'organisation' &&
+      safeInputs.organisation &&
+      safeInputs.comparisonDataset
+    ) {
+      reportInputs.comparisonDatasetData =
+        await policyReportsService.getDatasetAuditData(
+          safeInputs.organisation,
+          safeInputs.comparisonDataset
+        );
+    }
+
     const { html, fileName } = policyReportGenerator.generateReport({
       reportType,
-      inputs: inputs || {},
+      inputs: reportInputs,
     });
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
