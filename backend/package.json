@@ -10,7 +10,7 @@
     "@octokit/rest": "^22.0.0",
     "aws-jwt-verify": "^5.1.0",
     "body-parser": "^2.3.0",
-    "brace-expansion": "^1.1.16",
+    "brace-expansion": "^5.0.8",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -37,14 +37,15 @@
   "description": "",
   "overrides": {
     "fast-xml-parser": "^5.5.7",
+    "brace-expansion": "^5.0.8",
     "nodemon": {
-      "brace-expansion": "^5.0.7"
+      "brace-expansion": "^5.0.8"
     }
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^9.37.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.4.0",
     "nodemon": "^3.1.10",
