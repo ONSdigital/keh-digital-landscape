@@ -110,6 +110,11 @@ router.get('/repositories', async (req, res) => {
     return res.status(400).json({ error: 'Invalid organisation name format' });
   }
 
+  // Validate dataset name: only alphanumeric, hyphens, underscores
+  if (!/^[a-zA-Z0-9_-]+$/.test(dataset)) {
+    return res.status(400).json({ error: 'Invalid dataset name format' });
+  }
+
   try {
     // Get repositories from the dataset
     const datasetEntities = await getDatasetEntities(organisation, dataset);
