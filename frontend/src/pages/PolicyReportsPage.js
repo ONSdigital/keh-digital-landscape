@@ -235,17 +235,18 @@ const PolicyReportsPage = () => {
     loadDatasetReposAndTeams();
   }, [isGitHubAuthenticated, organisation, sourceDataset]);
 
-  const filteredRepositories = repositoryOptions
-    .filter(repo =>
-      repo.toLowerCase().includes(repositorySearch.trim().toLowerCase())
-    )
-    .slice(0, repositoryResultCap || repositoryOptions.length);
+  const matchingRepositories = repositoryOptions.filter(repo =>
+    repo.toLowerCase().includes(repositorySearch.trim().toLowerCase())
+  );
+  const filteredRepositories = matchingRepositories.slice(
+    0,
+    repositoryResultCap || repositoryOptions.length
+  );
 
-  const filteredTeams = teamOptions
-    .filter(team =>
-      team.toLowerCase().includes(teamSearch.trim().toLowerCase())
-    )
-    .slice(0, teamResultCap || teamOptions.length);
+  const matchingTeams = teamOptions.filter(team =>
+    team.toLowerCase().includes(teamSearch.trim().toLowerCase())
+  );
+  const filteredTeams = matchingTeams.slice(0, teamResultCap || teamOptions.length);
 
   const toggleRepositorySelection = repositoryName => {
     setSelectedRepositories(prev =>
@@ -650,6 +651,7 @@ const PolicyReportsPage = () => {
                                 onSearchChange={setRepositorySearch}
                                 resultCap={repositoryResultCap}
                                 totalAccessible={totalAccessibleRepositories}
+                                totalMatching={matchingRepositories.length}
                                 selectedItems={selectedRepositories}
                                 filteredItems={filteredRepositories}
                                 onClearSelection={() =>
@@ -694,6 +696,7 @@ const PolicyReportsPage = () => {
                                 onSearchChange={setTeamSearch}
                                 resultCap={teamResultCap}
                                 totalAccessible={totalAccessibleTeams}
+                                totalMatching={matchingTeams.length}
                                 selectedItems={selectedTeams}
                                 filteredItems={filteredTeams}
                                 onClearSelection={() => setSelectedTeams([])}

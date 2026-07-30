@@ -8,6 +8,7 @@ const SelectableEntityReport = ({
   onSearchChange,
   resultCap,
   totalAccessible,
+  totalMatching,
   selectedItems,
   filteredItems,
   onClearSelection,
@@ -23,7 +24,7 @@ const SelectableEntityReport = ({
   pluralLabel,
 }) => {
   const hasMoreResults =
-    filteredItems.length < totalAccessible && filteredItems.length >= resultCap;
+    filteredItems.length < totalMatching && filteredItems.length >= resultCap;
   const isSelectionRequired = selectedItems.length === 0;
 
   return (
@@ -42,8 +43,8 @@ const SelectableEntityReport = ({
       </div>
 
       <p className="policy-reports-hint policy-reports-space-top-xs">
-        Showing {filteredItems.length} of {totalAccessible} available{' '}
-        {pluralLabel}.
+        Showing {filteredItems.length} of {totalMatching} matching {pluralLabel}{' '}
+        ({totalAccessible} available).
       </p>
 
       <div className="policy-reports-selection-summary policy-reports-space-top-xs">
