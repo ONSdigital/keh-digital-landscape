@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useData } from '../contexts/dataContext';
 import Changelog from '../components/HomePage/Changelog';
 import RecentBanners from '../components/HomePage/RecentBanners';
 import BugReport from '../components/BugReport/Home';

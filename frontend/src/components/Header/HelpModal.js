@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { IoClose } from 'react-icons/io5';
 import '../../styles/components/HelpModal.css';
 

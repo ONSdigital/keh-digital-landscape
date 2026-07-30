@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import '../../styles/components/MenuDropdown.css';
 import UserProfile from '../UserProfile/UserProfile';
 import Modal from '../BugReport/Modal';
