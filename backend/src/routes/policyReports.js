@@ -1,17 +1,8 @@
 const logger = require('../config/logger');
 const express = require('express');
-const {
-  getPolicyReportOrganisationOptions,
-  getDatasetsByOrganisation,
-  getDatasetEntities,
-} = require('../services/policyReportsService');
-const {
-  fetchUserRepositoriesInOrganisation,
-  fetchUserTeamsInOrganisation,
-} = require('../utilities/githubQueries');
-const {
-  generatePlaceholderReport,
-} = require('../utilities/policyReportGenerator');
+const policyReportsService = require('../services/policyReportsService');
+const githubQueries = require('../utilities/githubQueries');
+const policyReportGenerator = require('../utilities/policyReportGenerator');
 
 const router = express.Router();
 
@@ -20,7 +11,7 @@ const REPORT_TYPES = ['organisation', 'repository', 'team'];
 // GET /organisations
 router.get('/organisations', async (req, res) => {
   try {
-    const config = await getPolicyReportOrganisationOptions();
+    const config = await policyReportsService.getPolicyReportOrganisationOptions();
     return res.status(200).json(config);
   } catch (error) {
     logger.error('Error fetching policy report configuration', {
@@ -48,7 +39,7 @@ router.get('/datasets', async (req, res) => {
   }
 
   try {
-    const datasets = await getDatasetsByOrganisation(organisation);
+    const datasets = await policyReportsService.getDatasetsByOrganisation(organisation);
     return res.status(200).json({ datasets });
   } catch (error) {
     logger.error('Error fetching datasets for organisation', {
@@ -74,7 +65,7 @@ router.post('/generateReport', async (req, res) => {
   }
 
   try {
-    const { html, fileName } = generatePlaceholderReport({
+    const { html, fileName } = policyReportGenerator.generatePlaceholderReport({
       reportType,
       inputs: inputs || {},
     });
@@ -117,11 +108,11 @@ router.get('/repositories', async (req, res) => {
 
   try {
     // Get repositories from the dataset
-    const datasetEntities = await getDatasetEntities(organisation, dataset);
+    const datasetEntities = await policyReportsService.getDatasetEntities(organisation, dataset);
     const datasetRepositories = new Set(datasetEntities.repositories);
 
     // Get repositories the user has access to
-    const userRepositories = await fetchUserRepositoriesInOrganisation(
+    const userRepositories = await githubQueries.fetchUserRepositoriesInOrganisation(
       userToken,
       organisation
     );
@@ -169,11 +160,11 @@ router.get('/teams', async (req, res) => {
 
   try {
     // Get teams from the dataset
-    const datasetEntities = await getDatasetEntities(organisation, dataset);
+    const datasetEntities = await policyReportsService.getDatasetEntities(organisation, dataset);
     const datasetTeams = new Set(datasetEntities.teams);
 
     // Get teams the user is a member of
-    const userTeams = await fetchUserTeamsInOrganisation(
+    const userTeams = await githubQueries.fetchUserTeamsInOrganisation(
       userToken,
       organisation
     );
