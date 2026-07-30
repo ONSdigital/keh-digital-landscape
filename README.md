@@ -78,6 +78,7 @@ To submit a technology to be changed or added to the Tech Radar, please visit th
 
 - Node.js (v24.1.0 recommended)
   - It is recommended to use Node Version Manager (nvm) to manage Node.js versions
+  - This repository contains a `.nvmrc` file that specifies the Node.js version to use for this project. You can use `nvm use` to automatically switch to the correct version when working on this project.
 - Python (v3.10 or higher recommended)
   - It is recommended to use Python's built-in venv module to manage virtual environments alongside Poetry for dependency management
 - Fly CLI (for Concourse deployments)
@@ -95,13 +96,22 @@ make help
 
 To run the project locally, do the following:
 
-1. Install frontend and backend dependencies:
+1. Switch to the correct Node.js version specified in the `.nvmrc` file:
+
+   ```bash
+   nvm install # if the version is not already installed
+   nvm use
+   ```
+
+   > **Note:** This command requires [nvm](https://github.com/nvm-sh/nvm) to be installed.
+
+2. Install frontend and backend dependencies:
 
    ```bash
    make install-dev
    ```
 
-2. Sign in with AWS SSO, and export the correct profile for this service:
+3. Sign in with AWS SSO, and export the correct profile for this service:
 
    ```bash
    aws sso login
@@ -117,7 +127,7 @@ To run the project locally, do the following:
 
    **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
 
-3. Run the project:
+4. Run the project:
 
    ```bash
    make dev
@@ -135,7 +145,7 @@ To run the project locally, do the following:
 
    **Note:** If running in separate terminals, ensure the environment variables are exported in both terminals.
 
-4. To exit the profile:
+5. To exit the profile:
 
    ```bash
    unset AWS_PROFILE
