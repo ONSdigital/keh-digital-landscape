@@ -241,28 +241,7 @@ function RadarPage() {
     }
 
     const grouped = data.entries.reduce((acc, entry) => {
-      const filteredTimeline = [];
-      const digitalServicesTimeline = [];
-
-      entry.timeline.forEach(timelineEntry => {
-        const directorate =
-          timelineEntry.directorate || 'Digital Services (DS)';
-
-        if (
-          directorate === selectedDirectorate &&
-          directorate !== 'Digital Services (DS)'
-        ) {
-          filteredTimeline.push(timelineEntry);
-        }
-        if (directorate === 'Digital Services (DS)') {
-          digitalServicesTimeline.push(timelineEntry);
-        }
-      });
-
-      const effectiveTimeline =
-        filteredTimeline.length > 0
-          ? filteredTimeline
-          : digitalServicesTimeline;
+      const effectiveTimeline = getFilteredTimeline(entry.timeline);
       const mostRecentRing =
         effectiveTimeline[effectiveTimeline.length - 1]?.ringId;
 
