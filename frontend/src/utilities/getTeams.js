@@ -10,11 +10,8 @@ export const checkAuthStatus = async () => {
       credentials: 'include',
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.authenticated;
-    }
-    return false;
+    const data = await response.json();
+    return data.authenticated;
   } catch (error) {
     console.error('Error checking auth status:', error);
     return false;
@@ -33,15 +30,6 @@ export const fetchUserTeams = async () => {
     const response = await customFetch('/copilot/api/teams', {
       credentials: 'include',
     });
-
-    if (!response.ok) {
-      console.error(
-        'Failed to fetch teams:',
-        response.status,
-        response.statusText
-      );
-      return { teams: [], isAdmin: false, userTeamSlugs: [] };
-    }
 
     const data = await response.json();
     return {
@@ -64,15 +52,6 @@ export const checkCopilotAdminStatus = async () => {
     const response = await customFetch('/copilot/api/admin/status', {
       credentials: 'include',
     });
-
-    if (!response.ok) {
-      console.error(
-        'Failed to check admin status:',
-        response.status,
-        response.statusText
-      );
-      return { teams: [], isAdmin: false };
-    }
 
     const data = await response.json();
     return {
@@ -99,11 +78,6 @@ export const exchangeCodeForToken = async code => {
       body: JSON.stringify({ code }),
     });
 
-    if (!response.ok) {
-      console.error('Failed to exchange code for token:', response.statusText);
-      return false;
-    }
-
     const data = await response.json();
 
     return data.success;
@@ -124,7 +98,7 @@ export const logoutUser = async () => {
       credentials: 'include',
     });
 
-    return response.ok;
+    return true;
   } catch (error) {
     console.error('Error logging out:', error);
     return false;

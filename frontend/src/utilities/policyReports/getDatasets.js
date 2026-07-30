@@ -7,10 +7,6 @@ export const fetchDatasetsByOrganisation = async organisation => {
       `/policy-reports/api/datasets?organisation=${encodeURIComponent(organisation)}`
     );
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch datasets: ${response.statusText}`);
-    }
-
     const data = await response.json();
     return data.datasets || [];
   } catch (error) {

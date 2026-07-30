@@ -25,15 +25,6 @@ export const fetchDatasetRepositoriesForUser = async (
       }
     );
 
-    if (!response.ok) {
-      console.error(
-        'Error fetching dataset repositories:',
-        response.status,
-        response.statusText
-      );
-      return [];
-    }
-
     const data = await response.json();
     return data.repositories || [];
   } catch (error) {

@@ -10,10 +10,6 @@ import customFetch from './customFetch';
 export const fetchTechRadarJSONFromS3 = async () => {
   try {
     const response = await customFetch('/api/tech-radar/json');
-    if (!response.ok) {
-      return null;
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {

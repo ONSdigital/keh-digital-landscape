@@ -8,10 +8,6 @@ import customFetch from './customFetch';
 export const fetchOrgHistoricUsageData = async () => {
   try {
     const response = await customFetch('/copilot/api/org/historic');
-    if (!response.ok) {
-      return null;
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -28,10 +24,6 @@ export const fetchOrgHistoricUsageData = async () => {
 export const fetchTeamsHistoricData = async () => {
   try {
     const response = await customFetch('/copilot/api/teams/historic');
-    if (!response.ok) {
-      return null;
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
