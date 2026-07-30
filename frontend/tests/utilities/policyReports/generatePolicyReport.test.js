@@ -46,28 +46,43 @@ describe('generatePolicyReport', () => {
 
   it('posts to the report API with the correct payload', async () => {
     const blob = new Blob(['<html/>'], { type: 'text/html' });
-    const headers = new Headers({ 'Content-Disposition': 'attachment; filename="report.html"' });
+    const headers = new Headers({
+      'Content-Disposition': 'attachment; filename="report.html"',
+    });
     customFetch.mockResolvedValue({ blob: async () => blob, headers });
 
     await generatePolicyReport({
       reportType: 'Organisation',
-      inputs: { organisation: 'ONS-Innovation', sourceDataset: 'ds1', comparisonDataset: 'ds0' },
+      inputs: {
+        organisation: 'ONS-Innovation',
+        sourceDataset: 'ds1',
+        comparisonDataset: 'ds0',
+      },
     });
 
-    expect(customFetch).toHaveBeenCalledWith('/policy-reports/api/generateReport', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        reportType: 'Organisation',
-        inputs: { organisation: 'ONS-Innovation', sourceDataset: 'ds1', comparisonDataset: 'ds0' },
-      }),
-    });
+    expect(customFetch).toHaveBeenCalledWith(
+      '/policy-reports/api/generateReport',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          reportType: 'Organisation',
+          inputs: {
+            organisation: 'ONS-Innovation',
+            sourceDataset: 'ds1',
+            comparisonDataset: 'ds0',
+          },
+        }),
+      }
+    );
   });
 
   it('creates an object URL from the response blob and triggers a download', async () => {
     const blob = new Blob(['<html/>'], { type: 'text/html' });
-    const headers = new Headers({ 'Content-Disposition': 'attachment; filename="my-report.html"' });
+    const headers = new Headers({
+      'Content-Disposition': 'attachment; filename="my-report.html"',
+    });
     customFetch.mockResolvedValue({ blob: async () => blob, headers });
 
     await generatePolicyReport({ reportType: 'Repository', inputs: {} });
@@ -90,12 +105,16 @@ describe('generatePolicyReport', () => {
 
   it('revokes the object URL after triggering the download', async () => {
     const blob = new Blob(['<html/>'], { type: 'text/html' });
-    const headers = new Headers({ 'Content-Disposition': 'attachment; filename="r.html"' });
+    const headers = new Headers({
+      'Content-Disposition': 'attachment; filename="r.html"',
+    });
     customFetch.mockResolvedValue({ blob: async () => blob, headers });
 
     await generatePolicyReport({ reportType: 'Organisation', inputs: {} });
 
-    expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:http://localhost/fake-url');
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith(
+      'blob:http://localhost/fake-url'
+    );
   });
 
   it('propagates errors thrown by customFetch', async () => {

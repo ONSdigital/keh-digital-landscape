@@ -13,62 +13,68 @@ vi.mock('../../src/components/PageBanner/PageBanner', () => ({
   default: ({ title }) => <h1>{title}</h1>,
 }));
 
-vi.mock('../../src/components/policyReports/CollapsibleReportSection/CollapsibleReportSection', () => ({
-  default: ({ title, children }) => (
-    <section>
-      <span>{title}</span>
-      {children}
-    </section>
-  ),
-}));
+vi.mock(
+  '../../src/components/policyReports/CollapsibleReportSection/CollapsibleReportSection',
+  () => ({
+    default: ({ title, children }) => (
+      <section>
+        <span>{title}</span>
+        {children}
+      </section>
+    ),
+  })
+);
 
-vi.mock('../../src/components/policyReports/SelectableEntityReport/SelectableEntityReport', () => ({
-  default: ({
-    searchId,
-    searchLabel,
-    searchValue,
-    onSearchChange,
-    filteredItems,
-    selectedItems,
-    onToggleSelection,
-    onClearSelection,
-    onLoadMore,
-    generateButtonLabel,
-    onGenerateReport,
-    isGenerateDisabled,
-  }) => (
-    <div data-testid={`selectable-entity-${searchId}`}>
-      <label htmlFor={searchId}>{searchLabel}</label>
-      <input
-        id={searchId}
-        value={searchValue}
-        onChange={e => onSearchChange(e.target.value)}
-      />
-      <ul>
-        {filteredItems.map(item => (
-          <li key={item}>
-            <button type="button" onClick={() => onToggleSelection(item)}>
-              {item}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <button type="button" onClick={onClearSelection}>
-        Clear selection
-      </button>
-      <button type="button" onClick={onLoadMore}>
-        Load more
-      </button>
-      <button
-        type="button"
-        onClick={onGenerateReport}
-        disabled={isGenerateDisabled}
-      >
-        {generateButtonLabel}
-      </button>
-    </div>
-  ),
-}));
+vi.mock(
+  '../../src/components/policyReports/SelectableEntityReport/SelectableEntityReport',
+  () => ({
+    default: ({
+      searchId,
+      searchLabel,
+      searchValue,
+      onSearchChange,
+      filteredItems,
+      selectedItems,
+      onToggleSelection,
+      onClearSelection,
+      onLoadMore,
+      generateButtonLabel,
+      onGenerateReport,
+      isGenerateDisabled,
+    }) => (
+      <div data-testid={`selectable-entity-${searchId}`}>
+        <label htmlFor={searchId}>{searchLabel}</label>
+        <input
+          id={searchId}
+          value={searchValue}
+          onChange={e => onSearchChange(e.target.value)}
+        />
+        <ul>
+          {filteredItems.map(item => (
+            <li key={item}>
+              <button type="button" onClick={() => onToggleSelection(item)}>
+                {item}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <button type="button" onClick={onClearSelection}>
+          Clear selection
+        </button>
+        <button type="button" onClick={onLoadMore}>
+          Load more
+        </button>
+        <button
+          type="button"
+          onClick={onGenerateReport}
+          disabled={isGenerateDisabled}
+        >
+          {generateButtonLabel}
+        </button>
+      </div>
+    ),
+  })
+);
 
 vi.mock('../../src/utilities/policyReports/getOrganisations', () => ({
   fetchPolicyReportOrganisationOptions: vi.fn(),
@@ -144,7 +150,9 @@ const setupDefaultMocks = ({
   fetchDatasetTeamsForUser.mockResolvedValue(teams);
   handleAuthCallback.mockResolvedValue(undefined);
   checkAuthStatus.mockResolvedValue(authenticated);
-  fetchGitHubUserProfile.mockResolvedValue(username ? { login: username } : null);
+  fetchGitHubUserProfile.mockResolvedValue(
+    username ? { login: username } : null
+  );
   retrievePersistedFormState.mockReturnValue({});
   generatePolicyReport.mockResolvedValue(undefined);
 };
@@ -170,7 +178,9 @@ describe('PolicyReportsPage', () => {
     it('renders the page title', async () => {
       setupDefaultMocks();
       await renderPage();
-      expect(screen.getByRole('heading', { name: /policy reports/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /policy reports/i })
+      ).toBeInTheDocument();
     });
 
     it('renders Stage 1 and Stage 2 section headings', async () => {
@@ -185,16 +195,18 @@ describe('PolicyReportsPage', () => {
       await renderPage();
 
       const select = screen.getByLabelText(/organisation/i);
-      expect(within(select).getByRole('option', { name: 'ONS-Innovation' })).toBeInTheDocument();
-      expect(within(select).getByRole('option', { name: 'ONS-Dev' })).toBeInTheDocument();
+      expect(
+        within(select).getByRole('option', { name: 'ONS-Innovation' })
+      ).toBeInTheDocument();
+      expect(
+        within(select).getByRole('option', { name: 'ONS-Dev' })
+      ).toBeInTheDocument();
     });
 
     it('shows Stage 2 gate note when no dataset is selected', async () => {
       setupDefaultMocks();
       await renderPage();
-      expect(
-        screen.getByText(/complete stage 1/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/complete stage 1/i)).toBeInTheDocument();
     });
 
     it('shows the GitHub login button when unauthenticated', async () => {
@@ -205,7 +217,9 @@ describe('PolicyReportsPage', () => {
       const orgSelect = screen.getByLabelText(/organisation/i);
       await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
       await waitFor(() =>
-        expect(fetchDatasetsByOrganisation).toHaveBeenCalledWith('ONS-Innovation')
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalledWith(
+          'ONS-Innovation'
+        )
       );
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
@@ -228,7 +242,9 @@ describe('PolicyReportsPage', () => {
       await userEvent.selectOptions(select, 'ONS-Innovation');
 
       await waitFor(() =>
-        expect(fetchDatasetsByOrganisation).toHaveBeenCalledWith('ONS-Innovation')
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalledWith(
+          'ONS-Innovation'
+        )
       );
     });
 
@@ -253,14 +269,18 @@ describe('PolicyReportsPage', () => {
 
       const orgSelect = screen.getByLabelText(/organisation/i);
       await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
-      await waitFor(() => expect(fetchDatasetsByOrganisation).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
 
       // Select a dataset to enable Stage 2
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
 
       // Clear configuration
-      const clearBtn = screen.getByRole('button', { name: /clear configuration/i });
+      const clearBtn = screen.getByRole('button', {
+        name: /clear configuration/i,
+      });
       await userEvent.click(clearBtn);
 
       expect(screen.getByText(/complete stage 1/i)).toBeInTheDocument();
@@ -272,7 +292,9 @@ describe('PolicyReportsPage', () => {
 
       const orgSelect = screen.getByLabelText(/organisation/i);
       await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
-      await waitFor(() => expect(fetchDatasetsByOrganisation).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
@@ -289,7 +311,9 @@ describe('PolicyReportsPage', () => {
     const selectOrgAndDataset = async () => {
       const orgSelect = screen.getByLabelText(/organisation/i);
       await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
-      await waitFor(() => expect(fetchDatasetsByOrganisation).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
@@ -300,7 +324,9 @@ describe('PolicyReportsPage', () => {
       await renderPage();
       await selectOrgAndDataset();
 
-      expect(screen.getByRole('heading', { name: /organisation report/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /organisation report/i })
+      ).toBeInTheDocument();
     });
 
     it('populates the comparison dataset with older datasets', async () => {
@@ -368,9 +394,7 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateBtn);
 
       await waitFor(() =>
-        expect(
-          screen.getByRole('alert')
-        ).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toBeInTheDocument()
       );
     });
 
@@ -379,7 +403,9 @@ describe('PolicyReportsPage', () => {
       await renderPage();
       await selectOrgAndDataset();
 
-      expect(screen.getByText(/no older datasets available/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/no older datasets available/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -389,7 +415,9 @@ describe('PolicyReportsPage', () => {
     const selectOrgAndDataset = async () => {
       const orgSelect = screen.getByLabelText(/organisation/i);
       await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
-      await waitFor(() => expect(fetchDatasetsByOrganisation).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
@@ -420,7 +448,9 @@ describe('PolicyReportsPage', () => {
       await waitFor(() =>
         expect(screen.getByText(/@octocat/i)).toBeInTheDocument()
       );
-      expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /log out/i })
+      ).toBeInTheDocument();
     });
 
     it('calls logoutUser when "Log out" is clicked and hides the username', async () => {
@@ -435,7 +465,9 @@ describe('PolicyReportsPage', () => {
       await selectOrgAndDataset();
 
       await waitFor(() =>
-        expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument()
+        expect(
+          screen.getByRole('button', { name: /log out/i })
+        ).toBeInTheDocument()
       );
 
       await userEvent.click(screen.getByRole('button', { name: /log out/i }));
@@ -485,7 +517,9 @@ describe('PolicyReportsPage', () => {
 
       const orgSelect = screen.getByLabelText(/organisation/i);
       await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
-      await waitFor(() => expect(fetchDatasetsByOrganisation).toHaveBeenCalled());
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
@@ -497,9 +531,7 @@ describe('PolicyReportsPage', () => {
 
     it('renders the repository search input', async () => {
       await setupAuthenticatedWithData();
-      expect(
-        screen.getByLabelText(/search repositories/i)
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText(/search repositories/i)).toBeInTheDocument();
     });
 
     it('renders the team search input', async () => {

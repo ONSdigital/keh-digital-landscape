@@ -14,7 +14,9 @@ describe('fetchDatasetRepositoriesForUser', () => {
 
   it('returns repositories for a given organisation and dataset', async () => {
     const mockRepos = ['repo-a', 'repo-b', 'repo-c'];
-    customFetch.mockResolvedValue({ json: async () => ({ repositories: mockRepos }) });
+    customFetch.mockResolvedValue({
+      json: async () => ({ repositories: mockRepos }),
+    });
 
     const result = await fetchDatasetRepositoriesForUser(
       'ONS-Innovation',
@@ -31,7 +33,10 @@ describe('fetchDatasetRepositoriesForUser', () => {
   it('URL-encodes the organisation and dataset parameters', async () => {
     customFetch.mockResolvedValue({ json: async () => ({ repositories: [] }) });
 
-    await fetchDatasetRepositoriesForUser('ONS-Innovation', '2024-01-15T10:00:00Z');
+    await fetchDatasetRepositoriesForUser(
+      'ONS-Innovation',
+      '2024-01-15T10:00:00Z'
+    );
 
     const calledUrl = customFetch.mock.calls[0][0];
     expect(calledUrl).toContain('organisation=ONS-Innovation');
@@ -52,7 +57,10 @@ describe('fetchDatasetRepositoriesForUser', () => {
   });
 
   it('returns an empty array when organisation is falsy', async () => {
-    const result = await fetchDatasetRepositoriesForUser('', '2024-01-15T10:00:00Z');
+    const result = await fetchDatasetRepositoriesForUser(
+      '',
+      '2024-01-15T10:00:00Z'
+    );
 
     expect(customFetch).not.toHaveBeenCalled();
     expect(result).toEqual([]);

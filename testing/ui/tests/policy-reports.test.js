@@ -40,16 +40,13 @@ const mockBaseApis = async page => {
 };
 
 const mockDatasetsApi = async page => {
-  await page.route(
-    '**/policy-reports/api/datasets?organisation=**',
-    route => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ datasets: MOCK_DATASETS }),
-      });
-    }
-  );
+  await page.route('**/policy-reports/api/datasets?organisation=**', route => {
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ datasets: MOCK_DATASETS }),
+    });
+  });
 };
 
 const mockAuthenticatedApis = async (page, username = 'testuser') => {
@@ -69,16 +66,13 @@ const mockAuthenticatedApis = async (page, username = 'testuser') => {
     });
   });
 
-  await page.route(
-    '**/policy-reports/api/dataset-repositories?**',
-    route => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(MOCK_REPOSITORIES),
-      });
-    }
-  );
+  await page.route('**/policy-reports/api/dataset-repositories?**', route => {
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(MOCK_REPOSITORIES),
+    });
+  });
 
   await page.route('**/policy-reports/api/dataset-teams?**', route => {
     route.fulfill({
@@ -261,9 +255,7 @@ test('Signed-in username appears in Restricted Reports section when authenticate
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
   await expect(page.getByText('@octocat')).toBeVisible({ timeout: 5000 });
-  await expect(
-    page.getByRole('button', { name: 'Log out' })
-  ).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
 });
 
 test('Repository and Team report sections are shown when authenticated', async ({
