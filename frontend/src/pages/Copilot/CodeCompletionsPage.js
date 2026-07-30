@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
