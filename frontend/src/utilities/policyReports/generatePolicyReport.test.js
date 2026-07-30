@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { generatePolicyReport } from '../../../src/utilities/policyReports/generatePolicyReport';
+import { generatePolicyReport } from './generatePolicyReport';
 
-vi.mock('../../../src/utilities/customFetch', () => ({
+vi.mock('../customFetch', () => ({
   default: vi.fn(),
 }));
 
-import customFetch from '../../../src/utilities/customFetch';
+import customFetch from '../customFetch';
 
 describe('generatePolicyReport', () => {
   let appendChildSpy;

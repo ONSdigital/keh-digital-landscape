@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { fetchPolicyReportOrganisationOptions } from '../../../src/utilities/policyReports/getOrganisations';
+import { fetchPolicyReportOrganisationOptions } from './getOrganisations';
 
-vi.mock('../../../src/utilities/customFetch', () => ({
+vi.mock('../customFetch', () => ({
   default: vi.fn(),
 }));
 
@@ -10,7 +10,7 @@ vi.mock('react-hot-toast', () => ({
   default: { error: vi.fn() },
 }));
 
-import customFetch from '../../../src/utilities/customFetch';
+import customFetch from '../customFetch';
 import { toast } from 'react-hot-toast';
 
 describe('fetchPolicyReportOrganisationOptions', () => {

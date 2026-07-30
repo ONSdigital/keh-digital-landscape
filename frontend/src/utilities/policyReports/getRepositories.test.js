@@ -1,37 +1,42 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { fetchDatasetTeamsForUser } from '../../../src/utilities/policyReports/getTeams';
+import { fetchDatasetRepositoriesForUser } from './getRepositories';
 
-vi.mock('../../../src/utilities/customFetch', () => ({
+vi.mock('../customFetch', () => ({
   default: vi.fn(),
 }));
 
-import customFetch from '../../../src/utilities/customFetch';
+import customFetch from '../customFetch';
 
-describe('fetchDatasetTeamsForUser', () => {
+describe('fetchDatasetRepositoriesForUser', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('returns teams for a given organisation and dataset', async () => {
-    const mockTeams = ['team-alpha', 'team-beta'];
-    customFetch.mockResolvedValue({ json: async () => ({ teams: mockTeams }) });
+  it('returns repositories for a given organisation and dataset', async () => {
+    const mockRepos = ['repo-a', 'repo-b', 'repo-c'];
+    customFetch.mockResolvedValue({
+      json: async () => ({ repositories: mockRepos }),
+    });
 
-    const result = await fetchDatasetTeamsForUser(
+    const result = await fetchDatasetRepositoriesForUser(
       'ONS-Innovation',
       '2024-01-15T10:00:00Z'
     );
 
     expect(customFetch).toHaveBeenCalledWith(
-      expect.stringContaining('/policy-reports/api/teams'),
+      expect.stringContaining('/policy-reports/api/repositories'),
       { credentials: 'include' }
     );
-    expect(result).toEqual(mockTeams);
+    expect(result).toEqual(mockRepos);
   });
 
   it('URL-encodes the organisation and dataset parameters', async () => {
-    customFetch.mockResolvedValue({ json: async () => ({ teams: [] }) });
+    customFetch.mockResolvedValue({ json: async () => ({ repositories: [] }) });
 
-    await fetchDatasetTeamsForUser('ONS-Innovation', '2024-01-15T10:00:00Z');
+    await fetchDatasetRepositoriesForUser(
+      'ONS-Innovation',
+      '2024-01-15T10:00:00Z'
+    );
 
     const calledUrl = customFetch.mock.calls[0][0];
     expect(calledUrl).toContain('organisation=ONS-Innovation');
@@ -40,10 +45,10 @@ describe('fetchDatasetTeamsForUser', () => {
     );
   });
 
-  it('returns an empty array when teams key is missing from response', async () => {
+  it('returns an empty array when repositories key is missing from response', async () => {
     customFetch.mockResolvedValue({ json: async () => ({}) });
 
-    const result = await fetchDatasetTeamsForUser(
+    const result = await fetchDatasetRepositoriesForUser(
       'ONS-Innovation',
       '2024-01-15T10:00:00Z'
     );
@@ -52,14 +57,17 @@ describe('fetchDatasetTeamsForUser', () => {
   });
 
   it('returns an empty array when organisation is falsy', async () => {
-    const result = await fetchDatasetTeamsForUser('', '2024-01-15T10:00:00Z');
+    const result = await fetchDatasetRepositoriesForUser(
+      '',
+      '2024-01-15T10:00:00Z'
+    );
 
     expect(customFetch).not.toHaveBeenCalled();
     expect(result).toEqual([]);
   });
 
   it('returns an empty array when dataset is falsy', async () => {
-    const result = await fetchDatasetTeamsForUser('ONS-Innovation', '');
+    const result = await fetchDatasetRepositoriesForUser('ONS-Innovation', '');
 
     expect(customFetch).not.toHaveBeenCalled();
     expect(result).toEqual([]);
@@ -68,7 +76,7 @@ describe('fetchDatasetTeamsForUser', () => {
   it('returns an empty array when the fetch throws', async () => {
     customFetch.mockRejectedValue(new Error('Network error'));
 
-    const result = await fetchDatasetTeamsForUser(
+    const result = await fetchDatasetRepositoriesForUser(
       'ONS-Innovation',
       '2024-01-15T10:00:00Z'
     );
