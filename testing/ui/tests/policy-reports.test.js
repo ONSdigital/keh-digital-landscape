@@ -98,12 +98,16 @@ test('Policy Reports page displays Stage 1 and Stage 2 sections', async ({
   await mockBaseApis(page);
   await page.goto(PAGE_URL);
 
-  await expect(page.getByText('Stage 1')).toBeVisible();
+  await expect(
+    page.locator('.policy-reports-stage-kicker', { hasText: 'Stage 1' })
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Report Configuration' })
   ).toBeVisible();
 
-  await expect(page.getByText('Stage 2')).toBeVisible();
+  await expect(
+    page.locator('.policy-reports-stage-kicker', { hasText: 'Stage 2' })
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Generate Reports' })
   ).toBeVisible();
@@ -271,9 +275,15 @@ test('Repository and Team report sections are shown when authenticated', async (
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
   await expect(
-    page.getByText('Repository report', { exact: false })
+    page.locator('summary.policy-reports-collapsible-summary', {
+      hasText: 'Repository report',
+    })
   ).toBeVisible({ timeout: 5000 });
-  await expect(page.getByText('Team report', { exact: false })).toBeVisible({
+  await expect(
+    page.locator('summary.policy-reports-collapsible-summary', {
+      hasText: 'Team report',
+    })
+  ).toBeVisible({
     timeout: 5000,
   });
 });
