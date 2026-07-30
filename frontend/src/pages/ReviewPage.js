@@ -165,10 +165,10 @@ const ReviewPage = () => {
     }
   }, [projectsData, showProjectCount]);
 
-  const categorizeEntries = (
+  function categorizeEntries(
     radarEntries,
     inputDirectorate = selectedDirectorate
-  ) => {
+  ) {
     const categorized = {
       adopt: [],
       trial: [],
@@ -236,7 +236,7 @@ const ReviewPage = () => {
     });
 
     return categorized;
-  };
+  }
 
   // Re-categorise entries when selectedDirectorate changes
   useEffect(() => {
@@ -889,7 +889,7 @@ const ReviewPage = () => {
    * Calculates project counts for all technologies
    * @returns {void}
    */
-  const calculateAllProjectCounts = () => {
+  function calculateAllProjectCounts() {
     if (!projectsData) return;
 
     const countMap = {};
@@ -907,7 +907,7 @@ const ReviewPage = () => {
     });
 
     setProjectCountMap(countMap);
-  };
+  }
 
   /**
    * Toggle showing project counts

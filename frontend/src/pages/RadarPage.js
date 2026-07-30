@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import '../styles/App.css';
 import { useData } from '../contexts/dataContext';
 import {
@@ -234,6 +234,51 @@ function RadarPage() {
 
     return shouldBeHighlighted;
   };
+
+  const { groupedEntries, numberedEntries } = useMemo(() => {
+    if (!data || !data.entries) {
+      return { groupedEntries: {}, numberedEntries: {} };
+    }
+
+    const grouped = data.entries.reduce((acc, entry) => {
+      const effectiveTimeline = getFilteredTimeline(entry.timeline);
+      const mostRecentRing =
+        effectiveTimeline[effectiveTimeline.length - 1]?.ringId;
+
+      if (mostRecentRing === 'review' || mostRecentRing === 'ignore') {
+        return acc;
+      }
+
+      const quadrant = entry.quadrant;
+      if (!acc[quadrant]) acc[quadrant] = {};
+      if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = [];
+
+      acc[quadrant][mostRecentRing].push({
+        ...entry,
+        timeline: effectiveTimeline,
+      });
+      return acc;
+    }, {});
+
+    const numbered = {};
+    let counter = 1;
+    Object.keys(grouped).forEach(quadrant => {
+      const quadrantEntries = [];
+      ['adopt', 'trial', 'assess', 'hold'].forEach(ring => {
+        if (grouped[quadrant][ring]) {
+          grouped[quadrant][ring].forEach(entry => {
+            quadrantEntries.push({
+              ...entry,
+              number: counter++,
+            });
+          });
+        }
+      });
+      numbered[quadrant] = quadrantEntries;
+    });
+
+    return { groupedEntries: grouped, numberedEntries: numbered };
+  }, [data, selectedDirectorate]);
 
   /**
    * handleDirectorateChange function to handle the directorate change event.
@@ -510,7 +555,7 @@ function RadarPage() {
    * @param {string} tech - The technology to find the projects for.
    * @returns {Array} - The projects using the technology.
    */
-  const findProjectsUsingTechnology = tech => {
+  function findProjectsUsingTechnology(tech) {
     if (!projectsData) return [];
 
     return projectsData.filter(project => {
@@ -571,7 +616,7 @@ function RadarPage() {
         }
       });
     });
-  };
+  }
 
   /**
    * handleBlipClick function to handle the blip click event.
@@ -769,40 +814,6 @@ function RadarPage() {
       </div>
     );
   }
-
-  const groupedEntries = data.entries.reduce((acc, entry) => {
-    const quadrant = entry.quadrant;
-
-    const mostRecentRing = getMostRecentRing(entry.timeline);
-
-    // Skip if the most recent timeline entry has ringId of "review" or "ignore"
-    if (mostRecentRing === 'review' || mostRecentRing === 'ignore') return acc;
-
-    if (!acc[quadrant]) acc[quadrant] = {};
-    if (!acc[quadrant][mostRecentRing]) acc[quadrant][mostRecentRing] = [];
-
-    acc[quadrant][mostRecentRing].push({
-      ...entry,
-      timeline: getFilteredTimeline(entry.timeline),
-    });
-    return acc;
-  }, {});
-
-  const numberedEntries = {};
-  let counter = 1;
-  Object.keys(groupedEntries).forEach(quadrant => {
-    numberedEntries[quadrant] = [];
-    ['adopt', 'trial', 'assess', 'hold'].forEach(ring => {
-      if (groupedEntries[quadrant][ring]) {
-        groupedEntries[quadrant][ring].forEach(entry => {
-          numberedEntries[quadrant].push({
-            ...entry,
-            number: counter++,
-          });
-        });
-      }
-    });
-  });
 
   return (
     <>
