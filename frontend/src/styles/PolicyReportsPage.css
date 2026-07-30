@@ -204,6 +204,12 @@
   cursor: not-allowed;
 }
 
+.policy-reports-btn-compact {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
 .policy-reports-focus-card {
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
@@ -381,12 +387,38 @@
 .policy-reports-selection-chip {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   border: 1px solid hsl(var(--border));
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 4px 8px 4px 10px;
   font-size: 12px;
   color: hsl(var(--foreground));
   background: hsl(var(--secondary));
+}
+
+.policy-reports-chip-remove {
+  border: 0;
+  border-radius: 999px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  line-height: 1;
+}
+
+.policy-reports-chip-remove:hover {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.policy-reports-chip-remove:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 1px;
 }
 
 .policy-reports-hint {
