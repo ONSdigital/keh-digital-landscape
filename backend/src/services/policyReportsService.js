@@ -39,7 +39,7 @@ const getPolicyReportOrganisationOptions = async () => {
  * Source dataset options = all datasets.
  * Comparison dataset options = all datasets older than the selected source (filtered client-side).
  * @param {string} organisation - The organisation folder name in S3
- * @returns {Promise<Array<{name: string, lastModified: number}>>}
+ * @returns {Promise<Array<{name: string, displayName: string}>>}
  */
 const getDatasetsByOrganisation = async organisation => {
   try {
@@ -65,8 +65,7 @@ const getDatasetsByOrganisation = async organisation => {
 
             return {
               name: filename,
-              displayName: timestamp, // Human-readable timestamp
-              lastModified: lastModified.getTime(),
+              displayName: timestamp,
             };
           } catch (error) {
             logger.warn(
@@ -76,13 +75,12 @@ const getDatasetsByOrganisation = async organisation => {
             return {
               name: filename,
               displayName: lastModified.toISOString(),
-              lastModified: lastModified.getTime(),
             };
           }
         })
     );
 
-    datasets.sort((a, b) => b.lastModified - a.lastModified);
+    datasets.sort((a, b) => new Date(b.displayName) - new Date(a.displayName));
 
     logger.info(
       `Fetched ${datasets.length} datasets for organisation ${organisation}`
