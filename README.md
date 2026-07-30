@@ -76,7 +76,7 @@ To submit a technology to be changed or added to the Tech Radar, please visit th
 
 ## Prerequisites
 
-- Node.js (v24.1.0 recommended)
+- Node.js (v24.16.0 recommended)
   - It is recommended to use Node Version Manager (nvm) to manage Node.js versions
   - This repository contains a `.nvmrc` file that specifies the Node.js version to use for this project. You can use `nvm use` to automatically switch to the correct version when working on this project.
 - Python (v3.10 or higher recommended)
