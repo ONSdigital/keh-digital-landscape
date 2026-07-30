@@ -7,10 +7,6 @@ export const fetchExistingBanners = async () => {
   try {
     const response = await customFetch('/admin/api/banners');
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch banners');
-    }
-
     const data = await response.json();
     return data.messages || [];
   } catch (error) {
@@ -30,16 +26,6 @@ export const saveBanner = async banner => {
     },
     body: JSON.stringify({ banner }),
   });
-
-  if (!response.ok) {
-    let errorData = {};
-    try {
-      errorData = await response.json();
-    } catch (_) {
-      // ignore parse errors
-    }
-    throw new Error(errorData.error || 'Failed to save banner');
-  }
 };
 
 /**
@@ -56,16 +42,6 @@ export const toggleBanner = async (index, shouldShow) => {
       show: shouldShow,
     }),
   });
-
-  if (!response.ok) {
-    let errorData = {};
-    try {
-      errorData = await response.json();
-    } catch (_) {
-      // ignore parse errors
-    }
-    throw new Error(errorData.error || 'Failed to toggle banner visibility');
-  }
 };
 
 /**
@@ -79,14 +55,4 @@ export const deleteBanner = async index => {
     },
     body: JSON.stringify({ index }),
   });
-
-  if (!response.ok) {
-    let errorData = {};
-    try {
-      errorData = await response.json();
-    } catch (_) {
-      // ignore parse errors
-    }
-    throw new Error(errorData.error || 'Failed to delete banner');
-  }
 };

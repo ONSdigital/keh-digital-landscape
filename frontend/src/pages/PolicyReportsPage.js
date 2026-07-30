@@ -246,7 +246,10 @@ const PolicyReportsPage = () => {
   const matchingTeams = teamOptions.filter(team =>
     team.toLowerCase().includes(teamSearch.trim().toLowerCase())
   );
-  const filteredTeams = matchingTeams.slice(0, teamResultCap || teamOptions.length);
+  const filteredTeams = matchingTeams.slice(
+    0,
+    teamResultCap || teamOptions.length
+  );
 
   const toggleRepositorySelection = repositoryName => {
     setSelectedRepositories(prev =>

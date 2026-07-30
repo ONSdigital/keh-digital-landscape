@@ -22,15 +22,6 @@ export const fetchDatasetTeamsForUser = async (organisation, dataset) => {
       }
     );
 
-    if (!response.ok) {
-      console.error(
-        'Error fetching dataset teams:',
-        response.status,
-        response.statusText
-      );
-      return [];
-    }
-
     const data = await response.json();
     return data.teams || [];
   } catch (error) {

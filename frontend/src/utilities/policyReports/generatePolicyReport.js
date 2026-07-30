@@ -8,10 +8,6 @@ export const generatePolicyReport = async ({ reportType, inputs }) => {
     body: JSON.stringify({ reportType, inputs }),
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to generate report: ${response.statusText}`);
-  }
-
   const blob = await response.blob();
   const downloadUrl = URL.createObjectURL(blob);
 

@@ -22,13 +22,6 @@ export const fetchUserInfo = async url => {
   try {
     const response = await customFetch('/user/api/info');
 
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        return getGuestUser();
-      }
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     return await response.json();
   } catch (error) {
     console.warn(
