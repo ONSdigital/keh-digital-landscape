@@ -41,8 +41,19 @@ const percentage = (numerator, denominator) => {
 const normaliseSectionAnchor = (prefix, value) =>
   `${prefix}-${normaliseForFileName(value || 'unknown-item')}`;
 
+const formatCheckName = name =>
+  String(name || '')
+    .split('_')
+    .map(word =>
+      word.toLowerCase() === 'slo'
+        ? 'SLO'
+        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    )
+    .join(' ');
+
 module.exports = {
   escapeHtml,
+  formatCheckName,
   getInputList,
   getInputString,
   normaliseForFileName,

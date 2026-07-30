@@ -4,6 +4,15 @@ const logger = require('../config/logger');
 const BUCKET = 'policyAudit';
 const AUDIT_PREFIX = 'audit-results/';
 
+const getDatasetAuditData = async (organisation, datasetName) => {
+  if (!organisation || !datasetName) {
+    throw new Error('Organisation and dataset name are required');
+  }
+
+  const key = `${AUDIT_PREFIX}${organisation}/${datasetName}.json`;
+  return s3Service.getObject(BUCKET, key);
+};
+
 /**
  * Fetches the list of organisations available for policy reporting.
  * Derives organisation names from top-level directories under the S3 audit prefix.
@@ -103,12 +112,7 @@ const getDatasetsByOrganisation = async organisation => {
  */
 const getDatasetEntities = async (organisation, datasetName) => {
   try {
-    if (!organisation || !datasetName) {
-      throw new Error('Organisation and dataset name are required');
-    }
-
-    const key = `${AUDIT_PREFIX}${organisation}/${datasetName}.json`;
-    const data = await s3Service.getObject(BUCKET, key);
+    const data = await getDatasetAuditData(organisation, datasetName);
 
     const repositories = Object.keys(data.repositories || {});
     const teams = Object.keys(data.teams || {});
@@ -132,6 +136,7 @@ const getDatasetEntities = async (organisation, datasetName) => {
 };
 
 module.exports = {
+  getDatasetAuditData,
   getPolicyReportOrganisationOptions,
   getDatasetsByOrganisation,
   getDatasetEntities,

@@ -180,6 +180,10 @@ describe('Policy Reports routes', () => {
     });
 
     it('returns HTML with content-disposition for a valid organisation report', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue({
+        summary: { total_repositories: 2 },
+      });
+
       vi.spyOn(policyReportGenerator, 'generateReport').mockReturnValue({
         html: '<html><body>Report</body></html>',
         fileName: 'organisation-report.html',
@@ -190,13 +194,26 @@ describe('Policy Reports routes', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reportType: 'organisation',
-          inputs: { organisation: 'my-org' },
+          inputs: {
+            organisation: 'my-org',
+            sourceDataset: '20260723T121307Z',
+            comparisonDataset: '20260716T121307Z',
+          },
         }),
       });
 
       expect(res.status).toBe(200);
       expect(res.headers.get('content-type')).toContain('text/html');
       expect(res.headers.get('content-disposition')).toContain('attachment');
+      expect(policyReportsService.getDatasetAuditData).toHaveBeenCalledTimes(2);
+      expect(policyReportGenerator.generateReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          inputs: expect.objectContaining({
+            sourceDatasetData: { summary: { total_repositories: 2 } },
+            comparisonDatasetData: { summary: { total_repositories: 2 } },
+          }),
+        })
+      );
     });
 
     it('handles reportType case-insensitively', async () => {

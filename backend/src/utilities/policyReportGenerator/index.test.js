@@ -12,6 +12,34 @@ describe('policyReportGenerator/index', () => {
         organisation: 'ONS-Innovation',
         sourceDataset: '2026-07-23T12:13:07Z',
         comparisonDataset: '2026-07-16T12:13:07Z',
+        sourceDatasetData: {
+          summary: {
+            total_repositories: 2,
+            compliant_repositories: 1,
+            total_teams: 2,
+            compliant_teams: 1,
+            repository_checks: {
+              codeowners: { total: 2, compliant: 1 },
+            },
+            team_checks: {
+              team_maintainer: { total: 2, compliant: 1 },
+            },
+          },
+        },
+        comparisonDatasetData: {
+          summary: {
+            total_repositories: 1,
+            compliant_repositories: 1,
+            total_teams: 1,
+            compliant_teams: 1,
+            repository_checks: {
+              codeowners: { total: 1, compliant: 1 },
+            },
+            team_checks: {
+              team_maintainer: { total: 1, compliant: 1 },
+            },
+          },
+        },
       },
     });
 

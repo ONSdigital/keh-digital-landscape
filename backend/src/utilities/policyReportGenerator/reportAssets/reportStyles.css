@@ -211,7 +211,7 @@ body {
 
 .block h3,
 .slo-card h3 {
-  margin: 0;
+  margin: 0 0 8px;
   font-size: 16px;
 }
 
@@ -270,6 +270,18 @@ body {
   background: hsl(var(--warn) / 10%);
 }
 
+.pill.unknown {
+  border-color: hsl(var(--warn) / 45%);
+  color: hsl(var(--warn));
+  background: hsl(var(--warn) / 10%);
+}
+
+.pill.error {
+  border-color: hsl(var(--fail));
+  color: hsl(var(--background));
+  background: hsl(var(--fail));
+}
+
 .slo-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -277,14 +289,66 @@ body {
   margin-top: 12px;
 }
 
-.slo-metric {
+.collapsible-block > summary {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  user-select: none;
+  list-style: none;
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  gap: 6px;
+}
+
+.collapsible-block > summary::before {
+  content: '▶';
+  font-size: 10px;
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.15s ease;
+  display: inline-block;
+}
+
+.collapsible-block[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.slo-card details {
+  margin-top: 12px;
+}
+
+.slo-card details summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  padding: 4px 0;
+  user-select: none;
+}
+
+.slo-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin-top: 8px;
 }
 
-.slo-metric strong {
+.slo-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0;
+  padding: 10px 12px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--secondary) / 40%);
+}
+
+.slo-metric-label {
+  margin: 0;
+  font-size: 14px;
+}
+
+.slo-metric-label strong {
   font-size: 24px;
 }
 
