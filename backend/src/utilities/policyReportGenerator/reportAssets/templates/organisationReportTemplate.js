@@ -181,6 +181,14 @@ const getSloAffectedRepositoryCount = sloRecord => {
     : null;
 };
 
+// Sanitise a severity count to a safe non-negative integer.
+// Prevents unexpected dataset values (strings, objects, etc.) from
+// being interpolated as raw HTML into the report.
+const sanitiseSeverityCount = value => {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+};
+
 const buildSloCardHtml = (
   sloRecord,
   fallbackHeading,
@@ -239,10 +247,10 @@ const buildSloCardHtml = (
   let severityHtml = '';
   if (severity) {
     severityHtml = `<div class="severity-grid">
-                <dl class="severity-item"><dt>Critical</dt><dd>${severity.critical ?? 0}</dd></dl>
-                <dl class="severity-item"><dt>High</dt><dd>${severity.high ?? 0}</dd></dl>
-                <dl class="severity-item"><dt>Medium</dt><dd>${severity.medium ?? 0}</dd></dl>
-                <dl class="severity-item"><dt>Low</dt><dd>${severity.low ?? 0}</dd></dl>
+                <dl class="severity-item"><dt>Critical</dt><dd>${sanitiseSeverityCount(severity.critical)}</dd></dl>
+                <dl class="severity-item"><dt>High</dt><dd>${sanitiseSeverityCount(severity.high)}</dd></dl>
+                <dl class="severity-item"><dt>Medium</dt><dd>${sanitiseSeverityCount(severity.medium)}</dd></dl>
+                <dl class="severity-item"><dt>Low</dt><dd>${sanitiseSeverityCount(severity.low)}</dd></dl>
               </div>`;
   }
 
