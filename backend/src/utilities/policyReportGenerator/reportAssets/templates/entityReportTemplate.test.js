@@ -60,8 +60,14 @@ describe('entityReportTemplate', () => {
     });
 
     expect(html).toContain('Repository GitHub Usage Policy Report');
+    expect(html).not.toContain('<th>GitHub</th>');
+    expect(html).toContain('class="detail-block-header"');
     expect(html).toContain('id="repo-alpha-data-pipeline"');
     expect(html).toContain('id="repo-beta-insights-service"');
+    expect(html).toContain('https://github.com/my-org/alpha-data-pipeline');
+    expect(html).toContain('https://github.com/my-org/beta-insights-service');
+    expect(html).toContain('View on GitHub');
+    expect(html.split('View on GitHub').length - 1).toBe(2);
     expect(html).toContain('alpha-data-pipeline details');
     expect(html).toContain('23 Jul 2026, 12:13');
     expect(html).toContain('1 / 3 (1 errors)');
@@ -102,5 +108,37 @@ describe('entityReportTemplate', () => {
 
     expect(html).toContain('No teams selected');
     expect(html).toContain('0 / 0');
+  });
+
+  it('renders team GitHub links using org team path', () => {
+    const html = buildEntityReportHtml({
+      inputs: {
+        organisation: 'my-org',
+        sourceDataset: '2026-07-23T12:13:07Z',
+        selectedTeams: ['platform-core'],
+        sourceDatasetData: {
+          teams: {
+            'platform-core': {
+              team_visibility: {
+                result: 'pass',
+                message: 'Team visibility is set correctly.',
+              },
+              is_compliant: true,
+            },
+          },
+        },
+      },
+      reportLabel: 'Team',
+      entityNounSingular: 'team',
+      entityNounPlural: 'teams',
+      selectedInputKey: 'selectedTeams',
+      detailAnchorPrefix: 'team',
+    });
+
+    expect(html).toContain(
+      'https://github.com/orgs/my-org/teams/platform-core'
+    );
+    expect(html).toContain('class="detail-block-header"');
+    expect(html).toContain('View on GitHub');
   });
 });

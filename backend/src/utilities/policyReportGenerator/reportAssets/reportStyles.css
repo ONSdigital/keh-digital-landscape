@@ -215,6 +215,18 @@ body {
   font-size: 16px;
 }
 
+.detail-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.detail-block-header h3 {
+  margin-bottom: 0;
+}
+
 .check-table {
   width: 100%;
   border-collapse: collapse;
@@ -280,6 +292,36 @@ body {
   border-color: hsl(var(--fail));
   color: hsl(var(--background));
   background: hsl(var(--fail));
+}
+
+.github-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.github-link-button:hover {
+  background: hsl(var(--secondary));
+}
+
+.github-link-button:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+.github-link-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .slo-grid {

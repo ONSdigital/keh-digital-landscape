@@ -176,6 +176,36 @@ ${cards.join('\n')}
   );
 };
 
+const encodePathSegments = value =>
+  String(value || '')
+    .split('/')
+    .filter(Boolean)
+    .map(segment => encodeURIComponent(segment))
+    .join('/');
+
+const buildEntityGitHubUrl = ({
+  organisation,
+  entityName,
+  entityNounSingular,
+}) => {
+  const safeOrganisation = String(organisation || '').trim();
+  const safeEntityName = String(entityName || '').trim();
+
+  if (!safeOrganisation || !safeEntityName) {
+    return '';
+  }
+
+  if (entityNounSingular === 'team') {
+    return `https://github.com/orgs/${encodeURIComponent(safeOrganisation)}/teams/${encodeURIComponent(safeEntityName)}`;
+  }
+
+  if (safeEntityName.includes('/')) {
+    return `https://github.com/${encodePathSegments(safeEntityName)}`;
+  }
+
+  return `https://github.com/${encodeURIComponent(safeOrganisation)}/${encodeURIComponent(safeEntityName)}`;
+};
+
 const buildEntityViewModel = (entityName, entityRecord) => {
   if (!entityRecord || typeof entityRecord !== 'object') {
     return {
@@ -254,11 +284,25 @@ const renderEntityDetailBlocks = ({
   entityNounSingular,
   anchorPrefix,
   repositorySloCardsByEntity,
+  organisation,
 }) =>
   entityViews
     .map(entityView => {
       const escapedEntity = escapeHtml(entityView.name);
       const anchorId = normaliseSectionAnchor(anchorPrefix, entityView.name);
+      const githubUrl = buildEntityGitHubUrl({
+        organisation,
+        entityName: entityView.name,
+        entityNounSingular,
+      });
+      const githubAction = githubUrl
+        ? `<a class="github-link-button" href="${escapeHtml(githubUrl)}" target="_blank" rel="noreferrer">
+                <svg class="github-link-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M12 2a10 10 0 0 0-3.162 19.486c.5.092.684-.217.684-.483 0-.237-.009-.867-.014-1.702-2.782.605-3.37-1.34-3.37-1.34-.454-1.153-1.108-1.46-1.108-1.46-.907-.62.069-.608.069-.608 1.003.07 1.53 1.03 1.53 1.03.89 1.525 2.336 1.084 2.904.83.09-.645.35-1.085.636-1.334-2.22-.252-4.555-1.111-4.555-4.943 0-1.091.39-1.984 1.03-2.683-.103-.253-.447-1.27.097-2.647 0 0 .84-.269 2.75 1.024A9.58 9.58 0 0 1 12 6.844a9.58 9.58 0 0 1 2.504.337c1.91-1.293 2.748-1.024 2.748-1.024.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.338 4.688-4.566 4.935.359.309.679.92.679 1.855 0 1.339-.012 2.42-.012 2.749 0 .268.18.58.688.482A10 10 0 0 0 12 2Z"/>
+                </svg>
+                <span>View on GitHub</span>
+              </a>`
+        : '';
       const detailRows =
         entityView.checkRows.length > 0
           ? entityView.checkRows
@@ -290,7 +334,10 @@ const renderEntityDetailBlocks = ({
           : '';
 
       return `          <article class="block" id="${anchorId}">
-            <h3>${escapedEntity} details</h3>
+        <div class="detail-block-header">
+          <h3>${escapedEntity} details</h3>
+    ${githubAction ? `              ${githubAction}` : ''}
+        </div>
             <table class="check-table">
               <colgroup>
                 <col style="width: 24%" />
@@ -418,6 +465,7 @@ ${renderEntityDetailBlocks({
   entityNounSingular,
   anchorPrefix: detailAnchorPrefix,
   repositorySloCardsByEntity,
+  organisation,
 })}
         </div>
       </section>
