@@ -4,6 +4,27 @@ const logger = require('../config/logger');
 const BUCKET = 'policyAudit';
 const AUDIT_PREFIX = 'audit-results/';
 
+const getLastModifiedTime = lastModified => {
+  if (lastModified instanceof Date) {
+    return lastModified.getTime();
+  }
+
+  if (lastModified) {
+    const parsedDate = new Date(lastModified);
+
+    if (!Number.isNaN(parsedDate.getTime())) {
+      return parsedDate.getTime();
+    }
+  }
+
+  return 0;
+};
+
+const getLastModifiedDisplayName = lastModified => {
+  const timestamp = getLastModifiedTime(lastModified);
+  return timestamp ? new Date(timestamp).toISOString() : '';
+};
+
 const getDatasetAuditData = async (organisation, datasetName) => {
   if (!organisation || !datasetName) {
     throw new Error('Organisation and dataset name are required');
@@ -55,41 +76,24 @@ const getDatasetsByOrganisation = async organisation => {
     const orgPrefix = `${AUDIT_PREFIX}${organisation}/`;
     const objects = await s3Service.listObjects(BUCKET, orgPrefix);
 
-    const datasets = await Promise.all(
-      objects
-        .filter(obj => {
-          const relativePath = obj.Key.replace(orgPrefix, '');
-          // Only direct JSON files (no subdirectories)
-          return relativePath.endsWith('.json') && !relativePath.includes('/');
-        })
-        .map(async obj => {
-          const relativePath = obj.Key.replace(orgPrefix, '');
-          const filename = relativePath.replace('.json', ''); // Remove .json extension
-          const lastModified = obj.LastModified;
+    const datasets = objects
+      .filter(obj => {
+        const relativePath = obj.Key.replace(orgPrefix, '');
+        // Only direct JSON files (no subdirectories)
+        return relativePath.endsWith('.json') && !relativePath.includes('/');
+      })
+      .map(obj => {
+        const relativePath = obj.Key.replace(orgPrefix, '');
+        const filename = relativePath.replace('.json', '');
 
-          try {
-            // Read the file to extract the timestamp (already parsed JSON from s3Service)
-            const data = await s3Service.getObject(BUCKET, obj.Key);
-            const timestamp = data.timestamp || lastModified.toISOString();
-
-            return {
-              name: filename,
-              displayName: timestamp,
-            };
-          } catch (error) {
-            logger.warn(
-              `Could not extract timestamp from ${filename}, using file modification time`,
-              error
-            );
-            return {
-              name: filename,
-              displayName: lastModified.toISOString(),
-            };
-          }
-        })
-    );
-
-    datasets.sort((a, b) => new Date(b.displayName) - new Date(a.displayName));
+        return {
+          name: filename,
+          displayName: getLastModifiedDisplayName(obj.LastModified),
+          lastModifiedTime: getLastModifiedTime(obj.LastModified),
+        };
+      })
+      .sort((a, b) => b.lastModifiedTime - a.lastModifiedTime)
+      .map(({ lastModifiedTime: _lastModifiedTime, ...dataset }) => dataset);
 
     logger.info(
       `Fetched ${datasets.length} datasets for organisation ${organisation}`
