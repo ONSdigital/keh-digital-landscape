@@ -175,10 +175,10 @@ test('Stage 2 report options appear after completing Stage 1', async ({
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
   await expect(
-    page.getByRole('heading', { name: 'Organisation Report' })
+    page.getByRole('tab', { name: 'Organisation Report' })
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'Restricted Reports' })
+    page.getByRole('tab', { name: 'Restricted Reports' })
   ).toBeVisible();
 });
 
@@ -219,6 +219,8 @@ test('"Log in with GitHub" button is shown in Stage 2 for unauthenticated users'
   await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
+  await page.getByRole('tab', { name: 'Restricted Reports' }).click();
+
   await expect(
     page.getByRole('button', { name: 'Log in with GitHub' })
   ).toBeVisible();
@@ -258,6 +260,8 @@ test('Signed-in username appears in Restricted Reports section when authenticate
   await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
+  await page.getByRole('tab', { name: 'Restricted Reports' }).click();
+
   await expect(page.getByText('@octocat')).toBeVisible({ timeout: 5000 });
   await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
 });
@@ -273,6 +277,8 @@ test('Repository and Team report sections are shown when authenticated', async (
   await page.locator('#organisation').selectOption('ONS-Innovation');
   await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+
+  await page.getByRole('tab', { name: 'Restricted Reports' }).click();
 
   await expect(
     page.locator('summary.policy-reports-collapsible-summary', {

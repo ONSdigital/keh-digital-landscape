@@ -239,6 +239,10 @@ describe('PolicyReportsPage', () => {
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
 
+      await userEvent.click(
+        screen.getByRole('tab', { name: /restricted reports/i })
+      );
+
       expect(
         screen.getByRole('button', { name: /log in with github/i })
       ).toBeInTheDocument();
@@ -445,6 +449,10 @@ describe('PolicyReportsPage', () => {
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
+
+      await userEvent.click(
+        screen.getByRole('tab', { name: /restricted reports/i })
+      );
     };
 
     it('calls loginWithGitHub when "Log in with GitHub" button is clicked', async () => {
@@ -677,6 +685,10 @@ describe('PolicyReportsPage', () => {
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
+
+      await userEvent.click(
+        screen.getByRole('tab', { name: /restricted reports/i })
+      );
 
       await waitFor(() =>
         expect(fetchDatasetRepositoriesForUser).toHaveBeenCalled()
