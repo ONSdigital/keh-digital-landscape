@@ -7,7 +7,7 @@ const policyReportGenerator = require('../utilities/policyReportGenerator');
 const router = express.Router();
 
 const REPORT_TYPES = ['organisation', 'repository', 'team'];
-const DATASET_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
+const SAFE_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 
 // GET /organisations
 router.get('/organisations', async (req, res) => {
@@ -36,7 +36,7 @@ router.get('/datasets', async (req, res) => {
   }
 
   // Validate organisation name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(organisation)) {
+  if (!SAFE_NAME_REGEX.test(organisation)) {
     return res.status(400).json({ error: 'Invalid organisation name format' });
   }
 
@@ -71,7 +71,7 @@ router.post('/generateReport', async (req, res) => {
 
   if (
     safeInputs.sourceDataset &&
-    !DATASET_NAME_REGEX.test(safeInputs.sourceDataset)
+    !SAFE_NAME_REGEX.test(safeInputs.sourceDataset)
   ) {
     logger.warn('Invalid source dataset value specified');
     return res.status(400).json({ error: 'Invalid source dataset value' });
@@ -79,7 +79,7 @@ router.post('/generateReport', async (req, res) => {
 
   if (
     safeInputs.comparisonDataset &&
-    !DATASET_NAME_REGEX.test(safeInputs.comparisonDataset)
+    !SAFE_NAME_REGEX.test(safeInputs.comparisonDataset)
   ) {
     logger.warn('Invalid comparison dataset value specified');
     return res.status(400).json({ error: 'Invalid comparison dataset value' });
@@ -87,10 +87,20 @@ router.post('/generateReport', async (req, res) => {
 
   if (
     safeInputs.organisation &&
-    !DATASET_NAME_REGEX.test(safeInputs.organisation)
+    !SAFE_NAME_REGEX.test(safeInputs.organisation)
   ) {
     logger.warn('Invalid organisation value specified');
     return res.status(400).json({ error: 'Invalid organisation value' });
+  }
+
+  if (!safeInputs.organisation) {
+    logger.warn('Organisation not specified for report generation');
+    return res.status(400).json({ error: 'organisation is required' });
+  }
+
+  if (!safeInputs.sourceDataset) {
+    logger.warn('Source dataset not specified for report generation');
+    return res.status(400).json({ error: 'sourceDataset is required' });
   }
 
   try {
@@ -148,12 +158,12 @@ router.get('/repositories', async (req, res) => {
   }
 
   // Validate organisation name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(organisation)) {
+  if (!SAFE_NAME_REGEX.test(organisation)) {
     return res.status(400).json({ error: 'Invalid organisation name format' });
   }
 
   // Validate dataset name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(dataset)) {
+  if (!SAFE_NAME_REGEX.test(dataset)) {
     return res.status(400).json({ error: 'Invalid dataset name format' });
   }
 
@@ -209,12 +219,12 @@ router.get('/teams', async (req, res) => {
   }
 
   // Validate organisation name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(organisation)) {
+  if (!SAFE_NAME_REGEX.test(organisation)) {
     return res.status(400).json({ error: 'Invalid organisation name format' });
   }
 
   // Validate dataset name: only alphanumeric, hyphens, underscores
-  if (!/^[a-zA-Z0-9_-]+$/.test(dataset)) {
+  if (!SAFE_NAME_REGEX.test(dataset)) {
     return res.status(400).json({ error: 'Invalid dataset name format' });
   }
 

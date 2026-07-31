@@ -267,7 +267,54 @@ describe('Policy Reports routes', () => {
       );
     });
 
+    it('returns 400 when organisation is missing', async () => {
+      const getDatasetAuditDataSpy = vi.spyOn(
+        policyReportsService,
+        'getDatasetAuditData'
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: { sourceDataset: '20260723T121307Z' },
+        }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'organisation is required',
+      });
+      expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
+    });
+
+    it('returns 400 when sourceDataset is missing', async () => {
+      const getDatasetAuditDataSpy = vi.spyOn(
+        policyReportsService,
+        'getDatasetAuditData'
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: { organisation: 'my-org' },
+        }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'sourceDataset is required',
+      });
+      expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
+    });
+
     it('handles reportType case-insensitively', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue(
+        {}
+      );
       vi.spyOn(policyReportGenerator, 'generateReport').mockReturnValue({
         html: '<html></html>',
         fileName: 'team-report.html',
@@ -276,13 +323,19 @@ describe('Policy Reports routes', () => {
       const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reportType: 'TEAM' }),
+        body: JSON.stringify({
+          reportType: 'TEAM',
+          inputs: { organisation: 'my-org', sourceDataset: '20260723T121307Z' },
+        }),
       });
 
       expect(res.status).toBe(200);
     });
 
     it('returns 500 when the generator throws', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue(
+        {}
+      );
       vi.spyOn(policyReportGenerator, 'generateReport').mockImplementation(
         () => {
           throw new Error('Generator failure');
@@ -292,7 +345,10 @@ describe('Policy Reports routes', () => {
       const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reportType: 'repository' }),
+        body: JSON.stringify({
+          reportType: 'repository',
+          inputs: { organisation: 'my-org', sourceDataset: '20260723T121307Z' },
+        }),
       });
 
       expect(res.status).toBe(500);
