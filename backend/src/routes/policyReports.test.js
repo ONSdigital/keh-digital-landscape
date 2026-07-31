@@ -179,6 +179,32 @@ describe('Policy Reports routes', () => {
       });
     });
 
+    it('returns 400 when reportType is null', async () => {
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: null }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Report type is required',
+      });
+    });
+
+    it('returns 400 when reportType is a non-string value', async () => {
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: 123 }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Invalid report type',
+      });
+    });
+
     it('returns HTML with content-disposition for a valid organisation report', async () => {
       vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue({
         summary: { total_repositories: 2 },
