@@ -57,13 +57,14 @@ router.get('/datasets', async (req, res) => {
 router.post('/generateReport', async (req, res) => {
   const { reportType, inputs } = req.body;
   const safeInputs = inputs || {};
+  const normalizedReportType = String(reportType).toLowerCase();
 
   if (!reportType) {
     logger.warn('Report type not specified');
     return res.status(400).json({ error: 'Report type is required' });
   }
 
-  if (!REPORT_TYPES.includes(reportType.toLowerCase())) {
+  if (!REPORT_TYPES.includes(normalizedReportType)) {
     logger.warn('Invalid report type specified');
     return res.status(400).json({ error: 'Invalid report type' });
   }
@@ -96,7 +97,7 @@ router.post('/generateReport', async (req, res) => {
     }
 
     if (
-      reportType.toLowerCase() === 'organisation' &&
+      normalizedReportType === 'organisation' &&
       safeInputs.organisation &&
       safeInputs.comparisonDataset
     ) {
