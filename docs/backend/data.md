@@ -2,9 +2,14 @@
 
 The `backend/data` directory contains seed data files used by the backend when running in **local development** (`NODE_ENV=development`).
 
-Instead of connecting to AWS S3, the backend reads from and writes to this
-directory. This keeps all local work fully isolated from the deployed Dev
-environment on AWS.
+By default, the backend reads from and writes to this directory instead of
+connecting to AWS S3. This keeps all local work fully isolated from the deployed
+Dev environment on AWS.
+
+To connect to real S3 while running locally (e.g. to test against live data
+without deploying), set `USE_LOCAL_S3=false` in your `.env` file. AWS
+credentials must be configured for this to work. See `.env.example` for
+details.
 
 ## Structure
 

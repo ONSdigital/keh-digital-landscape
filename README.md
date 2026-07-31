@@ -135,6 +135,8 @@ To run the project locally, do the following:
 
    This will run both the frontend and backend locally on ports 3000 and 5001 respectively.
 
+   > When running the project locally, ensure that you have setup local development data in `backend/data` as described in the [Local Development Data](#local-development-data) section below.
+
    Sometimes it can be useful to run the frontend and backend separately (i.e. to separate the logs). This can be done with the following commands (each in their own terminal):
 
    ```bash
@@ -153,13 +155,17 @@ To run the project locally, do the following:
 
 ### Local Development Data
 
-When the backend runs in local development (`NODE_ENV=development`), it reads seed data from `backend/data` instead of the deployed AWS S3 buckets.
+When the backend runs in local development (`NODE_ENV=development`), it reads seed data from `backend/data` instead of the deployed AWS S3 buckets by default.
 
 The local data is grouped into the following directories:
 
 - `backend/data/main`: Digital Landscape data such as `directorates.json`, `bannerMessages.json`, `techRadarEntries.json`, `repositoryStatistics.json`, and the `AddressBook` lookup files.
 - `backend/data/tat`: Tech Audit Tool data including `new_project_data.json` and `array_data.json`.
 - `backend/data/copilot`: Copilot usage data including `admin_teams.json`, `organisation_history.json`, and archived historic usage snapshots.
+
+To connect to real S3 while running locally (e.g. to test against live data without deploying), set `USE_LOCAL_S3=false` in `backend/.env`. AWS credentials must be configured. See `backend/.env.example` for details.
+
+More information is available in the [Data Documentation](./docs/backend/data.md) file.
 
 ### Local Authentication
 
