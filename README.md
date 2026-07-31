@@ -25,6 +25,7 @@ The Landscape provides a range of utilities including:
 - **Statistics:** A collection of statistics about the language breakdown within the ONSDigital GitHub Organisation, providing insights into the most commonly used languages and their usage trends.
 - **GitHub Copilot Usage Metrics:** Provides insights into the usage of GitHub Copilot across ONS, including organisation-wide statistics.
 - **GitHub Address Book:** A mechanism to find the ONS staff members based on their GitHub username and vice versa, to facilitate communication and collaboration within ONS.
+- **Policy Reports:** Generate organisation, repository, and team compliance reports from policy audit datasets, including GitHub-access-aware filtering and exportable report output.
 
 For more information about the project, please refer to our documentation site: [Digital Landscape Documentation](https://onsdigital.github.io/keh-digital-landscape/).
 

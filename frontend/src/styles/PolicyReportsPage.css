@@ -61,6 +61,33 @@
   background: hsl(var(--secondary) / 45%);
 }
 
+.policy-reports-loading-progress {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.policy-reports-loading-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+.policy-reports-loading-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: hsl(var(--border));
+  overflow: hidden;
+}
+
+.policy-reports-loading-progress-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  transition: width 0.2s ease;
+}
+
 .policy-reports-section-label {
   display: block;
   margin: 0 0 8px;
@@ -312,6 +339,11 @@
   align-items: center;
   gap: 8px;
   margin-left: auto;
+}
+
+.policy-reports-cache-status {
+  border-top: 1px dashed hsl(var(--border));
+  padding-top: 10px;
 }
 
 .policy-reports-login-cta {

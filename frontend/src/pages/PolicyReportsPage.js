@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PageBanner from '../components/PageBanner/PageBanner';
 import Layout from '../components/Layout/Layout';
 import CollapsibleReportSection from '../components/policyReports/CollapsibleReportSection/CollapsibleReportSection';
@@ -213,8 +213,184 @@ const PolicyReportsPage = () => {
   const [activeGenerationType, setActiveGenerationType] = useState(null);
   const [generationMessage, setGenerationMessage] = useState('');
   const [generationError, setGenerationError] = useState('');
+  const [isRefreshingGitHubCache, setIsRefreshingGitHubCache] = useState(false);
+  const [repositoryCacheInfo, setRepositoryCacheInfo] = useState({
+    cacheUsed: false,
+    cachedAt: null,
+    ageLabel: 'just now',
+  });
+  const [teamCacheInfo, setTeamCacheInfo] = useState({
+    cacheUsed: false,
+    cachedAt: null,
+    ageLabel: 'just now',
+  });
+  const [githubEntityLoadProgress, setGithubEntityLoadProgress] = useState({
+    completed: 0,
+    total: 2,
+    phase: 'idle',
+    currentPage: 0,
+    totalPages: 0,
+  });
 
   const ITEMS_PER_PAGE = 25;
+  const loadProgressPercent = Math.round(
+    (githubEntityLoadProgress.completed / githubEntityLoadProgress.total) * 100
+  );
+
+  const getCacheAgeLabelFromTimestamp = cachedAt => {
+    if (!cachedAt) {
+      return 'just now';
+    }
+
+    const parsedCachedAt = Number(cachedAt);
+
+    if (Number.isNaN(parsedCachedAt)) {
+      return 'just now';
+    }
+
+    const elapsedMinutes = Math.floor((Date.now() - parsedCachedAt) / 60000);
+
+    if (elapsedMinutes <= 0) {
+      return 'just now';
+    }
+
+    if (elapsedMinutes === 1) {
+      return '1 min ago';
+    }
+
+    return `${elapsedMinutes} mins ago`;
+  };
+
+  const loadDatasetReposAndTeams = useCallback(
+    async ({ forceRefresh = false } = {}) => {
+      if (!isGitHubAuthenticated || !organisation || !sourceDataset) {
+        return;
+      }
+
+      setIsLoadingAccessibleReposAndTeams(true);
+      setGithubEntityLoadProgress({
+        completed: 0,
+        total: 2,
+        phase: 'repositories',
+        currentPage: 0,
+        totalPages: 0,
+      });
+
+      if (forceRefresh) {
+        setIsRefreshingGitHubCache(true);
+      } else {
+        setRepositorySearch('');
+        setTeamSearch('');
+        setSelectedRepositories([]);
+        setSelectedTeams([]);
+        setRepositoryResultCap(ITEMS_PER_PAGE);
+        setTeamResultCap(ITEMS_PER_PAGE);
+      }
+
+      const repositories = [];
+      const teams = [];
+      let repositoryCacheUsed = false;
+      let repositoryCachedAt = null;
+      let teamCacheUsed = false;
+      let teamCachedAt = null;
+
+      try {
+        let repositoryPage = 1;
+        let repositoryTotalPages = 1;
+
+        while (repositoryPage <= repositoryTotalPages) {
+          const repositoryResponse = await fetchDatasetRepositoriesForUser(
+            organisation,
+            sourceDataset,
+            {
+              includeCacheMetadata: true,
+              refreshCache: forceRefresh,
+              githubPage: repositoryPage,
+              githubPerPage: 100,
+            }
+          );
+
+          repositoryTotalPages =
+            Number(repositoryResponse.githubTotalPages) || repositoryTotalPages;
+
+          repositories.push(...(repositoryResponse.repositories || []));
+          repositoryCacheUsed =
+            repositoryCacheUsed || repositoryResponse.cacheUsed;
+          repositoryCachedAt =
+            repositoryResponse.cachedAt || repositoryCachedAt;
+
+          setGithubEntityLoadProgress({
+            completed: repositoryPage,
+            total: Math.max(2, repositoryTotalPages + 1),
+            phase: 'repositories',
+            currentPage: repositoryPage,
+            totalPages: repositoryTotalPages,
+          });
+
+          repositoryPage += 1;
+        }
+
+        setGithubEntityLoadProgress(prev => ({
+          ...prev,
+          phase: 'teams',
+          currentPage: 0,
+          totalPages: 0,
+        }));
+
+        let teamPage = 1;
+        let teamTotalPages = 1;
+
+        while (teamPage <= teamTotalPages) {
+          const teamResponse = await fetchDatasetTeamsForUser(
+            organisation,
+            sourceDataset,
+            {
+              includeCacheMetadata: true,
+              refreshCache: forceRefresh,
+              githubPage: teamPage,
+              githubPerPage: 100,
+            }
+          );
+
+          teamTotalPages =
+            Number(teamResponse.githubTotalPages) || teamTotalPages;
+
+          teams.push(...(teamResponse.teams || []));
+          teamCacheUsed = teamCacheUsed || teamResponse.cacheUsed;
+          teamCachedAt = teamResponse.cachedAt || teamCachedAt;
+
+          setGithubEntityLoadProgress({
+            completed: repositoryTotalPages + teamPage,
+            total: Math.max(2, repositoryTotalPages + teamTotalPages),
+            phase: 'teams',
+            currentPage: teamPage,
+            totalPages: teamTotalPages,
+          });
+
+          teamPage += 1;
+        }
+
+        setRepositoryOptions(repositories);
+        setTeamOptions(teams);
+        setTotalAccessibleRepositories(repositories.length);
+        setTotalAccessibleTeams(teams.length);
+        setRepositoryCacheInfo({
+          cacheUsed: repositoryCacheUsed,
+          cachedAt: repositoryCachedAt,
+          ageLabel: getCacheAgeLabelFromTimestamp(repositoryCachedAt),
+        });
+        setTeamCacheInfo({
+          cacheUsed: teamCacheUsed,
+          cachedAt: teamCachedAt,
+          ageLabel: getCacheAgeLabelFromTimestamp(teamCachedAt),
+        });
+      } finally {
+        setIsLoadingAccessibleReposAndTeams(false);
+        setIsRefreshingGitHubCache(false);
+      }
+    },
+    [isGitHubAuthenticated, organisation, sourceDataset]
+  );
 
   // Load dataset repositories and teams the user has access to when dataset is selected
   useEffect(() => {
@@ -223,33 +399,33 @@ const PolicyReportsPage = () => {
       setTeamOptions([]);
       setTotalAccessibleRepositories(0);
       setTotalAccessibleTeams(0);
+      setGithubEntityLoadProgress({
+        completed: 0,
+        total: 2,
+        phase: 'idle',
+        currentPage: 0,
+        totalPages: 0,
+      });
+      setRepositoryCacheInfo({
+        cacheUsed: false,
+        cachedAt: null,
+        ageLabel: 'just now',
+      });
+      setTeamCacheInfo({
+        cacheUsed: false,
+        cachedAt: null,
+        ageLabel: 'just now',
+      });
       return;
     }
 
-    const loadDatasetReposAndTeams = async () => {
-      setIsLoadingAccessibleReposAndTeams(true);
-      setRepositorySearch('');
-      setTeamSearch('');
-      setSelectedRepositories([]);
-      setSelectedTeams([]);
-      setRepositoryResultCap(ITEMS_PER_PAGE);
-      setTeamResultCap(ITEMS_PER_PAGE);
-
-      const repositories = await fetchDatasetRepositoriesForUser(
-        organisation,
-        sourceDataset
-      );
-      const teams = await fetchDatasetTeamsForUser(organisation, sourceDataset);
-
-      setRepositoryOptions(repositories);
-      setTeamOptions(teams);
-      setTotalAccessibleRepositories(repositories.length);
-      setTotalAccessibleTeams(teams.length);
-      setIsLoadingAccessibleReposAndTeams(false);
-    };
-
     loadDatasetReposAndTeams();
-  }, [isGitHubAuthenticated, organisation, sourceDataset]);
+  }, [
+    isGitHubAuthenticated,
+    organisation,
+    sourceDataset,
+    loadDatasetReposAndTeams,
+  ]);
 
   const matchingRepositories = repositoryOptions.filter(repo =>
     repo.toLowerCase().includes(repositorySearch.trim().toLowerCase())
@@ -325,7 +501,21 @@ const PolicyReportsPage = () => {
     if (success) {
       setIsGitHubAuthenticated(false);
       setGithubUsername(null);
+      setRepositoryCacheInfo({
+        cacheUsed: false,
+        cachedAt: null,
+        ageLabel: 'just now',
+      });
+      setTeamCacheInfo({
+        cacheUsed: false,
+        cachedAt: null,
+        ageLabel: 'just now',
+      });
     }
+  };
+
+  const handleRefreshGitHubCache = async () => {
+    await loadDatasetReposAndTeams({ forceRefresh: true });
   };
 
   const handleGeneratePolicyReport = async ({ reportType, inputs }) => {
@@ -644,6 +834,34 @@ const PolicyReportsPage = () => {
                             <p className="policy-reports-stage-gate-note">
                               Loading your accessible repositories and teams…
                             </p>
+                            <div
+                              className="policy-reports-loading-progress"
+                              role="status"
+                              aria-live="polite"
+                            >
+                              <div className="policy-reports-loading-progress-meta">
+                                <span>
+                                  {githubEntityLoadProgress.phase ===
+                                  'repositories'
+                                    ? 'Collecting repositories'
+                                    : 'Collecting teams'}{' '}
+                                  {githubEntityLoadProgress.currentPage > 0 &&
+                                  githubEntityLoadProgress.totalPages > 0
+                                    ? `(page ${githubEntityLoadProgress.currentPage} of ${githubEntityLoadProgress.totalPages})`
+                                    : ''}
+                                </span>
+                                <span>{loadProgressPercent}%</span>
+                              </div>
+                              <div
+                                className="policy-reports-loading-progress-track"
+                                aria-hidden="true"
+                              >
+                                <div
+                                  className="policy-reports-loading-progress-fill"
+                                  style={{ width: `${loadProgressPercent}%` }}
+                                />
+                              </div>
+                            </div>
                           </div>
                         ) : (
                           <>
@@ -744,6 +962,38 @@ const PolicyReportsPage = () => {
                                 pluralLabel="teams"
                               />
                             </CollapsibleReportSection>
+
+                            <div className="policy-reports-cache-status policy-reports-space-top-sm">
+                              <p className="policy-reports-hint policy-reports-no-margin">
+                                GitHub repositories collected{' '}
+                                {repositoryCacheInfo.cacheUsed
+                                  ? `from cache (${repositoryCacheInfo.ageLabel})`
+                                  : `from GitHub API (${repositoryCacheInfo.ageLabel})`}
+                                .
+                              </p>
+                              <p className="policy-reports-hint policy-reports-hint-tight">
+                                GitHub teams collected{' '}
+                                {teamCacheInfo.cacheUsed
+                                  ? `from cache (${teamCacheInfo.ageLabel})`
+                                  : `from GitHub API (${teamCacheInfo.ageLabel})`}
+                                .
+                              </p>
+                              <div className="policy-reports-space-top-xs">
+                                <button
+                                  className="policy-reports-btn policy-reports-btn-compact"
+                                  type="button"
+                                  onClick={handleRefreshGitHubCache}
+                                  disabled={
+                                    isLoadingAccessibleReposAndTeams ||
+                                    isRefreshingGitHubCache
+                                  }
+                                >
+                                  {isRefreshingGitHubCache
+                                    ? 'Refreshing GitHub cache...'
+                                    : 'Refresh GitHub cache'}
+                                </button>
+                              </div>
+                            </div>
                           </>
                         )}
                       </>

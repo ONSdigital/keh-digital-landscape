@@ -152,8 +152,16 @@ const setupDefaultMocks = ({
     organisationOptions: orgOptions,
   });
   fetchDatasetsByOrganisation.mockResolvedValue(datasets);
-  fetchDatasetRepositoriesForUser.mockResolvedValue(repositories);
-  fetchDatasetTeamsForUser.mockResolvedValue(teams);
+  fetchDatasetRepositoriesForUser.mockResolvedValue({
+    repositories,
+    cacheUsed: false,
+    cachedAt: Date.now(),
+  });
+  fetchDatasetTeamsForUser.mockResolvedValue({
+    teams,
+    cacheUsed: false,
+    cachedAt: Date.now(),
+  });
   handleAuthCallback.mockResolvedValue(undefined);
   checkAuthStatus.mockResolvedValue(authenticated);
   fetchGitHubUserProfile.mockResolvedValue(
@@ -507,14 +515,144 @@ describe('PolicyReportsPage', () => {
       await waitFor(() =>
         expect(fetchDatasetRepositoriesForUser).toHaveBeenCalledWith(
           'ONS-Innovation',
-          DATASETS[0].name
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: false,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
         )
       );
       await waitFor(() =>
         expect(fetchDatasetTeamsForUser).toHaveBeenCalledWith(
           'ONS-Innovation',
-          DATASETS[0].name
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: false,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
         )
+      );
+    });
+
+    it('shows cache-source hints and refreshes cache on demand', async () => {
+      setupDefaultMocks({
+        authenticated: true,
+        username: 'octocat',
+        repositories: ['repo-a'],
+        teams: ['team-a'],
+      });
+      fetchDatasetRepositoriesForUser
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          cacheUsed: true,
+          cachedAt: Date.now() - 5 * 60 * 1000,
+        })
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          cacheUsed: false,
+          cachedAt: Date.now(),
+        });
+      fetchDatasetTeamsForUser
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          cacheUsed: true,
+          cachedAt: Date.now() - 5 * 60 * 1000,
+        })
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          cacheUsed: false,
+          cachedAt: Date.now(),
+        });
+
+      await renderPage();
+      await selectOrgAndDataset();
+
+      await waitFor(() =>
+        expect(
+          screen.getByText(/github repositories collected from cache/i)
+        ).toBeInTheDocument()
+      );
+      expect(
+        screen.getByText(/github teams collected from cache/i)
+      ).toBeInTheDocument();
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /refresh github cache/i })
+      );
+
+      await waitFor(() =>
+        expect(fetchDatasetRepositoriesForUser).toHaveBeenNthCalledWith(
+          2,
+          'ONS-Innovation',
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: true,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
+        )
+      );
+      await waitFor(() =>
+        expect(fetchDatasetTeamsForUser).toHaveBeenNthCalledWith(
+          2,
+          'ONS-Innovation',
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: true,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
+        )
+      );
+    });
+
+    it('shows loading progress while repositories and teams are being fetched', async () => {
+      setupDefaultMocks({
+        authenticated: true,
+        username: 'octocat',
+      });
+
+      let resolveRepositories;
+      let resolveTeams;
+      const repositoriesPromise = new Promise(resolve => {
+        resolveRepositories = resolve;
+      });
+      const teamsPromise = new Promise(resolve => {
+        resolveTeams = resolve;
+      });
+
+      fetchDatasetRepositoriesForUser.mockReturnValueOnce(repositoriesPromise);
+      fetchDatasetTeamsForUser.mockReturnValueOnce(teamsPromise);
+
+      await renderPage();
+      await selectOrgAndDataset();
+
+      expect(
+        screen.getByText(/loading your accessible repositories and teams/i)
+      ).toBeInTheDocument();
+      expect(screen.getByText(/collecting repositories/i)).toBeInTheDocument();
+
+      resolveRepositories({
+        repositories: ['repo-a'],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+      resolveTeams({
+        teams: ['team-a'],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryByText(/loading your accessible repositories and teams/i)
+        ).not.toBeInTheDocument()
       );
     });
   });

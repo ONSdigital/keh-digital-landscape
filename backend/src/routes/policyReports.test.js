@@ -429,18 +429,28 @@ describe('Policy Reports routes', () => {
       });
       vi.spyOn(
         githubQueries,
-        'fetchUserRepositoriesInOrganisation'
-      ).mockResolvedValue(['repo-a', 'repo-c', 'repo-d']);
+        'fetchUserRepositoriesInOrganisationPage'
+      ).mockResolvedValue({
+        repositories: ['repo-a', 'repo-c', 'repo-d'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({
-        repositories: ['repo-a', 'repo-c'],
-      });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          repositories: ['repo-a', 'repo-c'],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+          githubCurrentPage: 1,
+          githubTotalPages: 1,
+        })
+      );
     });
 
     it('returns 200 with an empty array when the user has access to none of the dataset repos', async () => {
@@ -450,16 +460,123 @@ describe('Policy Reports routes', () => {
       });
       vi.spyOn(
         githubQueries,
-        'fetchUserRepositoriesInOrganisation'
-      ).mockResolvedValue(['repo-y']);
+        'fetchUserRepositoriesInOrganisationPage'
+      ).mockResolvedValue({
+        repositories: ['repo-y'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({ repositories: [] });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          repositories: [],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+        })
+      );
+    });
+
+    it('caches individual repository pages and returns a cache hit on re-request', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: ['repo-a', 'repo-b'],
+        teams: [],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserRepositoriesInOrganisationPage')
+        .mockResolvedValue({
+          repositories: ['repo-a', 'repo-b'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      const firstRes = await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-repos' } }
+      );
+      const secondRes = await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-repos' } }
+      );
+
+      expect(firstRes.status).toBe(200);
+      expect(secondRes.status).toBe(200);
+
+      const firstBody = await firstRes.json();
+      const secondBody = await secondRes.json();
+
+      expect(firstBody.cacheUsed).toBe(false);
+      expect(secondBody.cacheUsed).toBe(true);
+      // GitHub was only called once despite two requests for the same page
+      expect(pageSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-fetches a repository page when refreshCache=true clears the page cache', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: ['repo-a'],
+        teams: [],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserRepositoriesInOrganisationPage')
+        .mockResolvedValue({
+          repositories: ['repo-a'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos-refresh&dataset=2024-01-01&githubPage=1`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-repos-refresh' },
+        }
+      );
+      const refreshRes = await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos-refresh&dataset=2024-01-01&githubPage=1&refreshCache=true`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-repos-refresh' },
+        }
+      );
+
+      expect(refreshRes.status).toBe(200);
+      const refreshBody = await refreshRes.json();
+      expect(refreshBody.cacheUsed).toBe(false);
+      expect(pageSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('reuses cached dataset entities across repository page requests', async () => {
+      const datasetSpy = vi
+        .spyOn(policyReportsService, 'getDatasetEntities')
+        .mockResolvedValue({
+          repositories: ['repo-a'],
+          teams: [],
+        });
+      vi.spyOn(githubQueries, 'fetchUserRepositoriesInOrganisationPage')
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          currentPage: 1,
+          totalPages: 2,
+        })
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          currentPage: 2,
+          totalPages: 2,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=s3-cache-org-repos&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-repos' } }
+      );
+      await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=s3-cache-org-repos&dataset=2024-01-01&githubPage=2`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-repos' } }
+      );
+
+      expect(datasetSpy).toHaveBeenCalledTimes(1);
     });
 
     it('returns 500 when the service throws', async () => {
@@ -468,7 +585,7 @@ describe('Policy Reports routes', () => {
       );
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/repositories?organisation=my-org-repo-500&dataset=2024-01-01&githubPage=1`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
@@ -548,19 +665,30 @@ describe('Policy Reports routes', () => {
         repositories: [],
         teams: ['team-alpha', 'team-beta', 'team-gamma'],
       });
-      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisation').mockResolvedValue(
-        ['team-alpha', 'team-gamma', 'team-delta']
-      );
+      vi.spyOn(
+        githubQueries,
+        'fetchUserTeamsInOrganisationPage'
+      ).mockResolvedValue({
+        teams: ['team-alpha', 'team-gamma', 'team-delta'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org-teams-intersection&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({
-        teams: ['team-alpha', 'team-gamma'],
-      });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          teams: ['team-alpha', 'team-gamma'],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+          githubCurrentPage: 1,
+          githubTotalPages: 1,
+        })
+      );
     });
 
     it('returns 200 with an empty array when the user is a member of none of the dataset teams', async () => {
@@ -568,17 +696,125 @@ describe('Policy Reports routes', () => {
         repositories: [],
         teams: ['team-x'],
       });
-      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisation').mockResolvedValue(
-        ['team-y']
-      );
+      vi.spyOn(
+        githubQueries,
+        'fetchUserTeamsInOrganisationPage'
+      ).mockResolvedValue({
+        teams: ['team-y'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org-teams-empty&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({ teams: [] });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          teams: [],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+        })
+      );
+    });
+
+    it('caches individual team pages and returns a cache hit on re-request', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: [],
+        teams: ['team-a', 'team-b'],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserTeamsInOrganisationPage')
+        .mockResolvedValue({
+          teams: ['team-a', 'team-b'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      const firstRes = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-teams' } }
+      );
+      const secondRes = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-teams' } }
+      );
+
+      expect(firstRes.status).toBe(200);
+      expect(secondRes.status).toBe(200);
+
+      const firstBody = await firstRes.json();
+      const secondBody = await secondRes.json();
+
+      expect(firstBody.cacheUsed).toBe(false);
+      expect(secondBody.cacheUsed).toBe(true);
+      // GitHub was only called once despite two requests for the same page
+      expect(pageSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-fetches a team page when refreshCache=true clears the page cache', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: [],
+        teams: ['team-a'],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserTeamsInOrganisationPage')
+        .mockResolvedValue({
+          teams: ['team-a'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams-refresh&dataset=2024-01-01&githubPage=1`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-teams-refresh' },
+        }
+      );
+      const refreshRes = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams-refresh&dataset=2024-01-01&githubPage=1&refreshCache=true`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-teams-refresh' },
+        }
+      );
+
+      expect(refreshRes.status).toBe(200);
+      const refreshBody = await refreshRes.json();
+      expect(refreshBody.cacheUsed).toBe(false);
+      expect(pageSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('reuses cached dataset entities across team page requests', async () => {
+      const datasetSpy = vi
+        .spyOn(policyReportsService, 'getDatasetEntities')
+        .mockResolvedValue({
+          repositories: [],
+          teams: ['team-a'],
+        });
+      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisationPage')
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          currentPage: 1,
+          totalPages: 2,
+        })
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          currentPage: 2,
+          totalPages: 2,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=s3-cache-org-teams&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-teams' } }
+      );
+      await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=s3-cache-org-teams&dataset=2024-01-01&githubPage=2`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-teams' } }
+      );
+
+      expect(datasetSpy).toHaveBeenCalledTimes(1);
     });
 
     it('returns 500 when the service throws', async () => {
@@ -587,7 +823,7 @@ describe('Policy Reports routes', () => {
       );
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org-team-500&dataset=2024-01-01&githubPage=1`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 

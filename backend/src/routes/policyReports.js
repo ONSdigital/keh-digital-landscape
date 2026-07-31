@@ -1,5 +1,6 @@
 const logger = require('../config/logger');
 const express = require('express');
+const crypto = require('crypto');
 const policyReportsService = require('../services/policyReportsService');
 const githubQueries = require('../utilities/githubQueries');
 const policyReportGenerator = require('../utilities/policyReportGenerator');
@@ -8,6 +9,76 @@ const router = express.Router();
 
 const REPORT_TYPES = ['organisation', 'repository', 'team'];
 const SAFE_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
+const GITHUB_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
+const DATASET_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
+
+// Per-page caches for the page-mode loading flow.
+// Key: tokenHash:organisation  Value: { pages: { [n]: string[] }, totalPages: number, cachedAt: number }
+const githubRepositoryPageCache = new Map();
+const githubTeamPageCache = new Map();
+
+// Dataset entities cache to prevent repeated S3 fetches during page-by-page requests.
+// Key: organisation:dataset  Value: { entities: { repositories: string[], teams: string[] }, cachedAt: number }
+const datasetEntitiesCache = new Map();
+
+const createUserScopedCacheKey = (userToken, organisation) => {
+  const tokenHash = crypto
+    .createHash('sha256')
+    .update(String(userToken))
+    .digest('hex');
+
+  return `${tokenHash}:${organisation}`;
+};
+
+const parseRefreshCacheQuery = refreshCache => {
+  if (typeof refreshCache !== 'string') {
+    return false;
+  }
+
+  return ['1', 'true', 'yes'].includes(refreshCache.toLowerCase());
+};
+
+const parsePositiveIntegerQuery = value => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const parsedValue = Number.parseInt(value, 10);
+
+  if (!Number.isInteger(parsedValue) || parsedValue <= 0) {
+    return null;
+  }
+
+  return parsedValue;
+};
+
+const createDatasetCacheKey = (organisation, dataset) =>
+  `${organisation}:${dataset}`;
+
+const getCachedDatasetEntities = async ({ organisation, dataset }) => {
+  const now = Date.now();
+  const cacheKey = createDatasetCacheKey(organisation, dataset);
+  const existingEntry = datasetEntitiesCache.get(cacheKey);
+
+  if (
+    existingEntry &&
+    now - existingEntry.cachedAt <= DATASET_ENTITY_CACHE_TTL_MS
+  ) {
+    return existingEntry.entities;
+  }
+
+  const entities = await policyReportsService.getDatasetEntities(
+    organisation,
+    dataset
+  );
+
+  datasetEntitiesCache.set(cacheKey, {
+    entities,
+    cachedAt: now,
+  });
+
+  return entities;
+};
 
 // GET /organisations
 router.get('/organisations', async (req, res) => {
@@ -144,7 +215,8 @@ router.post('/generateReport', async (req, res) => {
 // Returns repositories from the dataset that the user has access to
 // This filters the dataset repositories to only those the user can access
 router.get('/repositories', async (req, res) => {
-  const { organisation, dataset } = req.query;
+  const { organisation, dataset, refreshCache, githubPage, githubPerPage } =
+    req.query;
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
@@ -169,28 +241,95 @@ router.get('/repositories', async (req, res) => {
 
   try {
     // Get repositories from the dataset
-    const datasetEntities = await policyReportsService.getDatasetEntities(
+    const datasetEntities = await getCachedDatasetEntities({
       organisation,
-      dataset
-    );
+      dataset,
+    });
     const datasetRepositories = new Set(datasetEntities.repositories);
 
-    // Get repositories the user has access to
-    const userRepositories =
-      await githubQueries.fetchUserRepositoriesInOrganisation(
-        userToken,
-        organisation
+    const shouldRefreshCache = parseRefreshCacheQuery(refreshCache);
+    const requestedGitHubPage = parsePositiveIntegerQuery(githubPage);
+    const requestedGitHubPerPage = parsePositiveIntegerQuery(githubPerPage);
+
+    if (githubPage && !requestedGitHubPage) {
+      return res
+        .status(400)
+        .json({ error: 'githubPage must be a positive integer' });
+    }
+
+    if (githubPerPage && !requestedGitHubPerPage) {
+      return res
+        .status(400)
+        .json({ error: 'githubPerPage must be a positive integer' });
+    }
+
+    const isPageMode = Boolean(requestedGitHubPage);
+
+    if (isPageMode) {
+      const perPage = requestedGitHubPerPage || 100;
+      const cacheKey = createUserScopedCacheKey(userToken, organisation);
+      const now = Date.now();
+      const existingEntry = githubRepositoryPageCache.get(cacheKey);
+
+      const entryIsValid =
+        existingEntry &&
+        now - existingEntry.cachedAt <= GITHUB_ENTITY_CACHE_TTL_MS;
+
+      // Cache hit: entry valid, not a forced refresh, and this page already fetched.
+      if (
+        !shouldRefreshCache &&
+        entryIsValid &&
+        existingEntry.pages[requestedGitHubPage]
+      ) {
+        const cachedPage = existingEntry.pages[requestedGitHubPage];
+        const filteredFromCache = cachedPage.filter(repo =>
+          datasetRepositories.has(repo)
+        );
+        return res.status(200).json({
+          repositories: filteredFromCache.sort(),
+          cacheUsed: true,
+          cachedAt: existingEntry.cachedAt,
+          githubCurrentPage: requestedGitHubPage,
+          githubTotalPages: existingEntry.totalPages,
+        });
+      }
+
+      // Cache miss or forced refresh: fetch just this page from GitHub.
+      const pageResponse =
+        await githubQueries.fetchUserRepositoriesInOrganisationPage(
+          userToken,
+          organisation,
+          requestedGitHubPage,
+          perPage
+        );
+
+      if (!entryIsValid || shouldRefreshCache) {
+        // Start a fresh entry (clears any stale pages from a previous window or refresh).
+        githubRepositoryPageCache.set(cacheKey, {
+          pages: { [requestedGitHubPage]: pageResponse.repositories },
+          totalPages: pageResponse.totalPages,
+          cachedAt: now,
+        });
+      } else {
+        // Valid entry exists — add this page to it.
+        existingEntry.pages[requestedGitHubPage] = pageResponse.repositories;
+        existingEntry.totalPages = pageResponse.totalPages;
+      }
+
+      const accessibleDatasetRepositories = pageResponse.repositories.filter(
+        repo => datasetRepositories.has(repo)
       );
-    const userRepositoriesSet = new Set(userRepositories);
 
-    // Find intersection: repos in dataset AND user has access to
-    const accessibleDatasetRepositories = Array.from(
-      userRepositoriesSet
-    ).filter(repo => datasetRepositories.has(repo));
+      return res.status(200).json({
+        repositories: accessibleDatasetRepositories.sort(),
+        cacheUsed: false,
+        cachedAt: now,
+        githubCurrentPage: pageResponse.currentPage,
+        githubTotalPages: pageResponse.totalPages,
+      });
+    }
 
-    return res.status(200).json({
-      repositories: accessibleDatasetRepositories.sort(),
-    });
+    return res.status(400).json({ error: 'githubPage is required' });
   } catch (error) {
     logger.error('Error fetching dataset repositories for user', {
       organisation,
@@ -205,7 +344,8 @@ router.get('/repositories', async (req, res) => {
 // Returns teams from the dataset that the user is a member of
 // This filters the dataset teams to only those the user belongs to
 router.get('/teams', async (req, res) => {
-  const { organisation, dataset } = req.query;
+  const { organisation, dataset, refreshCache, githubPage, githubPerPage } =
+    req.query;
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
@@ -230,27 +370,94 @@ router.get('/teams', async (req, res) => {
 
   try {
     // Get teams from the dataset
-    const datasetEntities = await policyReportsService.getDatasetEntities(
+    const datasetEntities = await getCachedDatasetEntities({
       organisation,
-      dataset
-    );
+      dataset,
+    });
     const datasetTeams = new Set(datasetEntities.teams);
 
-    // Get teams the user is a member of
-    const userTeams = await githubQueries.fetchUserTeamsInOrganisation(
-      userToken,
-      organisation
-    );
-    const userTeamsSet = new Set(userTeams);
+    const shouldRefreshCache = parseRefreshCacheQuery(refreshCache);
+    const requestedGitHubPage = parsePositiveIntegerQuery(githubPage);
+    const requestedGitHubPerPage = parsePositiveIntegerQuery(githubPerPage);
 
-    // Find intersection: teams in dataset AND user is member of
-    const accessibleDatasetTeams = Array.from(userTeamsSet).filter(team =>
-      datasetTeams.has(team)
-    );
+    if (githubPage && !requestedGitHubPage) {
+      return res
+        .status(400)
+        .json({ error: 'githubPage must be a positive integer' });
+    }
 
-    return res.status(200).json({
-      teams: accessibleDatasetTeams.sort(),
-    });
+    if (githubPerPage && !requestedGitHubPerPage) {
+      return res
+        .status(400)
+        .json({ error: 'githubPerPage must be a positive integer' });
+    }
+
+    const isPageMode = Boolean(requestedGitHubPage);
+
+    if (isPageMode) {
+      const perPage = requestedGitHubPerPage || 100;
+      const cacheKey = createUserScopedCacheKey(userToken, organisation);
+      const now = Date.now();
+      const existingEntry = githubTeamPageCache.get(cacheKey);
+
+      const entryIsValid =
+        existingEntry &&
+        now - existingEntry.cachedAt <= GITHUB_ENTITY_CACHE_TTL_MS;
+
+      // Cache hit: entry valid, not a forced refresh, and this page already fetched.
+      if (
+        !shouldRefreshCache &&
+        entryIsValid &&
+        existingEntry.pages[requestedGitHubPage]
+      ) {
+        const cachedPage = existingEntry.pages[requestedGitHubPage];
+        const filteredFromCache = cachedPage.filter(team =>
+          datasetTeams.has(team)
+        );
+        return res.status(200).json({
+          teams: filteredFromCache.sort(),
+          cacheUsed: true,
+          cachedAt: existingEntry.cachedAt,
+          githubCurrentPage: requestedGitHubPage,
+          githubTotalPages: existingEntry.totalPages,
+        });
+      }
+
+      // Cache miss or forced refresh: fetch just this page from GitHub.
+      const pageResponse = await githubQueries.fetchUserTeamsInOrganisationPage(
+        userToken,
+        organisation,
+        requestedGitHubPage,
+        perPage
+      );
+
+      if (!entryIsValid || shouldRefreshCache) {
+        // Start a fresh entry (clears any stale pages from a previous window or refresh).
+        githubTeamPageCache.set(cacheKey, {
+          pages: { [requestedGitHubPage]: pageResponse.teams },
+          totalPages: pageResponse.totalPages,
+          cachedAt: now,
+        });
+      } else {
+        // Valid entry exists — add this page to it.
+        existingEntry.pages[requestedGitHubPage] = pageResponse.teams;
+        existingEntry.totalPages = pageResponse.totalPages;
+      }
+
+      const accessibleDatasetTeams = pageResponse.teams.filter(team =>
+        datasetTeams.has(team)
+      );
+
+      return res.status(200).json({
+        teams: accessibleDatasetTeams.sort(),
+        cacheUsed: false,
+        cachedAt: now,
+        githubCurrentPage: pageResponse.currentPage,
+        githubTotalPages: pageResponse.totalPages,
+      });
+    }
+
+    return res.status(400).json({ error: 'githubPage is required' });
   } catch (error) {
     logger.error('Error fetching dataset teams for user', {
       organisation,

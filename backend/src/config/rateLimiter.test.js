@@ -10,6 +10,7 @@ const {
   userApiLimiter,
   healthCheckLimiter,
   externalApiLimiter,
+  policyReportsApiLimiter,
 } = require('./rateLimiter');
 
 describe('rateLimiter config', () => {
@@ -36,6 +37,10 @@ describe('rateLimiter config', () => {
     });
 
     app.get('/external', externalApiLimiter, (_req, res) => {
+      res.status(200).json({ ok: true });
+    });
+
+    app.get('/policy-reports', policyReportsApiLimiter, (_req, res) => {
       res.status(200).json({ ok: true });
     });
 
@@ -103,6 +108,21 @@ describe('rateLimiter config', () => {
     expect(response.status).toBe(429);
     await expect(response.json()).resolves.toEqual({
       error: 'Too many requests to external APIs, please try again later.',
+      retryAfter: '1 minute',
+    });
+  });
+
+  it('allows more policy reports requests before limiting', async () => {
+    let response;
+
+    for (let i = 0; i < 241; i += 1) {
+      response = await fetch(`${baseUrl}/policy-reports`);
+    }
+
+    expect(response.status).toBe(429);
+    await expect(response.json()).resolves.toEqual({
+      error:
+        'Too many policy report requests from this IP, please try again later.',
       retryAfter: '1 minute',
     });
   });

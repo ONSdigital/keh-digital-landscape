@@ -83,4 +83,41 @@ describe('fetchDatasetRepositoriesForUser', () => {
 
     expect(result).toEqual([]);
   });
+
+  it('returns cache metadata when includeCacheMetadata is true', async () => {
+    customFetch.mockResolvedValue({
+      json: async () => ({
+        repositories: ['repo-a'],
+        cacheUsed: true,
+        cachedAt: 12345,
+      }),
+    });
+
+    const result = await fetchDatasetRepositoriesForUser(
+      'ONS-Innovation',
+      '2024-01-15T10:00:00Z',
+      { includeCacheMetadata: true }
+    );
+
+    expect(result).toEqual({
+      repositories: ['repo-a'],
+      cacheUsed: true,
+      cachedAt: 12345,
+      githubCurrentPage: null,
+      githubTotalPages: null,
+    });
+  });
+
+  it('appends refreshCache=true when refreshCache option is enabled', async () => {
+    customFetch.mockResolvedValue({ json: async () => ({ repositories: [] }) });
+
+    await fetchDatasetRepositoriesForUser(
+      'ONS-Innovation',
+      '2024-01-15T10:00:00Z',
+      { refreshCache: true }
+    );
+
+    const calledUrl = customFetch.mock.calls[0][0];
+    expect(calledUrl).toContain('refreshCache=true');
+  });
 });

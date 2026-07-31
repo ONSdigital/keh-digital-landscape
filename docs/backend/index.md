@@ -64,14 +64,18 @@ The main application file sets up:
 
 ### Route Mounting
 
-The application mounts four main route groups:
+The application mounts route groups with rate limiting middleware:
 
 ```javascript
-app.use('/api', default);           // Default API routes that points to /routes/default.js
-app.use('/admin/api', admin);       // Admin functionality that points to /routes/admin.js
-app.use('/review/api', review);     // Review functionality that points to /routes/review.js
-app.use('/copilot/api', copilot);   // GitHub Copilot metrics that points to /routes/copilot.js
-app.use('/user/api', userRoutes);   // User authentication endpoints
+app.use('/api', generalApiLimiter, apiRoutes);
+app.use('/admin/api', adminApiLimiter, adminRoutes);
+app.use('/review/api', adminApiLimiter, reviewRoutes);
+app.use('/copilot/api', externalApiLimiter, copilotRoutes);
+app.use('/user/api', userApiLimiter, userRoutes);
+app.use('/addressbook/api', userApiLimiter, addressbookRoutes);
+app.use('/alerts/api', externalApiLimiter, alertsRoutes);
+app.use('/api/github/auth', userApiLimiter, githubAuthRoutes);
+app.use('/policy-reports/api', policyReportsApiLimiter, policyReportsRoutes);
 ```
 
 ## Route Modules
@@ -128,6 +132,31 @@ Located in `routes/copilot.js`, these provide GitHub Copilot metrics:
 - **GET `/team/seats`** - Get Copilot seat information filtered by a specific team in the organisation
 - **POST `/github/oauth/token`** - Exchange GitHub OAuth code for access token
 - **GET `/github/oauth/login`** - Redirect to GitHub OAuth login
+
+### Policy Reports Routes (`/policy-reports/api`)
+
+Located in `routes/policyReports.js`, these provide policy report dataset lookup and generation endpoints.
+
+- **GET `/organisations`** - List organisation options available for policy report datasets
+- **GET `/datasets`** - List datasets for an organisation
+- **GET `/repositories`** - Get dataset repositories accessible to the authenticated user
+- **GET `/teams`** - Get dataset teams accessible to the authenticated user
+- **POST `/generateReport`** - Generate and download policy report HTML
+
+#### Policy Reports caching and page mode
+
+- Repositories and teams are fetched in page mode using query parameters:
+  - `githubPage` (required for page mode)
+  - `githubPerPage` (optional, defaults to 100)
+  - `refreshCache` (optional boolean-like string: `1`, `true`, `yes`)
+- Responses include cache and progress metadata:
+  - `cacheUsed`
+  - `cachedAt`
+  - `githubCurrentPage`
+  - `githubTotalPages`
+- Backend caches are in-memory and TTL-based:
+  - GitHub page caches per user + organisation for repositories and teams
+  - Dataset-entities cache per organisation + dataset to avoid repeated S3 calls during page traversal
 
 ## Services
 
