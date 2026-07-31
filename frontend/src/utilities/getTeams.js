@@ -98,7 +98,7 @@ export const logoutUser = async () => {
       credentials: 'include',
     });
 
-    return true;
+    return response.ok;
   } catch (error) {
     console.error('Error logging out:', error);
     return false;
