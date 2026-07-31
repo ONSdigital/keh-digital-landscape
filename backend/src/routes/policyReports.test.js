@@ -205,6 +205,31 @@ describe('Policy Reports routes', () => {
       });
     });
 
+    it('returns 400 when organisation contains invalid characters', async () => {
+      const getDatasetAuditDataSpy = vi.spyOn(
+        policyReportsService,
+        'getDatasetAuditData'
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: {
+            organisation: 'my-org/../../other',
+            sourceDataset: '20260723T121307Z',
+          },
+        }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Invalid organisation value',
+      });
+      expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
+    });
+
     it('returns HTML with content-disposition for a valid organisation report', async () => {
       vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue({
         summary: { total_repositories: 2 },
