@@ -475,6 +475,18 @@ describe('Policy Reports routes', () => {
       });
     });
 
+    it('returns 400 when dataset name contains invalid characters', async () => {
+      const res = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=../traversal`,
+        { headers: { Cookie: 'githubUserToken=test-token' } }
+      );
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Invalid dataset name format',
+      });
+    });
+
     it('returns 200 with the intersection of dataset and user teams', async () => {
       vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
         repositories: [],

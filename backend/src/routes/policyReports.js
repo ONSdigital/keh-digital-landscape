@@ -213,6 +213,11 @@ router.get('/teams', async (req, res) => {
     return res.status(400).json({ error: 'Invalid organisation name format' });
   }
 
+  // Validate dataset name: only alphanumeric, hyphens, underscores
+  if (!/^[a-zA-Z0-9_-]+$/.test(dataset)) {
+    return res.status(400).json({ error: 'Invalid dataset name format' });
+  }
+
   try {
     // Get teams from the dataset
     const datasetEntities = await policyReportsService.getDatasetEntities(
