@@ -85,6 +85,14 @@ router.post('/generateReport', async (req, res) => {
     return res.status(400).json({ error: 'Invalid comparison dataset value' });
   }
 
+  if (
+    safeInputs.organisation &&
+    !DATASET_NAME_REGEX.test(safeInputs.organisation)
+  ) {
+    logger.warn('Invalid organisation value specified');
+    return res.status(400).json({ error: 'Invalid organisation value' });
+  }
+
   try {
     const reportInputs = { ...safeInputs };
 
