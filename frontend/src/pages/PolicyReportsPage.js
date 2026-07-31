@@ -36,6 +36,7 @@ const PolicyReportsPage = () => {
   const [selectedRepositories, setSelectedRepositories] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [persistedFormState, setPersistedFormState] = useState(null);
+  const [activeReportTab, setActiveReportTab] = useState('organisation');
 
   // Track whether we're in the process of restoring form state
   const isRestoringFormState = persistedFormState !== null;
@@ -124,6 +125,9 @@ const PolicyReportsPage = () => {
         if (formState.organisation) {
           setOrganisation(formState.organisation);
           setPersistedFormState(formState);
+        }
+        if (formState.activeReportTab) {
+          setActiveReportTab(formState.activeReportTab);
         }
       }
 
@@ -492,6 +496,7 @@ const PolicyReportsPage = () => {
       formState: {
         organisation,
         sourceDataset,
+        activeReportTab: 'restricted',
       },
     });
   };
@@ -686,12 +691,49 @@ const PolicyReportsPage = () => {
                   </p>
                 </div>
               ) : (
-                <div className="policy-reports-flow-grid policy-reports-space-top-sm">
-                  <section
-                    className="policy-reports-focus-card"
-                    aria-labelledby="organisation-report-title"
+                <>
+                  <div
+                    className="policy-reports-tab-bar policy-reports-space-top-sm"
+                    role="tablist"
+                    aria-label="Report type"
                   >
-                    <h3 id="organisation-report-title">Organisation Report</h3>
+                    <button
+                      role="tab"
+                      aria-selected={activeReportTab === 'organisation'}
+                      aria-controls="panel-organisation"
+                      id="tab-organisation"
+                      className={`policy-reports-tab-btn${activeReportTab === 'organisation' ? ' policy-reports-tab-btn-active' : ''}`}
+                      type="button"
+                      onClick={() => setActiveReportTab('organisation')}
+                    >
+                      Organisation Report
+                    </button>
+                    <button
+                      role="tab"
+                      aria-selected={activeReportTab === 'restricted'}
+                      aria-controls="panel-restricted"
+                      id="tab-restricted"
+                      className={`policy-reports-tab-btn${activeReportTab === 'restricted' ? ' policy-reports-tab-btn-active' : ''}`}
+                      type="button"
+                      onClick={() => setActiveReportTab('restricted')}
+                    >
+                      Restricted Reports
+                    </button>
+                  </div>
+
+                  <section
+                    id="panel-organisation"
+                    role="tabpanel"
+                    aria-labelledby="organisation-report-title"
+                    className="policy-reports-tab-panel"
+                    hidden={activeReportTab !== 'organisation'}
+                  >
+                    <h3
+                      id="organisation-report-title"
+                      className="policy-reports-tab-panel-title"
+                    >
+                      Organisation Report
+                    </h3>
                     <div className="policy-reports-field policy-reports-space-top-xs">
                       <label htmlFor="comparison-dataset">
                         Comparison dataset
@@ -779,8 +821,11 @@ const PolicyReportsPage = () => {
                   </section>
 
                   <section
-                    className="policy-reports-focus-card"
-                    aria-labelledby="restricted-reports-title"
+                    id="panel-restricted"
+                    role="tabpanel"
+                    aria-labelledby="tab-restricted"
+                    className="policy-reports-tab-panel"
+                    hidden={activeReportTab !== 'restricted'}
                   >
                     <div className="policy-reports-restricted-header">
                       <div className="policy-reports-restricted-title-block">
@@ -999,7 +1044,7 @@ const PolicyReportsPage = () => {
                       </>
                     )}
                   </section>
-                </div>
+                </>
               )}
             </div>
           </section>

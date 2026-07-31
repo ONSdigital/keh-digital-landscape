@@ -551,3 +551,52 @@
     font-size: 18px;
   }
 }
+
+/* ── Tab interface ─────────────────────────────────────── */
+
+.policy-reports-tab-bar {
+  display: flex;
+  border-bottom: 2px solid hsl(var(--border));
+  gap: 0;
+}
+
+.policy-reports-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.policy-reports-tab-btn:hover {
+  color: hsl(var(--foreground));
+}
+
+.policy-reports-tab-btn-active {
+  color: hsl(var(--foreground));
+  border-bottom-color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+.policy-reports-tab-btn:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.policy-reports-tab-panel {
+  padding-top: 16px;
+}
+
+.policy-reports-tab-panel-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
