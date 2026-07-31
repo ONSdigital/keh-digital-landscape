@@ -123,9 +123,14 @@ class S3Service {
   }
 }
 
-// In local development, use the filesystem-based service so that no code
-// can accidentally read from or write to the AWS Dev environment.
-if (process.env.NODE_ENV === 'development') {
+// In local development, use the filesystem-based service by default so that
+// no code can accidentally read from or write to the AWS Dev environment.
+// Set USE_LOCAL_S3=false to connect to real S3 in a development environment.
+const useLocalS3 =
+  process.env.NODE_ENV === 'development' &&
+  process.env.USE_LOCAL_S3 !== 'false';
+
+if (useLocalS3) {
   module.exports = require('./localS3Service');
 } else {
   module.exports = new S3Service();
