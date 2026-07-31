@@ -66,19 +66,19 @@ const mockAuthenticatedApis = async (page, username = 'testuser') => {
     });
   });
 
-  await page.route('**/policy-reports/api/dataset-repositories?**', route => {
+  await page.route('**/policy-reports/api/repositories?**', route => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(MOCK_REPOSITORIES),
+      body: JSON.stringify({ repositories: MOCK_REPOSITORIES }),
     });
   });
 
-  await page.route('**/policy-reports/api/dataset-teams?**', route => {
+  await page.route('**/policy-reports/api/teams?**', route => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(MOCK_TEAMS),
+      body: JSON.stringify({ teams: MOCK_TEAMS }),
     });
   });
 };
