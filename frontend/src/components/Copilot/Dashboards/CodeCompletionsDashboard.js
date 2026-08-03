@@ -1,10 +1,12 @@
 import React from 'react';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 import '../../../styles/components/Statistics.css';
 import '../../../styles/CopilotPage.css';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import SuggestionsAcceptanceGraph from '../Breakdowns/SuggestionsAcceptanceGraph';
 import AverageLOCSuggestionsAcceptance from '../Breakdowns/AverageLOCSuggestionsAcceptance';
 import LanguageBreakdownChart from '../Breakdowns/LanguageBreakdownChart';
+import Tooltip from '../../Tooltip/Tooltip';
 import { getPercentage } from '../../../utilities/getPercentage';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import useCountUp from '../../../hooks/useCountUp';
@@ -148,7 +150,26 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
       )}
 
       <div className="copilot-dashboard-section">
-        <h3>Suggestion vs Acceptance Size</h3>
+        <h3>
+          Suggestion vs Acceptance Size
+          <Tooltip
+            title={
+              <p
+                className="copilot-tooltip-paragraph"
+              >
+                Tracks the average size of suggestions Copilot generates versus
+                the average size of suggestions developers actually accept. A
+                growing gap means developers are consistently accepting smaller
+                (or larger) suggestions than what Copilot offers, indicating a
+                size preference signal.
+              </p>
+            }
+          >
+            <span className="info-icon">
+              <IoInformationCircleOutline />
+            </span>
+          </Tooltip>
+        </h3>
         {loading ? (
           <div className="copilot-grid-average">
             <SkeletonStatCard />
