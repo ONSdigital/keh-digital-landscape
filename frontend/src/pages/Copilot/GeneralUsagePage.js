@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
+import PageControls from '../../components/PageControls/PageControls';
 import GeneralUsageDashboard from '../../components/Copilot/Dashboards/GeneralUsage';
 import { processGeneralUsageData } from '../../utilities/generalUsageCopilotData/processGeneralUsageCopilotData';
 import { getOrgHistoryData } from '../../utilities/getOrgHistoryData';
@@ -9,10 +10,8 @@ import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/Copilot/GeneralUsagePage.css';
 import '../../styles/components/Statistics.css';
-import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 function GeneralUsagePage() {
-  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,14 +35,10 @@ function GeneralUsagePage() {
           tabs={[]}
         />
         <div className="admin-container">
-          <button
-            className="copilot-back-button"
-            onClick={() => navigate('/copilot/home')}
-            aria-label="Back to Copilot Dashboard Homepage"
-          >
-            <MdOutlineArrowBackIosNew size={12} />
-            <span id="back-button-text">Back</span>
-          </button>
+          <PageControls
+            previousPage="/copilot/home"
+            backAriaLabel="Back to Copilot Dashboard Homepage"
+          />
           <GeneralUsageDashboard
             data={
               data

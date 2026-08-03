@@ -3,16 +3,15 @@ import { useNavigate } from 'react-router';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
+import PageControls from '../../components/PageControls/PageControls';
 import LegacyDataVisualisation from '../../components/Copilot/Dashboards/LegacyData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
-import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 function LegacyUsagePage() {
   const { legacyCopilotData, getLegacyUsageData } = useData();
   const [isLegacyLoading, setIsLegacyLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -31,14 +30,10 @@ function LegacyUsagePage() {
           tabs={[]}
         />
         <div className="admin-container">
-          <button
-            className="copilot-back-button"
-            onClick={() => navigate('/copilot/home')}
-            aria-label="Back to Copilot Dashboard Homepage"
-          >
-            <MdOutlineArrowBackIosNew size={12} />
-            <span id="text">Back</span>
-          </button>
+          <PageControls
+            previousPage="/copilot/home"
+            backAriaLabel="Back to Copilot Dashboard Homepage"
+          />
           <LegacyDataVisualisation
             data={legacyCopilotData}
             isLoading={isLegacyLoading}
