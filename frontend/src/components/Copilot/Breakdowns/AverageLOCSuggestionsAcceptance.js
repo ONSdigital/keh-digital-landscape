@@ -141,8 +141,6 @@ const AverageLOCSuggestionsAcceptance = ({
       />
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
-          width={400}
-          height={300}
           data={recentData}
           margin={{ top: 10, right: 50, left: 10, bottom: 0 }}
         >
