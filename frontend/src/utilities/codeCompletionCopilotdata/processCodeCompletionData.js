@@ -6,7 +6,14 @@
  * @returns {Object} An object containing the total Copilot suggestions and suggested lines of code,
  * the total Copilot accepted suggestions and accepted lines of code
  */
-export function processCodeCompletionData(data) {
+function isWeekendDate(dateString) {
+  const date = new Date(`${dateString}T00:00:00`);
+  const day = date.getDay();
+  return day === 0 || day === 6;
+}
+
+export function processCodeCompletionData(data, options = {}) {
+  const { includeWeekendUsage = true } = options;
   /** This function aggregates the compontentised graphs and cards with the data, where the components are:
    * - Chat cards
    * - Acceptance graph (suggestions vs acceptances) - Bar chart
@@ -70,6 +77,10 @@ export function processCodeCompletionData(data) {
 
   for (const index in data) {
     const day = data[index];
+
+    if (!includeWeekendUsage && isWeekendDate(day.day)) {
+      continue;
+    }
 
     let codeCompletionData = day.totals_by_feature?.find(
       item => item.feature === 'code_completion'

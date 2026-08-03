@@ -45,7 +45,9 @@ function CodeCompletionsPage() {
   };
 
   const processedData = historicUsageData
-    ? processCodeCompletionData(historicUsageData)
+    ? processCodeCompletionData(historicUsageData, {
+        includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
+      })
     : null;
   return (
     <Layout headerProps={{ hideSearch: true }}>
