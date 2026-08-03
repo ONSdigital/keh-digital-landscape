@@ -57,7 +57,7 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={VscLightbulbEmpty}
               title="IDE Code Completions"
-              href="/copilot/code-completions"
+              href="/copilot/completions"
             />
             <CopilotNavCard
               icon={VscCommentDiscussionSparkle}

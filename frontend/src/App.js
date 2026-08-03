@@ -84,7 +84,7 @@ const App = () => {
           element={<CopilotDashboardLegacyUsagePage />}
         />
         <Route
-          path="/copilot/code-completions"
+          path="/copilot/completions"
           element={<CopilotCodeCompletionsPage />}
         />
         <Route
