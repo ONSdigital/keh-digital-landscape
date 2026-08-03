@@ -116,7 +116,15 @@ const SuggestionsAcceptanceGraph = ({
       timeBreakdown === 'day' && !includeWeekendUsage
         ? removeWeekendData(groupedData)
         : groupedData;
-    return filtered;
+
+    const remainingKey = LOC ? 'locRemaining' : 'remaining';
+    return filtered.map(entry => ({
+      ...entry,
+      [remainingKey]: Math.max(
+        0,
+        (entry[suggestionsKey] ?? 0) - (entry[acceptancesKey] ?? 0)
+      ),
+    }));
   }, [data, includeWeekendUsage, timeBreakdown]);
 
   const palette = getChartPalette(3, isDark);
@@ -140,6 +148,7 @@ const SuggestionsAcceptanceGraph = ({
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: 'short',
+      year: '2-digit',
     });
   };
 
@@ -159,7 +168,7 @@ const SuggestionsAcceptanceGraph = ({
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
-            interval={0}
+            interval={recentData.length - 2}
             tick={{ fill: colors.text }}
             tickLine={false}
             tickFormatter={formatXAxisDate}
@@ -171,20 +180,24 @@ const SuggestionsAcceptanceGraph = ({
             wrapperStyle={{ paddingBottom: '10px' }}
           />
           <Bar
-            radius={[10, 10, 0, 0]}
-            dataKey={LOC ? 'locSuggestions' : 'suggestions'}
-            fill={colors.primary}
-            yAxisId="left"
-            legendType="rect"
-            name={LOC ? 'LoC Suggestions' : 'Suggestions'}
-          />
-          <Bar
-            radius={[10, 10, 0, 0]}
+            stackId="suggestions"
+            radius={[0, 0, 0, 0]}
             dataKey={LOC ? 'locAcceptances' : 'acceptances'}
             fill={colors.secondary}
+            barSize={60}
             yAxisId="left"
             legendType="rect"
             name={LOC ? 'LoC Acceptances' : 'Acceptances'}
+          />
+          <Bar
+            stackId="suggestions"
+            radius={[10, 10, 0, 0]}
+            dataKey={LOC ? 'locRemaining' : 'remaining'}
+            fill={colors.primary}
+            barSize={60}
+            yAxisId="left"
+            legendType="rect"
+            name={LOC ? 'LoC Suggestions' : 'Suggestions'}
           />
           <Line
             dot={false}
@@ -218,11 +231,18 @@ const SuggestionsAcceptanceGraph = ({
           />
           <Tooltip
             labelFormatter={value => formatXAxisDate(value)}
-            formatter={(value, name) =>
-              name === 'Acceptance Rate'
-                ? `${value.toFixed(2)}%`
-                : formatNumberWithCommas(value)
-            }
+            formatter={(value, name, entry) => {
+              if (name === 'Suggestions') {
+                return [formatNumberWithCommas(entry.payload.suggestions ?? 0), 'Total Suggestions'];
+              }
+              if (name === 'LoC Suggestions') {
+                return [formatNumberWithCommas(entry.payload.locSuggestions ?? 0), 'LoC Suggestions'];
+              }
+              if (name === 'Acceptance Rate') {
+                return [`${value.toFixed(2)}%`, name];
+              }
+              return [formatNumberWithCommas(value), name];
+            }}
           />
         </ComposedChart>
       </ResponsiveContainer>
