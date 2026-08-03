@@ -233,10 +233,16 @@ const SuggestionsAcceptanceGraph = ({
             labelFormatter={value => formatXAxisDate(value)}
             formatter={(value, name, entry) => {
               if (name === 'Suggestions') {
-                return [formatNumberWithCommas(entry.payload.suggestions ?? 0), 'Total Suggestions'];
+                return [
+                  formatNumberWithCommas(entry.payload.suggestions ?? 0),
+                  'Total Suggestions',
+                ];
               }
               if (name === 'LoC Suggestions') {
-                return [formatNumberWithCommas(entry.payload.locSuggestions ?? 0), 'LoC Suggestions'];
+                return [
+                  formatNumberWithCommas(entry.payload.locSuggestions ?? 0),
+                  'LoC Suggestions',
+                ];
               }
               if (name === 'Acceptance Rate') {
                 return [`${value.toFixed(2)}%`, name];
