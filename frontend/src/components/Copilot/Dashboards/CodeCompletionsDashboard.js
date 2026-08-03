@@ -64,6 +64,9 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
   return (
     <div className="copilot-dashboard">
       <h2>IDE Code Completions</h2>
+      <p className="disclaimer-banner">
+          Usage data in the form of lines of code (LoC), and the inclusion of weekend data can be toggled in the settings menu (cogwheel) on this page
+        </p>
 
       <div className="copilot-dashboard-section">
         <h3>Overall Usage</h3>
