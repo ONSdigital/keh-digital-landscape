@@ -70,6 +70,13 @@
   color: hsl(var(--muted-foreground));
 }
 
+.stat-card .stat-card-title {
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+}
+
 .stat-card p {
   font-size: 18px;
   font-weight: bold;
