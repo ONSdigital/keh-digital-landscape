@@ -30,9 +30,13 @@ function ModelIdeUsage({ modelData, ideData }) {
               </span>
             }
           >
-            <div className="info-icon">
+            <button
+              type="button"
+              className="info-icon info-icon-button"
+              aria-label="About model usage"
+            >
               <IoInformationCircleOutline />
-            </div>
+            </button>
           </Tooltip>
         </div>
         <ResponsiveContainer width="100%" height={280}>
@@ -84,9 +88,13 @@ function ModelIdeUsage({ modelData, ideData }) {
               </span>
             }
           >
-            <div className="info-icon">
+            <button
+              type="button"
+              className="info-icon info-icon-button"
+              aria-label="About IDE usage"
+            >
               <IoInformationCircleOutline />
-            </div>
+            </button>
           </Tooltip>
         </div>
         <ResponsiveContainer width="100%" height={280}>
