@@ -139,7 +139,7 @@ const AverageLOCSuggestionsAcceptance = ({
         value={timeBreakdown}
         onChange={setTimeBreakdown}
       />
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={500}>
         <LineChart
           data={recentData}
           margin={{ top: 10, right: 50, left: 10, bottom: 0 }}
