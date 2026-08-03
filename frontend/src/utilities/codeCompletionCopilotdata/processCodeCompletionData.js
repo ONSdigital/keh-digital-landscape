@@ -174,9 +174,9 @@ export function processCodeCompletionData(data) {
     suggestionsLOCSum > 0 ? acceptancesLOCSum / suggestionsLOCSum : 0;
 
   suggestedCards.average.averageLOCSuggestions =
-    numberLOCSuggestions > 0 ? suggestionsLOCSum / numberLOCSuggestions : 0;
+    suggestionsSum > 0 ? suggestionsLOCSum / suggestionsSum : 0;
   suggestedCards.average.averageLOCAccepted =
-    numberLOCAcceptances > 0 ? acceptancesLOCSum / numberLOCAcceptances : 0;
+    acceptancesSum > 0 ? acceptancesLOCSum / acceptancesSum : 0;
 
   codeCompletionMetrics = {
     suggestedCards: suggestedCards,
