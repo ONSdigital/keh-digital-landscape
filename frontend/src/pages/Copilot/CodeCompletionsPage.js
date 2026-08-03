@@ -15,7 +15,7 @@ function CodeCompletionsPage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
-    includeWeekendUsage: false,
+    includeWeekendUsage: true,
     locUsage: false,
   });
 
