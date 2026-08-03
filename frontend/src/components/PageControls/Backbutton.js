@@ -1,7 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
-function BackButton({ previousPage, label = 'Back', ariaLabel = 'Back to previous page' }) {
+function BackButton({
+  previousPage,
+  label = 'Back',
+  ariaLabel = 'Back to previous page',
+}) {
   const navigate = useNavigate();
 
   return (

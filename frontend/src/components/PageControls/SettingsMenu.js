@@ -30,7 +30,10 @@ function SettingsMenu({ settings, onChange }) {
       {isOpen && (
         <div className="copilot-settings-menu" id="copilot-settings-menu">
           {settings.map(setting => (
-            <label key={setting.key} className="copilot-settings-checkbox-label">
+            <label
+              key={setting.key}
+              className="copilot-settings-checkbox-label"
+            >
               <input
                 type="checkbox"
                 checked={setting.checked}

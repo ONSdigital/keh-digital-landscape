@@ -10,7 +10,13 @@ import '../../styles/Copilot/ReusableStyles.css';
  * @param {Array<{key: string, label: string, checked: boolean}>} [settings] - Settings checkboxes to display.
  * @param {function} [onSettingChange] - Callback when a setting changes: (key, checked) => void.
  */
-function PageControls({ previousPage, backLabel, backAriaLabel, settings, onSettingChange }) {
+function PageControls({
+  previousPage,
+  backLabel,
+  backAriaLabel,
+  settings,
+  onSettingChange,
+}) {
   return (
     <div className="copilot-page-controls">
       <BackButton

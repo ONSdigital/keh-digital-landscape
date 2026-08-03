@@ -28,8 +28,16 @@ function CodeCompletionsPage() {
   }, []);
 
   const settings = [
-    { key: 'includeWeekendUsage', label: 'Include weekend usage', checked: chartDisplaySettings.includeWeekendUsage },
-    { key: 'locUsage', label: 'Include LoC usage', checked: chartDisplaySettings.locUsage },
+    {
+      key: 'includeWeekendUsage',
+      label: 'Include weekend usage',
+      checked: chartDisplaySettings.includeWeekendUsage,
+    },
+    {
+      key: 'locUsage',
+      label: 'Include LoC usage',
+      checked: chartDisplaySettings.locUsage,
+    },
   ];
 
   const handleSettingChange = (key, checked) => {
