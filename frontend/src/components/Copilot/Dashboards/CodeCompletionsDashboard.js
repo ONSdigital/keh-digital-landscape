@@ -67,8 +67,9 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
     <div className="copilot-dashboard">
       <h2>IDE Code Completions</h2>
       <p className="disclaimer-banner">
-          Usage data in the form of lines of code (LoC), and the inclusion of weekend data can be toggled in the settings menu (cogwheel) on this page
-        </p>
+        Usage data in the form of lines of code (LoC), and the inclusion of
+        weekend data can be toggled in the settings menu (cogwheel) on this page
+      </p>
 
       <div className="copilot-dashboard-section">
         <h3>Overall Usage</h3>
@@ -154,9 +155,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           Suggestion vs Acceptance Size
           <Tooltip
             title={
-              <p
-                className="copilot-tooltip-paragraph"
-              >
+              <p className="copilot-tooltip-paragraph">
                 Tracks the average size of suggestions Copilot generates versus
                 the average size of suggestions developers actually accept. A
                 growing gap means developers are consistently accepting smaller
