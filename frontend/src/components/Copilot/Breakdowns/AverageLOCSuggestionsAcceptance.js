@@ -144,10 +144,11 @@ const AverageLOCSuggestionsAcceptance = ({
           data={recentData}
           margin={{ top: 10, right: 50, left: 10, bottom: 0 }}
         >
-          <CartesianGrid vertical={false} />
+          <CartesianGrid vertical={false} stroke="hsl(var(--muted))" />
           <XAxis
             dataKey="date"
             interval={0}
+            stroke="hsl(var(--border))"
             tick={{ fill: colors.text }}
             tickLine={false}
             tickFormatter={formatXAxisDate}
