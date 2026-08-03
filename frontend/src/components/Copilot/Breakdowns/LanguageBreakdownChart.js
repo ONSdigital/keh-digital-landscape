@@ -73,45 +73,47 @@ const LanguageBreakdownChart = ({ languageData }) => {
   }, [colorPalette, isDark, languageData, selectedMode]);
 
   return (
-    <div className="usage-pie-chart-card" style={{ touchAction: 'pan-y' }}>
+    <div>
       <GraphSelect
         options={LANGUAGE_MODE_OPTIONS}
         value={selectedMode}
         onChange={setSelectedMode}
       />
-      <ResponsiveContainer width="100%" height={380}>
-        <RechartsPieChart>
-          <Pie
-            data={pieData}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="54%"
-            stroke={'hsl(var(--muted))'}
-            outerRadius={90}
-            innerRadius={50}
-            label={false}
-            labelLine={false}
-            isAnimationActive
-          >
-            {pieData.map((entry, index) => (
-              <Cell
-                key={`${entry.name}-${index}`}
-                fill={entry.color}
-                aria-label={`${entry.name}: ${entry.value.toFixed(1)} percent`}
-              />
-            ))}
-          </Pie>
-          <Legend iconType="circle" iconSize={10} />
-          <Tooltip
-            formatter={(value, _name, item) => [
-              `${Number(value).toFixed(1)}%`,
-              item?.payload?.name ?? '',
-            ]}
-            labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
-          />
-        </RechartsPieChart>
-      </ResponsiveContainer>
+      <div className="usage-pie-chart-card" style={{ touchAction: 'pan-y' }}>
+        <ResponsiveContainer width="100%" height={380}>
+          <RechartsPieChart>
+            <Pie
+              data={pieData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="54%"
+              stroke={'hsl(var(--muted))'}
+              outerRadius={90}
+              innerRadius={50}
+              label={false}
+              labelLine={false}
+              isAnimationActive
+            >
+              {pieData.map((entry, index) => (
+                <Cell
+                  key={`${entry.name}-${index}`}
+                  fill={entry.color}
+                  aria-label={`${entry.name}: ${entry.value.toFixed(1)} percent`}
+                />
+              ))}
+            </Pie>
+            <Legend iconType="circle" iconSize={10} />
+            <Tooltip
+              formatter={(value, _name, item) => [
+                `${Number(value).toFixed(1)}%`,
+                item?.payload?.name ?? '',
+              ]}
+              labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
+            />
+          </RechartsPieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
