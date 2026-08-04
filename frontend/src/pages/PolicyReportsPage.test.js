@@ -37,7 +37,6 @@ vi.mock(
       selectedItems,
       onToggleSelection,
       onClearSelection,
-      onLoadMore,
       generateButtonLabel,
       onGenerateReport,
       isGenerateDisabled,
@@ -60,9 +59,6 @@ vi.mock(
         </ul>
         <button type="button" onClick={onClearSelection}>
           Clear selection
-        </button>
-        <button type="button" onClick={onLoadMore}>
-          Load more
         </button>
         <button
           type="button"
@@ -240,7 +236,7 @@ describe('PolicyReportsPage', () => {
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
 
       await userEvent.click(
-        screen.getByRole('tab', { name: /restricted reports/i })
+        screen.getByRole('tab', { name: /repository report/i })
       );
 
       expect(
@@ -451,7 +447,7 @@ describe('PolicyReportsPage', () => {
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
 
       await userEvent.click(
-        screen.getByRole('tab', { name: /restricted reports/i })
+        screen.getByRole('tab', { name: /repository report/i })
       );
     };
 
@@ -477,12 +473,13 @@ describe('PolicyReportsPage', () => {
       await renderPage();
       await selectOrgAndDataset();
 
+      // Both Repository and Team tabs render the signed-in user, so use getAllBy
       await waitFor(() =>
-        expect(screen.getByText(/@octocat/i)).toBeInTheDocument()
+        expect(screen.getAllByText(/@octocat/i).length).toBeGreaterThan(0)
       );
       expect(
-        screen.getByRole('button', { name: /log out/i })
-      ).toBeInTheDocument();
+        screen.getAllByRole('button', { name: /log out/i }).length
+      ).toBeGreaterThan(0);
     });
 
     it('calls logoutUser when "Log out" is clicked and hides the username', async () => {
@@ -642,9 +639,12 @@ describe('PolicyReportsPage', () => {
       await selectOrgAndDataset();
 
       expect(
-        screen.getByText(/loading your accessible repositories and teams/i)
-      ).toBeInTheDocument();
-      expect(screen.getByText(/collecting repositories/i)).toBeInTheDocument();
+        screen.getAllByText(/loading your accessible repositories and teams/i)
+          .length
+      ).toBeGreaterThan(0);
+      expect(
+        screen.getAllByText(/collecting repositories/i).length
+      ).toBeGreaterThan(0);
 
       resolveRepositories({
         repositories: ['repo-a'],
@@ -668,7 +668,9 @@ describe('PolicyReportsPage', () => {
   // ── Stage 2 – Repository and Team reports ──────────────────────────────────
 
   describe('Stage 2 – Repository and Team reports', () => {
-    const setupAuthenticatedWithData = async () => {
+    const setupAuthenticatedWithData = async ({
+      activeTab = 'repository',
+    } = {}) => {
       setupDefaultMocks({
         authenticated: true,
         username: 'octocat',
@@ -687,12 +689,32 @@ describe('PolicyReportsPage', () => {
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
 
       await userEvent.click(
-        screen.getByRole('tab', { name: /restricted reports/i })
+        screen.getByRole('tab', {
+          name: activeTab === 'team' ? /team report/i : /repository report/i,
+        })
       );
 
-      await waitFor(() =>
-        expect(fetchDatasetRepositoriesForUser).toHaveBeenCalled()
-      );
+      await waitFor(() => {
+        expect(fetchDatasetRepositoriesForUser).toHaveBeenCalled();
+        expect(fetchDatasetTeamsForUser).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText(/loading your accessible repositories and teams/i)
+        ).not.toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        if (activeTab === 'team') {
+          expect(screen.getByLabelText(/search teams/i)).toBeInTheDocument();
+          return;
+        }
+
+        expect(
+          screen.getByLabelText(/search repositories/i)
+        ).toBeInTheDocument();
+      });
     };
 
     it('renders the repository search input', async () => {
@@ -701,7 +723,7 @@ describe('PolicyReportsPage', () => {
     });
 
     it('renders the team search input', async () => {
-      await setupAuthenticatedWithData();
+      await setupAuthenticatedWithData({ activeTab: 'team' });
       expect(screen.getByLabelText(/search teams/i)).toBeInTheDocument();
     });
 
@@ -729,7 +751,7 @@ describe('PolicyReportsPage', () => {
     });
 
     it('calls generatePolicyReport with Team type', async () => {
-      await setupAuthenticatedWithData();
+      await setupAuthenticatedWithData({ activeTab: 'team' });
 
       const teamToggleBtn = screen.getByRole('button', { name: 'team-alpha' });
       await userEvent.click(teamToggleBtn);
@@ -747,6 +769,77 @@ describe('PolicyReportsPage', () => {
             sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
           }),
         })
+      );
+    });
+
+    it('switches from Repository Report tab to Team Report tab', async () => {
+      await setupAuthenticatedWithData();
+
+      // Repository panel is active; Team panel is hidden
+      expect(screen.getByLabelText(/search repositories/i)).toBeInTheDocument();
+
+      await userEvent.click(screen.getByRole('tab', { name: /team report/i }));
+
+      await waitFor(() =>
+        expect(screen.getByLabelText(/search teams/i)).toBeInTheDocument()
+      );
+    });
+
+    it('shows loading progress in the Team Report tab', async () => {
+      setupDefaultMocks({
+        authenticated: true,
+        username: 'octocat',
+      });
+
+      let resolveRepositories;
+      let resolveTeams;
+      fetchDatasetRepositoriesForUser.mockReturnValueOnce(
+        new Promise(r => {
+          resolveRepositories = r;
+        })
+      );
+      fetchDatasetTeamsForUser.mockReturnValueOnce(
+        new Promise(r => {
+          resolveTeams = r;
+        })
+      );
+
+      await renderPage();
+
+      const orgSelect = screen.getByLabelText(/organisation/i);
+      await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
+      await userEvent.selectOptions(
+        screen.getByLabelText(/source dataset/i),
+        DATASETS[0].name
+      );
+
+      await userEvent.click(screen.getByRole('tab', { name: /team report/i }));
+
+      expect(
+        screen.getAllByText(/loading your accessible repositories and teams/i)
+          .length
+      ).toBeGreaterThan(0);
+
+      resolveRepositories({
+        repositories: [],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+      resolveTeams({
+        teams: ['team-a'],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryAllByText(
+            /loading your accessible repositories and teams/i
+          ).length
+        ).toBe(0)
       );
     });
   });

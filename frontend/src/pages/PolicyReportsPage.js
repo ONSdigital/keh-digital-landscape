@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PageBanner from '../components/PageBanner/PageBanner';
 import Layout from '../components/Layout/Layout';
-import CollapsibleReportSection from '../components/policyReports/CollapsibleReportSection/CollapsibleReportSection';
 import SelectableEntityReport from '../components/policyReports/SelectableEntityReport/SelectableEntityReport';
 import { fetchPolicyReportOrganisationOptions } from '../utilities/policyReports/getOrganisations';
 import { fetchDatasetsByOrganisation } from '../utilities/policyReports/getDatasets';
@@ -126,7 +125,11 @@ const PolicyReportsPage = () => {
           setOrganisation(formState.organisation);
           setPersistedFormState(formState);
         }
-        if (formState.activeReportTab) {
+        const validTabs = ['organisation', 'repository', 'team'];
+        if (
+          formState.activeReportTab &&
+          validTabs.includes(formState.activeReportTab)
+        ) {
           setActiveReportTab(formState.activeReportTab);
         }
       }
@@ -205,8 +208,10 @@ const PolicyReportsPage = () => {
 
   const [repositoryOptions, setRepositoryOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
-  const [repositoryResultCap, setRepositoryResultCap] = useState(25);
-  const [teamResultCap, setTeamResultCap] = useState(25);
+  const [repositoryListPage, setRepositoryListPage] = useState(1);
+  const [teamListPage, setTeamListPage] = useState(1);
+  const [repositoryResultsPerPage, setRepositoryResultsPerPage] = useState(25);
+  const [teamResultsPerPage, setTeamResultsPerPage] = useState(25);
   const [totalAccessibleRepositories, setTotalAccessibleRepositories] =
     useState(0);
   const [totalAccessibleTeams, setTotalAccessibleTeams] = useState(0);
@@ -236,7 +241,7 @@ const PolicyReportsPage = () => {
     totalPages: 0,
   });
 
-  const ITEMS_PER_PAGE = 25;
+  const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
   const loadProgressPercent = Math.round(
     (githubEntityLoadProgress.completed / githubEntityLoadProgress.total) * 100
   );
@@ -287,8 +292,10 @@ const PolicyReportsPage = () => {
         setTeamSearch('');
         setSelectedRepositories([]);
         setSelectedTeams([]);
-        setRepositoryResultCap(ITEMS_PER_PAGE);
-        setTeamResultCap(ITEMS_PER_PAGE);
+        setRepositoryListPage(1);
+        setTeamListPage(1);
+        setRepositoryResultsPerPage(25);
+        setTeamResultsPerPage(25);
       }
 
       const repositories = [];
@@ -434,18 +441,38 @@ const PolicyReportsPage = () => {
   const matchingRepositories = repositoryOptions.filter(repo =>
     repo.toLowerCase().includes(repositorySearch.trim().toLowerCase())
   );
+  const totalRepositoryPages = Math.max(
+    1,
+    Math.ceil(matchingRepositories.length / repositoryResultsPerPage)
+  );
   const filteredRepositories = matchingRepositories.slice(
-    0,
-    repositoryResultCap || repositoryOptions.length
+    (repositoryListPage - 1) * repositoryResultsPerPage,
+    repositoryListPage * repositoryResultsPerPage
   );
 
   const matchingTeams = teamOptions.filter(team =>
     team.toLowerCase().includes(teamSearch.trim().toLowerCase())
   );
-  const filteredTeams = matchingTeams.slice(
-    0,
-    teamResultCap || teamOptions.length
+  const totalTeamPages = Math.max(
+    1,
+    Math.ceil(matchingTeams.length / teamResultsPerPage)
   );
+  const filteredTeams = matchingTeams.slice(
+    (teamListPage - 1) * teamResultsPerPage,
+    teamListPage * teamResultsPerPage
+  );
+
+  useEffect(() => {
+    if (repositoryListPage > totalRepositoryPages) {
+      setRepositoryListPage(totalRepositoryPages);
+    }
+  }, [repositoryListPage, totalRepositoryPages]);
+
+  useEffect(() => {
+    if (teamListPage > totalTeamPages) {
+      setTeamListPage(totalTeamPages);
+    }
+  }, [teamListPage, totalTeamPages]);
 
   const toggleRepositorySelection = repositoryName => {
     setSelectedRepositories(prev =>
@@ -476,18 +503,32 @@ const PolicyReportsPage = () => {
     setTotalAccessibleTeams(0);
     setRepositorySearch('');
     setTeamSearch('');
-    setRepositoryResultCap(ITEMS_PER_PAGE);
-    setTeamResultCap(ITEMS_PER_PAGE);
+    setRepositoryListPage(1);
+    setTeamListPage(1);
+    setRepositoryResultsPerPage(25);
+    setTeamResultsPerPage(25);
     setGenerationMessage('');
     setGenerationError('');
   };
 
-  const handleLoadMoreRepositories = () => {
-    setRepositoryResultCap(prev => prev + ITEMS_PER_PAGE);
+  const handleRepositorySearchChange = value => {
+    setRepositorySearch(value);
+    setRepositoryListPage(1);
   };
 
-  const handleLoadMoreTeams = () => {
-    setTeamResultCap(prev => prev + ITEMS_PER_PAGE);
+  const handleTeamSearchChange = value => {
+    setTeamSearch(value);
+    setTeamListPage(1);
+  };
+
+  const handleRepositoryResultsPerPageChange = value => {
+    setRepositoryResultsPerPage(value);
+    setRepositoryListPage(1);
+  };
+
+  const handleTeamResultsPerPageChange = value => {
+    setTeamResultsPerPage(value);
+    setTeamListPage(1);
   };
 
   const handleGitHubLogin = async () => {
@@ -496,7 +537,7 @@ const PolicyReportsPage = () => {
       formState: {
         organisation,
         sourceDataset,
-        activeReportTab: 'restricted',
+        activeReportTab,
       },
     });
   };
@@ -639,7 +680,10 @@ const PolicyReportsPage = () => {
                 </div>
               </div>
               {sourceDataset && (
-                <div className="policy-reports-space-top-sm">
+                <div
+                  className="policy-reports-space-top-sm"
+                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                >
                   <button
                     className="policy-reports-btn"
                     type="button"
@@ -711,14 +755,25 @@ const PolicyReportsPage = () => {
                     </button>
                     <button
                       role="tab"
-                      aria-selected={activeReportTab === 'restricted'}
-                      aria-controls="panel-restricted"
-                      id="tab-restricted"
-                      className={`policy-reports-tab-btn${activeReportTab === 'restricted' ? ' policy-reports-tab-btn-active' : ''}`}
+                      aria-selected={activeReportTab === 'repository'}
+                      aria-controls="panel-repository"
+                      id="tab-repository"
+                      className={`policy-reports-tab-btn${activeReportTab === 'repository' ? ' policy-reports-tab-btn-active' : ''}`}
                       type="button"
-                      onClick={() => setActiveReportTab('restricted')}
+                      onClick={() => setActiveReportTab('repository')}
                     >
-                      Restricted Reports
+                      Repository Report
+                    </button>
+                    <button
+                      role="tab"
+                      aria-selected={activeReportTab === 'team'}
+                      aria-controls="panel-team"
+                      id="tab-team"
+                      className={`policy-reports-tab-btn${activeReportTab === 'team' ? ' policy-reports-tab-btn-active' : ''}`}
+                      type="button"
+                      onClick={() => setActiveReportTab('team')}
+                    >
+                      Team Report
                     </button>
                   </div>
 
@@ -822,20 +877,19 @@ const PolicyReportsPage = () => {
                   </section>
 
                   <section
-                    id="panel-restricted"
+                    id="panel-repository"
                     role="tabpanel"
-                    aria-labelledby="tab-restricted"
+                    aria-labelledby="tab-repository"
                     className="policy-reports-tab-panel"
-                    hidden={activeReportTab !== 'restricted'}
+                    hidden={activeReportTab !== 'repository'}
                   >
                     <div className="policy-reports-restricted-header">
                       <div className="policy-reports-restricted-title-block">
-                        <h3 id="restricted-reports-title">
-                          Restricted Reports
+                        <h3 className="policy-reports-tab-panel-title">
+                          Repository Report
                         </h3>
                         <p className="policy-reports-hint policy-reports-restricted-hint">
-                          Repository and team reports require GitHub
-                          authentication.
+                          Repository reports require GitHub authentication.
                         </p>
                       </div>
                       {isGitHubAuthenticated && (
@@ -869,8 +923,7 @@ const PolicyReportsPage = () => {
                           </button>
                         </div>
                         <p className="policy-reports-hint policy-reports-no-margin policy-reports-login-hint">
-                          Sign in with GitHub to generate repository and team
-                          reports.
+                          Sign in with GitHub to generate repository reports.
                         </p>
                       </div>
                     ) : (
@@ -911,104 +964,55 @@ const PolicyReportsPage = () => {
                           </div>
                         ) : (
                           <>
-                            <p className="policy-reports-hint policy-reports-no-margin policy-reports-space-top-sm">
-                              Choose a report type to configure and generate.
-                            </p>
-
-                            <CollapsibleReportSection
-                              title="Repository report"
-                              className="policy-reports-space-top-xs"
-                            >
-                              <SelectableEntityReport
-                                searchId="repository-search"
-                                searchLabel="Search repositories"
-                                searchPlaceholder="Type to filter accessible repositories"
-                                searchValue={repositorySearch}
-                                onSearchChange={setRepositorySearch}
-                                resultCap={repositoryResultCap}
-                                totalAccessible={totalAccessibleRepositories}
-                                totalMatching={matchingRepositories.length}
-                                selectedItems={selectedRepositories}
-                                filteredItems={filteredRepositories}
-                                onClearSelection={() =>
-                                  setSelectedRepositories([])
-                                }
-                                onToggleSelection={toggleRepositorySelection}
-                                onLoadMore={handleLoadMoreRepositories}
-                                emptyStateMessage="No repositories match your search."
-                                generateButtonLabel="Generate Repository Report"
-                                generateButtonInProgressLabel="Generating Repository Report..."
-                                onGenerateReport={() =>
-                                  handleGeneratePolicyReport({
-                                    reportType: 'Repository',
-                                    inputs: {
-                                      organisation,
-                                      sourceDataset,
-                                      sourceDatasetDisplay:
-                                        getDatasetDisplayLabelByName(
-                                          sourceDataset
-                                        ),
-                                      selectedRepositories,
-                                    },
-                                  })
-                                }
-                                isGenerating={
-                                  activeGenerationType === 'Repository'
-                                }
-                                isGenerateDisabled={
-                                  isAnyReportGenerating ||
-                                  selectedRepositories.length === 0
-                                }
-                                singularLabel="repository"
-                                pluralLabel="repositories"
-                              />
-                            </CollapsibleReportSection>
-
-                            <CollapsibleReportSection
-                              title="Team report"
-                              className="policy-reports-space-top-sm"
-                            >
-                              <SelectableEntityReport
-                                searchId="team-search"
-                                searchLabel="Search teams"
-                                searchPlaceholder="Type to filter accessible teams"
-                                searchValue={teamSearch}
-                                onSearchChange={setTeamSearch}
-                                resultCap={teamResultCap}
-                                totalAccessible={totalAccessibleTeams}
-                                totalMatching={matchingTeams.length}
-                                selectedItems={selectedTeams}
-                                filteredItems={filteredTeams}
-                                onClearSelection={() => setSelectedTeams([])}
-                                onToggleSelection={toggleTeamSelection}
-                                onLoadMore={handleLoadMoreTeams}
-                                emptyStateMessage="No teams match your search."
-                                generateButtonLabel="Generate Team Report"
-                                generateButtonInProgressLabel="Generating Team Report..."
-                                onGenerateReport={() =>
-                                  handleGeneratePolicyReport({
-                                    reportType: 'Team',
-                                    inputs: {
-                                      organisation,
-                                      sourceDataset,
-                                      sourceDatasetDisplay:
-                                        getDatasetDisplayLabelByName(
-                                          sourceDataset
-                                        ),
-                                      selectedTeams,
-                                    },
-                                  })
-                                }
-                                isGenerating={activeGenerationType === 'Team'}
-                                isGenerateDisabled={
-                                  isAnyReportGenerating ||
-                                  selectedTeams.length === 0
-                                }
-                                singularLabel="team"
-                                pluralLabel="teams"
-                              />
-                            </CollapsibleReportSection>
-
+                            <SelectableEntityReport
+                              searchId="repository-search"
+                              searchLabel="Search repositories"
+                              searchPlaceholder="Type to filter accessible repositories"
+                              searchValue={repositorySearch}
+                              onSearchChange={handleRepositorySearchChange}
+                              currentPage={repositoryListPage}
+                              totalPages={totalRepositoryPages}
+                              onPageChange={setRepositoryListPage}
+                              resultsPerPage={repositoryResultsPerPage}
+                              onResultsPerPageChange={
+                                handleRepositoryResultsPerPageChange
+                              }
+                              pageSizeOptions={PAGE_SIZE_OPTIONS}
+                              totalAccessible={totalAccessibleRepositories}
+                              totalMatching={matchingRepositories.length}
+                              selectedItems={selectedRepositories}
+                              filteredItems={filteredRepositories}
+                              onClearSelection={() =>
+                                setSelectedRepositories([])
+                              }
+                              onToggleSelection={toggleRepositorySelection}
+                              emptyStateMessage="No repositories match your search."
+                              generateButtonLabel="Generate Repository Report"
+                              generateButtonInProgressLabel="Generating Repository Report..."
+                              onGenerateReport={() =>
+                                handleGeneratePolicyReport({
+                                  reportType: 'Repository',
+                                  inputs: {
+                                    organisation,
+                                    sourceDataset,
+                                    sourceDatasetDisplay:
+                                      getDatasetDisplayLabelByName(
+                                        sourceDataset
+                                      ),
+                                    selectedRepositories,
+                                  },
+                                })
+                              }
+                              isGenerating={
+                                activeGenerationType === 'Repository'
+                              }
+                              isGenerateDisabled={
+                                isAnyReportGenerating ||
+                                selectedRepositories.length === 0
+                              }
+                              singularLabel="repository"
+                              pluralLabel="repositories"
+                            />
                             <div className="policy-reports-cache-status policy-reports-space-top-sm">
                               <p className="policy-reports-hint policy-reports-no-margin">
                                 GitHub repositories collected{' '}
@@ -1017,28 +1021,180 @@ const PolicyReportsPage = () => {
                                   : `from GitHub API (${repositoryCacheInfo.ageLabel})`}
                                 .
                               </p>
-                              <p className="policy-reports-hint policy-reports-hint-tight">
+                              <button
+                                className="policy-reports-btn policy-reports-btn-compact"
+                                type="button"
+                                onClick={handleRefreshGitHubCache}
+                                disabled={
+                                  isLoadingAccessibleReposAndTeams ||
+                                  isRefreshingGitHubCache
+                                }
+                              >
+                                {isRefreshingGitHubCache
+                                  ? 'Refreshing GitHub cache...'
+                                  : 'Refresh GitHub cache'}
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </section>
+
+                  <section
+                    id="panel-team"
+                    role="tabpanel"
+                    aria-labelledby="tab-team"
+                    className="policy-reports-tab-panel"
+                    hidden={activeReportTab !== 'team'}
+                  >
+                    <div className="policy-reports-restricted-header">
+                      <div className="policy-reports-restricted-title-block">
+                        <h3 className="policy-reports-tab-panel-title">
+                          Team Report
+                        </h3>
+                        <p className="policy-reports-hint policy-reports-restricted-hint">
+                          Team reports require GitHub authentication.
+                        </p>
+                      </div>
+                      {isGitHubAuthenticated && (
+                        <div className="policy-reports-restricted-auth-actions">
+                          <span className="policy-reports-signed-in-text">
+                            Signed in as @{githubUsername || 'user'}
+                          </span>
+                          <button
+                            className="policy-reports-btn"
+                            type="button"
+                            onClick={handleGitHubLogout}
+                          >
+                            Log out
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {!isGitHubAuthenticated ? (
+                      <div className="policy-reports-access-block policy-reports-login-cta policy-reports-space-top-sm">
+                        <div className="policy-reports-login-cta-inner">
+                          <button
+                            className="policy-reports-btn policy-reports-btn-primary"
+                            type="button"
+                            onClick={handleGitHubLogin}
+                            disabled={isGitHubAuthLoading}
+                          >
+                            {isGitHubAuthLoading
+                              ? 'Checking GitHub authentication...'
+                              : 'Log in with GitHub'}
+                          </button>
+                        </div>
+                        <p className="policy-reports-hint policy-reports-no-margin policy-reports-login-hint">
+                          Sign in with GitHub to generate team reports.
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        {isLoadingAccessibleReposAndTeams ? (
+                          <div className="policy-reports-stage-hidden-note policy-reports-space-top-sm">
+                            <p className="policy-reports-stage-gate-note">
+                              Loading your accessible repositories and teams…
+                            </p>
+                            <div
+                              className="policy-reports-loading-progress"
+                              role="status"
+                              aria-live="polite"
+                            >
+                              <div className="policy-reports-loading-progress-meta">
+                                <span>
+                                  {githubEntityLoadProgress.phase ===
+                                  'repositories'
+                                    ? 'Collecting repositories'
+                                    : 'Collecting teams'}{' '}
+                                  {githubEntityLoadProgress.currentPage > 0 &&
+                                  githubEntityLoadProgress.totalPages > 0
+                                    ? `(page ${githubEntityLoadProgress.currentPage} of ${githubEntityLoadProgress.totalPages})`
+                                    : ''}
+                                </span>
+                                <span>{loadProgressPercent}%</span>
+                              </div>
+                              <div
+                                className="policy-reports-loading-progress-track"
+                                aria-hidden="true"
+                              >
+                                <div
+                                  className="policy-reports-loading-progress-fill"
+                                  style={{ width: `${loadProgressPercent}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <SelectableEntityReport
+                              searchId="team-search"
+                              searchLabel="Search teams"
+                              searchPlaceholder="Type to filter accessible teams"
+                              searchValue={teamSearch}
+                              onSearchChange={handleTeamSearchChange}
+                              currentPage={teamListPage}
+                              totalPages={totalTeamPages}
+                              onPageChange={setTeamListPage}
+                              resultsPerPage={teamResultsPerPage}
+                              onResultsPerPageChange={
+                                handleTeamResultsPerPageChange
+                              }
+                              pageSizeOptions={PAGE_SIZE_OPTIONS}
+                              totalAccessible={totalAccessibleTeams}
+                              totalMatching={matchingTeams.length}
+                              selectedItems={selectedTeams}
+                              filteredItems={filteredTeams}
+                              onClearSelection={() => setSelectedTeams([])}
+                              onToggleSelection={toggleTeamSelection}
+                              emptyStateMessage="No teams match your search."
+                              generateButtonLabel="Generate Team Report"
+                              generateButtonInProgressLabel="Generating Team Report..."
+                              onGenerateReport={() =>
+                                handleGeneratePolicyReport({
+                                  reportType: 'Team',
+                                  inputs: {
+                                    organisation,
+                                    sourceDataset,
+                                    sourceDatasetDisplay:
+                                      getDatasetDisplayLabelByName(
+                                        sourceDataset
+                                      ),
+                                    selectedTeams,
+                                  },
+                                })
+                              }
+                              isGenerating={activeGenerationType === 'Team'}
+                              isGenerateDisabled={
+                                isAnyReportGenerating ||
+                                selectedTeams.length === 0
+                              }
+                              singularLabel="team"
+                              pluralLabel="teams"
+                            />
+                            <div className="policy-reports-cache-status policy-reports-space-top-sm">
+                              <p className="policy-reports-hint policy-reports-no-margin">
                                 GitHub teams collected{' '}
                                 {teamCacheInfo.cacheUsed
                                   ? `from cache (${teamCacheInfo.ageLabel})`
                                   : `from GitHub API (${teamCacheInfo.ageLabel})`}
                                 .
                               </p>
-                              <div className="policy-reports-space-top-xs">
-                                <button
-                                  className="policy-reports-btn policy-reports-btn-compact"
-                                  type="button"
-                                  onClick={handleRefreshGitHubCache}
-                                  disabled={
-                                    isLoadingAccessibleReposAndTeams ||
-                                    isRefreshingGitHubCache
-                                  }
-                                >
-                                  {isRefreshingGitHubCache
-                                    ? 'Refreshing GitHub cache...'
-                                    : 'Refresh GitHub cache'}
-                                </button>
-                              </div>
+                              <button
+                                className="policy-reports-btn policy-reports-btn-compact"
+                                type="button"
+                                onClick={handleRefreshGitHubCache}
+                                disabled={
+                                  isLoadingAccessibleReposAndTeams ||
+                                  isRefreshingGitHubCache
+                                }
+                              >
+                                {isRefreshingGitHubCache
+                                  ? 'Refreshing GitHub cache...'
+                                  : 'Refresh GitHub cache'}
+                              </button>
                             </div>
                           </>
                         )}
