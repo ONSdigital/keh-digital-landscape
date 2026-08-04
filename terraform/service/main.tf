@@ -65,6 +65,10 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           value = var.tech_radar_submissions_url
         },
         {
+          name  = "VITE_GA_CONTAINER_ID",
+          value = var.ga_container_id
+        },
+        {
           name  = "IMAGE_TAG",
           value = data.aws_ecr_image.frontend_image.image_tag
         },

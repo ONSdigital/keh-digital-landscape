@@ -218,6 +218,11 @@ variable "tech_radar_submissions_url" {
   type        = string
 }
 
+variable "ga_container_id" {
+  description = "Google Analytics container ID"
+  type        = string
+}
+
 locals {
   url         = "${var.domain}.${var.domain_extension}"
   service_url = "${var.service_subdomain}.${local.url}"
