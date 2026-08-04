@@ -128,7 +128,20 @@ To run the project locally, do the following:
 
    **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
 
-4. Run the project:
+4. Setup Environment Variables for the frontend and backend. Copy the `.env.example` files to `.env` in both the frontend and backend directories and fill in the values.
+   Alternatively, you can export the environment variables in your terminal session.
+
+   Functionality that requires these environment variables will not work without them, including:
+
+   - Teams alerts (Azure Webhook)
+   - GitHub OAuth (For the GitHub Policy Reports page)
+       - This requires `GITHUB_APP_CLIENT_ID` and `GITHUB_APP_CLIENT_SECRET` to be set in the backend.
+
+   All secrets are labelled within the `.env.example` files and can be retrieved from AWS Secrets Manager. 
+
+   **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
+
+5. Run the project:
 
    ```bash
    make dev
@@ -148,7 +161,7 @@ To run the project locally, do the following:
 
    **Note:** If running in separate terminals, ensure the environment variables are exported in both terminals.
 
-5. To exit the profile:
+6. To exit the profile:
 
    ```bash
    unset AWS_PROFILE
