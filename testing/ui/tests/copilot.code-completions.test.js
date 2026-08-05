@@ -16,9 +16,7 @@ test('Code Completions page routes correctly from landing page', async ({
 }) => {
   await page.goto('http://localhost:3000/copilot/home');
   await page.getByText('IDE Code Completions').click();
-  await expect(page).toHaveURL(
-    'http://localhost:3000/copilot/completions'
-  );
+  await expect(page).toHaveURL('http://localhost:3000/copilot/completions');
 });
 
 test('Code Completions page shows skeleton loading state', async ({ page }) => {
