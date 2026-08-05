@@ -11,6 +11,34 @@ const REPORT_TYPES = ['organisation', 'repository', 'team'];
 const SAFE_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const GITHUB_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
 const DATASET_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
+const HUMAN_READABLE_ERRORS = {
+  configurationLoadFailed:
+    'Unable to load report configuration right now. Please try again later.',
+  datasetLoadFailed:
+    'Unable to load datasets right now. Please try again later.',
+  reportGenerationFailed:
+    'Unable to generate the report right now. Please try again later.',
+  reportTypeRequired: 'Choose a report type before generating a report.',
+  reportTypeInvalid:
+    'Choose a valid report type: organisation, repository or team.',
+  organisationRequired: 'Choose an organisation before generating a report.',
+  organisationInvalid: 'Enter a valid organisation name.',
+  organisationAndDatasetRequired:
+    'Choose both an organisation and a dataset before continuing.',
+  sourceDatasetRequired: 'Choose a source dataset before generating a report.',
+  sourceDatasetInvalid: 'Enter a valid source dataset name.',
+  comparisonDatasetInvalid: 'Enter a valid comparison dataset name.',
+  githubAuthenticationRequired:
+    'Sign in with GitHub to view the repositories or teams in this dataset.',
+  datasetInvalid: 'Enter a valid dataset name.',
+  githubPageRequired: 'Choose which GitHub results page to load.',
+  githubPageInvalid: 'GitHub page must be a whole number greater than 0.',
+  githubPerPageInvalid:
+    'Results per page must be a whole number greater than 0.',
+  repositoriesLoadFailed:
+    'Unable to load repositories right now. Please try again later.',
+  teamsLoadFailed: 'Unable to load teams right now. Please try again later.',
+};
 
 // Per-page caches for the page-mode loading flow.
 // Key: tokenHash:organisation  Value: { pages: { [n]: string[] }, totalPages: number, cachedAt: number }
@@ -80,6 +108,25 @@ const getCachedDatasetEntities = async ({ organisation, dataset }) => {
   return entities;
 };
 
+const getHumanReadableReportGenerationError = error => {
+  const rawMessage =
+    typeof error?.message === 'string' ? error.message.trim() : '';
+
+  if (!rawMessage) {
+    return HUMAN_READABLE_ERRORS.reportGenerationFailed;
+  }
+
+  if (/^Source dataset summary is missing/i.test(rawMessage)) {
+    return 'The selected source dataset is missing some of the data needed to build this report';
+  }
+
+  if (/^Comparison dataset summary is missing/i.test(rawMessage)) {
+    return 'The selected comparison dataset is missing some of the data needed to build this report';
+  }
+
+  return HUMAN_READABLE_ERRORS.reportGenerationFailed;
+};
+
 // GET /organisations
 router.get('/organisations', async (req, res) => {
   try {
@@ -90,7 +137,9 @@ router.get('/organisations', async (req, res) => {
     logger.error('Error fetching policy report configuration', {
       error: error.message,
     });
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res
+      .status(500)
+      .json({ error: HUMAN_READABLE_ERRORS.configurationLoadFailed });
   }
 });
 
@@ -103,12 +152,14 @@ router.get('/datasets', async (req, res) => {
   if (!organisation) {
     return res
       .status(400)
-      .json({ error: 'organisation query parameter is required' });
+      .json({ error: HUMAN_READABLE_ERRORS.organisationRequired });
   }
 
   // Validate organisation name: only alphanumeric, hyphens, underscores
   if (!SAFE_NAME_REGEX.test(organisation)) {
-    return res.status(400).json({ error: 'Invalid organisation name format' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationInvalid });
   }
 
   try {
@@ -120,7 +171,9 @@ router.get('/datasets', async (req, res) => {
       organisation,
       error: error.message,
     });
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res
+      .status(500)
+      .json({ error: HUMAN_READABLE_ERRORS.datasetLoadFailed });
   }
 });
 
@@ -132,12 +185,16 @@ router.post('/generateReport', async (req, res) => {
 
   if (!reportType) {
     logger.warn('Report type not specified');
-    return res.status(400).json({ error: 'Report type is required' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.reportTypeRequired });
   }
 
   if (!REPORT_TYPES.includes(normalizedReportType)) {
     logger.warn('Invalid report type specified');
-    return res.status(400).json({ error: 'Invalid report type' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.reportTypeInvalid });
   }
 
   if (
@@ -145,7 +202,9 @@ router.post('/generateReport', async (req, res) => {
     !SAFE_NAME_REGEX.test(safeInputs.sourceDataset)
   ) {
     logger.warn('Invalid source dataset value specified');
-    return res.status(400).json({ error: 'Invalid source dataset value' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.sourceDatasetInvalid });
   }
 
   if (
@@ -153,7 +212,9 @@ router.post('/generateReport', async (req, res) => {
     !SAFE_NAME_REGEX.test(safeInputs.comparisonDataset)
   ) {
     logger.warn('Invalid comparison dataset value specified');
-    return res.status(400).json({ error: 'Invalid comparison dataset value' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.comparisonDatasetInvalid });
   }
 
   if (
@@ -161,17 +222,23 @@ router.post('/generateReport', async (req, res) => {
     !SAFE_NAME_REGEX.test(safeInputs.organisation)
   ) {
     logger.warn('Invalid organisation value specified');
-    return res.status(400).json({ error: 'Invalid organisation value' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationInvalid });
   }
 
   if (!safeInputs.organisation) {
     logger.warn('Organisation not specified for report generation');
-    return res.status(400).json({ error: 'organisation is required' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationRequired });
   }
 
   if (!safeInputs.sourceDataset) {
     logger.warn('Source dataset not specified for report generation');
-    return res.status(400).json({ error: 'sourceDataset is required' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.sourceDatasetRequired });
   }
 
   try {
@@ -207,7 +274,9 @@ router.post('/generateReport', async (req, res) => {
     return res.send(html);
   } catch (error) {
     logger.error('Error generating policy report', { error: error.message });
-    return res.status(500).json({ error: 'Internal Server Error' });
+    const errorMessage = getHumanReadableReportGenerationError(error);
+
+    return res.status(500).json({ error: errorMessage });
   }
 });
 
@@ -220,23 +289,29 @@ router.get('/repositories', async (req, res) => {
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
-    return res.status(401).json({ error: 'Not authenticated with GitHub' });
+    return res
+      .status(401)
+      .json({ error: HUMAN_READABLE_ERRORS.githubAuthenticationRequired });
   }
 
   if (!organisation || !dataset) {
-    return res.status(400).json({
-      error: 'organisation and dataset query parameters are required',
-    });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationAndDatasetRequired });
   }
 
   // Validate organisation name: only alphanumeric, hyphens, underscores
   if (!SAFE_NAME_REGEX.test(organisation)) {
-    return res.status(400).json({ error: 'Invalid organisation name format' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationInvalid });
   }
 
   // Validate dataset name: only alphanumeric, hyphens, underscores
   if (!SAFE_NAME_REGEX.test(dataset)) {
-    return res.status(400).json({ error: 'Invalid dataset name format' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.datasetInvalid });
   }
 
   try {
@@ -254,13 +329,13 @@ router.get('/repositories', async (req, res) => {
     if (githubPage && !requestedGitHubPage) {
       return res
         .status(400)
-        .json({ error: 'githubPage must be a positive integer' });
+        .json({ error: HUMAN_READABLE_ERRORS.githubPageInvalid });
     }
 
     if (githubPerPage && !requestedGitHubPerPage) {
       return res
         .status(400)
-        .json({ error: 'githubPerPage must be a positive integer' });
+        .json({ error: HUMAN_READABLE_ERRORS.githubPerPageInvalid });
     }
 
     const isPageMode = Boolean(requestedGitHubPage);
@@ -329,14 +404,18 @@ router.get('/repositories', async (req, res) => {
       });
     }
 
-    return res.status(400).json({ error: 'githubPage is required' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.githubPageRequired });
   } catch (error) {
     logger.error('Error fetching dataset repositories for user', {
       organisation,
       dataset,
       error: error.message,
     });
-    return res.status(500).json({ error: 'Failed to fetch repositories' });
+    return res
+      .status(500)
+      .json({ error: HUMAN_READABLE_ERRORS.repositoriesLoadFailed });
   }
 });
 
@@ -349,23 +428,29 @@ router.get('/teams', async (req, res) => {
   const userToken = req.cookies?.githubUserToken;
 
   if (!userToken) {
-    return res.status(401).json({ error: 'Not authenticated with GitHub' });
+    return res
+      .status(401)
+      .json({ error: HUMAN_READABLE_ERRORS.githubAuthenticationRequired });
   }
 
   if (!organisation || !dataset) {
-    return res.status(400).json({
-      error: 'organisation and dataset query parameters are required',
-    });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationAndDatasetRequired });
   }
 
   // Validate organisation name: only alphanumeric, hyphens, underscores
   if (!SAFE_NAME_REGEX.test(organisation)) {
-    return res.status(400).json({ error: 'Invalid organisation name format' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.organisationInvalid });
   }
 
   // Validate dataset name: only alphanumeric, hyphens, underscores
   if (!SAFE_NAME_REGEX.test(dataset)) {
-    return res.status(400).json({ error: 'Invalid dataset name format' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.datasetInvalid });
   }
 
   try {
@@ -383,13 +468,13 @@ router.get('/teams', async (req, res) => {
     if (githubPage && !requestedGitHubPage) {
       return res
         .status(400)
-        .json({ error: 'githubPage must be a positive integer' });
+        .json({ error: HUMAN_READABLE_ERRORS.githubPageInvalid });
     }
 
     if (githubPerPage && !requestedGitHubPerPage) {
       return res
         .status(400)
-        .json({ error: 'githubPerPage must be a positive integer' });
+        .json({ error: HUMAN_READABLE_ERRORS.githubPerPageInvalid });
     }
 
     const isPageMode = Boolean(requestedGitHubPage);
@@ -457,14 +542,18 @@ router.get('/teams', async (req, res) => {
       });
     }
 
-    return res.status(400).json({ error: 'githubPage is required' });
+    return res
+      .status(400)
+      .json({ error: HUMAN_READABLE_ERRORS.githubPageRequired });
   } catch (error) {
     logger.error('Error fetching dataset teams for user', {
       organisation,
       dataset,
       error: error.message,
     });
-    return res.status(500).json({ error: 'Failed to fetch teams' });
+    return res
+      .status(500)
+      .json({ error: HUMAN_READABLE_ERRORS.teamsLoadFailed });
   }
 });
 

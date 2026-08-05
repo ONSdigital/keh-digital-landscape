@@ -80,7 +80,8 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Internal Server Error',
+        error:
+          'Unable to load report configuration right now. Please try again later.',
       });
     });
   });
@@ -95,7 +96,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation query parameter is required',
+        error: 'Choose an organisation before generating a report.',
       });
     });
 
@@ -106,7 +107,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation name format',
+        error: 'Enter a valid organisation name.',
       });
     });
 
@@ -143,7 +144,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Internal Server Error',
+        error: 'Unable to load datasets right now. Please try again later.',
       });
     });
   });
@@ -162,7 +163,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Report type is required',
+        error: 'Choose a report type before generating a report.',
       });
     });
 
@@ -175,7 +176,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid report type',
+        error: 'Choose a valid report type: organisation, repository or team.',
       });
     });
 
@@ -188,7 +189,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Report type is required',
+        error: 'Choose a report type before generating a report.',
       });
     });
 
@@ -201,7 +202,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid report type',
+        error: 'Choose a valid report type: organisation, repository or team.',
       });
     });
 
@@ -225,7 +226,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation value',
+        error: 'Enter a valid organisation name.',
       });
       expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
     });
@@ -284,7 +285,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation is required',
+        error: 'Choose an organisation before generating a report.',
       });
       expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
     });
@@ -306,7 +307,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'sourceDataset is required',
+        error: 'Choose a source dataset before generating a report.',
       });
       expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
     });
@@ -353,7 +354,40 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Internal Server Error',
+        error:
+          'Unable to generate the report right now. Please try again later.',
+      });
+    });
+
+    it('returns a user-facing message when source dataset report data is incomplete', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue(
+        {}
+      );
+      vi.spyOn(policyReportGenerator, 'generateReport').mockImplementation(
+        () => {
+          throw new Error(
+            'Source dataset summary is missing required object field: team_checks'
+          );
+        }
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: {
+            organisation: 'my-org',
+            sourceDataset: '20260723T121307Z',
+            comparisonDataset: '20260716T121307Z',
+          },
+        }),
+      });
+
+      expect(res.status).toBe(500);
+      await expect(res.json()).resolves.toEqual({
+        error:
+          'The selected source dataset is missing some of the data needed to build this report',
       });
     });
   });
@@ -370,7 +404,8 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(401);
       await expect(res.json()).resolves.toEqual({
-        error: 'Not authenticated with GitHub',
+        error:
+          'Sign in with GitHub to view the repositories or teams in this dataset.',
       });
     });
 
@@ -382,7 +417,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -394,7 +429,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -406,7 +441,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation name format',
+        error: 'Enter a valid organisation name.',
       });
     });
 
@@ -418,7 +453,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid dataset name format',
+        error: 'Enter a valid dataset name.',
       });
     });
 
@@ -591,7 +626,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Failed to fetch repositories',
+        error: 'Unable to load repositories right now. Please try again later.',
       });
     });
   });
@@ -608,7 +643,8 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(401);
       await expect(res.json()).resolves.toEqual({
-        error: 'Not authenticated with GitHub',
+        error:
+          'Sign in with GitHub to view the repositories or teams in this dataset.',
       });
     });
 
@@ -620,7 +656,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -632,7 +668,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -644,7 +680,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation name format',
+        error: 'Enter a valid organisation name.',
       });
     });
 
@@ -656,7 +692,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid dataset name format',
+        error: 'Enter a valid dataset name.',
       });
     });
 
@@ -829,7 +865,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Failed to fetch teams',
+        error: 'Unable to load teams right now. Please try again later.',
       });
     });
   });
