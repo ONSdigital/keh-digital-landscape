@@ -14,8 +14,7 @@ const DATASET_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
 const HUMAN_READABLE_ERRORS = {
   configurationLoadFailed:
     'Unable to load report configuration. Please try again later.',
-  datasetLoadFailed:
-    'Unable to load datasets. Please try again later.',
+  datasetLoadFailed: 'Unable to load datasets. Please try again later.',
   reportGenerationFailed:
     'Unable to generate the report. Please try again later.',
   reportTypeRequired: 'Choose a report type before generating a report.',
