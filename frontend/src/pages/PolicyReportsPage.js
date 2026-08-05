@@ -210,8 +210,8 @@ const PolicyReportsPage = () => {
   const [teamOptions, setTeamOptions] = useState([]);
   const [repositoryListPage, setRepositoryListPage] = useState(1);
   const [teamListPage, setTeamListPage] = useState(1);
-  const [repositoryResultsPerPage, setRepositoryResultsPerPage] = useState(25);
-  const [teamResultsPerPage, setTeamResultsPerPage] = useState(25);
+  const [repositoryResultsPerPage, setRepositoryResultsPerPage] = useState(10);
+  const [teamResultsPerPage, setTeamResultsPerPage] = useState(10);
   const [totalAccessibleRepositories, setTotalAccessibleRepositories] =
     useState(0);
   const [totalAccessibleTeams, setTotalAccessibleTeams] = useState(0);
@@ -294,8 +294,8 @@ const PolicyReportsPage = () => {
         setSelectedTeams([]);
         setRepositoryListPage(1);
         setTeamListPage(1);
-        setRepositoryResultsPerPage(25);
-        setTeamResultsPerPage(25);
+        setRepositoryResultsPerPage(10);
+        setTeamResultsPerPage(10);
       }
 
       const repositories = [];
@@ -505,8 +505,8 @@ const PolicyReportsPage = () => {
     setTeamSearch('');
     setRepositoryListPage(1);
     setTeamListPage(1);
-    setRepositoryResultsPerPage(25);
-    setTeamResultsPerPage(25);
+    setRepositoryResultsPerPage(10);
+    setTeamResultsPerPage(10);
     setGenerationMessage('');
     setGenerationError('');
   };
