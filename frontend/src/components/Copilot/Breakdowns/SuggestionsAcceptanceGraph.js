@@ -133,6 +133,7 @@ const SuggestionsAcceptanceGraph = ({
     secondary: palette[1],
     tertiary: palette[2],
     text: 'hsl(var(--muted-foreground))',
+    grid: 'hsl(var(--muted))',
   };
 
   const formatXAxisDate = value => {
@@ -165,7 +166,7 @@ const SuggestionsAcceptanceGraph = ({
           margin={{ top: 20, right: 10, left: 10, bottom: 0 }}
           barGap={6}
         >
-          <CartesianGrid vertical={false} />
+          <CartesianGrid vertical={false} stroke={colors.grid} />
           <XAxis
             dataKey="date"
             interval={recentData.length - 2}
