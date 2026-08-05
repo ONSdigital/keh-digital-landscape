@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 
 function BackButton({

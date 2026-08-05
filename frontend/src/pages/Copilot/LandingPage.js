@@ -15,7 +15,13 @@ function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
   const navigate = useNavigate();
 
   return (
-    <div className="copilot-nav-card" onClick={() => href && navigate(href)}>
+    <div
+      className="copilot-nav-card"
+      onClick={() => href && navigate(href)}
+      tabIndex={0}
+      role="button"
+      aria-label={`Navigate to ${title}`}
+    >
       <div className="copilot-nav-card-body">
         <div className="copilot-nav-card-title">
           <Icon />

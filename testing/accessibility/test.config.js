@@ -62,7 +62,7 @@ const config = {
     },
     {
       name: 'GitHub Copilot Code Completions',
-      url: '/copilot/code-completions',
+      url: '/copilot/completions',
       authentication: [],
     },
   ],

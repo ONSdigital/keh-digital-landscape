@@ -54,6 +54,9 @@ test.describe('Accessibility Tests', () => {
       await handleAuthentication(context, url, appPage);
       await page.goto(url);
 
+      // Wait for the page to load completely
+      await page.waitForLoadState('networkidle');
+
       const accessibilityScanResults = await makeAxeBuilder().analyze();
 
       await testInfo.attach('accessibility-scan-results', {
