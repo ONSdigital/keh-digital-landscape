@@ -25,6 +25,7 @@ function CodeImpactByLanguage({ data }) {
             nameKey="name"
             cx="50%"
             cy="50%"
+            stroke={'hsl(var(--muted))'}
             outerRadius={90}
             innerRadius={50}
             labelLine={false}

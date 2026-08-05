@@ -55,9 +55,13 @@ function GeneralUsageDashboard({ data, isLoading }) {
                 </p>
               }
             >
-              <span className="info-icon">
+              <button
+                type="button"
+                className="info-icon info-icon-button"
+                aria-label="About engaged users over time"
+              >
                 <IoInformationCircleOutline />
-              </span>
+              </button>
             </Tooltip>
           )}
         </h3>
@@ -90,9 +94,13 @@ function GeneralUsageDashboard({ data, isLoading }) {
                 </p>
               }
             >
-              <div className="info-icon">
+              <button
+                type="button"
+                className="info-icon info-icon-button"
+                aria-label="About code impact by language"
+              >
                 <IoInformationCircleOutline />
-              </div>
+              </button>
             </Tooltip>
           )}
         </h3>

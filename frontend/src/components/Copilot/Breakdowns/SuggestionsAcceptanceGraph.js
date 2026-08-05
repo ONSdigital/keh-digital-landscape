@@ -1,0 +1,260 @@
+import React, { useMemo, useState } from 'react';
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  Line,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+import GraphSelect from '../../GraphSelect/GraphSelect';
+import { getChartPalette } from '../../../utilities/copilotChartColours';
+
+const TIME_BREAKDOWN_OPTIONS = [
+  { value: 'day', label: 'Days' },
+  { value: 'week', label: 'Weeks' },
+  { value: 'month', label: 'Months' },
+];
+
+function getWeekStart(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(date);
+  monday.setDate(diff);
+  return monday.toISOString().split('T')[0];
+}
+
+function getMonthStart(dateString) {
+  const date = new Date(dateString);
+  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+  return monthStart.toISOString().split('T')[0];
+}
+
+function aggregateByTimeBreakdown(
+  rows,
+  breakdown,
+  suggestionsKey = 'suggestions',
+  acceptancesKey = 'acceptances'
+) {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
+  if (breakdown === 'day') {
+    return rows;
+  }
+
+  const grouped = new Map();
+
+  for (const row of rows) {
+    const key =
+      breakdown === 'week' ? getWeekStart(row.date) : getMonthStart(row.date);
+
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        date: key,
+        [suggestionsKey]: 0,
+        [acceptancesKey]: 0,
+      });
+    }
+
+    const current = grouped.get(key);
+    current[suggestionsKey] += row[suggestionsKey] ?? 0;
+    current[acceptancesKey] += row[acceptancesKey] ?? 0;
+  }
+
+  return Array.from(grouped.values()).map(entry => ({
+    ...entry,
+    acceptanceRate:
+      entry[suggestionsKey] > 0
+        ? (entry[acceptancesKey] / entry[suggestionsKey]) * 100
+        : 0,
+  }));
+}
+
+function removeWeekendData(rows) {
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
+  return rows.filter(row => {
+    const date = new Date(`${row.date}T00:00:00`);
+    const day = date.getDay();
+    return day !== 0 && day !== 6;
+  });
+}
+
+const SuggestionsAcceptanceGraph = ({
+  data,
+  includeWeekendUsage = false,
+  LOC = false,
+}) => {
+  const [timeBreakdown, setTimeBreakdown] = useState('day');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const recentData = useMemo(() => {
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    const suggestionsKey = LOC ? 'locSuggestions' : 'suggestions';
+    const acceptancesKey = LOC ? 'locAcceptances' : 'acceptances';
+    const groupedData = aggregateByTimeBreakdown(
+      data,
+      timeBreakdown,
+      suggestionsKey,
+      acceptancesKey
+    );
+    const filtered =
+      timeBreakdown === 'day' && !includeWeekendUsage
+        ? removeWeekendData(groupedData)
+        : groupedData;
+
+    const remainingKey = LOC ? 'locRemaining' : 'remaining';
+    return filtered.map(entry => ({
+      ...entry,
+      [remainingKey]: Math.max(
+        0,
+        (entry[suggestionsKey] ?? 0) - (entry[acceptancesKey] ?? 0)
+      ),
+    }));
+  }, [data, includeWeekendUsage, timeBreakdown]);
+
+  const palette = getChartPalette(3, isDark);
+  const colors = {
+    primary: palette[0],
+    secondary: palette[1],
+    tertiary: palette[2],
+    text: 'hsl(var(--muted-foreground))',
+    grid: 'hsl(var(--muted))',
+  };
+
+  const formatXAxisDate = value => {
+    const date = new Date(value);
+
+    if (timeBreakdown === 'month') {
+      return date.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: '2-digit',
+      });
+    }
+
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit',
+    });
+  };
+
+  return (
+    <div className="copilot-graph-container">
+      <GraphSelect
+        options={TIME_BREAKDOWN_OPTIONS}
+        value={timeBreakdown}
+        onChange={setTimeBreakdown}
+      />
+      <ResponsiveContainer width="100%" height={500}>
+        <ComposedChart
+          data={recentData}
+          margin={{ top: 20, right: 10, left: 10, bottom: 0 }}
+          barGap={6}
+        >
+          <CartesianGrid vertical={false} stroke={colors.grid} />
+          <XAxis
+            dataKey="date"
+            interval={recentData.length - 2}
+            tick={{ fill: colors.text }}
+            tickLine={false}
+            tickFormatter={formatXAxisDate}
+          />
+          <Legend
+            verticalAlign="top"
+            align="center"
+            height={36}
+            wrapperStyle={{ paddingBottom: '10px' }}
+          />
+          <Bar
+            stackId="suggestions"
+            radius={[0, 0, 0, 0]}
+            dataKey={LOC ? 'locAcceptances' : 'acceptances'}
+            fill={colors.secondary}
+            barSize={60}
+            yAxisId="left"
+            legendType="rect"
+            name={LOC ? 'LoC Acceptances' : 'Acceptances'}
+          />
+          <Bar
+            stackId="suggestions"
+            radius={[10, 10, 0, 0]}
+            dataKey={LOC ? 'locRemaining' : 'remaining'}
+            fill={colors.primary}
+            barSize={60}
+            yAxisId="left"
+            legendType="rect"
+            name={LOC ? 'LoC Suggestions' : 'Suggestions'}
+          />
+          <Line
+            dot={false}
+            strokeWidth={5}
+            strokeLinecap="round"
+            type="monotone"
+            dataKey="acceptanceRate"
+            stroke={colors.tertiary}
+            yAxisId="right"
+            legendType="line"
+            name="Acceptance Rate"
+          />
+          <YAxis
+            tickLine={false}
+            yAxisId="left"
+            tick={{ fill: colors.text }}
+            axisLine={{ stroke: '' }}
+            domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
+            tickCount={5}
+            tickFormatter={value => formatNumberWithCommas(value)}
+          />
+          <YAxis
+            tickLine={false}
+            yAxisId="right"
+            tick={{ fill: colors.text }}
+            orientation="right"
+            axisLine={{ stroke: '' }}
+            domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
+            tickCount={5}
+            tickFormatter={value => `${value.toFixed(0)}%`}
+          />
+          <Tooltip
+            labelFormatter={value => formatXAxisDate(value)}
+            formatter={(value, name, entry) => {
+              if (name === 'Suggestions') {
+                return [
+                  formatNumberWithCommas(entry.payload.suggestions ?? 0),
+                  'Total Suggestions',
+                ];
+              }
+              if (name === 'LoC Suggestions') {
+                return [
+                  formatNumberWithCommas(entry.payload.locSuggestions ?? 0),
+                  'LoC Suggestions',
+                ];
+              }
+              if (name === 'Acceptance Rate') {
+                return [`${value.toFixed(2)}%`, name];
+              }
+              return [formatNumberWithCommas(value), name];
+            }}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+export default SuggestionsAcceptanceGraph;

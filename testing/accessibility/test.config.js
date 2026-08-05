@@ -60,6 +60,11 @@ const config = {
       url: '/copilot/general',
       authentication: [],
     },
+    {
+      name: 'GitHub Copilot Code Completions',
+      url: '/copilot/completions',
+      authentication: [],
+    },
   ],
 };
 

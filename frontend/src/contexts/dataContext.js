@@ -320,6 +320,7 @@ export function DataProvider({ children }) {
         csvData,
         techRadarData,
         userData,
+        historicUsageData,
         getCsvData,
         getTechRadarData,
         getRepositoryData,

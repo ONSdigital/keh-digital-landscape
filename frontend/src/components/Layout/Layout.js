@@ -30,7 +30,7 @@ const Layout = ({ children, headerProps = {}, bannerProps = {} }) => {
       <Header {...headerProps} />
       <div className="layout-content">
         <Sidebar />
-        <main className="main-content">
+        <main className="main-content" tabIndex={0}>
           {bannerProps?.page ? <BannerContainer {...bannerProps} /> : null}
           {children}
         </main>

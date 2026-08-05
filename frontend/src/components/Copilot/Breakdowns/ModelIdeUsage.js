@@ -30,9 +30,13 @@ function ModelIdeUsage({ modelData, ideData }) {
               </span>
             }
           >
-            <div className="info-icon">
+            <button
+              type="button"
+              className="info-icon info-icon-button"
+              aria-label="About model usage"
+            >
               <IoInformationCircleOutline />
-            </div>
+            </button>
           </Tooltip>
         </div>
         <ResponsiveContainer width="100%" height={280}>
@@ -43,6 +47,7 @@ function ModelIdeUsage({ modelData, ideData }) {
               nameKey="name"
               cx="50%"
               cy="50%"
+              stroke={'hsl(var(--muted))'}
               outerRadius={90}
               innerRadius={50}
               labelLine={false}
@@ -83,9 +88,13 @@ function ModelIdeUsage({ modelData, ideData }) {
               </span>
             }
           >
-            <div className="info-icon">
+            <button
+              type="button"
+              className="info-icon info-icon-button"
+              aria-label="About IDE usage"
+            >
               <IoInformationCircleOutline />
-            </div>
+            </button>
           </Tooltip>
         </div>
         <ResponsiveContainer width="100%" height={280}>
@@ -96,6 +105,7 @@ function ModelIdeUsage({ modelData, ideData }) {
               nameKey="name"
               cx="50%"
               cy="50%"
+              stroke={'hsl(var(--muted))'}
               outerRadius={90}
               innerRadius={50}
               labelLine={false}

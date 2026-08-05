@@ -18,14 +18,14 @@ The landing page is designed around **progressive disclosure**: users see just e
 
 ## Structure
 
-| Section              | Route                  |
-| -------------------- | ---------------------- |
-| Landing Page         | `/copilot/home`        |
-| General Usage        | `/copilot/general`     |
-| IDE Code Completions | `/copilot/completions` |
-| Copilot Chat         | `/copilot/chat`        |
-| Agent Edits          | `/copilot/agent`       |
-| Legacy Usage         | `/copilot/legacy`      |
+| Section              | Route                          |
+| -------------------- | ------------------------------ |
+| Landing Page         | `/copilot/home`                |
+| General Usage        | `/copilot/general`             |
+| IDE Code Completions | `/copilot/completions`         |
+| Copilot Chat         | `/copilot/chat`                |
+| Agent Edits          | `/copilot/agent`               |
+| Legacy Usage         | `/copilot/legacy`              |
 
 ## Features
 
@@ -47,6 +47,36 @@ An organisation-wide summary of Copilot adoption and usage patterns, covering me
 
 - **Code Impact by Language**: a donut chart showing the share of total lines added and deleted across all Copilot features, broken down by language. Not constrained to any one feature. Entries below 1% are grouped into **Other**.
 
+### IDE Code Completions
+
+A feature-focused dashboard for IDE code completion activity. This page follows the same architecture pattern as General Usage:
+
+- **Page responsibilities**: route-level layout, back navigation, chart settings state, and data fetch/transform.
+
+- **Dashboard responsibilities**: presentational rendering of summary cards and charts from processed props.
+
+**Sections:**
+
+- **Overall Usage**: three summary cards for total suggestion instances, total acceptances, and overall acceptance rate.
+
+- **Card Animation**: summary card values animate on render using `useCountUp`.
+
+- **Suggestions, Acceptances and Acceptance Rate**: a combined chart with selectable day/week/month aggregation. The day view can optionally exclude weekends.
+
+- **Optional LoC Usage View**: a toggleable LoC section from the settings menu. When enabled, this reveals LoC summary cards (total lines suggested, total lines accepted, overall line acceptance rate) and a LoC suggestions/acceptances/acceptance-rate chart.
+
+- **Suggestion vs Acceptance Size**: cards for average LoC per suggestion and average LoC per acceptance, plus a trend chart with the same day/week/month controls.
+
+- **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
+
+### Navigation and Routing
+
+- Entry point from landing page: **General Usage** and **IDE Code Completions** cards on `/copilot/home`.
+
+- Code Completions route: `/copilot/code-completions`.
+
+- Back button behavior: returns from each feature page to `/copilot/home`.
+
 ### Legacy Usage
 
 Historic Copilot data visualised as two separate datasets, as the GitHub API schema changed between periods and the available metrics differ.
@@ -62,6 +92,8 @@ Each dataset is visualised separately as the metrics are not directly comparable
 All data is fetched from the backend and processed on the frontend. See the processing utilities for full detail:
 
 - **General Usage**: `utilities/generalUsageCopilotData/processGeneralUsageCopilotData.js`
+
+- **IDE Code Completions**: `utilities/codeCompletionCopilotdata/processCodeCompletionData.js`
 
 - **Legacy Usage**: `utilities/legacyCopilotData/processLegacyCopilotData.js`
 

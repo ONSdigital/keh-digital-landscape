@@ -211,15 +211,15 @@ function LegacyDataVisualisation({ data, isLoading }) {
 
           <div className="copilot-chat-grid">
             <div className="stat-card" key="mar-code-suggestions">
-              <h2>Total Suggestions</h2>
+              <p className="stat-card-title">Total Suggestions</p>
               <p>{formatNumberWithCommas(marDataTotals.suggestions)}</p>
             </div>
             <div className="stat-card" key="mar-code-acceptances">
-              <h2>Total Acceptances</h2>
+              <p className="stat-card-title">Total Acceptances</p>
               <p>{formatNumberWithCommas(marDataTotals.acceptances)}</p>
             </div>
             <div className="stat-card" key="mar-acceptance-rate">
-              <h2>Acceptance Rate</h2>
+              <p className="stat-card-title">Acceptance Rate</p>
               <p>
                 {getPercentage(
                   marDataTotals.acceptances / marDataTotals.suggestions
@@ -229,15 +229,15 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
           <div className="copilot-chat-grid">
             <div className="stat-card" key="mar-lines-suggested">
-              <h2>Total Lines Suggested</h2>
+              <p className="stat-card-title">Total Lines Suggested</p>
               <p>{formatNumberWithCommas(marDataTotals.linesSuggested)}</p>
             </div>
             <div className="stat-card" key="mar-lines-accepted">
-              <h2>Total Lines Accepted</h2>
+              <p className="stat-card-title">Total Lines Accepted</p>
               <p>{formatNumberWithCommas(marDataTotals.linesAccepted)}</p>
             </div>
             <div className="stat-card" key="mar-line-acceptance-rate">
-              <h2>Line Acceptance Rate</h2>
+              <p className="stat-card-title">Line Acceptance Rate</p>
               <p>
                 {getPercentage(
                   marDataTotals.linesAccepted / marDataTotals.linesSuggested
@@ -251,21 +251,21 @@ function LegacyDataVisualisation({ data, isLoading }) {
           <h4>IDE Chats</h4>
           <div className="copilot-chat-grid">
             <div className="stat-card" key="mar-chats">
-              <h2>Total Chats</h2>
+              <p className="stat-card-title">Total Chats</p>
               <p>{formatNumberWithCommas(marDataTotals.chats)}</p>
             </div>
             <div className="stat-card" key="mar-chat-insertions">
-              <h2>Total Chat Insertions</h2>
+              <p className="stat-card-title">Total Chat Insertions</p>
               <p>{formatNumberWithCommas(marDataTotals.chatInsertions)}</p>
             </div>
             <div className="stat-card" key="mar-chat-copies">
-              <h2>Total Chat Copies</h2>
+              <p className="stat-card-title">Total Chat Copies</p>
               <p>{formatNumberWithCommas(marDataTotals.chatCopies)}</p>
             </div>
           </div>
           <div className="copilot-chat-grid">
             <div className="stat-card" key="mar-chat-insertion-rate">
-              <h2>Chat Insertion Rate</h2>
+              <p className="stat-card-title">Chat Insertion Rate</p>
               <p>
                 {getPercentage(
                   marDataTotals.chatInsertions / marDataTotals.chats
@@ -273,7 +273,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
               </p>
             </div>
             <div className="stat-card" key="mar-chat-copy-rate">
-              <h2>Chat Copy Rate</h2>
+              <p className="stat-card-title">Chat Copy Rate</p>
               <p>
                 {getPercentage(marDataTotals.chatCopies / marDataTotals.chats)}
               </p>
@@ -430,15 +430,15 @@ function LegacyDataVisualisation({ data, isLoading }) {
 
         <div className="copilot-chat-grid">
           <div className="stat-card" key="feb-code-suggestions">
-            <h2>Total Suggestions</h2>
+            <p className="stat-card-title">Total Suggestions</p>
             <p>{formatNumberWithCommas(febDataTotals.suggestions)}</p>
           </div>
           <div className="stat-card" key="feb-code-acceptances">
-            <h2>Total Acceptances</h2>
+            <p className="stat-card-title">Total Acceptances</p>
             <p>{formatNumberWithCommas(febDataTotals.acceptances)}</p>
           </div>
           <div className="stat-card" key="feb-acceptance-rate">
-            <h2>Acceptance Rate</h2>
+            <p className="stat-card-title">Acceptance Rate</p>
             <p>
               {getPercentage(
                 febDataTotals.acceptances / febDataTotals.suggestions
@@ -448,15 +448,15 @@ function LegacyDataVisualisation({ data, isLoading }) {
         </div>
         <div className="copilot-chat-grid">
           <div className="stat-card" key="feb-lines-suggested">
-            <h2>Total Lines Suggested</h2>
+            <p className="stat-card-title">Total Lines Suggested</p>
             <p>{formatNumberWithCommas(febDataTotals.linesSuggested)}</p>
           </div>
           <div className="stat-card" key="feb-lines-accepted">
-            <h2>Total Lines Accepted</h2>
+            <p className="stat-card-title">Total Lines Accepted</p>
             <p>{formatNumberWithCommas(febDataTotals.linesAccepted)}</p>
           </div>
           <div className="stat-card" key="feb-line-acceptance-rate">
-            <h2>Line Acceptance Rate</h2>
+            <p className="stat-card-title">Line Acceptance Rate</p>
             <p>
               {getPercentage(
                 febDataTotals.linesAccepted / febDataTotals.linesSuggested
@@ -470,15 +470,15 @@ function LegacyDataVisualisation({ data, isLoading }) {
         <h4>IDE Chats</h4>
         <div className="copilot-chat-grid">
           <div className="stat-card" key="feb-chats">
-            <h2>Total Chats</h2>
+            <p className="stat-card-title">Total Chats</p>
             <p>{formatNumberWithCommas(febDataTotals.chats)}</p>
           </div>
           <div className="stat-card" key="feb-chat-acceptances">
-            <h2>Total Chat Acceptances</h2>
+            <p className="stat-card-title">Total Chat Acceptances</p>
             <p>{formatNumberWithCommas(febDataTotals.chatAcceptances)}</p>
           </div>
           <div className="stat-card" key="feb-chat-acceptance-rate">
-            <h2>Chat Acceptance Rate</h2>
+            <p className="stat-card-title">Chat Acceptance Rate</p>
             <p>
               {getPercentage(
                 febDataTotals.chatAcceptances / febDataTotals.chats

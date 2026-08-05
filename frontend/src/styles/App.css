@@ -1147,6 +1147,13 @@ text {
   width: 14px;
 }
 
+.info-icon-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+}
+
 /* Update tooltip position slightly */
 .tooltip {
   position: absolute;

@@ -29,44 +29,24 @@ test('Legacy Usage page displays the January 2025 - March 2026 dataset correctly
   await expect(
     section.getByRole('heading', { name: 'IDE Code Completions' })
   ).toBeVisible();
+  await expect(section.getByText('Total Suggestions')).toBeVisible();
+  await expect(section.getByText('Total Acceptances')).toBeVisible();
   await expect(
-    section.getByRole('heading', { name: 'Total Suggestions' })
+    section.locator('p.stat-card-title', { hasText: /^Acceptance Rate$/ })
   ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Acceptances' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Acceptance Rate', exact: true })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Lines Suggested' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Lines Accepted' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Line Acceptance Rate' })
-  ).toBeVisible();
+  await expect(section.getByText('Total Lines Suggested')).toBeVisible();
+  await expect(section.getByText('Total Lines Accepted')).toBeVisible();
+  await expect(section.getByText('Line Acceptance Rate')).toBeVisible();
 
   // IDE Chats
   await expect(
     section.getByRole('heading', { name: 'IDE Chats' })
   ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Chats' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Chat Insertions' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Chat Copies' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Chat Insertion Rate' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Chat Copy Rate' })
-  ).toBeVisible();
+  await expect(section.getByText('Total Chats')).toBeVisible();
+  await expect(section.getByText('Total Chat Insertions')).toBeVisible();
+  await expect(section.getByText('Total Chat Copies')).toBeVisible();
+  await expect(section.getByText('Chat Insertion Rate')).toBeVisible();
+  await expect(section.getByText('Chat Copy Rate')).toBeVisible();
 
   // User Metrics
   await expect(
@@ -91,38 +71,22 @@ test('Legacy Usage page displays the May 2024 - January 2025 dataset correctly',
   await expect(
     section.getByRole('heading', { name: 'IDE Code Completions' })
   ).toBeVisible();
+  await expect(section.getByText('Total Suggestions')).toBeVisible();
+  await expect(section.getByText('Total Acceptances')).toBeVisible();
   await expect(
-    section.getByRole('heading', { name: 'Total Suggestions' })
+    section.locator('p.stat-card-title', { hasText: /^Acceptance Rate$/ })
   ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Acceptances' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Acceptance Rate', exact: true })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Lines Suggested' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Lines Accepted' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Line Acceptance Rate' })
-  ).toBeVisible();
+  await expect(section.getByText('Total Lines Suggested')).toBeVisible();
+  await expect(section.getByText('Total Lines Accepted')).toBeVisible();
+  await expect(section.getByText('Line Acceptance Rate')).toBeVisible();
 
   // IDE Chats (Feb has acceptance-based metrics instead of insertion/copy)
   await expect(
     section.getByRole('heading', { name: 'IDE Chats' })
   ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Chats' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Total Chat Acceptances' })
-  ).toBeVisible();
-  await expect(
-    section.getByRole('heading', { name: 'Chat Acceptance Rate' })
-  ).toBeVisible();
+  await expect(section.getByText('Total Chats')).toBeVisible();
+  await expect(section.getByText('Total Chat Acceptances')).toBeVisible();
+  await expect(section.getByText('Chat Acceptance Rate')).toBeVisible();
 
   // User Metrics
   await expect(
