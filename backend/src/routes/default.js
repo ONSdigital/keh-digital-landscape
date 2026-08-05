@@ -53,11 +53,9 @@ router.get('/tech-radar/json', async (req, res) => {
     res.json(jsonData);
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to load tech radar data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to load tech radar data. Please try again later.',
+    });
   }
 });
 
@@ -155,11 +153,9 @@ router.get('/json', async (req, res) => {
     });
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to load repository data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to load repository data. Please try again later.',
+    });
   }
 });
 
@@ -272,11 +268,9 @@ router.get('/repository/project/json', async (req, res) => {
     });
   } catch (error) {
     logger.error('Error fetching repository data:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to load repository data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to load repository data. Please try again later.',
+    });
   }
 });
 
@@ -292,11 +286,9 @@ router.get('/directorates/json', async (req, res) => {
     res.json(data);
   } catch (error) {
     logger.error('Error fetching directorates:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to load directorate data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to load directorate data. Please try again later.',
+    });
   }
 });
 

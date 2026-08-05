@@ -175,11 +175,9 @@ router.post('/banners/toggle', async (req, res) => {
     res.json({ message: 'Banner visibility updated successfully' });
   } catch (error) {
     logger.error('Error toggling banner visibility:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to update banner visibility. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to update banner visibility. Please try again later.',
+    });
   }
 });
 
@@ -251,11 +249,9 @@ router.get('/array-data', async (req, res) => {
     }
   } catch (error) {
     logger.error('Error in array data endpoint:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to load technology data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to load technology data. Please try again later.',
+    });
   }
 });
 
@@ -331,11 +327,9 @@ router.post('/array-data/update', async (req, res) => {
     });
   } catch (error) {
     logger.error('Error updating array data:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to update technology data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to update technology data. Please try again later.',
+    });
   }
 });
 
@@ -351,11 +345,9 @@ router.get('/tech-radar', async (req, res) => {
     res.json(radarData);
   } catch (error) {
     logger.error('Error fetching tech radar data:', { error: error.message });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to load tech radar data. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to load tech radar data. Please try again later.',
+    });
   }
 });
 
@@ -659,11 +651,9 @@ router.post('/normalise-technology', async (req, res) => {
     logger.error('Error normalising technology names:', {
       error: error.message,
     });
-    res
-      .status(500)
-      .json({
-        error: 'Unable to normalise technology names. Please try again later.',
-      });
+    res.status(500).json({
+      error: 'Unable to normalise technology names. Please try again later.',
+    });
   }
 });
 
