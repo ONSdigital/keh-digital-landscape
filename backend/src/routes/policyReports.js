@@ -13,11 +13,11 @@ const GITHUB_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
 const DATASET_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
 const HUMAN_READABLE_ERRORS = {
   configurationLoadFailed:
-    'Unable to load report configuration right now. Please try again later.',
+    'Unable to load report configuration. Please try again later.',
   datasetLoadFailed:
-    'Unable to load datasets right now. Please try again later.',
+    'Unable to load datasets. Please try again later.',
   reportGenerationFailed:
-    'Unable to generate the report right now. Please try again later.',
+    'Unable to generate the report. Please try again later.',
   reportTypeRequired: 'Choose a report type before generating a report.',
   reportTypeInvalid:
     'Choose a valid report type: organisation, repository or team.',
@@ -36,8 +36,8 @@ const HUMAN_READABLE_ERRORS = {
   githubPerPageInvalid:
     'Results per page must be a whole number greater than 0.',
   repositoriesLoadFailed:
-    'Unable to load repositories right now. Please try again later.',
-  teamsLoadFailed: 'Unable to load teams right now. Please try again later.',
+    'Unable to load repositories. Please try again later.',
+  teamsLoadFailed: 'Unable to load teams. Please try again later.',
 };
 
 // Per-page caches for the page-mode loading flow.
