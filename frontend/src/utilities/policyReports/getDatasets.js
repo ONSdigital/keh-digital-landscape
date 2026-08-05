@@ -1,4 +1,3 @@
-import { toast } from 'react-hot-toast';
 import customFetch from '../customFetch';
 
 export const fetchDatasetsByOrganisation = async organisation => {
@@ -10,7 +9,6 @@ export const fetchDatasetsByOrganisation = async organisation => {
     const data = await response.json();
     return data.datasets || [];
   } catch (error) {
-    toast.error('Error loading datasets for the selected organisation.');
     return [];
   }
 };

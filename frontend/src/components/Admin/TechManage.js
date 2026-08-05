@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import MultiSelect from '../MultiSelect/MultiSelect';
 import { fetchTechRadarJSONFromS3 } from '../../utilities/getTechRadarJson';
 import { fetchCSVFromS3 } from '../../utilities/getCSVData';
+import customFetch from '../../utilities/customFetch';
 import Header from '../Header/Header';
 import {
   FaCheck,
@@ -182,13 +183,7 @@ const TechManage = () => {
    */
   async function fetchArrayData() {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/array-data`;
-
-      const response = await fetch(baseUrl);
-      if (!response.ok) {
-        throw new Error('Failed to fetch technology data');
-      }
+      const response = await customFetch('/admin/api/array-data');
 
       const data = await response.json();
       console.log(data);
@@ -202,7 +197,6 @@ const TechManage = () => {
       }
     } catch (error) {
       console.error('Error fetching array data:', error);
-      toast.error('Failed to load technology data');
     }
   }
 
@@ -584,11 +578,7 @@ const TechManage = () => {
    */
   const handleSaveEditorContent = async () => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/array-data/update`;
-
-      // Save all categories at once
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/array-data/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -599,14 +589,9 @@ const TechManage = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update technology lists');
-      }
-
       toast.success('All technology lists updated successfully!');
     } catch (error) {
       console.error('Error updating technology lists:', error);
-      toast.error('Failed to update technology lists. Please try again.');
     }
   };
 
@@ -636,10 +621,7 @@ const TechManage = () => {
     );
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/array-data/update`;
-
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/array-data/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -649,10 +631,6 @@ const TechManage = () => {
           items: updatedTechs,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update technology list');
-      }
 
       // Update local state
       setArrayData({
@@ -667,7 +645,6 @@ const TechManage = () => {
       toast.success(`Removed ${techToRemove} from ${targetCategory}`);
     } catch (error) {
       console.error('Error updating technology list:', error);
-      toast.error('Failed to update technology list');
     }
   };
 
@@ -691,10 +668,7 @@ const TechManage = () => {
     );
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/array-data/update`;
-
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/array-data/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -704,10 +678,6 @@ const TechManage = () => {
           items: updatedTechs,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update technology');
-      }
 
       // Update local state
       setArrayData({
@@ -724,7 +694,6 @@ const TechManage = () => {
       toast.success(`Updated ${oldTech} to ${newTech}`);
     } catch (error) {
       console.error('Error updating technology:', error);
-      toast.error('Failed to update technology');
     }
   };
 
@@ -1045,10 +1014,7 @@ const TechManage = () => {
         ],
       }));
 
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/tech-radar/update`;
-
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/tech-radar/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1057,10 +1023,6 @@ const TechManage = () => {
           entries: newEntries,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to add technologies to review');
-      }
 
       // Update local state
       const updatedRadarData = {
@@ -1075,7 +1037,6 @@ const TechManage = () => {
       toast.success(`Added ${selectedTechIds.length} technologies to Review`);
     } catch (error) {
       console.error('Error adding technologies to review:', error);
-      toast.error('Failed to add technologies to review');
     }
   };
 
@@ -1098,10 +1059,7 @@ const TechManage = () => {
       const updatedTechs = [...new Set([...currentTechs, ...selectedTechs])];
 
       // Save changes to backend
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/array-data/update`;
-
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/array-data/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1111,10 +1069,6 @@ const TechManage = () => {
           items: updatedTechs,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update technology list');
-      }
 
       // Update local state
       setArrayData({
@@ -1134,7 +1088,6 @@ const TechManage = () => {
       );
     } catch (error) {
       console.error('Error updating technology list:', error);
-      toast.error('Failed to update technology list');
     }
   };
 
@@ -1179,10 +1132,7 @@ const TechManage = () => {
     if (!normaliseFrom || !normaliseTo) return;
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/normalise-technology`;
-
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/normalise-technology', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1192,10 +1142,6 @@ const TechManage = () => {
           to: normaliseTo,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to normalise technology');
-      }
 
       // Refresh data after normalization
       await fetchAllData();
@@ -1209,7 +1155,6 @@ const TechManage = () => {
       setAffectedProjects([]);
     } catch (error) {
       console.error('Error normalizing technology:', error);
-      toast.error('Failed to normalise technology');
     }
   };
 
@@ -1220,10 +1165,7 @@ const TechManage = () => {
     try {
       const updatedTechs = [...arrayData[category], newTechnology];
 
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-      const baseUrl = `${backendUrl}/admin/api/array-data/update`;
-
-      const response = await fetch(baseUrl, {
+      const response = await customFetch('/admin/api/array-data/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1233,10 +1175,6 @@ const TechManage = () => {
           items: updatedTechs,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update technology list');
-      }
 
       // Update local state
       setArrayData({
@@ -1249,7 +1187,6 @@ const TechManage = () => {
       toast.success(`Added ${newTechnology} to ${category}`);
     } catch (error) {
       console.error('Error updating technology list:', error);
-      toast.error('Failed to update technology list');
     }
   };
 

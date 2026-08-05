@@ -85,6 +85,9 @@ describe('/copilot/api/org/legacy route', () => {
     const res = await fetch(`${baseUrl}/copilot/api/org/legacy?type=pre-0326`);
     expect(res.status).toBe(500);
     const data = await res.json();
-    expect(data).toHaveProperty('error', 'S3 error');
+    expect(data).toHaveProperty(
+      'error',
+      'Unable to load legacy usage data. Please try again later.'
+    );
   });
 });

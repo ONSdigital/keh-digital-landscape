@@ -64,6 +64,9 @@ describe('/copilot/api/org/historic route', () => {
     const res = await fetch(`${baseUrl}/copilot/api/org/historic`);
     expect(res.status).toBe(500);
     const data = await res.json();
-    expect(data).toHaveProperty('error', 'S3 Fetch Failed');
+    expect(data).toHaveProperty(
+      'error',
+      'Unable to load usage data. Please try again later.'
+    );
   });
 });

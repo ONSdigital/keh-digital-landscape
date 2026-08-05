@@ -1,4 +1,3 @@
-import { toast } from 'react-hot-toast';
 import { useData } from '../contexts/dataContext';
 import customFetch from './customFetch';
 
@@ -24,7 +23,6 @@ export const fetchRepositoryStats = async (date = null, archived = null) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    toast.error('Error loading repository statistics.');
     return null;
   }
 };
@@ -60,7 +58,6 @@ export const fetchRepositoryData = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    toast.error('Error loading repository data.');
     return null;
   }
 };

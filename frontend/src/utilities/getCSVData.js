@@ -1,4 +1,3 @@
-import { toast } from 'react-hot-toast';
 import { useData } from '../contexts/dataContext';
 import customFetch from './customFetch';
 
@@ -35,7 +34,6 @@ export const fetchCSVFromS3 = async () => {
       });
       return data;
     } catch (fallbackError) {
-      toast.error('Failed to load project data.');
       return null;
     }
   }

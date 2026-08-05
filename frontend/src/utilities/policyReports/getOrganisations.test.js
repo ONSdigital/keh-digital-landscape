@@ -6,12 +6,11 @@ vi.mock('../customFetch', () => ({
 }));
 
 vi.mock('react-hot-toast', () => ({
-  toast: { error: vi.fn() },
-  default: { error: vi.fn() },
+  toast: {},
+  default: {},
 }));
 
 import customFetch from '../customFetch';
-import { toast } from 'react-hot-toast';
 
 describe('fetchPolicyReportOrganisationOptions', () => {
   beforeEach(() => {
@@ -30,14 +29,11 @@ describe('fetchPolicyReportOrganisationOptions', () => {
     expect(result).toEqual(mockData);
   });
 
-  it('returns null and shows a toast error when the fetch throws', async () => {
+  it('returns null when the fetch throws', async () => {
     customFetch.mockRejectedValue(new Error('Network error'));
 
     const result = await fetchPolicyReportOrganisationOptions();
 
     expect(result).toBeNull();
-    expect(toast.error).toHaveBeenCalledWith(
-      'Error loading policy report organisations.'
-    );
   });
 });
