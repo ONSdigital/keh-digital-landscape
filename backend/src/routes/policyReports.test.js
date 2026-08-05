@@ -80,8 +80,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error:
-          'Unable to load report configuration. Please try again later.',
+        error: 'Unable to load report configuration. Please try again later.',
       });
     });
   });
@@ -354,8 +353,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error:
-          'Unable to generate the report. Please try again later.',
+        error: 'Unable to generate the report. Please try again later.',
       });
     });
 
