@@ -17,7 +17,7 @@ test('Code Completions page routes correctly from landing page', async ({
   await page.goto('http://localhost:3000/copilot/home');
   await page.getByText('IDE Code Completions').click();
   await expect(page).toHaveURL(
-    'http://localhost:3000/copilot/code-completions'
+    'http://localhost:3000/copilot/completions'
   );
 });
 
@@ -27,7 +27,7 @@ test('Code Completions page shows skeleton loading state', async ({ page }) => {
     await route.continue();
   });
 
-  await page.goto('http://localhost:3000/copilot/code-completions');
+  await page.goto('http://localhost:3000/copilot/completions');
   await expect(page.locator('.stat-card.skeleton').first()).toBeVisible();
 
   await expect
@@ -39,7 +39,7 @@ test('Code Completions page displays correct page structure', async ({
   page,
 }) => {
   await mockCopilotAPI(page);
-  await page.goto('http://localhost:3000/copilot/code-completions');
+  await page.goto('http://localhost:3000/copilot/completions');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
   });
@@ -80,7 +80,7 @@ test('Code Completions page reveals LoC cards when Include LoC usage is enabled'
 }) => {
   await mockCopilotAPI(page);
 
-  await page.goto('http://localhost:3000/copilot/code-completions');
+  await page.goto('http://localhost:3000/copilot/completions');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
   });
@@ -89,7 +89,7 @@ test('Code Completions page reveals LoC cards when Include LoC usage is enabled'
     page.getByRole('heading', { name: 'Total Lines Suggested' })
   ).toHaveCount(0);
 
-  await page.getByLabel('Open chart display settings').click();
+  await page.getByLabel('Open settings for page').click();
   await page.getByLabel('Include LoC usage').check();
 
   await expect(
@@ -106,7 +106,7 @@ test('Code Completions page reveals LoC cards when Include LoC usage is enabled'
 test('Code Completions page back button navigates to landing page', async ({
   page,
 }) => {
-  await page.goto('http://localhost:3000/copilot/code-completions');
+  await page.goto('http://localhost:3000/copilot/completions');
   await page.locator('.copilot-back-button').click();
   await expect(page).toHaveURL('http://localhost:3000/copilot/home');
 });
