@@ -62,6 +62,43 @@ describe('entityReportTemplate', () => {
               },
             },
           },
+          scorecard_criteria: {
+            platinum: {
+              min_compliance: 100,
+              required_checks: [],
+            },
+            gold: {
+              min_compliance: 90,
+              required_checks: [
+                'codeowners',
+                'dependabot',
+                'license',
+                'pirr',
+                'readme',
+                'repository_access',
+                'security_scanning',
+              ],
+            },
+            silver: {
+              min_compliance: 70,
+              required_checks: [
+                'codeowners',
+                'dependabot',
+                'license',
+                'pirr',
+                'readme',
+                'security_scanning',
+              ],
+            },
+            bronze: {
+              min_compliance: 50,
+              required_checks: [
+                'codeowners',
+                'dependabot',
+                'security_scanning',
+              ],
+            },
+          },
         },
       },
       reportLabel: 'Repository',
@@ -76,11 +113,36 @@ describe('entityReportTemplate', () => {
     expect(html).toContain('class="detail-block-header"');
     expect(html).toContain('id="repo-alpha-data-pipeline"');
     expect(html).toContain('id="repo-beta-insights-service"');
+    expect(html).toContain('<th>Rating</th>');
+    expect(html).toContain('class="pill rating rating-bronze"');
+    expect(html).toContain('class="pill rating rating-gold"');
+    expect(html).toContain('What do these ratings mean?');
+    expect(html).toContain('Minimum compliance');
+    expect(html).toContain('Required checks');
+    expect(html).toContain('No mandatory checks');
+    expect(html).toContain('90.0%');
+    expect(html).toContain(
+      'Repositories are shown as Unrated when they do not meet any configured scorecard threshold.'
+    );
+    expect(html).toContain('>Bronze<');
+    expect(html).toContain('>Gold<');
     expect(html).toContain('https://github.com/my-org/alpha-data-pipeline');
     expect(html).toContain('https://github.com/my-org/beta-insights-service');
     expect(html).toContain('View on GitHub');
     expect(html.split('View on GitHub').length - 1).toBe(2);
-    expect(html).toContain('alpha-data-pipeline details');
+    expect(html).toContain('alpha-data-pipeline');
+    expect(html).toMatch(
+      /alpha-data-pipeline<\/h3>\s*<span class="pill rating rating-bronze">Bronze<\/span>/
+    );
+    expect(html).toMatch(
+      /beta-insights-service<\/h3>\s*<span class="pill rating rating-gold">Gold<\/span>/
+    );
+    expect(html.indexOf('Selected Repositories Summary')).toBeLessThan(
+      html.indexOf('What do these ratings mean?')
+    );
+    expect(html.indexOf('What do these ratings mean?')).toBeLessThan(
+      html.indexOf('id="repo-alpha-data-pipeline"')
+    );
     expect(html).toContain('23 Jul 2026, 12:13');
     expect(html).toContain('1 / 3 (1 errors)');
     expect(html).toContain('Codeowners');
@@ -88,7 +150,6 @@ describe('entityReportTemplate', () => {
     expect(html).toContain('<span class="pill error">error</span>');
     expect(html).toContain('<span class="pill error">error</span>');
     expect(html).toContain('License file missing.');
-    expect(html).toContain('<span class="pill pass">compliant</span>');
     expect(html).toContain('<span class="pill error">error</span>');
     expect(html).toContain('SLO alert breaches');
     expect(html).toContain('Dependabot SLO');
@@ -102,8 +163,6 @@ describe('entityReportTemplate', () => {
     expect(html).toContain(
       'Source dataset file: dataset/20260723T121307Z.json'
     );
-    expect(html).not.toContain('bronze');
-    expect(html).not.toContain('gold');
   });
 
   it('renders a helpful fallback row when no entities are selected', () => {
