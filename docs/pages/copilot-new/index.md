@@ -73,7 +73,7 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - Entry point from landing page: **General Usage** and **IDE Code Completions** cards on `/copilot/home`.
 
-- Code Completions route: `/copilot/code-completions`.
+- Code Completions route: `/copilot/completions`.
 
 - Back button behavior: returns from each feature page to `/copilot/home`.
 
