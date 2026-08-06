@@ -15,18 +15,30 @@ describe('entityReportTemplate', () => {
         sourceDatasetData: {
           repositories: {
             'alpha-data-pipeline': {
-              codeowners: { result: 'pass', message: 'CODEOWNERS present.' },
-              external_pull_request: {
-                result: 'error',
-                message: '403 error while fetching pull requests.',
+              checks: {
+                codeowners: {
+                  result: 'pass',
+                  message: 'CODEOWNERS present.',
+                },
+                external_pull_request: {
+                  result: 'error',
+                  message: '403 error while fetching pull requests.',
+                },
+                license: { result: 'fail', message: 'License file missing.' },
               },
-              license: { result: 'fail', message: 'License file missing.' },
               is_compliant: false,
+              rating: 'bronze',
             },
             'beta-insights-service': {
-              codeowners: { result: 'pass', message: 'CODEOWNERS present.' },
-              license: { result: 'pass', message: 'License file present.' },
+              checks: {
+                codeowners: {
+                  result: 'pass',
+                  message: 'CODEOWNERS present.',
+                },
+                license: { result: 'pass', message: 'License file present.' },
+              },
               is_compliant: true,
+              rating: 'gold',
             },
           },
           organisation_checks: {
@@ -90,6 +102,8 @@ describe('entityReportTemplate', () => {
     expect(html).toContain(
       'Source dataset file: dataset/20260723T121307Z.json'
     );
+    expect(html).not.toContain('bronze');
+    expect(html).not.toContain('gold');
   });
 
   it('renders a helpful fallback row when no entities are selected', () => {
@@ -119,9 +133,11 @@ describe('entityReportTemplate', () => {
         sourceDatasetData: {
           teams: {
             'platform-core': {
-              team_visibility: {
-                result: 'pass',
-                message: 'Team visibility is set correctly.',
+              checks: {
+                team_visibility: {
+                  result: 'pass',
+                  message: 'Team visibility is set correctly.',
+                },
               },
               is_compliant: true,
             },

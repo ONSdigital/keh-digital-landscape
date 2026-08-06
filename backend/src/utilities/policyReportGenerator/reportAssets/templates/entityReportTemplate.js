@@ -34,10 +34,21 @@ const getCheckOutcome = checkResult => {
   return 'unknown';
 };
 
+const getEntityChecksObject = entityRecord => {
+  if (!entityRecord || typeof entityRecord !== 'object') {
+    return {};
+  }
+
+  if (entityRecord.checks && typeof entityRecord.checks === 'object') {
+    return entityRecord.checks;
+  }
+
+  return {};
+};
+
 const getEntityCheckRows = entityRecord =>
-  Object.entries(entityRecord || {})
-    .filter(([checkName]) => checkName !== 'is_compliant')
-    .map(([checkName, checkResult]) => {
+  Object.entries(getEntityChecksObject(entityRecord)).map(
+    ([checkName, checkResult]) => {
       const outcome = getCheckOutcome(checkResult);
       const pillClassName = outcome;
       const resultLabel = outcome;
@@ -50,7 +61,8 @@ const getEntityCheckRows = entityRecord =>
         isCompliant: outcome === 'pass',
         isError: outcome === 'error',
       };
-    });
+    }
+  );
 
 const getNormalisedRepoName = repoName => String(repoName || '').toLowerCase();
 
