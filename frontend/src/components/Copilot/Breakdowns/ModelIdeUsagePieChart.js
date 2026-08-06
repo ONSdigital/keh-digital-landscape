@@ -12,7 +12,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
 import Tooltip from '../../Tooltip/Tooltip';
 
-function ModelIdeUsage({ modelData, ideData }) {
+function ModelIdeUsagePieChart({ modelData, ideData }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const modelColours = getChartPalette(modelData.length, isDark);
@@ -140,4 +140,4 @@ function ModelIdeUsage({ modelData, ideData }) {
   );
 }
 
-export default ModelIdeUsage;
+export default ModelIdeUsagePieChart;

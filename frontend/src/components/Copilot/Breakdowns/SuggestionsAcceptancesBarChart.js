@@ -90,7 +90,7 @@ function removeWeekendData(rows) {
   });
 }
 
-const SuggestionsAcceptanceGraph = ({
+const SuggestionsAcceptancesBarChart = ({
   data,
   includeWeekendUsage = false,
   LOC = false,
@@ -112,13 +112,9 @@ const SuggestionsAcceptanceGraph = ({
       suggestionsKey,
       acceptancesKey
     );
-    const filtered =
-      timeBreakdown === 'day' && !includeWeekendUsage
-        ? removeWeekendData(groupedData)
-        : groupedData;
 
     const remainingKey = LOC ? 'locRemaining' : 'remaining';
-    return filtered.map(entry => ({
+    return groupedData.map(entry => ({
       ...entry,
       [remainingKey]: Math.max(
         0,
@@ -151,7 +147,10 @@ const SuggestionsAcceptanceGraph = ({
       month: 'short',
       year: '2-digit',
     });
+
   };
+
+  console.log(recentData.length);
 
   return (
     <div className="copilot-graph-container">
@@ -257,4 +256,4 @@ const SuggestionsAcceptanceGraph = ({
   );
 };
 
-export default SuggestionsAcceptanceGraph;
+export default SuggestionsAcceptancesBarChart;

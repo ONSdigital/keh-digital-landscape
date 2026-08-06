@@ -10,7 +10,7 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
 
-function CodeImpactByLanguage({ data }) {
+function CodeImpactByLanguagePieChart({ data }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const colours = getChartPalette(data.length, isDark);
@@ -59,4 +59,4 @@ function CodeImpactByLanguage({ data }) {
   );
 }
 
-export default CodeImpactByLanguage;
+export default CodeImpactByLanguagePieChart;
