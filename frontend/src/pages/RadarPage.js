@@ -429,6 +429,31 @@ function RadarPage() {
     };
     return colors[ring];
   };
+
+  const getTechnologyAnalyticsAttributes = (entry, source) => ({
+    'data-ga': 'click',
+    'data-ga-event': 'radar_technology_view',
+    'data-ga-technology-name': entry.title,
+    'data-ga-quadrant': entry.quadrant,
+    'data-ga-ring': getMostRecentRing(entry.timeline),
+    'data-ga-source': source,
+    'data-ga-directorate-id': selectedDirectorate || '',
+    'data-ga-directorate-name': directorateName,
+  });
+
+  const searchInputAnalyticsAttributes = {
+    'data-ga': 'input',
+    'data-ga-event': 'radar_search',
+    'data-ga-search-term': searchTerm.trim().toLowerCase(),
+    'data-ga-result-count': String(searchResults.length),
+    'data-ga-directorate-id': selectedDirectorate || '',
+    'data-ga-directorate-name': directorateName,
+    'data-ga-min-length': '2',
+  };
+
+  const getSearchResultAnalyticsAttributes = result =>
+    getTechnologyAnalyticsAttributes(result, 'search_result');
+
   const handleSearch = term => {
     setSearchTerm(term);
     if (!term.trim()) {
@@ -825,6 +850,8 @@ function RadarPage() {
           onSearchResultClick: handleSearchResultClick,
           onOpenProjects: () => setIsProjectsModalOpen(true),
           onStatsTechClick: handleStatsTechClick,
+          searchInputAnalyticsAttributes,
+          getSearchResultAnalyticsAttributes,
         }}
         bannerProps={{ page: 'radar' }}
       >
@@ -851,6 +878,7 @@ function RadarPage() {
               isHighlighted={getShouldBeHighlighted(
                 (selectedBlip || lockedBlip)?.timeline || []
               )}
+              selectedDirectorateId={selectedDirectorate || ''}
               selectedDirectorate={directorateName}
             />
           )}
@@ -871,9 +899,14 @@ function RadarPage() {
               </label>
               <select
                 id="directorate-select"
+                value={selectedDirectorate || ''}
                 onChange={e => handleDirectorateChange(e.target.value)}
                 className="multi-select-control"
                 aria-label="Select Directorate"
+                data-ga="change"
+                data-ga-event="radar_directorate_filter"
+                data-ga-value-key="directorate_id"
+                data-ga-text-key="directorate_name"
               >
                 {directorates.map(dir => (
                   <option key={dir.name} value={dir.id}>
@@ -897,6 +930,10 @@ function RadarPage() {
               href={techRadarSubmissionsUrl}
               target="_blank"
               rel="noopener noreferrer"
+              data-ga="click"
+              data-ga-event="radar_suggest_technology_click"
+              data-ga-directorate-id={selectedDirectorate || ''}
+              data-ga-directorate-name={directorateName}
             >
               repository
             </a>
@@ -987,6 +1024,10 @@ function RadarPage() {
                       tabIndex="0"
                       role="listitem"
                       aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
+                      {...getTechnologyAnalyticsAttributes(
+                        entry,
+                        'quadrant_list'
+                      )}
                       style={{
                         cursor: 'pointer',
                         borderLeft: getShouldBeHighlighted(entry.timeline)
@@ -1087,6 +1128,7 @@ function RadarPage() {
                     tabIndex="0"
                     role="listitem"
                     aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
+                    {...getTechnologyAnalyticsAttributes(entry, 'quadrant_list')}
                     style={{
                       cursor: 'pointer',
                       borderLeft: getShouldBeHighlighted(entry.timeline)
@@ -1263,6 +1305,10 @@ function RadarPage() {
                               onClick={() => {
                                 handleBlipClick(entry);
                               }}
+                              {...getTechnologyAnalyticsAttributes(
+                                entry,
+                                'radar_blip'
+                              )}
                             >
                               <circle
                                 r="15"
@@ -1382,6 +1428,7 @@ function RadarPage() {
                     tabIndex="0"
                     role="listitem"
                     aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
+                    {...getTechnologyAnalyticsAttributes(entry, 'quadrant_list')}
                     style={{
                       cursor: 'pointer',
                       borderLeft: getShouldBeHighlighted(entry.timeline)
@@ -1481,6 +1528,7 @@ function RadarPage() {
                     tabIndex="0"
                     role="listitem"
                     aria-label={`${entry.title}, ${getMostRecentRing(entry.timeline)} ring`}
+                    {...getTechnologyAnalyticsAttributes(entry, 'quadrant_list')}
                     style={{
                       cursor: 'pointer',
                       borderLeft: getShouldBeHighlighted(entry.timeline)

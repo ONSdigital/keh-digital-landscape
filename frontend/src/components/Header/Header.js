@@ -23,6 +23,8 @@ import { IoClose, IoSearch } from 'react-icons/io5';
  * @param {Function} props.onOpenProjects - Function to call when the projects button is clicked.
  * @param {Function} props.onStatsTechClick - Function to call when a technology is clicked.
  * @param {boolean} props.hideSearch - Whether to hide the search bar.
+ * @param {Object} props.searchInputAnalyticsAttributes - Analytics attributes for the search input.
+ * @param {Function} props.getSearchResultAnalyticsAttributes - Returns analytics attributes for a search result row.
  */
 function Header({
   searchTerm = '',
@@ -32,6 +34,8 @@ function Header({
   onOpenProjects = () => {},
   onStatsTechClick = () => {},
   hideSearch = false,
+  searchInputAnalyticsAttributes = {},
+  getSearchResultAnalyticsAttributes = () => ({}),
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -118,6 +122,7 @@ function Header({
               value={searchTerm}
               onChange={e => onSearchChange(e.target.value)}
               className="search-input"
+              {...searchInputAnalyticsAttributes}
             />
             {searchTerm ? (
               <button className="search-clear" onClick={clearSearch}>
@@ -135,6 +140,7 @@ function Header({
                     key={result.id || result.Project || result.title}
                     className="search-result-item"
                     onClick={() => onSearchResultClick(result)}
+                    {...getSearchResultAnalyticsAttributes(result)}
                   >
                     <span className="search-result-title">{result.title}</span>
                     {result.timeline && (

@@ -5,6 +5,22 @@ import '../styles/components/PageBanner.css';
 import '../styles/AddressBookPage.css';
 import Layout from '../components/Layout/Layout';
 
+const getAddressBookSearchMetrics = query => {
+  const terms = query
+    .split(',')
+    .map(term => term.trim())
+    .filter(Boolean);
+  const emailTermCount = terms.filter(term => term.includes('@')).length;
+
+  return {
+    query_count: terms.length,
+    query_length: query.length,
+    email_term_count: emailTermCount,
+    username_term_count: terms.length - emailTermCount,
+    has_multiple_values: terms.length > 1,
+  };
+};
+
 const AddressBookPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -45,6 +61,8 @@ const AddressBookPage = () => {
       setLoading(false);
     }
   };
+
+  const searchMetrics = getAddressBookSearchMetrics(query.trim());
 
   if (loading) return <div style={{ padding: '1rem' }}>Loading...</div>;
   if (error) return <div style={{ padding: '1rem' }}>Error: {error}</div>;
@@ -90,6 +108,13 @@ const AddressBookPage = () => {
             onSubmit={handleSubmit}
             className="addressbook-search"
             role="search"
+            data-ga="submit"
+            data-ga-event="addressbook_search"
+            data-ga-query-count={String(searchMetrics.query_count)}
+            data-ga-query-length={String(searchMetrics.query_length)}
+            data-ga-email-term-count={String(searchMetrics.email_term_count)}
+            data-ga-username-term-count={String(searchMetrics.username_term_count)}
+            data-ga-has-multiple-values={String(searchMetrics.has_multiple_values)}
           >
             <input
               className="addressbook-search-input"
@@ -113,6 +138,15 @@ const AddressBookPage = () => {
           </form>
 
           <div style={{ padding: '1rem' }}>
+            {hasSearched && !loading && !error && (
+              <div
+                data-ga="visible"
+                data-ga-event="addressbook_search_result"
+                data-ga-result-count={String(users.length)}
+                data-ga-outcome={users.length > 0 ? 'results' : 'no_results'}
+                hidden
+              />
+            )}
             {hasSearched && users.length === 0 && !loading && !error && (
               <div aria-label="No result text">No results.</div>
             )}

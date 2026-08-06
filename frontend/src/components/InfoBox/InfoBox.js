@@ -35,6 +35,7 @@ const InfoBox = ({
   onEditConfirm,
   onEditCancel,
   isHighlighted = false,
+  selectedDirectorateId = '',
   selectedDirectorate = 'Digital Services (DS)',
   timeline = selectedItem ? selectedItem.timeline : [],
 }) => {
@@ -447,6 +448,14 @@ const InfoBox = ({
                     className="info-box-related-technologies-item clickable-tech"
                     tabIndex={0}
                     onClick={() => onRelatedItemClick?.(item)}
+                    data-ga="click"
+                    data-ga-event="radar_technology_view"
+                    data-ga-technology-name={item.title}
+                    data-ga-quadrant={item.quadrant}
+                    data-ga-ring={item.timeline?.[item.timeline.length - 1]?.ringId}
+                    data-ga-source="related_technology"
+                    data-ga-directorate-id={selectedDirectorateId}
+                    data-ga-directorate-name={selectedDirectorate}
                   >
                     {item.title}
                   </li>
@@ -494,6 +503,17 @@ const InfoBox = ({
                     key={index}
                     onClick={() => handleProjectClick(project)}
                     className="info-box-project-item clickable-tech"
+                    data-ga="click"
+                    data-ga-event="radar_project_view"
+                    data-ga-project-name={
+                      project.Project ||
+                      project.Project_Short ||
+                      project.Name ||
+                      'Unknown project'
+                    }
+                    data-ga-technology-name={selectedItem?.title || ''}
+                    data-ga-directorate-id={selectedDirectorateId}
+                    data-ga-directorate-name={selectedDirectorate}
                   >
                     {project.Project || project.Project_Short}
                   </li>
