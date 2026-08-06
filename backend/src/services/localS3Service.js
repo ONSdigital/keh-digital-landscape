@@ -25,6 +25,27 @@ const BUCKET_DIR_MAP = {
  */
 class LocalS3Service {
   /**
+   * Resolve a local filesystem path within a bucket directory safely.
+   * Prevents path traversal outside the local data directory.
+   * @param {string} dir - Local directory name for the bucket
+   * @param {string} prefix - Optional object key prefix
+   * @returns {string} Absolute path within DATA_DIR/dir
+   */
+  _resolveSafePath(dir, prefix = '') {
+    const bucketRoot = path.resolve(DATA_DIR, dir);
+    const resolvedPath = path.resolve(bucketRoot, prefix);
+
+    if (
+      resolvedPath !== bucketRoot &&
+      !resolvedPath.startsWith(`${bucketRoot}${path.sep}`)
+    ) {
+      throw new Error('Invalid prefix path');
+    }
+
+    return resolvedPath;
+  }
+
+  /**
    * Resolve a bucket name or key to a local subdirectory name.
    * Falls back to using the raw bucket value if no mapping exists.
    * @param {string} bucket - Bucket key ('main', 'tat', 'copilot', 'policyAudit') or full AWS bucket name
