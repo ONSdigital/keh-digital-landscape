@@ -65,7 +65,7 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - **Optional LoC Usage View**: a toggleable LoC section from the settings menu. When enabled, this reveals LoC summary cards (total lines suggested, total lines accepted, overall line acceptance rate) and a LoC suggestions/acceptances/acceptance-rate chart.
 
-- **Suggestion vs Acceptance Size**: cards for average LoC per suggestion and average LoC per acceptance, plus a trend chart with the same day/week/month controls.
+- **Suggestions vs Acceptances Size**: cards for average LoC per suggestion and average LoC per acceptance, plus a trend chart with the same day/week/month controls.
 
 - **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
 
