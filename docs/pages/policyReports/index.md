@@ -57,7 +57,7 @@ Required inputs:
 - `sourceDataset`
 - `comparisonDataset`
 
-#### Behaviour Notes:
+#### Organisation Behaviour Notes
 
 - The comparison dataset options are constrained to datasets older than the selected source dataset.
 - If no older datasets exist, the source dataset is reused as comparison.
@@ -70,7 +70,7 @@ Required inputs:
 - `sourceDataset`
 - `selectedRepositories` (at least one)
 
-#### Behaviour Notes:
+#### Repository Behaviour Notes
 
 - Repository options are the intersection of:
   - repositories present in the selected dataset
@@ -84,7 +84,7 @@ Required inputs:
 - `sourceDataset`
 - `selectedTeams` (at least one)
 
-#### Behaviour Notes:
+#### Team Behaviour Notes
 
 - Team options are the intersection of:
   - teams present in the selected dataset
