@@ -79,7 +79,10 @@ function GeneralUsageDashboard({ data, isLoading }) {
             <div className="usage-pie-chart-card skeleton" />
           </div>
         ) : (
-          <ModelIdeUsagePieChart modelData={data.modelUsage} ideData={data.ideUsage} />
+          <ModelIdeUsagePieChart
+            modelData={data.modelUsage}
+            ideData={data.ideUsage}
+          />
         )}
       </div>
       <div className="copilot-dashboard-section-bottom">

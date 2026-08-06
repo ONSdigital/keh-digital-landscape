@@ -147,7 +147,6 @@ const SuggestionsAcceptancesBarChart = ({
       month: 'short',
       year: '2-digit',
     });
-
   };
 
   console.log(recentData.length);

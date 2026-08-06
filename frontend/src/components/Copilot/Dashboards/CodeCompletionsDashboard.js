@@ -204,7 +204,9 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <LanguageBreakdownPieChart languageData={data.languagesUsedPieChart} />
+          <LanguageBreakdownPieChart
+            languageData={data.languagesUsedPieChart}
+          />
         )}
       </div>
     </div>

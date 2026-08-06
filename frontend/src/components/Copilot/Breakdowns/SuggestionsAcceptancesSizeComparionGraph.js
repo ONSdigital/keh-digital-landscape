@@ -102,7 +102,7 @@ const SuggestionsAcceptancesSizeComparisonGraph = ({
     }
 
     const groupedData = aggregateByTimeBreakdown(data, timeBreakdown);
-    return groupedData
+    return groupedData;
   }, [data, includeWeekendUsage, timeBreakdown]);
 
   const palette = getChartPalette(2, isDark);
