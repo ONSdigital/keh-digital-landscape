@@ -284,9 +284,7 @@ const buildSloCardHtml = (
     : '';
 
   const wrapSloContent = innerHtml =>
-    showHeading
-      ? `<article class="slo-card">${innerHtml}</article>`
-      : innerHtml;
+    `<article class="slo-card">${innerHtml}</article>`;
 
   if (!sloRecord || typeof sloRecord !== 'object') {
     return wrapSloContent(`

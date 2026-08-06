@@ -510,9 +510,11 @@ ${reportHeaderHtml}
             <h3>Selected ${escapeHtml(entityNounPlural.charAt(0).toUpperCase() + entityNounPlural.slice(1))} Summary</h3>
             <table class="check-table">
               <colgroup>
-                <col style="width: 68%" />
-                ${includeEntityRatings ? '<col style="width: 16%" />' : ''}
-                <col style="width: 32%" />
+                ${
+                  includeEntityRatings
+                    ? '<col style="width: 52%" /><col style="width: 16%" /><col style="width: 32%" />'
+                    : '<col style="width: 68%" /><col style="width: 32%" />'
+                }
               </colgroup>
               <thead>
                 <tr>
