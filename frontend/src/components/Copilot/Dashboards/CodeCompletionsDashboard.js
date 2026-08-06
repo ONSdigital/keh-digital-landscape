@@ -152,7 +152,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
 
       <div className="copilot-dashboard-section">
         <h3>
-          Suggestion vs Acceptance Size
+          Suggestions vs Acceptance Sizes
           <Tooltip
             title={
               <p className="copilot-tooltip-paragraph">
