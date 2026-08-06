@@ -57,7 +57,7 @@ Required inputs:
 - `sourceDataset`
 - `comparisonDataset`
 
-Behavior notes:
+#### Behaviour Notes:
 
 - The comparison dataset options are constrained to datasets older than the selected source dataset.
 - If no older datasets exist, the source dataset is reused as comparison.
@@ -70,7 +70,7 @@ Required inputs:
 - `sourceDataset`
 - `selectedRepositories` (at least one)
 
-Behavior notes:
+#### Behaviour Notes:
 
 - Repository options are the intersection of:
   - repositories present in the selected dataset
@@ -84,7 +84,7 @@ Required inputs:
 - `sourceDataset`
 - `selectedTeams` (at least one)
 
-Behavior notes:
+#### Behaviour Notes:
 
 - Team options are the intersection of:
   - teams present in the selected dataset
@@ -145,7 +145,7 @@ Request body:
 
 ```json
 {
-  "reportType": "Organisation | Repository | Team",
+  "reportType": "organisation" | "repository" | "team",
   "inputs": {
     "organisation": "ONS-Innovation",
     "sourceDataset": "2026-07-30T12-00-00",
@@ -278,7 +278,7 @@ Primary tests for this functionality are located in:
 - `backend/src/utilities/policyReportGenerator/functions/generateReportHtmlByType.test.js`
 - `frontend/src/pages/PolicyReportsPage.test.js`
 
-These tests cover endpoint validation, dataset/entity loading, cache behavior, report generation wiring, and key frontend interactions.
+These tests cover endpoint validation, dataset/entity loading, cache behaviour, report generation wiring, and key frontend interactions.
 
 The unit tests are kept alongside the implementation code to ensure that changes are tested and provide visibility of the code coverage. The tests are run as part of the CI/CD pipeline and are required to pass before merging changes.
 
