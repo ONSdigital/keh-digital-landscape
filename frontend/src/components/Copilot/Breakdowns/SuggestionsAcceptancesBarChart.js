@@ -149,8 +149,6 @@ const SuggestionsAcceptancesBarChart = ({
     });
   };
 
-  console.log(recentData.length);
-
   return (
     <div className="copilot-graph-container">
       <GraphSelect
