@@ -90,6 +90,7 @@ Available rate limiters (defined in `backend/src/config/rateLimiter.js`):
 | `userApiLimiter` | Authenticated user endpoints |
 | `adminApiLimiter` | Admin-only endpoints |
 | `externalApiLimiter` | Routes that call external APIs (e.g. GitHub) |
+| `policyReportsApiLimiter` | High-throughput Policy Reports endpoints |
 
 ```js
 // backend/src/index.js
@@ -98,7 +99,7 @@ const policyReportsRoutes = require('./routes/policyReports');
 
 // ...
 
-app.use('/policy-reports/api', userApiLimiter, policyReportsRoutes);
+app.use('/policy-reports/api', policyReportsApiLimiter, policyReportsRoutes);
 ```
 
 The full URL for the example route above becomes `GET /policy-reports/api/organisations`.

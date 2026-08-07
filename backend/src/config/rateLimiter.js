@@ -22,6 +22,9 @@ const logger = require('./logger');
  * 5. externalApiLimiter: For endpoints that call external APIs (60 requests / 1 minute)
  *    - Applied to /copilot/api/* routes
  *
+ * 6. policyReportsApiLimiter: For policy report generation/configuration flows (240 requests / 1 minute)
+ *    - Applied to /policy-reports/api/* routes
+ *
  * All rate limiters include:
  * - Detailed logging of rate limit violations
  * - Standard HTTP headers for rate limit information
@@ -143,10 +146,36 @@ const externalApiLimiter = rateLimit({
   },
 });
 
+// Higher-throughput limiter for policy reports page-mode loading flows
+const policyReportsApiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 240, // Supports sequential page-mode fetches for larger organisations
+  message: {
+    error:
+      'Too many policy report requests from this IP, please try again later.',
+    retryAfter: '1 minute',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    logger.warn('Policy reports API rate limit exceeded', {
+      ip: req.ip,
+      path: req.path,
+      userAgent: req.get('User-Agent'),
+    });
+    res.status(429).json({
+      error:
+        'Too many policy report requests from this IP, please try again later.',
+      retryAfter: '1 minute',
+    });
+  },
+});
+
 module.exports = {
   generalApiLimiter,
   adminApiLimiter,
   userApiLimiter,
   healthCheckLimiter,
   externalApiLimiter,
+  policyReportsApiLimiter,
 };

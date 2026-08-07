@@ -66,19 +66,19 @@ const mockAuthenticatedApis = async (page, username = 'testuser') => {
     });
   });
 
-  await page.route('**/policy-reports/api/dataset-repositories?**', route => {
+  await page.route('**/policy-reports/api/repositories?**', route => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(MOCK_REPOSITORIES),
+      body: JSON.stringify({ repositories: MOCK_REPOSITORIES }),
     });
   });
 
-  await page.route('**/policy-reports/api/dataset-teams?**', route => {
+  await page.route('**/policy-reports/api/teams?**', route => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(MOCK_TEAMS),
+      body: JSON.stringify({ teams: MOCK_TEAMS }),
     });
   });
 };
@@ -175,11 +175,12 @@ test('Stage 2 report options appear after completing Stage 1', async ({
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
   await expect(
-    page.getByRole('heading', { name: 'Organisation Report' })
+    page.getByRole('tab', { name: 'Organisation Report' })
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'Restricted Reports' })
+    page.getByRole('tab', { name: 'Repository Report' })
   ).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Team Report' })).toBeVisible();
 });
 
 test('"Clear configuration" button appears after selecting a dataset and resets Stage 1', async ({
@@ -219,6 +220,8 @@ test('"Log in with GitHub" button is shown in Stage 2 for unauthenticated users'
   await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
+  await page.getByRole('tab', { name: 'Repository Report' }).click();
+
   await expect(
     page.getByRole('button', { name: 'Log in with GitHub' })
   ).toBeVisible();
@@ -246,7 +249,7 @@ test('Organisation Report generate button is disabled without a comparison datas
   await expect(generateBtn).toBeEnabled();
 });
 
-test('Signed-in username appears in Restricted Reports section when authenticated', async ({
+test('Signed-in username appears in Repository Report section when authenticated', async ({
   page,
 }) => {
   await mockBaseApis(page);
@@ -258,11 +261,17 @@ test('Signed-in username appears in Restricted Reports section when authenticate
   await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
-  await expect(page.getByText('@octocat')).toBeVisible({ timeout: 5000 });
-  await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
+  await page.getByRole('tab', { name: 'Repository Report' }).click();
+
+  await expect(
+    page.locator('#panel-repository').getByText('@octocat')
+  ).toBeVisible({ timeout: 5000 });
+  await expect(
+    page.locator('#panel-repository').getByRole('button', { name: 'Log out' })
+  ).toBeVisible();
 });
 
-test('Repository and Team report sections are shown when authenticated', async ({
+test('Repository and Team report tabs are shown when authenticated', async ({
   page,
 }) => {
   await mockBaseApis(page);
@@ -275,15 +284,105 @@ test('Repository and Team report sections are shown when authenticated', async (
   await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
 
   await expect(
-    page.locator('summary.policy-reports-collapsible-summary', {
-      hasText: 'Repository report',
-    })
+    page.getByRole('tab', { name: 'Repository Report' })
   ).toBeVisible({ timeout: 5000 });
+  await expect(page.getByRole('tab', { name: 'Team Report' })).toBeVisible({
+    timeout: 5000,
+  });
+});
+
+test('Team Report tab shows the search input and Generate button when authenticated', async ({
+  page,
+}) => {
+  await mockBaseApis(page);
+  await mockAuthenticatedApis(page);
+  await mockDatasetsApi(page);
+  await page.goto(PAGE_URL);
+
+  await page.locator('#organisation').selectOption('ONS-Innovation');
+  await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
+  await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+
+  await page.getByRole('tab', { name: 'Team Report' }).click();
+
+  await expect(page.getByLabel('Search teams')).toBeVisible({ timeout: 5000 });
   await expect(
-    page.locator('summary.policy-reports-collapsible-summary', {
-      hasText: 'Team report',
-    })
-  ).toBeVisible({
+    page.getByRole('button', { name: 'Generate Team Report' })
+  ).toBeVisible({ timeout: 5000 });
+});
+
+test('Signed-in username appears in Team Report section when authenticated', async ({
+  page,
+}) => {
+  await mockBaseApis(page);
+  await mockAuthenticatedApis(page, 'octocat');
+  await mockDatasetsApi(page);
+  await page.goto(PAGE_URL);
+
+  await page.locator('#organisation').selectOption('ONS-Innovation');
+  await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
+  await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+
+  await page.getByRole('tab', { name: 'Team Report' }).click();
+
+  await expect(page.locator('#panel-team').getByText('@octocat')).toBeVisible({
+    timeout: 5000,
+  });
+  await expect(
+    page.locator('#panel-team').getByRole('button', { name: 'Log out' })
+  ).toBeVisible();
+});
+
+test('Repository Report pagination controls are always visible', async ({
+  page,
+}) => {
+  await mockBaseApis(page);
+  await mockAuthenticatedApis(page);
+  await mockDatasetsApi(page);
+  await page.goto(PAGE_URL);
+
+  await page.locator('#organisation').selectOption('ONS-Innovation');
+  await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
+  await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+
+  await page.getByRole('tab', { name: 'Repository Report' }).click();
+
+  // Wait for loading to finish
+  const panel = page.locator('#panel-repository');
+  await expect(panel.getByLabel('Search repositories')).toBeVisible({
+    timeout: 10000,
+  });
+
+  // Both Prev and Next should always be present
+  await expect(panel.getByRole('button', { name: /prev/i })).toBeVisible({
+    timeout: 5000,
+  });
+  await expect(panel.getByRole('button', { name: /next/i })).toBeVisible({
+    timeout: 5000,
+  });
+});
+
+test('Results per page dropdown is visible in Repository Report panel', async ({
+  page,
+}) => {
+  await mockBaseApis(page);
+  await mockAuthenticatedApis(page);
+  await mockDatasetsApi(page);
+  await page.goto(PAGE_URL);
+
+  await page.locator('#organisation').selectOption('ONS-Innovation');
+  await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
+  await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+
+  await page.getByRole('tab', { name: 'Repository Report' }).click();
+
+  // Wait for loading to finish
+  const panel = page.locator('#panel-repository');
+  await expect(panel.getByLabel('Search repositories')).toBeVisible({
+    timeout: 10000,
+  });
+
+  await expect(panel.getByLabel('Results per page')).toBeVisible({
     timeout: 5000,
   });
 });

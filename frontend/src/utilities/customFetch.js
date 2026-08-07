@@ -1,20 +1,40 @@
 import toast from 'react-hot-toast';
 import ErrorToast from '../components/Toast/ErrorToast';
 
+const extractErrorMessage = async response => {
+  const contentType = response.headers.get('Content-Type') || '';
+
+  try {
+    if (contentType.includes('application/json')) {
+      const data = await response.json();
+      return data?.error || data?.message || '';
+    }
+
+    const text = await response.text();
+
+    if (!text) {
+      return '';
+    }
+
+    try {
+      const data = JSON.parse(text);
+      return data?.error || data?.message || text;
+    } catch (_) {
+      return text;
+    }
+  } catch (_) {
+    return '';
+  }
+};
+
 const customFetch = async (url, options) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
   const response = await fetch(backendUrl + url, options);
 
   if (!response.ok) {
-    let errorData = { error: `HTTP error! status: ${response.status}` };
-    try {
-      errorData = await response;
-    } catch (_) {
-      // ignore parse errors, default error message will be used
-    }
-
+    const extractedErrorMessage = await extractErrorMessage(response);
     const errorMessage =
-      errorData.error || `Request failed with status ${response.status}`;
+      extractedErrorMessage || `Request failed with status ${response.status}`;
 
     toast.custom(t => <ErrorToast t={t} error={errorMessage} />, {
       duration: 10000,

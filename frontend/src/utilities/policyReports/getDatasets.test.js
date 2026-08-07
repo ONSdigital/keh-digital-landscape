@@ -6,12 +6,11 @@ vi.mock('../customFetch', () => ({
 }));
 
 vi.mock('react-hot-toast', () => ({
-  toast: { error: vi.fn() },
-  default: { error: vi.fn() },
+  toast: {},
+  default: {},
 }));
 
 import customFetch from '../customFetch';
-import { toast } from 'react-hot-toast';
 
 describe('fetchDatasetsByOrganisation', () => {
   beforeEach(() => {
@@ -53,14 +52,11 @@ describe('fetchDatasetsByOrganisation', () => {
     expect(result).toEqual([]);
   });
 
-  it('returns an empty array and shows a toast error when the fetch throws', async () => {
+  it('returns an empty array when the fetch throws', async () => {
     customFetch.mockRejectedValue(new Error('Network error'));
 
     const result = await fetchDatasetsByOrganisation('ONS-Innovation');
 
     expect(result).toEqual([]);
-    expect(toast.error).toHaveBeenCalledWith(
-      'Error loading datasets for the selected organisation.'
-    );
   });
 });

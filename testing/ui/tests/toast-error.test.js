@@ -43,9 +43,7 @@ test.describe('Error toast appears on failed requests', () => {
         toast.filter({ hasText: 'An error occurred' }).first()
       ).toBeVisible();
       await expect(
-        toast
-          .filter({ hasText: `Request failed with status ${status}` })
-          .first()
+        toast.filter({ hasText: `Forced ${status} error for test` }).first()
       ).toBeVisible();
     });
   }

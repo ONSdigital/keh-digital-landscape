@@ -37,7 +37,6 @@ vi.mock(
       selectedItems,
       onToggleSelection,
       onClearSelection,
-      onLoadMore,
       generateButtonLabel,
       onGenerateReport,
       isGenerateDisabled,
@@ -60,9 +59,6 @@ vi.mock(
         </ul>
         <button type="button" onClick={onClearSelection}>
           Clear selection
-        </button>
-        <button type="button" onClick={onLoadMore}>
-          Load more
         </button>
         <button
           type="button"
@@ -134,6 +130,12 @@ const DATASETS = [
   { name: '2024-01-01T10:00:00Z', displayName: '2024-01-01T10:00:00Z' },
 ];
 
+const formatDatasetLabel = displayName =>
+  new Date(displayName).toLocaleString('en-GB', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
 const setupDefaultMocks = ({
   orgOptions = ['ONS-Innovation'],
   datasets = DATASETS,
@@ -146,8 +148,16 @@ const setupDefaultMocks = ({
     organisationOptions: orgOptions,
   });
   fetchDatasetsByOrganisation.mockResolvedValue(datasets);
-  fetchDatasetRepositoriesForUser.mockResolvedValue(repositories);
-  fetchDatasetTeamsForUser.mockResolvedValue(teams);
+  fetchDatasetRepositoriesForUser.mockResolvedValue({
+    repositories,
+    cacheUsed: false,
+    cachedAt: Date.now(),
+  });
+  fetchDatasetTeamsForUser.mockResolvedValue({
+    teams,
+    cacheUsed: false,
+    cachedAt: Date.now(),
+  });
   handleAuthCallback.mockResolvedValue(undefined);
   checkAuthStatus.mockResolvedValue(authenticated);
   fetchGitHubUserProfile.mockResolvedValue(
@@ -224,6 +234,10 @@ describe('PolicyReportsPage', () => {
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
+
+      await userEvent.click(
+        screen.getByRole('tab', { name: /repository report/i })
+      );
 
       expect(
         screen.getByRole('button', { name: /log in with github/i })
@@ -361,7 +375,17 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateBtn);
 
       expect(generatePolicyReport).toHaveBeenCalledWith(
-        expect.objectContaining({ reportType: 'Organisation' })
+        expect.objectContaining({
+          reportType: 'Organisation',
+          inputs: expect.objectContaining({
+            sourceDataset: DATASETS[0].name,
+            sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
+            comparisonDataset: DATASETS[1].name,
+            comparisonDatasetDisplay: formatDatasetLabel(
+              DATASETS[1].displayName
+            ),
+          }),
+        })
       );
     });
 
@@ -377,7 +401,7 @@ describe('PolicyReportsPage', () => {
 
       await waitFor(() =>
         expect(
-          screen.getByText(/organisation.*placeholder report downloaded/i)
+          screen.getByText(/organisation.*report downloaded/i)
         ).toBeInTheDocument()
       );
     });
@@ -421,6 +445,10 @@ describe('PolicyReportsPage', () => {
 
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
+
+      await userEvent.click(
+        screen.getByRole('tab', { name: /repository report/i })
+      );
     };
 
     it('calls loginWithGitHub when "Log in with GitHub" button is clicked', async () => {
@@ -445,12 +473,13 @@ describe('PolicyReportsPage', () => {
       await renderPage();
       await selectOrgAndDataset();
 
+      // Both Repository and Team tabs render the signed-in user, so use getAllBy
       await waitFor(() =>
-        expect(screen.getByText(/@octocat/i)).toBeInTheDocument()
+        expect(screen.getAllByText(/@octocat/i).length).toBeGreaterThan(0)
       );
       expect(
-        screen.getByRole('button', { name: /log out/i })
-      ).toBeInTheDocument();
+        screen.getAllByRole('button', { name: /log out/i }).length
+      ).toBeGreaterThan(0);
     });
 
     it('calls logoutUser when "Log out" is clicked and hides the username', async () => {
@@ -491,14 +520,147 @@ describe('PolicyReportsPage', () => {
       await waitFor(() =>
         expect(fetchDatasetRepositoriesForUser).toHaveBeenCalledWith(
           'ONS-Innovation',
-          DATASETS[0].name
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: false,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
         )
       );
       await waitFor(() =>
         expect(fetchDatasetTeamsForUser).toHaveBeenCalledWith(
           'ONS-Innovation',
-          DATASETS[0].name
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: false,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
         )
+      );
+    });
+
+    it('shows cache-source hints and refreshes cache on demand', async () => {
+      setupDefaultMocks({
+        authenticated: true,
+        username: 'octocat',
+        repositories: ['repo-a'],
+        teams: ['team-a'],
+      });
+      fetchDatasetRepositoriesForUser
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          cacheUsed: true,
+          cachedAt: Date.now() - 5 * 60 * 1000,
+        })
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          cacheUsed: false,
+          cachedAt: Date.now(),
+        });
+      fetchDatasetTeamsForUser
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          cacheUsed: true,
+          cachedAt: Date.now() - 5 * 60 * 1000,
+        })
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          cacheUsed: false,
+          cachedAt: Date.now(),
+        });
+
+      await renderPage();
+      await selectOrgAndDataset();
+
+      await waitFor(() =>
+        expect(
+          screen.getByText(/github repositories collected from cache/i)
+        ).toBeInTheDocument()
+      );
+      expect(
+        screen.getByText(/github teams collected from cache/i)
+      ).toBeInTheDocument();
+
+      await userEvent.click(
+        screen.getByRole('button', { name: /refresh github cache/i })
+      );
+
+      await waitFor(() =>
+        expect(fetchDatasetRepositoriesForUser).toHaveBeenNthCalledWith(
+          2,
+          'ONS-Innovation',
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: true,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
+        )
+      );
+      await waitFor(() =>
+        expect(fetchDatasetTeamsForUser).toHaveBeenNthCalledWith(
+          2,
+          'ONS-Innovation',
+          DATASETS[0].name,
+          {
+            includeCacheMetadata: true,
+            refreshCache: true,
+            githubPage: 1,
+            githubPerPage: 100,
+          }
+        )
+      );
+    });
+
+    it('shows loading progress while repositories and teams are being fetched', async () => {
+      setupDefaultMocks({
+        authenticated: true,
+        username: 'octocat',
+      });
+
+      let resolveRepositories;
+      let resolveTeams;
+      const repositoriesPromise = new Promise(resolve => {
+        resolveRepositories = resolve;
+      });
+      const teamsPromise = new Promise(resolve => {
+        resolveTeams = resolve;
+      });
+
+      fetchDatasetRepositoriesForUser.mockReturnValueOnce(repositoriesPromise);
+      fetchDatasetTeamsForUser.mockReturnValueOnce(teamsPromise);
+
+      await renderPage();
+      await selectOrgAndDataset();
+
+      expect(
+        screen.getAllByText(/loading your accessible repositories and teams/i)
+          .length
+      ).toBeGreaterThan(0);
+      expect(
+        screen.getAllByText(/collecting repositories/i).length
+      ).toBeGreaterThan(0);
+
+      resolveRepositories({
+        repositories: ['repo-a'],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+      resolveTeams({
+        teams: ['team-a'],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryByText(/loading your accessible repositories and teams/i)
+        ).not.toBeInTheDocument()
       );
     });
   });
@@ -506,7 +668,9 @@ describe('PolicyReportsPage', () => {
   // ── Stage 2 – Repository and Team reports ──────────────────────────────────
 
   describe('Stage 2 – Repository and Team reports', () => {
-    const setupAuthenticatedWithData = async () => {
+    const setupAuthenticatedWithData = async ({
+      activeTab = 'repository',
+    } = {}) => {
       setupDefaultMocks({
         authenticated: true,
         username: 'octocat',
@@ -524,9 +688,33 @@ describe('PolicyReportsPage', () => {
       const datasetSelect = screen.getByLabelText(/source dataset/i);
       await userEvent.selectOptions(datasetSelect, DATASETS[0].name);
 
-      await waitFor(() =>
-        expect(fetchDatasetRepositoriesForUser).toHaveBeenCalled()
+      await userEvent.click(
+        screen.getByRole('tab', {
+          name: activeTab === 'team' ? /team report/i : /repository report/i,
+        })
       );
+
+      await waitFor(() => {
+        expect(fetchDatasetRepositoriesForUser).toHaveBeenCalled();
+        expect(fetchDatasetTeamsForUser).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText(/loading your accessible repositories and teams/i)
+        ).not.toBeInTheDocument();
+      });
+
+      await waitFor(() => {
+        if (activeTab === 'team') {
+          expect(screen.getByLabelText(/search teams/i)).toBeInTheDocument();
+          return;
+        }
+
+        expect(
+          screen.getByLabelText(/search repositories/i)
+        ).toBeInTheDocument();
+      });
     };
 
     it('renders the repository search input', async () => {
@@ -535,7 +723,7 @@ describe('PolicyReportsPage', () => {
     });
 
     it('renders the team search input', async () => {
-      await setupAuthenticatedWithData();
+      await setupAuthenticatedWithData({ activeTab: 'team' });
       expect(screen.getByLabelText(/search teams/i)).toBeInTheDocument();
     });
 
@@ -552,12 +740,18 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateRepoBtn);
 
       expect(generatePolicyReport).toHaveBeenCalledWith(
-        expect.objectContaining({ reportType: 'Repository' })
+        expect.objectContaining({
+          reportType: 'Repository',
+          inputs: expect.objectContaining({
+            sourceDataset: DATASETS[0].name,
+            sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
+          }),
+        })
       );
     });
 
     it('calls generatePolicyReport with Team type', async () => {
-      await setupAuthenticatedWithData();
+      await setupAuthenticatedWithData({ activeTab: 'team' });
 
       const teamToggleBtn = screen.getByRole('button', { name: 'team-alpha' });
       await userEvent.click(teamToggleBtn);
@@ -568,7 +762,84 @@ describe('PolicyReportsPage', () => {
       await userEvent.click(generateTeamBtn);
 
       expect(generatePolicyReport).toHaveBeenCalledWith(
-        expect.objectContaining({ reportType: 'Team' })
+        expect.objectContaining({
+          reportType: 'Team',
+          inputs: expect.objectContaining({
+            sourceDataset: DATASETS[0].name,
+            sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
+          }),
+        })
+      );
+    });
+
+    it('switches from Repository Report tab to Team Report tab', async () => {
+      await setupAuthenticatedWithData();
+
+      // Repository panel is active; Team panel is hidden
+      expect(screen.getByLabelText(/search repositories/i)).toBeInTheDocument();
+
+      await userEvent.click(screen.getByRole('tab', { name: /team report/i }));
+
+      await waitFor(() =>
+        expect(screen.getByLabelText(/search teams/i)).toBeInTheDocument()
+      );
+    });
+
+    it('shows loading progress in the Team Report tab', async () => {
+      setupDefaultMocks({
+        authenticated: true,
+        username: 'octocat',
+      });
+
+      let resolveRepositories;
+      let resolveTeams;
+      fetchDatasetRepositoriesForUser.mockReturnValueOnce(
+        new Promise(r => {
+          resolveRepositories = r;
+        })
+      );
+      fetchDatasetTeamsForUser.mockReturnValueOnce(
+        new Promise(r => {
+          resolveTeams = r;
+        })
+      );
+
+      await renderPage();
+
+      const orgSelect = screen.getByLabelText(/organisation/i);
+      await userEvent.selectOptions(orgSelect, 'ONS-Innovation');
+      await waitFor(() =>
+        expect(fetchDatasetsByOrganisation).toHaveBeenCalled()
+      );
+      await userEvent.selectOptions(
+        screen.getByLabelText(/source dataset/i),
+        DATASETS[0].name
+      );
+
+      await userEvent.click(screen.getByRole('tab', { name: /team report/i }));
+
+      expect(
+        screen.getAllByText(/loading your accessible repositories and teams/i)
+          .length
+      ).toBeGreaterThan(0);
+
+      resolveRepositories({
+        repositories: [],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+      resolveTeams({
+        teams: ['team-a'],
+        cacheUsed: false,
+        cachedAt: Date.now(),
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.queryAllByText(
+            /loading your accessible repositories and teams/i
+          ).length
+        ).toBe(0)
       );
     });
   });

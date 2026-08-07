@@ -13,6 +13,7 @@ const {
   adminApiLimiter,
   userApiLimiter,
   externalApiLimiter,
+  policyReportsApiLimiter,
 } = require('./config/rateLimiter');
 
 // Import route modules
@@ -91,7 +92,7 @@ app.use('/user/api', userApiLimiter, userRoutes);
 app.use('/addressbook/api', userApiLimiter, addressbookRoutes);
 app.use('/alerts/api', externalApiLimiter, alertsRoutes);
 app.use('/api/github/auth', userApiLimiter, githubAuthRoutes);
-app.use('/policy-reports/api', userApiLimiter, policyReportsRoutes);
+app.use('/policy-reports/api', policyReportsApiLimiter, policyReportsRoutes);
 
 // Error handling
 process.on('uncaughtException', error => {

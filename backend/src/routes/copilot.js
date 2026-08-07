@@ -24,7 +24,9 @@ router.get('/auth/status', (req, res) => {
     });
   } catch (error) {
     logger.error('Error fetching auth status:', { error: error.message });
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: 'Unable to check authentication status. Please try again later.',
+    });
   }
 });
 
@@ -43,7 +45,9 @@ router.get('/org/historic', async (req, res) => {
     res.json(data);
   } catch (error) {
     logger.error('Error fetching JSON:', { error: error.message });
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: 'Unable to load usage data. Please try again later.' });
   }
 });
 
@@ -77,7 +81,9 @@ router.get('/org/legacy', async (req, res) => {
     res.json(data);
   } catch (error) {
     logger.error('Error fetching legacy JSON:', { error: error.message });
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: 'Unable to load legacy usage data. Please try again later.',
+    });
   }
 });
 
@@ -120,7 +126,9 @@ router.get('/teams/historic', async (req, res) => {
     logger.error('Error fetching teams historic JSON:', {
       error: error.message,
     });
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      error: 'Unable to load team usage data. Please try again later.',
+    });
   }
 });
 
@@ -145,7 +153,9 @@ router.get('/admin/status', async (req, res) => {
     logger.error('Error checking copilot admin status:', {
       error: error.message,
     });
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: 'Unable to check admin status. Please try again later.' });
   }
 });
 
@@ -173,7 +183,9 @@ router.get('/teams', async (req, res) => {
     });
   } catch (error) {
     logger.error('GitHub API error:', { error: error.message });
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: 'Unable to load teams. Please try again later.' });
   }
 });
 

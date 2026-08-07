@@ -1,3 +1,4 @@
+import customFetch from '../utilities/customFetch';
 import React, { useState } from 'react';
 import PageBanner from '../components/PageBanner/PageBanner';
 import UserCard from '../components/AddressBook/UserCard';
@@ -24,17 +25,12 @@ const AddressBookPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(
+      const res = await customFetch(
         `/addressbook/api/request?q=${encodeURIComponent(q)}`
       );
-      if (!res.ok) {
-        throw new Error(`Request failed: ${res.status}`);
-      }
       const contentType = res.headers.get('content-type') || '';
       if (!contentType.includes('application/json')) {
-        throw new Error(
-          'Unexpected non-JSON response from server: \n' + q + '\n' + res
-        );
+        throw new Error('Unexpected response from server');
       }
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);

@@ -25,6 +25,7 @@ The Landscape provides a range of utilities including:
 - **Statistics:** A collection of statistics about the language breakdown within the ONSDigital GitHub Organisation, providing insights into the most commonly used languages and their usage trends.
 - **GitHub Copilot Usage Metrics:** Provides insights into the usage of GitHub Copilot across ONS, including organisation-wide statistics.
 - **GitHub Address Book:** A mechanism to find the ONS staff members based on their GitHub username and vice versa, to facilitate communication and collaboration within ONS.
+- **Policy Reports:** Generate organisation, repository, and team compliance reports from policy audit datasets, including GitHub-access-aware filtering and exportable report output.
 
 For more information about the project, please refer to our documentation site: [Digital Landscape Documentation](https://onsdigital.github.io/keh-digital-landscape/).
 
@@ -127,13 +128,28 @@ To run the project locally, do the following:
 
    **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
 
-4. Run the project:
+4. Setup Environment Variables for the frontend and backend. Copy the `.env.example` files to `.env` in both the frontend and backend directories and fill in the values.
+   Alternatively, you can export the environment variables in your terminal session.
+
+   Functionality that requires these environment variables will not work without them, including:
+
+   - Teams alerts (Azure Webhook)
+   - GitHub OAuth (For the GitHub Policy Reports page)
+       - This requires `GITHUB_APP_CLIENT_ID` and `GITHUB_APP_CLIENT_SECRET` to be set in the backend.
+
+   All secrets are labelled within the `.env.example` files and can be retrieved from AWS Secrets Manager. 
+
+   **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
+
+5. Run the project:
 
    ```bash
    make dev
    ```
 
    This will run both the frontend and backend locally on ports 3000 and 5001 respectively.
+
+   > When running the project locally, ensure that you have setup local development data in `backend/data` as described in the [Local Development Data](#local-development-data) section below.
 
    Sometimes it can be useful to run the frontend and backend separately (i.e. to separate the logs). This can be done with the following commands (each in their own terminal):
 
@@ -145,7 +161,7 @@ To run the project locally, do the following:
 
    **Note:** If running in separate terminals, ensure the environment variables are exported in both terminals.
 
-5. To exit the profile:
+6. To exit the profile:
 
    ```bash
    unset AWS_PROFILE
@@ -153,13 +169,17 @@ To run the project locally, do the following:
 
 ### Local Development Data
 
-When the backend runs in local development (`NODE_ENV=development`), it reads seed data from `backend/data` instead of the deployed AWS S3 buckets.
+When the backend runs in local development (`NODE_ENV=development`), it reads seed data from `backend/data` instead of the deployed AWS S3 buckets by default.
 
 The local data is grouped into the following directories:
 
 - `backend/data/main`: Digital Landscape data such as `directorates.json`, `bannerMessages.json`, `techRadarEntries.json`, `repositoryStatistics.json`, and the `AddressBook` lookup files.
 - `backend/data/tat`: Tech Audit Tool data including `new_project_data.json` and `array_data.json`.
 - `backend/data/copilot`: Copilot usage data including `admin_teams.json`, `organisation_history.json`, and archived historic usage snapshots.
+
+To connect to real S3 while running locally (e.g. to test against live data without deploying), set `USE_LOCAL_S3=false` in `backend/.env`. AWS credentials must be configured. See `backend/.env.example` for details.
+
+More information is available in the [Data Documentation](./docs/backend/data.md) file.
 
 ### Local Authentication
 

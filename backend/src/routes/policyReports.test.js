@@ -80,7 +80,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Internal Server Error',
+        error: 'Unable to load report configuration. Please try again later.',
       });
     });
   });
@@ -95,7 +95,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation query parameter is required',
+        error: 'Choose an organisation before generating a report.',
       });
     });
 
@@ -106,7 +106,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation name format',
+        error: 'Enter a valid organisation name.',
       });
     });
 
@@ -143,7 +143,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Internal Server Error',
+        error: 'Unable to load datasets. Please try again later.',
       });
     });
   });
@@ -162,7 +162,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Report type is required',
+        error: 'Choose a report type before generating a report.',
       });
     });
 
@@ -175,18 +175,125 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid report type',
+        error: 'Choose a valid report type: organisation, repository or team.',
       });
     });
 
+    it('returns 400 when reportType is null', async () => {
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: null }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Choose a report type before generating a report.',
+      });
+    });
+
+    it('returns 400 when reportType is a non-string value', async () => {
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reportType: 123 }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Choose a valid report type: organisation, repository or team.',
+      });
+    });
+
+    it('returns 400 when organisation contains invalid characters', async () => {
+      const getDatasetAuditDataSpy = vi.spyOn(
+        policyReportsService,
+        'getDatasetAuditData'
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: {
+            organisation: 'my-org/../../other',
+            sourceDataset: '20260723T121307Z',
+          },
+        }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Enter a valid organisation name.',
+      });
+      expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
+    });
+
     it('returns HTML with content-disposition for a valid organisation report', async () => {
-      vi.spyOn(
-        policyReportGenerator,
-        'generatePlaceholderReport'
-      ).mockReturnValue({
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue({
+        summary: { total_repositories: 2 },
+      });
+
+      vi.spyOn(policyReportGenerator, 'generateReport').mockReturnValue({
         html: '<html><body>Report</body></html>',
         fileName: 'organisation-report.html',
       });
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: {
+            organisation: 'my-org',
+            sourceDataset: '20260723T121307Z',
+            comparisonDataset: '20260716T121307Z',
+          },
+        }),
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.headers.get('content-type')).toContain('text/html');
+      expect(res.headers.get('content-disposition')).toContain('attachment');
+      expect(policyReportsService.getDatasetAuditData).toHaveBeenCalledTimes(2);
+      expect(policyReportGenerator.generateReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          inputs: expect.objectContaining({
+            sourceDatasetData: { summary: { total_repositories: 2 } },
+            comparisonDatasetData: { summary: { total_repositories: 2 } },
+          }),
+        })
+      );
+    });
+
+    it('returns 400 when organisation is missing', async () => {
+      const getDatasetAuditDataSpy = vi.spyOn(
+        policyReportsService,
+        'getDatasetAuditData'
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: { sourceDataset: '20260723T121307Z' },
+        }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Choose an organisation before generating a report.',
+      });
+      expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
+    });
+
+    it('returns 400 when sourceDataset is missing', async () => {
+      const getDatasetAuditDataSpy = vi.spyOn(
+        policyReportsService,
+        'getDatasetAuditData'
+      );
 
       const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
         method: 'POST',
@@ -197,16 +304,18 @@ describe('Policy Reports routes', () => {
         }),
       });
 
-      expect(res.status).toBe(200);
-      expect(res.headers.get('content-type')).toContain('text/html');
-      expect(res.headers.get('content-disposition')).toContain('attachment');
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Choose a source dataset before generating a report.',
+      });
+      expect(getDatasetAuditDataSpy).not.toHaveBeenCalled();
     });
 
     it('handles reportType case-insensitively', async () => {
-      vi.spyOn(
-        policyReportGenerator,
-        'generatePlaceholderReport'
-      ).mockReturnValue({
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue(
+        {}
+      );
+      vi.spyOn(policyReportGenerator, 'generateReport').mockReturnValue({
         html: '<html></html>',
         fileName: 'team-report.html',
       });
@@ -214,29 +323,69 @@ describe('Policy Reports routes', () => {
       const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reportType: 'TEAM' }),
+        body: JSON.stringify({
+          reportType: 'TEAM',
+          inputs: { organisation: 'my-org', sourceDataset: '20260723T121307Z' },
+        }),
       });
 
       expect(res.status).toBe(200);
     });
 
     it('returns 500 when the generator throws', async () => {
-      vi.spyOn(
-        policyReportGenerator,
-        'generatePlaceholderReport'
-      ).mockImplementation(() => {
-        throw new Error('Generator failure');
-      });
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue(
+        {}
+      );
+      vi.spyOn(policyReportGenerator, 'generateReport').mockImplementation(
+        () => {
+          throw new Error('Generator failure');
+        }
+      );
 
       const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reportType: 'repository' }),
+        body: JSON.stringify({
+          reportType: 'repository',
+          inputs: { organisation: 'my-org', sourceDataset: '20260723T121307Z' },
+        }),
       });
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Internal Server Error',
+        error: 'Unable to generate the report. Please try again later.',
+      });
+    });
+
+    it('returns a user-facing message when source dataset report data is incomplete', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetAuditData').mockResolvedValue(
+        {}
+      );
+      vi.spyOn(policyReportGenerator, 'generateReport').mockImplementation(
+        () => {
+          throw new Error(
+            'Source dataset summary is missing required object field: team_checks'
+          );
+        }
+      );
+
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: {
+            organisation: 'my-org',
+            sourceDataset: '20260723T121307Z',
+            comparisonDataset: '20260716T121307Z',
+          },
+        }),
+      });
+
+      expect(res.status).toBe(500);
+      await expect(res.json()).resolves.toEqual({
+        error:
+          'The selected source dataset is missing some of the data needed to build this report',
       });
     });
   });
@@ -253,7 +402,8 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(401);
       await expect(res.json()).resolves.toEqual({
-        error: 'Not authenticated with GitHub',
+        error:
+          'Sign in with GitHub to view the repositories or teams in this dataset.',
       });
     });
 
@@ -265,7 +415,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -277,7 +427,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -289,7 +439,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation name format',
+        error: 'Enter a valid organisation name.',
       });
     });
 
@@ -301,7 +451,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid dataset name format',
+        error: 'Enter a valid dataset name.',
       });
     });
 
@@ -312,18 +462,28 @@ describe('Policy Reports routes', () => {
       });
       vi.spyOn(
         githubQueries,
-        'fetchUserRepositoriesInOrganisation'
-      ).mockResolvedValue(['repo-a', 'repo-c', 'repo-d']);
+        'fetchUserRepositoriesInOrganisationPage'
+      ).mockResolvedValue({
+        repositories: ['repo-a', 'repo-c', 'repo-d'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({
-        repositories: ['repo-a', 'repo-c'],
-      });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          repositories: ['repo-a', 'repo-c'],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+          githubCurrentPage: 1,
+          githubTotalPages: 1,
+        })
+      );
     });
 
     it('returns 200 with an empty array when the user has access to none of the dataset repos', async () => {
@@ -333,16 +493,123 @@ describe('Policy Reports routes', () => {
       });
       vi.spyOn(
         githubQueries,
-        'fetchUserRepositoriesInOrganisation'
-      ).mockResolvedValue(['repo-y']);
+        'fetchUserRepositoriesInOrganisationPage'
+      ).mockResolvedValue({
+        repositories: ['repo-y'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({ repositories: [] });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          repositories: [],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+        })
+      );
+    });
+
+    it('caches individual repository pages and returns a cache hit on re-request', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: ['repo-a', 'repo-b'],
+        teams: [],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserRepositoriesInOrganisationPage')
+        .mockResolvedValue({
+          repositories: ['repo-a', 'repo-b'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      const firstRes = await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-repos' } }
+      );
+      const secondRes = await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-repos' } }
+      );
+
+      expect(firstRes.status).toBe(200);
+      expect(secondRes.status).toBe(200);
+
+      const firstBody = await firstRes.json();
+      const secondBody = await secondRes.json();
+
+      expect(firstBody.cacheUsed).toBe(false);
+      expect(secondBody.cacheUsed).toBe(true);
+      // GitHub was only called once despite two requests for the same page
+      expect(pageSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-fetches a repository page when refreshCache=true clears the page cache', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: ['repo-a'],
+        teams: [],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserRepositoriesInOrganisationPage')
+        .mockResolvedValue({
+          repositories: ['repo-a'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos-refresh&dataset=2024-01-01&githubPage=1`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-repos-refresh' },
+        }
+      );
+      const refreshRes = await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=page-cache-org-repos-refresh&dataset=2024-01-01&githubPage=1&refreshCache=true`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-repos-refresh' },
+        }
+      );
+
+      expect(refreshRes.status).toBe(200);
+      const refreshBody = await refreshRes.json();
+      expect(refreshBody.cacheUsed).toBe(false);
+      expect(pageSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('reuses cached dataset entities across repository page requests', async () => {
+      const datasetSpy = vi
+        .spyOn(policyReportsService, 'getDatasetEntities')
+        .mockResolvedValue({
+          repositories: ['repo-a'],
+          teams: [],
+        });
+      vi.spyOn(githubQueries, 'fetchUserRepositoriesInOrganisationPage')
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          currentPage: 1,
+          totalPages: 2,
+        })
+        .mockResolvedValueOnce({
+          repositories: ['repo-a'],
+          currentPage: 2,
+          totalPages: 2,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=s3-cache-org-repos&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-repos' } }
+      );
+      await fetch(
+        `${baseUrl}/policy-reports/api/repositories?organisation=s3-cache-org-repos&dataset=2024-01-01&githubPage=2`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-repos' } }
+      );
+
+      expect(datasetSpy).toHaveBeenCalledTimes(1);
     });
 
     it('returns 500 when the service throws', async () => {
@@ -351,13 +618,13 @@ describe('Policy Reports routes', () => {
       );
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/repositories?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/repositories?organisation=my-org-repo-500&dataset=2024-01-01&githubPage=1`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Failed to fetch repositories',
+        error: 'Unable to load repositories. Please try again later.',
       });
     });
   });
@@ -374,7 +641,8 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(401);
       await expect(res.json()).resolves.toEqual({
-        error: 'Not authenticated with GitHub',
+        error:
+          'Sign in with GitHub to view the repositories or teams in this dataset.',
       });
     });
 
@@ -386,7 +654,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -398,7 +666,7 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'organisation and dataset query parameters are required',
+        error: 'Choose both an organisation and a dataset before continuing.',
       });
     });
 
@@ -410,7 +678,19 @@ describe('Policy Reports routes', () => {
 
       expect(res.status).toBe(400);
       await expect(res.json()).resolves.toEqual({
-        error: 'Invalid organisation name format',
+        error: 'Enter a valid organisation name.',
+      });
+    });
+
+    it('returns 400 when dataset name contains invalid characters', async () => {
+      const res = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=../traversal`,
+        { headers: { Cookie: 'githubUserToken=test-token' } }
+      );
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error: 'Enter a valid dataset name.',
       });
     });
 
@@ -419,19 +699,30 @@ describe('Policy Reports routes', () => {
         repositories: [],
         teams: ['team-alpha', 'team-beta', 'team-gamma'],
       });
-      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisation').mockResolvedValue(
-        ['team-alpha', 'team-gamma', 'team-delta']
-      );
+      vi.spyOn(
+        githubQueries,
+        'fetchUserTeamsInOrganisationPage'
+      ).mockResolvedValue({
+        teams: ['team-alpha', 'team-gamma', 'team-delta'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org-teams-intersection&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({
-        teams: ['team-alpha', 'team-gamma'],
-      });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          teams: ['team-alpha', 'team-gamma'],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+          githubCurrentPage: 1,
+          githubTotalPages: 1,
+        })
+      );
     });
 
     it('returns 200 with an empty array when the user is a member of none of the dataset teams', async () => {
@@ -439,17 +730,125 @@ describe('Policy Reports routes', () => {
         repositories: [],
         teams: ['team-x'],
       });
-      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisation').mockResolvedValue(
-        ['team-y']
-      );
+      vi.spyOn(
+        githubQueries,
+        'fetchUserTeamsInOrganisationPage'
+      ).mockResolvedValue({
+        teams: ['team-y'],
+        currentPage: 1,
+        totalPages: 1,
+      });
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org-teams-empty&dataset=2024-01-01&githubPage=1&refreshCache=true`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(200);
-      await expect(res.json()).resolves.toEqual({ teams: [] });
+      await expect(res.json()).resolves.toEqual(
+        expect.objectContaining({
+          teams: [],
+          cacheUsed: false,
+          cachedAt: expect.any(Number),
+        })
+      );
+    });
+
+    it('caches individual team pages and returns a cache hit on re-request', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: [],
+        teams: ['team-a', 'team-b'],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserTeamsInOrganisationPage')
+        .mockResolvedValue({
+          teams: ['team-a', 'team-b'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      const firstRes = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-teams' } }
+      );
+      const secondRes = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=page-cache-token-teams' } }
+      );
+
+      expect(firstRes.status).toBe(200);
+      expect(secondRes.status).toBe(200);
+
+      const firstBody = await firstRes.json();
+      const secondBody = await secondRes.json();
+
+      expect(firstBody.cacheUsed).toBe(false);
+      expect(secondBody.cacheUsed).toBe(true);
+      // GitHub was only called once despite two requests for the same page
+      expect(pageSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-fetches a team page when refreshCache=true clears the page cache', async () => {
+      vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
+        repositories: [],
+        teams: ['team-a'],
+      });
+      const pageSpy = vi
+        .spyOn(githubQueries, 'fetchUserTeamsInOrganisationPage')
+        .mockResolvedValue({
+          teams: ['team-a'],
+          currentPage: 1,
+          totalPages: 1,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams-refresh&dataset=2024-01-01&githubPage=1`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-teams-refresh' },
+        }
+      );
+      const refreshRes = await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=page-cache-org-teams-refresh&dataset=2024-01-01&githubPage=1&refreshCache=true`,
+        {
+          headers: { Cookie: 'githubUserToken=page-cache-token-teams-refresh' },
+        }
+      );
+
+      expect(refreshRes.status).toBe(200);
+      const refreshBody = await refreshRes.json();
+      expect(refreshBody.cacheUsed).toBe(false);
+      expect(pageSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('reuses cached dataset entities across team page requests', async () => {
+      const datasetSpy = vi
+        .spyOn(policyReportsService, 'getDatasetEntities')
+        .mockResolvedValue({
+          repositories: [],
+          teams: ['team-a'],
+        });
+      vi.spyOn(githubQueries, 'fetchUserTeamsInOrganisationPage')
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          currentPage: 1,
+          totalPages: 2,
+        })
+        .mockResolvedValueOnce({
+          teams: ['team-a'],
+          currentPage: 2,
+          totalPages: 2,
+        });
+
+      await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=s3-cache-org-teams&dataset=2024-01-01&githubPage=1`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-teams' } }
+      );
+      await fetch(
+        `${baseUrl}/policy-reports/api/teams?organisation=s3-cache-org-teams&dataset=2024-01-01&githubPage=2`,
+        { headers: { Cookie: 'githubUserToken=s3-cache-token-teams' } }
+      );
+
+      expect(datasetSpy).toHaveBeenCalledTimes(1);
     });
 
     it('returns 500 when the service throws', async () => {
@@ -458,13 +857,13 @@ describe('Policy Reports routes', () => {
       );
 
       const res = await fetch(
-        `${baseUrl}/policy-reports/api/teams?organisation=my-org&dataset=2024-01-01`,
+        `${baseUrl}/policy-reports/api/teams?organisation=my-org-team-500&dataset=2024-01-01&githubPage=1`,
         { headers: { Cookie: 'githubUserToken=test-token' } }
       );
 
       expect(res.status).toBe(500);
       await expect(res.json()).resolves.toEqual({
-        error: 'Failed to fetch teams',
+        error: 'Unable to load teams. Please try again later.',
       });
     });
   });

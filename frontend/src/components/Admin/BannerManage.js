@@ -37,7 +37,6 @@ const BannerManage = () => {
       setExistingBanners(banners);
     } catch (error) {
       console.error('Error fetching existing banners:', error);
-      toast.error('Failed to load existing banners');
     }
   };
 
@@ -83,7 +82,6 @@ const BannerManage = () => {
     } catch (error) {
       console.error('Error saving banner:', error);
       setBannerSaveStatus('error');
-      toast.error('Failed to save banner. Please try again.');
       setShowBannerConfirmModal(false);
     }
   };
@@ -113,7 +111,6 @@ const BannerManage = () => {
       toast.success(`Banner ${shouldShow ? 'shown' : 'hidden'} successfully`);
     } catch (error) {
       console.error('Error toggling banner:', error);
-      toast.error('Failed to update banner visibility');
     }
   };
 
@@ -131,7 +128,6 @@ const BannerManage = () => {
       toast.success('Banner deleted successfully');
     } catch (error) {
       console.error('Error deleting banner:', error);
-      toast.error('Failed to delete banner');
     }
   };
 

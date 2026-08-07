@@ -1,3 +1,4 @@
+import customFetch from '../../utilities/customFetch';
 import React, { useEffect, useState } from 'react';
 import { IoInformationCircle, IoWarning, IoAlertCircle } from 'react-icons/io5';
 import '../../styles/components/RecentBanners.css';
@@ -46,13 +47,7 @@ const RecentBanners = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-        const baseUrl = `${backendUrl}/api/banners/all`;
-
-        const response = await fetch(baseUrl);
-        if (!response.ok) {
-          throw new Error('Failed to fetch banners');
-        }
+        const response = await customFetch('/api/banners/all');
         const data = await response.json();
 
         const recentBanners = data.messages.sort((a, b) => {

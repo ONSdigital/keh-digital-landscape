@@ -61,6 +61,33 @@
   background: hsl(var(--secondary) / 45%);
 }
 
+.policy-reports-loading-progress {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.policy-reports-loading-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+.policy-reports-loading-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: hsl(var(--border));
+  overflow: hidden;
+}
+
+.policy-reports-loading-progress-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  transition: width 0.2s ease;
+}
+
 .policy-reports-section-label {
   display: block;
   margin: 0 0 8px;
@@ -204,6 +231,12 @@
   cursor: not-allowed;
 }
 
+.policy-reports-btn-compact {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
 .policy-reports-focus-card {
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
@@ -308,6 +341,15 @@
   margin-left: auto;
 }
 
+.policy-reports-cache-status {
+  border-top: 1px dashed hsl(var(--border));
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .policy-reports-login-cta {
   text-align: center;
 }
@@ -325,6 +367,40 @@
 .policy-reports-resource-list {
   display: grid;
   gap: 8px;
+}
+
+.policy-reports-page-size-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.policy-reports-page-size-select {
+  width: auto;
+  min-width: 74px;
+  min-height: 30px;
+  padding: 4px 28px 4px 8px;
+  font-size: 12px;
+}
+
+.policy-reports-pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.policy-reports-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.policy-reports-pagination-label {
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
 }
 
 .policy-reports-resource-item {
@@ -372,6 +448,15 @@
   flex-wrap: wrap;
 }
 
+.policy-reports-selection-summary-selected {
+  text-align: left;
+}
+
+.policy-reports-selection-summary-showing {
+  margin-left: auto;
+  text-align: right;
+}
+
 .policy-reports-chip-list {
   display: flex;
   flex-wrap: wrap;
@@ -381,12 +466,38 @@
 .policy-reports-selection-chip {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   border: 1px solid hsl(var(--border));
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 4px 8px 4px 10px;
   font-size: 12px;
   color: hsl(var(--foreground));
   background: hsl(var(--secondary));
+}
+
+.policy-reports-chip-remove {
+  border: 0;
+  border-radius: 999px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  line-height: 1;
+}
+
+.policy-reports-chip-remove:hover {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.policy-reports-chip-remove:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 1px;
 }
 
 .policy-reports-hint {
@@ -408,8 +519,24 @@
 }
 
 .policy-reports-actions-row {
-  margin-top: 10px;
+  margin-top: 16px;
   margin-bottom: 0;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.policy-reports-primary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.policy-reports-generate-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .policy-reports-generation-status {
@@ -486,4 +613,53 @@
   .policy-reports-stage-title {
     font-size: 18px;
   }
+}
+
+/* ── Tab interface ─────────────────────────────────────── */
+
+.policy-reports-tab-bar {
+  display: flex;
+  border-bottom: 2px solid hsl(var(--border));
+  gap: 0;
+}
+
+.policy-reports-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.policy-reports-tab-btn:hover {
+  color: hsl(var(--foreground));
+}
+
+.policy-reports-tab-btn-active {
+  color: hsl(var(--foreground));
+  border-bottom-color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+.policy-reports-tab-btn:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.policy-reports-tab-panel {
+  padding-top: 16px;
+}
+
+.policy-reports-tab-panel-title {
+  margin: 0 0 8px;
+  font-size: 15px;
 }

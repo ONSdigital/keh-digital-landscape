@@ -1,4 +1,4 @@
-import { toast } from 'react-hot-toast';
+import customFetch from './customFetch';
 
 /**
  * Fetches the list of directorates from the backend API.
@@ -6,13 +6,7 @@ import { toast } from 'react-hot-toast';
  */
 export const getDirectorates = async () => {
   try {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-    const url = `${backendUrl}/api/directorates/json`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch directorates: ${response.statusText}`);
-    }
+    const response = await customFetch('/api/directorates/json');
 
     const data = await response.json();
 
@@ -46,11 +40,7 @@ export const getDirectorates = async () => {
 
     return enabledDirectorates;
   } catch (error) {
-    console.error('Error loading directorates:', error);
-    toast.error(
-      'Error loading directorates. Make sure directorates.json is correctly configured on S3.'
-    );
-
+    // customFetch already showed the error toast; just return the fallback
     // If there's an error, default to Digital Services
     return [
       {
