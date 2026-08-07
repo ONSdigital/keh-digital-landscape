@@ -135,9 +135,9 @@ To run the project locally, do the following:
 
    - Teams alerts (Azure Webhook)
    - GitHub OAuth (For the GitHub Policy Reports page)
-       - This requires `GITHUB_APP_CLIENT_ID` and `GITHUB_APP_CLIENT_SECRET` to be set in the backend.
+     - This requires `GITHUB_APP_CLIENT_ID` and `GITHUB_APP_CLIENT_SECRET` to be set in the backend.
 
-   All secrets are labelled within the `.env.example` files and can be retrieved from AWS Secrets Manager. 
+   All secrets are labelled within the `.env.example` files and can be retrieved from AWS Secrets Manager.
 
    **Security reminder to not commit secrets. Do not put the secrets in the `.env.example` files.**
 

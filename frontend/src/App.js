@@ -25,6 +25,7 @@ const CopilotCodeCompletionsPage = lazy(
 const CopilotAgentEditsPage = lazy(
   () => import('./pages/Copilot/AgentEditsPage')
 );
+const CopilotChatPage = lazy(() => import('./pages/Copilot/CopilotChatPage'));
 
 import { getDirectorates } from './utilities/getDirectorates';
 
@@ -84,16 +85,17 @@ const App = () => {
         <Route path="/copilot/:scope" element={<CopilotDashboard />} />
         <Route path="/copilot/home" element={<CopilotDashboardLandingPage />} />
         <Route
-          path="/copilot/legacy"
-          element={<CopilotDashboardLegacyUsagePage />}
+          path="/copilot/general"
+          element={<CopilotDashboardGeneralUsagePage />}
         />
         <Route
           path="/copilot/completions"
           element={<CopilotCodeCompletionsPage />}
         />
+        <Route path="/copilot/chat" element={<CopilotChatPage />} />
         <Route
-          path="/copilot/general"
-          element={<CopilotDashboardGeneralUsagePage />}
+          path="/copilot/legacy"
+          element={<CopilotDashboardLegacyUsagePage />}
         />
         <Route path="/copilot/agent" element={<CopilotAgentEditsPage />} />
       </Routes>

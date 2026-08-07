@@ -91,8 +91,8 @@ Exchanges the authorisation code for an access token.
 
 ```json
 {
-  "code": "string",           // Authorisation code from GitHub
-  "codeVerifier": "string"    // PKCE code verifier (base64url encoded)
+  "code": "string", // Authorisation code from GitHub
+  "codeVerifier": "string" // PKCE code verifier (base64url encoded)
 }
 ```
 
@@ -110,7 +110,7 @@ Sets `githubUserToken` cookie (httpOnly, 3 hours, secure, sameSite=lax)
 
 ```json
 {
-  "error": "string"  // Error message from GitHub
+  "error": "string" // Error message from GitHub
 }
 ```
 
@@ -138,9 +138,9 @@ Retrieves the authenticated user's GitHub profile.
 
 ```json
 {
-  "login": "string",        // GitHub username
-  "name": "string",         // User's full name
-  "avatar_url": "string"    // URL to avatar image
+  "login": "string", // GitHub username
+  "name": "string", // User's full name
+  "avatar_url": "string" // URL to avatar image
 }
 ```
 
@@ -179,7 +179,7 @@ import {
   checkAuthStatus,
   fetchGitHubUserProfile,
   handleAuthCallback,
-  retrievePersistedFormState
+  retrievePersistedFormState,
 } from '../utilities/githubAuth';
 ```
 
@@ -220,12 +220,12 @@ const handleLogin = async () => {
     formState: {
       // Optional: persist form state during auth
       fieldName: fieldValue,
-      anotherField: anotherValue
-    }
+      anotherField: anotherValue,
+    },
   });
 };
 
-<button onClick={handleLogin}>Login with GitHub</button>
+<button onClick={handleLogin}>Login with GitHub</button>;
 ```
 
 ### Logout Button
@@ -241,7 +241,7 @@ const handleLogout = async () => {
   }
 };
 
-<button onClick={handleLogout}>Logout</button>
+<button onClick={handleLogout}>Logout</button>;
 ```
 
 ### Form State Persistence
@@ -258,7 +258,7 @@ await loginWithGitHub({
   formState: {
     fieldOne: valueOne,
     fieldTwo: valueTwo,
-  }
+  },
 });
 ```
 
@@ -314,11 +314,13 @@ const [username, setUsername] = useState(null);
 3. Conditionally render authenticated content:
 
 ```javascript
-{isAuthenticated ? (
-  <div>Logged in as {username}</div>
-) : (
-  <button onClick={handleLogin}>Login with GitHub</button>
-)}
+{
+  isAuthenticated ? (
+    <div>Logged in as {username}</div>
+  ) : (
+    <button onClick={handleLogin}>Login with GitHub</button>
+  );
+}
 ```
 
 ### Environment Configuration
