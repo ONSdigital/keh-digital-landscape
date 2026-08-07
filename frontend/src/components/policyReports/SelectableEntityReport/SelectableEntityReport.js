@@ -23,6 +23,8 @@ const SelectableEntityReport = ({
   generateButtonInProgressLabel,
   onGenerateReport,
   isGenerating,
+  generationMessage,
+  generationError,
   isGenerateDisabled,
   singularLabel,
   pluralLabel,
@@ -165,6 +167,22 @@ const SelectableEntityReport = ({
             {isSelectionRequired && (
               <span className="policy-reports-generation-warning" role="alert">
                 Select at least one {singularLabel} to generate this report.
+              </span>
+            )}
+            {generationMessage && (
+              <span
+                className="policy-reports-generation-success policy-reports-generation-note-inline"
+                role="status"
+              >
+                {generationMessage}
+              </span>
+            )}
+            {generationError && (
+              <span
+                className="policy-reports-generation-error policy-reports-generation-note-inline"
+                role="alert"
+              >
+                {generationError}
               </span>
             )}
           </div>

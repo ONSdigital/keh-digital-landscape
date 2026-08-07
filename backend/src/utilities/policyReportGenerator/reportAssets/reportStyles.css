@@ -11,6 +11,8 @@
   --pass: 138 63% 45%;
   --fail: 0 70% 40%;
   --warn: 35 90% 48%;
+  --space-section: 16px;
+  --space-block: 12px;
 }
 
 * {
@@ -128,6 +130,8 @@ body {
 
 .report-body {
   padding: 16px;
+  display: grid;
+  gap: var(--space-section);
 }
 
 .kpi-grid {
@@ -173,6 +177,7 @@ body {
 
 .kpi-delta,
 .slo-delta,
+.rating-delta,
 .severity-delta {
   font-size: 13px;
   font-weight: 500;
@@ -181,18 +186,21 @@ body {
 
 .kpi-delta.up,
 .slo-delta.up,
+.rating-delta.up,
 .severity-delta.up {
   color: hsl(var(--pass));
 }
 
 .kpi-delta.down,
 .slo-delta.down,
+.rating-delta.down,
 .severity-delta.down {
   color: hsl(var(--fail));
 }
 
 .kpi-delta.neutral,
 .slo-delta.neutral,
+.rating-delta.neutral,
 .severity-delta.neutral {
   color: hsl(var(--muted-foreground));
 }
@@ -206,7 +214,82 @@ body {
 }
 
 .block {
+  margin-top: 0;
+}
+
+.report-section {
+  display: grid;
+  gap: var(--space-block);
+}
+
+.section-header {
+  display: grid;
+  gap: 4px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.section-subtitle {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+}
+
+.rating-breakdown-card > h3 {
+  margin-bottom: 4px;
+}
+
+.rating-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-block);
+  margin-top: 8px;
+}
+
+.rating-stat-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--secondary) / 40%);
+  padding: 10px;
+}
+
+.rating-stat-heading {
+  margin: 0;
+}
+
+.rating-stat-value {
+  margin: 10px 0 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rating-stat-sub {
+  margin: 8px 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+}
+
+.rating-criteria-collapsible {
   margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.rating-criteria-collapsible > summary {
+  margin-bottom: 6px;
+}
+
+.scorecard-help-card > summary {
+  margin-bottom: 6px;
+}
+
+.help-symbol {
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
 }
 
 .block h3,
@@ -225,6 +308,13 @@ body {
 
 .detail-block-header h3 {
   margin-bottom: 0;
+}
+
+.detail-block-title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .check-table {
@@ -294,6 +384,41 @@ body {
   background: hsl(var(--fail));
 }
 
+.pill.rating {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.pill.rating-platinum {
+  border-color: hsl(195 100% 32% / 45%);
+  color: hsl(195 100% 24%);
+  background: hsl(195 100% 32% / 10%);
+}
+
+.pill.rating-gold {
+  border-color: hsl(45 96% 40% / 45%);
+  color: hsl(45 96% 30%);
+  background: hsl(45 96% 40% / 10%);
+}
+
+.pill.rating-silver {
+  border-color: hsl(216 15% 56% / 45%);
+  color: hsl(216 15% 36%);
+  background: hsl(216 15% 56% / 12%);
+}
+
+.pill.rating-bronze {
+  border-color: hsl(28 65% 42% / 45%);
+  color: hsl(28 65% 32%);
+  background: hsl(28 65% 42% / 10%);
+}
+
+.pill.rating-unrated {
+  border-color: hsl(0 0% 20% / 60%);
+  color: hsl(0 0% 18%);
+  background: hsl(0 0% 20% / 12%);
+}
+
 .github-link-button {
   display: inline-flex;
   align-items: center;
@@ -327,8 +452,34 @@ body {
 .slo-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: var(--space-block);
+  margin-top: 0;
+}
+
+.repository-slo-section > h3 {
+  margin-bottom: 4px;
+}
+
+.repository-slo-section {
   margin-top: 12px;
+}
+
+.repository-slo-subtitle {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.repository-slo-card {
+  background: hsl(var(--secondary) / 35%);
+  padding: 10px;
+}
+
+.repository-slo-card-title {
+  margin-bottom: 6px;
+}
+
+.repository-slo-clear-note {
+  margin-top: 8px;
 }
 
 .collapsible-block > summary {

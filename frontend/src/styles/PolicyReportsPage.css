@@ -522,7 +522,7 @@
   margin-top: 16px;
   margin-bottom: 0;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .policy-reports-primary-actions {
@@ -542,6 +542,7 @@
 .policy-reports-generation-status {
   display: inline-flex;
   align-items: center;
+  align-self: center;
   gap: 8px;
   font-size: 13px;
   color: hsl(var(--muted-foreground));
@@ -561,6 +562,11 @@
   margin-top: 8px;
   font-size: 13px;
   font-weight: 500;
+}
+
+.policy-reports-generation-note-inline {
+  margin-top: 0;
+  align-self: center;
 }
 
 .policy-reports-generation-warning {

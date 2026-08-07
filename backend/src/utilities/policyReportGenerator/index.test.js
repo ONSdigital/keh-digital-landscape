@@ -24,6 +24,13 @@ describe('policyReportGenerator/index', () => {
             team_checks: {
               team_maintainer: { total: 2, compliant: 1 },
             },
+            repository_ratings: {
+              platinum: 0,
+              gold: 1,
+              silver: 0,
+              bronze: 1,
+              unrated: 0,
+            },
           },
         },
         comparisonDatasetData: {
@@ -37,6 +44,13 @@ describe('policyReportGenerator/index', () => {
             },
             team_checks: {
               team_maintainer: { total: 1, compliant: 1 },
+            },
+            repository_ratings: {
+              platinum: 0,
+              gold: 1,
+              silver: 0,
+              bronze: 0,
+              unrated: 0,
             },
           },
         },

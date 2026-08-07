@@ -26,6 +26,13 @@ describe('organisationReportTemplate', () => {
           team_checks: {
             team_maintainer: { total: 2, compliant: 1 },
           },
+          repository_ratings: {
+            platinum: 0,
+            gold: 1,
+            silver: 0,
+            bronze: 1,
+            unrated: 0,
+          },
         },
         repositories: {
           'repo-a': {
@@ -86,6 +93,39 @@ describe('organisationReportTemplate', () => {
             details: {},
           },
         },
+        scorecard_criteria: {
+          platinum: {
+            min_compliance: 100,
+            required_checks: [],
+          },
+          gold: {
+            min_compliance: 90,
+            required_checks: [
+              'codeowners',
+              'dependabot',
+              'license',
+              'pirr',
+              'readme',
+              'repository_access',
+              'security_scanning',
+            ],
+          },
+          silver: {
+            min_compliance: 70,
+            required_checks: [
+              'codeowners',
+              'dependabot',
+              'license',
+              'pirr',
+              'readme',
+              'security_scanning',
+            ],
+          },
+          bronze: {
+            min_compliance: 50,
+            required_checks: ['codeowners', 'dependabot', 'security_scanning'],
+          },
+        },
       },
       comparisonDatasetData: {
         summary: {
@@ -100,6 +140,13 @@ describe('organisationReportTemplate', () => {
           },
           team_checks: {
             team_maintainer: { total: 1, compliant: 1 },
+          },
+          repository_ratings: {
+            platinum: 0,
+            gold: 1,
+            silver: 0,
+            bronze: 0,
+            unrated: 0,
           },
         },
         repositories: {
@@ -146,6 +193,10 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('50.0%');
     expect(html).toContain('Dependabot SLO');
     expect(html).toContain('Secret Scanning SLO');
+    expect(html).toContain('Secret Scanning SLOs');
+    expect(html).toContain('Dependabot SLOs');
+    expect(html).not.toContain('<h3>Secret Scanning SLO</h3>');
+    expect(html).not.toContain('<h3>Dependabot SLO</h3>');
     expect(html).toContain('Non-compliant');
     expect(html).toContain('External Pull Request');
     expect(html).toContain('+1 vs comparison dataset.');
@@ -153,8 +204,22 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('-50.0pp vs comparison dataset.');
     expect(html).toContain('Codeowners');
     expect(html).toContain('License');
-    expect(html).toContain('Repository check breakdown');
-    expect(html).toContain('Team check breakdown');
+    expect(html).toContain('What do these ratings mean?');
+    expect(html).toContain('Minimum compliance');
+    expect(html).toContain('Required checks');
+    expect(html).toContain('No mandatory checks');
+    expect(html).toContain('Repository Rating Breakdown');
+    expect(html).toContain('class="pill rating rating-gold"');
+    expect(html).toContain('class="pill rating rating-bronze"');
+    expect(html).toContain(
+      'class="rating-delta neutral">No change vs comparison dataset.</p>'
+    );
+    expect(html).toContain(
+      'class="rating-delta neutral">+1 vs comparison dataset.</p>'
+    );
+    expect(html).toContain('>50.0%<');
+    expect(html).toContain('Repository Check Breakdown');
+    expect(html).toContain('Team Check Breakdown');
     expect(html).toContain('>7<');
     expect(html).toContain('>2<');
     expect(html).toContain('repositories affected by SLO');
@@ -186,6 +251,13 @@ describe('organisationReportTemplate', () => {
           team_checks: {
             team_maintainer: { total: 16, compliant: 15 },
           },
+          repository_ratings: {
+            platinum: 2,
+            gold: 3,
+            silver: 10,
+            bronze: 20,
+            unrated: 73,
+          },
         },
         repositories: {
           'repo-a': {
@@ -201,6 +273,24 @@ describe('organisationReportTemplate', () => {
           'team-a': { is_compliant: false },
           'team-b': { is_compliant: false },
         },
+        scorecard_criteria: {
+          platinum: {
+            min_compliance: 100,
+            required_checks: [],
+          },
+          gold: {
+            min_compliance: 90,
+            required_checks: ['codeowners', 'dependabot', 'license'],
+          },
+          silver: {
+            min_compliance: 70,
+            required_checks: ['codeowners', 'dependabot'],
+          },
+          bronze: {
+            min_compliance: 50,
+            required_checks: ['codeowners'],
+          },
+        },
       },
       comparisonDatasetData: {
         summary: {
@@ -213,6 +303,13 @@ describe('organisationReportTemplate', () => {
           },
           team_checks: {
             team_maintainer: { total: 10, compliant: 7 },
+          },
+          repository_ratings: {
+            platinum: 1,
+            gold: 1,
+            silver: 8,
+            bronze: 15,
+            unrated: 75,
           },
         },
       },
@@ -227,6 +324,30 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('Codeowners');
     expect(html).toContain('>67<');
     expect(html).toContain('>108<');
+    expect(html).toContain('Repository Rating Breakdown');
+    expect(html).toContain('class="pill rating rating-platinum"');
+    expect(html).toContain('class="pill rating rating-unrated"');
+    expect(html.indexOf('rating-platinum')).toBeLessThan(
+      html.indexOf('rating-gold')
+    );
+    expect(html.indexOf('rating-gold')).toBeLessThan(
+      html.indexOf('rating-silver')
+    );
+    expect(html.indexOf('rating-silver')).toBeLessThan(
+      html.indexOf('rating-bronze')
+    );
+    expect(html.indexOf('rating-bronze')).toBeLessThan(
+      html.indexOf('rating-unrated')
+    );
+    expect(html).toContain(
+      'class="rating-delta neutral">+1 vs comparison dataset.</p>'
+    );
+    expect(html).toContain(
+      'class="rating-delta neutral">+2 vs comparison dataset.</p>'
+    );
+    expect(html).toContain(
+      'class="rating-delta neutral">-2 vs comparison dataset.</p>'
+    );
     expect(html).toContain('+8 vs comparison dataset.');
     expect(html).toContain('+1 vs comparison dataset.');
     expect(html).toContain('+0.6pp vs comparison dataset.');
@@ -246,6 +367,13 @@ describe('organisationReportTemplate', () => {
             compliant_teams: 15,
             repository_checks: {
               codeowners: { total: 108, compliant: 67 },
+            },
+            repository_ratings: {
+              platinum: 2,
+              gold: 3,
+              silver: 10,
+              bronze: 20,
+              unrated: 73,
             },
           },
         },
@@ -267,11 +395,42 @@ describe('organisationReportTemplate', () => {
             repository_checks: {
               codeowners: { total: 108, compliant: 67 },
             },
+            repository_ratings: {
+              platinum: 2,
+              gold: 3,
+              silver: 10,
+              bronze: 20,
+              unrated: 73,
+            },
           },
         },
       })
     ).toThrow(
       'Source dataset summary is missing required numeric field: total_teams'
+    );
+  });
+
+  it('throws clear error when repository ratings are missing', () => {
+    expect(() =>
+      buildOrganisationReportHtml({
+        organisation: 'ONS-Innovation',
+        sourceDatasetData: {
+          summary: {
+            total_repositories: 108,
+            compliant_repositories: 5,
+            total_teams: 16,
+            compliant_teams: 15,
+            repository_checks: {
+              codeowners: { total: 108, compliant: 67 },
+            },
+            team_checks: {
+              team_maintainer: { total: 16, compliant: 15 },
+            },
+          },
+        },
+      })
+    ).toThrow(
+      'Source dataset summary is missing required object field: repository_ratings'
     );
   });
 
@@ -287,6 +446,13 @@ describe('organisationReportTemplate', () => {
             compliant_teams: 15,
             repository_checks: {
               codeowners: { total: 108, compliant: 67 },
+            },
+            repository_ratings: {
+              platinum: 2,
+              gold: 3,
+              silver: 10,
+              bronze: 20,
+              unrated: 73,
             },
           },
         },
@@ -313,6 +479,13 @@ describe('organisationReportTemplate', () => {
           team_checks: {
             team_maintainer: { total: 16, compliant: 15 },
           },
+          repository_ratings: {
+            platinum: 2,
+            gold: 3,
+            silver: 10,
+            bronze: 20,
+            unrated: 73,
+          },
         },
         organisation_checks: {
           dependabot_slo: {
@@ -331,6 +504,24 @@ describe('organisationReportTemplate', () => {
               'No open Secret Scanning security alerts found exceeding SLO.',
             details: {},
             check_name: 'secret_scanning_slo',
+          },
+        },
+        scorecard_criteria: {
+          platinum: {
+            min_compliance: 100,
+            required_checks: [],
+          },
+          gold: {
+            min_compliance: 90,
+            required_checks: ['codeowners', 'dependabot', 'license'],
+          },
+          silver: {
+            min_compliance: 70,
+            required_checks: ['codeowners', 'dependabot'],
+          },
+          bronze: {
+            min_compliance: 50,
+            required_checks: ['codeowners'],
           },
         },
       },

@@ -220,6 +220,7 @@ const PolicyReportsPage = () => {
     setIsLoadingAccessibleReposAndTeams,
   ] = useState(false);
   const [activeGenerationType, setActiveGenerationType] = useState(null);
+  const [generationFeedbackType, setGenerationFeedbackType] = useState(null);
   const [generationMessage, setGenerationMessage] = useState('');
   const [generationError, setGenerationError] = useState('');
   const [isRefreshingGitHubCache, setIsRefreshingGitHubCache] = useState(false);
@@ -507,6 +508,7 @@ const PolicyReportsPage = () => {
     setTeamListPage(1);
     setRepositoryResultsPerPage(10);
     setTeamResultsPerPage(10);
+    setGenerationFeedbackType(null);
     setGenerationMessage('');
     setGenerationError('');
   };
@@ -566,6 +568,7 @@ const PolicyReportsPage = () => {
 
   const handleGeneratePolicyReport = async ({ reportType, inputs }) => {
     setActiveGenerationType(reportType);
+    setGenerationFeedbackType(reportType);
     setGenerationError('');
     setGenerationMessage('');
 
@@ -713,19 +716,6 @@ const PolicyReportsPage = () => {
                   Fill in the inputs, choose a report type and click the
                   corresponding button to generate a report.
                 </p>
-                {generationMessage && (
-                  <p
-                    className="policy-reports-generation-success"
-                    role="status"
-                  >
-                    {generationMessage}
-                  </p>
-                )}
-                {generationError && (
-                  <p className="policy-reports-generation-error" role="alert">
-                    {generationError}
-                  </p>
-                )}
               </div>
 
               {!isStageTwoEnabled ? (
@@ -864,6 +854,24 @@ const PolicyReportsPage = () => {
                           Generating report...
                         </span>
                       )}
+                      {generationFeedbackType === 'Organisation' &&
+                        generationMessage && (
+                          <span
+                            className="policy-reports-generation-success policy-reports-generation-note-inline"
+                            role="status"
+                          >
+                            {generationMessage}
+                          </span>
+                        )}
+                      {generationFeedbackType === 'Organisation' &&
+                        generationError && (
+                          <span
+                            className="policy-reports-generation-error policy-reports-generation-note-inline"
+                            role="alert"
+                          >
+                            {generationError}
+                          </span>
+                        )}
                       {!comparisonDataset && (
                         <span
                           className="policy-reports-generation-error"
@@ -1005,6 +1013,16 @@ const PolicyReportsPage = () => {
                               }
                               isGenerating={
                                 activeGenerationType === 'Repository'
+                              }
+                              generationMessage={
+                                generationFeedbackType === 'Repository'
+                                  ? generationMessage
+                                  : ''
+                              }
+                              generationError={
+                                generationFeedbackType === 'Repository'
+                                  ? generationError
+                                  : ''
                               }
                               isGenerateDisabled={
                                 isAnyReportGenerating ||
@@ -1167,6 +1185,16 @@ const PolicyReportsPage = () => {
                                 })
                               }
                               isGenerating={activeGenerationType === 'Team'}
+                              generationMessage={
+                                generationFeedbackType === 'Team'
+                                  ? generationMessage
+                                  : ''
+                              }
+                              generationError={
+                                generationFeedbackType === 'Team'
+                                  ? generationError
+                                  : ''
+                              }
                               isGenerateDisabled={
                                 isAnyReportGenerating ||
                                 selectedTeams.length === 0
