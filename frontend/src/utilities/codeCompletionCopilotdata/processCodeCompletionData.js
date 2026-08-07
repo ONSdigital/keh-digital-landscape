@@ -13,7 +13,6 @@ function isWeekendDate(dateString) {
 }
 
 export function processCodeCompletionData(data, options = {}) {
-  const { includeWeekendUsage = true } = options;
   /** This function aggregates the compontentised graphs and cards with the data, where the components are:
    * - Chat cards
    * - Acceptance graph (suggestions vs acceptances) - Bar chart
@@ -21,6 +20,9 @@ export function processCodeCompletionData(data, options = {}) {
    * - Average LOC size line graph (suggestions vs acceptances) - Line graph
    * - Language breakdown chart (programming language usage rates) - Pie chart
    */
+
+  // This parameter is passed in from the dashboard to determine whether to include weekend data or not
+  const { includeWeekendUsage = true } = options;
 
   // Overall Dictionary
   let codeCompletionMetrics = {};

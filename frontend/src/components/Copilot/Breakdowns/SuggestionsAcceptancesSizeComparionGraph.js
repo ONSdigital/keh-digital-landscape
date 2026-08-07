@@ -88,7 +88,7 @@ function removeWeekendData(rows) {
   });
 }
 
-const AverageLOCSuggestionsAcceptance = ({
+const SuggestionsAcceptancesSizeComparisonGraph = ({
   data,
   includeWeekendUsage = false,
 }) => {
@@ -102,11 +102,7 @@ const AverageLOCSuggestionsAcceptance = ({
     }
 
     const groupedData = aggregateByTimeBreakdown(data, timeBreakdown);
-    const filtered =
-      timeBreakdown === 'day' && !includeWeekendUsage
-        ? removeWeekendData(groupedData)
-        : groupedData;
-    return filtered.slice(-7);
+    return groupedData;
   }, [data, includeWeekendUsage, timeBreakdown]);
 
   const palette = getChartPalette(2, isDark);
@@ -147,7 +143,7 @@ const AverageLOCSuggestionsAcceptance = ({
           <CartesianGrid vertical={false} stroke="hsl(var(--muted))" />
           <XAxis
             dataKey="date"
-            interval={0}
+            interval={recentData.length - 2}
             stroke="hsl(var(--border))"
             tick={{ fill: colors.text }}
             tickLine={false}
@@ -201,4 +197,4 @@ const AverageLOCSuggestionsAcceptance = ({
   );
 };
 
-export default AverageLOCSuggestionsAcceptance;
+export default SuggestionsAcceptancesSizeComparisonGraph;

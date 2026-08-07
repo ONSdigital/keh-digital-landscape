@@ -18,14 +18,14 @@ The landing page is designed around **progressive disclosure**: users see just e
 
 ## Structure
 
-| Section              | Route                          |
-| -------------------- | ------------------------------ |
-| Landing Page         | `/copilot/home`                |
-| General Usage        | `/copilot/general`             |
-| IDE Code Completions | `/copilot/completions`         |
-| Copilot Chat         | `/copilot/chat`                |
-| Agent Edits          | `/copilot/agent`               |
-| Legacy Usage         | `/copilot/legacy`              |
+| Section              | Route                  |
+| -------------------- | ---------------------- |
+| Landing Page         | `/copilot/home`        |
+| General Usage        | `/copilot/general`     |
+| IDE Code Completions | `/copilot/completions` |
+| Copilot Chat         | `/copilot/chat`        |
+| Agent Edits          | `/copilot/agent`       |
+| Legacy Usage         | `/copilot/legacy`      |
 
 ## Features
 
@@ -65,7 +65,7 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - **Optional LoC Usage View**: a toggleable LoC section from the settings menu. When enabled, this reveals LoC summary cards (total lines suggested, total lines accepted, overall line acceptance rate) and a LoC suggestions/acceptances/acceptance-rate chart.
 
-- **Suggestion vs Acceptance Size**: cards for average LoC per suggestion and average LoC per acceptance, plus a trend chart with the same day/week/month controls.
+- **Suggestions vs Acceptances Size**: cards for average LoC per suggestion and average LoC per acceptance, plus a trend chart with the same day/week/month controls.
 
 - **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
 
@@ -73,7 +73,7 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - Entry point from landing page: **General Usage** and **IDE Code Completions** cards on `/copilot/home`.
 
-- Code Completions route: `/copilot/code-completions`.
+- Code Completions route: `/copilot/completions`.
 
 - Back button behavior: returns from each feature page to `/copilot/home`.
 

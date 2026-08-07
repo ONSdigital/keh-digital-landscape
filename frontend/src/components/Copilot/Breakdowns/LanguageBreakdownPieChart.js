@@ -25,7 +25,7 @@ function formatLanguageName(name) {
   return LANGUAGE_NAMES[normalizedName] || normalizedName.toUpperCase();
 }
 
-const LanguageBreakdownChart = ({ languageData }) => {
+const LanguageBreakdownPieChart = ({ languageData }) => {
   const [selectedMode, setSelectedMode] = useState('suggestions');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -118,4 +118,4 @@ const LanguageBreakdownChart = ({ languageData }) => {
   );
 };
 
-export default LanguageBreakdownChart;
+export default LanguageBreakdownPieChart;

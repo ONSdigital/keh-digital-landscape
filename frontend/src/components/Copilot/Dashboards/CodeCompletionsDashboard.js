@@ -3,9 +3,9 @@ import { IoInformationCircleOutline } from 'react-icons/io5';
 import '../../../styles/components/Statistics.css';
 import '../../../styles/CopilotPage.css';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
-import SuggestionsAcceptanceGraph from '../Breakdowns/SuggestionsAcceptanceGraph';
-import AverageLOCSuggestionsAcceptance from '../Breakdowns/AverageLOCSuggestionsAcceptance';
-import LanguageBreakdownChart from '../Breakdowns/LanguageBreakdownChart';
+import SuggestionsAcceptancesBarChart from '../Breakdowns/SuggestionsAcceptancesBarChart';
+import SuggestionsAcceptancesSizeComparisonGraph from '../Breakdowns/SuggestionsAcceptancesSizeComparionGraph';
+import LanguageBreakdownPieChart from '../Breakdowns/LanguageBreakdownPieChart';
 import Tooltip from '../../Tooltip/Tooltip';
 import { getPercentage } from '../../../utilities/getPercentage';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
@@ -102,7 +102,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <SuggestionsAcceptanceGraph
+          <SuggestionsAcceptancesBarChart
             data={data.suggestedGraph}
             includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
             LOC={false}
@@ -141,7 +141,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           {loading ? (
             <div className="copilot-graph-container skeleton" />
           ) : (
-            <SuggestionsAcceptanceGraph
+            <SuggestionsAcceptancesBarChart
               data={data.suggestedLOCGraph}
               includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
               LOC={true}
@@ -152,7 +152,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
 
       <div className="copilot-dashboard-section">
         <h3>
-          Suggestion vs Acceptance Size
+          Suggestions vs Acceptance Sizes
           <Tooltip
             title={
               <p className="copilot-tooltip-paragraph">
@@ -192,7 +192,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <AverageLOCSuggestionsAcceptance
+          <SuggestionsAcceptancesSizeComparisonGraph
             data={data.averageSuggestedLOCGraph}
             includeWeekendUsage={chartDisplaySettings.includeWeekendUsage}
           />
@@ -204,7 +204,9 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <LanguageBreakdownChart languageData={data.languagesUsedPieChart} />
+          <LanguageBreakdownPieChart
+            languageData={data.languagesUsedPieChart}
+          />
         )}
       </div>
     </div>

@@ -49,7 +49,7 @@ test('Code Completions page displays correct page structure', async ({
     page.getByRole('heading', { name: 'Overall Usage' })
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { name: 'Suggestion vs Acceptance Size' })
+    page.getByRole('heading', { name: 'Suggestions vs Acceptance Sizes' })
   ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Language Breakdown' })

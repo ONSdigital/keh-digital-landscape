@@ -5,8 +5,8 @@ import { COPILOT_CHART_PALETTE } from '../../../constants/copilotConstants';
 import Tooltip from '../../Tooltip/Tooltip';
 import { useTheme } from '../../../contexts/ThemeContext';
 import NewEngagedUsersGraph from '../Breakdowns/NewEngagedUsersGraph';
-import ModelIdeUsage from '../Breakdowns/ModelIdeUsage';
-import CodeImpactByLanguage from '../Breakdowns/CodeImpactByLanguage';
+import ModelIdeUsagePieChart from '../Breakdowns/ModelIdeUsagePieChart';
+import CodeImpactByLanguagePieChart from '../Breakdowns/CodeImpactByLanguagePieChart';
 import PercentageCard from '../Breakdowns/PercentageCard';
 
 function GeneralUsageDashboard({ data, isLoading }) {
@@ -79,7 +79,10 @@ function GeneralUsageDashboard({ data, isLoading }) {
             <div className="usage-pie-chart-card skeleton" />
           </div>
         ) : (
-          <ModelIdeUsage modelData={data.modelUsage} ideData={data.ideUsage} />
+          <ModelIdeUsagePieChart
+            modelData={data.modelUsage}
+            ideData={data.ideUsage}
+          />
         )}
       </div>
       <div className="copilot-dashboard-section-bottom">
@@ -107,7 +110,7 @@ function GeneralUsageDashboard({ data, isLoading }) {
         {loading ? (
           <div className="usage-pie-chart-card skeleton" />
         ) : (
-          <CodeImpactByLanguage data={data.codeImpact} />
+          <CodeImpactByLanguagePieChart data={data.codeImpact} />
         )}
       </div>
     </div>
