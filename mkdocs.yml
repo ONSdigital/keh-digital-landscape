@@ -14,6 +14,7 @@ nav:
       - Admin: pages/admin/index.md
       - GitHub Copilot: pages/copilot/index.md
       - Address Book: pages/addressbook/index.md
+      - Policy Reports: pages/policyreports/index.md
   - Backend:
       - Overview: backend/index.md
       - Services:
