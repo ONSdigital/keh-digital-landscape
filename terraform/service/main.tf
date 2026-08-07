@@ -143,6 +143,10 @@ resource "aws_ecs_task_definition" "ecs_service_definition" {
           value = var.copilot_bucket_name
         },
         {
+          name  = "POLICY_AUDIT_BUCKET_NAME",
+          value = var.policy_audit_bucket_name
+        },
+        {
           name  = "ALB_ARN",
           value = data.terraform_remote_state.ecs_infrastructure.outputs.application_lb_arn
         },

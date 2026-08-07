@@ -1,0 +1,140 @@
+import React from 'react';
+
+const SelectableEntityReport = ({
+  searchId,
+  searchLabel,
+  searchPlaceholder,
+  searchValue,
+  onSearchChange,
+  resultCap,
+  totalAccessible,
+  totalMatching,
+  selectedItems,
+  filteredItems,
+  onClearSelection,
+  onToggleSelection,
+  onLoadMore,
+  emptyStateMessage,
+  generateButtonLabel,
+  generateButtonInProgressLabel,
+  onGenerateReport,
+  isGenerating,
+  isGenerateDisabled,
+  singularLabel,
+  pluralLabel,
+}) => {
+  const hasMoreResults =
+    filteredItems.length < totalMatching && filteredItems.length >= resultCap;
+  const isSelectionRequired = selectedItems.length === 0;
+
+  return (
+    <>
+      <div className="policy-reports-field policy-reports-space-top-xs">
+        <label htmlFor={searchId}>{searchLabel}</label>
+        <input
+          id={searchId}
+          className="policy-reports-text-input"
+          type="text"
+          placeholder={searchPlaceholder}
+          aria-label={searchLabel}
+          value={searchValue}
+          onChange={event => onSearchChange(event.target.value)}
+        />
+      </div>
+
+      <p className="policy-reports-hint policy-reports-space-top-xs">
+        Showing {filteredItems.length} of {totalMatching} matching {pluralLabel}{' '}
+        ({totalAccessible} available).
+      </p>
+
+      <div className="policy-reports-selection-summary policy-reports-space-top-xs">
+        <span className="policy-reports-hint">
+          {selectedItems.length}{' '}
+          {selectedItems.length === 1 ? singularLabel : pluralLabel} selected
+        </span>
+        <button
+          className="policy-reports-btn"
+          type="button"
+          onClick={onClearSelection}
+        >
+          Clear selection
+        </button>
+      </div>
+
+      <div className="policy-reports-resource-list policy-reports-space-top-sm">
+        {filteredItems.length > 0 ? (
+          filteredItems.map(item => (
+            <article
+              key={item}
+              className="policy-reports-resource-item policy-reports-resource-item-action"
+            >
+              <strong>{item}</strong>
+              <button
+                className="policy-reports-btn"
+                type="button"
+                onClick={() => onToggleSelection(item)}
+              >
+                {selectedItems.includes(item) ? 'Remove' : 'Add'}
+              </button>
+            </article>
+          ))
+        ) : (
+          <p className="policy-reports-hint policy-reports-no-margin">
+            {emptyStateMessage}
+          </p>
+        )}
+      </div>
+
+      {hasMoreResults && (
+        <div className="policy-reports-space-top-sm">
+          <button
+            className="policy-reports-btn"
+            type="button"
+            onClick={onLoadMore}
+          >
+            Load more {pluralLabel}
+          </button>
+        </div>
+      )}
+
+      {selectedItems.length > 0 && (
+        <div className="policy-reports-chip-list policy-reports-space-top-sm">
+          {selectedItems.map(item => (
+            <span key={item} className="policy-reports-selection-chip">
+              {item}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="policy-reports-auth-row policy-reports-actions-row">
+        <button
+          className="policy-reports-btn policy-reports-btn-primary"
+          type="button"
+          onClick={onGenerateReport}
+          disabled={isGenerateDisabled}
+        >
+          {isGenerating
+            ? generateButtonInProgressLabel || 'Generating report...'
+            : generateButtonLabel}
+        </button>
+        {isGenerating && (
+          <span className="policy-reports-generation-status" role="status">
+            <span
+              className="policy-reports-inline-spinner"
+              aria-hidden="true"
+            />
+            Generating placeholder report...
+          </span>
+        )}
+        {isSelectionRequired && (
+          <span className="policy-reports-generation-warning" role="alert">
+            Select at least one {singularLabel} to generate this report.
+          </span>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default SelectableEntityReport;

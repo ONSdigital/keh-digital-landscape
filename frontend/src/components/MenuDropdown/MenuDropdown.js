@@ -3,20 +3,13 @@ import { useNavigate, useLocation } from 'react-router';
 import '../../styles/components/MenuDropdown.css';
 import UserProfile from '../UserProfile/UserProfile';
 import Modal from '../BugReport/Modal';
-import {
-  TbSmartHome,
-  TbEditCircle,
-  TbUserShield,
-  TbUsers,
-  TbChartBar,
-  TbHelp,
-  TbBug,
-  TbAddressBook,
-} from 'react-icons/tb';
-import { VscCopilot } from 'react-icons/vsc';
+import { TbHelp, TbBug } from 'react-icons/tb';
 import { IoMenu } from 'react-icons/io5';
-import { MdOutlineRadar } from 'react-icons/md';
-import { FaRegAddressBook } from 'react-icons/fa';
+import {
+  generalNavigationItems,
+  restrictedNavigationItems,
+  isNavigationItemActive,
+} from '../../constants/navigationConstants';
 
 /**
  * MenuDropdown component for displaying a dropdown menu with navigation links.
@@ -30,6 +23,8 @@ function MenuDropdown({ setShowHelpModal }) {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const homeItem = generalNavigationItems[0];
+  const HomeIcon = homeItem.icon;
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -79,73 +74,44 @@ function MenuDropdown({ setShowHelpModal }) {
         <div className="dropdown-content">
           <div className="home-button-container">
             <button
-              onClick={() => handleNavClick('/')}
+              onClick={() => handleNavClick(homeItem.path)}
               className={location.pathname === '/' ? 'active' : ''}
             >
-              <TbSmartHome size={16} />
-              Home
+              <HomeIcon size={16} />
+              {homeItem.label}
             </button>
           </div>
 
           <div className="menu-section">
-            <button
-              onClick={() => handleNavClick('/radar')}
-              className={location.pathname === '/radar' ? 'active' : ''}
-            >
-              <MdOutlineRadar size={16} />
-              Tech Radar
-            </button>
-            <button
-              onClick={() => handleNavClick('/statistics')}
-              className={location.pathname === '/statistics' ? 'active' : ''}
-            >
-              <TbChartBar size={16} />
-              Statistics
-            </button>
-            <button
-              onClick={() => handleNavClick('/projects')}
-              className={location.pathname === '/projects' ? 'active' : ''}
-            >
-              <TbUsers size={16} />
-              Projects
-            </button>
-            <button
-              onClick={() => handleNavClick('/copilot')}
-              className={location.pathname.includes('/copilot') ? 'active' : ''}
-            >
-              <VscCopilot size={16} />
-              GitHub Copilot
-            </button>
-            <button
-              onClick={() => handleNavClick('/addressbook')}
-              className={location.pathname === '/addressbook' ? 'active' : ''}
-            >
-              <TbAddressBook size={16} />
-              GitHub Address Book
-            </button>
+            {generalNavigationItems.slice(1).map(item => (
+              <button
+                key={item.path}
+                onClick={() => handleNavClick(item.path)}
+                className={
+                  isNavigationItemActive(item, location.pathname)
+                    ? 'active'
+                    : ''
+                }
+              >
+                <item.icon size={16} />
+                {item.label}
+              </button>
+            ))}
           </div>
 
           <div className="menu-section restricted-section">
             <div className="menu-section-title">Restricted</div>
             {/* Keep these as <a> tags for proper authentication handling */}
-            <a
-              href="/review/dashboard"
-              className={
-                location.pathname === '/review/dashboard' ? 'active' : ''
-              }
-            >
-              <TbEditCircle size={16} />
-              Review
-            </a>
-            <a
-              href="/admin/dashboard"
-              className={
-                location.pathname === '/admin/dashboard' ? 'active' : ''
-              }
-            >
-              <TbUserShield size={16} />
-              Admin
-            </a>
+            {restrictedNavigationItems.map(item => (
+              <a
+                key={item.path}
+                href={item.path}
+                className={location.pathname === item.path ? 'active' : ''}
+              >
+                <item.icon size={16} />
+                {item.label}
+              </a>
+            ))}
           </div>
 
           <div className="help-button-container">

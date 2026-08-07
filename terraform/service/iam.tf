@@ -105,6 +105,31 @@ resource "aws_iam_policy" "s3_copilot_read_only" {
   })
 }
 
+# Policy for S3 read access to GitHub policy audit bucket
+resource "aws_iam_policy" "s3_policy_audit_read_only" {
+  name        = "${var.domain}-${var.service_subdomain}-s3-policy-audit-read-only"
+  path        = "/"
+  description = "Read-only access to GitHub policy audit bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:GetObjectVersion"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.policy_audit_bucket_name}",
+          "arn:aws:s3:::${var.policy_audit_bucket_name}/*"
+        ]
+      }
+    ]
+  })
+}
+
 # IAM policy to allow ECS task to access the specified Secrets Manager secret
 resource "aws_iam_policy" "secretsmanager_access" {
   name        = "${var.domain}-${var.service_subdomain}-secretsmanager-access"
@@ -140,6 +165,11 @@ resource "aws_iam_role_policy_attachment" "ecs_s3_read_and_write_attach" {
 resource "aws_iam_role_policy_attachment" "ecs_s3_copilot_read_only_attach" {
   role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.s3_copilot_read_only.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_s3_policy_audit_read_only_attach" {
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = aws_iam_policy.s3_policy_audit_read_only.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_secretsmanager_access_attach" {

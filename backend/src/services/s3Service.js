@@ -2,6 +2,7 @@ const {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
+  ListObjectsV2Command,
 } = require('@aws-sdk/client-s3');
 const logger = require('../config/logger');
 
@@ -20,6 +21,8 @@ class S3Service {
       tat: process.env.TAT_BUCKET_NAME || 'sdp-dev-tech-audit-tool-api',
       copilot:
         process.env.COPILOT_BUCKET_NAME || 'sdp-dev-copilot-usage-dashboard',
+      policyAudit:
+        process.env.POLICY_AUDIT_BUCKET_NAME || 'sdp-dev-github-policy-audit',
     };
   }
 
@@ -83,6 +86,40 @@ class S3Service {
    */
   getBucketName(bucketKey) {
     return this.buckets[bucketKey] || bucketKey;
+  }
+
+  /**
+   * List objects in an S3 bucket with optional prefix
+   * @param {string} bucket - Bucket name or bucket key from this.buckets
+   * @param {string} prefix - Optional prefix to filter objects
+   * @returns {Promise<Array>} Array of objects with Key and LastModified properties
+   */
+  async listObjects(bucket, prefix = '') {
+    try {
+      const bucketName = this.buckets[bucket] || bucket;
+
+      // This will only return up to 1000 objects. For more, you would need to implement pagination.
+      // Due to the nature of the application, we are unlikely to have more than 1000 objects in a single prefix, so this is acceptable for now.
+      // AWS Docs: https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html
+      const command = new ListObjectsV2Command({
+        Bucket: bucketName,
+        Prefix: prefix,
+      });
+
+      const response = await this.s3Client.send(command);
+      logger.info(
+        `Successfully listed objects from ${bucket} with prefix ${prefix}`
+      );
+      return response.Contents || [];
+    } catch (error) {
+      logger.error(
+        `Error listing objects in S3: ${bucket} with prefix ${prefix}`,
+        {
+          error: error.message,
+        }
+      );
+      throw error;
+    }
   }
 }
 

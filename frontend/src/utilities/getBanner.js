@@ -11,10 +11,6 @@ export const fetchBanners = async page => {
 
     const response = await customFetch(baseUrl);
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch banners');
-    }
-
     const data = await response.json();
 
     if (!data.messages || !Array.isArray(data.messages)) {

@@ -60,6 +60,7 @@ export default defineConfig({
         '/admin/api',
         '/review/api',
         '/addressbook/api',
+        '/policy-reports/api',
       ].map(path => [
         path,
         {

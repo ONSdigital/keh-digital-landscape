@@ -10,14 +10,14 @@
     "@octokit/rest": "^22.0.0",
     "aws-jwt-verify": "^5.1.0",
     "body-parser": "^2.3.0",
-    "brace-expansion": "^5.0.8",
+    "brace-expansion": "^5.0.9",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.2.1",
     "express-rate-limit": "^7.5.0",
-    "js-yaml": "^4.3.0",
+    "js-yaml": "^4.3.1",
     "node-fetch": "^3.3.2",
     "winston": "^3.17.0",
     "winston-cloudwatch": "^6.3.0"
@@ -37,9 +37,10 @@
   "description": "",
   "overrides": {
     "fast-xml-parser": "^5.5.7",
-    "brace-expansion": "^5.0.8",
+    "js-yaml": "^4.3.1",
+    "brace-expansion": "^5.0.9",
     "nodemon": {
-      "brace-expansion": "^5.0.8"
+      "brace-expansion": "^5.0.9"
     }
   },
   "devDependencies": {

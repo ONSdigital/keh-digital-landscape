@@ -157,6 +157,11 @@ variable "copilot_bucket_name" {
   type        = string
 }
 
+variable "policy_audit_bucket_name" {
+  description = "Name of the S3 bucket storing GitHub policy audit results"
+  type        = string
+}
+
 variable "frontend_ecr_repo" {
   description = "Frontend ECR repository"
   type        = string

@@ -21,12 +21,6 @@ export const fetchRepositoryStats = async (date = null, archived = null) => {
 
     const response = await customFetch(url);
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch repository stats: ${response.statusText}`
-      );
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -62,12 +56,6 @@ export const fetchRepositoryData = async (
     const response = await customFetch(
       `/api/repository/project/json?${params.toString()}`
     );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch repository data: ${response.statusText}`
-      );
-    }
 
     const data = await response.json();
     return data;

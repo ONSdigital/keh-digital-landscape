@@ -51,6 +51,8 @@ aws sso login
 aws s3 cp s3://<S3 Object Path> backend/data/<path>
 ```
 
+Full commands on doing this are available within KEH's Confluence. There is a `Digital Landscape Local Data` playbook that contains commands to copy and paste into your terminal to download the data. ***(Internal only)***
+
 ## Notes
 
 - Keep downloaded data local and avoid committing real environment data.

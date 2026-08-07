@@ -10,10 +10,12 @@ const BUCKET_DIR_MAP = {
   main: 'main',
   tat: 'tat',
   copilot: 'copilot',
+  policyAudit: 'policyAudit',
   // Full AWS bucket names (used when env vars are absent)
   'sdp-dev-digital-landscape': 'main',
   'sdp-dev-tech-audit-tool-api': 'tat',
   'sdp-dev-copilot-usage-dashboard': 'copilot',
+  'sdp-dev-github-policy-audit': 'policyAudit',
 };
 
 /**
@@ -23,9 +25,30 @@ const BUCKET_DIR_MAP = {
  */
 class LocalS3Service {
   /**
+   * Resolve a local filesystem path within a bucket directory safely.
+   * Prevents path traversal outside the local data directory.
+   * @param {string} dir - Local directory name for the bucket
+   * @param {string} prefix - Optional object key prefix
+   * @returns {string} Absolute path within DATA_DIR/dir
+   */
+  _resolveSafePath(dir, prefix = '') {
+    const bucketRoot = path.resolve(DATA_DIR, dir);
+    const resolvedPath = path.resolve(bucketRoot, prefix);
+
+    if (
+      resolvedPath !== bucketRoot &&
+      !resolvedPath.startsWith(`${bucketRoot}${path.sep}`)
+    ) {
+      throw new Error('Invalid prefix path');
+    }
+
+    return resolvedPath;
+  }
+
+  /**
    * Resolve a bucket name or key to a local subdirectory name.
    * Falls back to using the raw bucket value if no mapping exists.
-   * @param {string} bucket - Bucket key ('main', 'tat', 'copilot') or full AWS bucket name
+   * @param {string} bucket - Bucket key ('main', 'tat', 'copilot', 'policyAudit') or full AWS bucket name
    * @returns {string} Local directory name
    */
   _resolveDir(bucket) {
@@ -35,6 +58,8 @@ class LocalS3Service {
       tat: process.env.TAT_BUCKET_NAME || 'sdp-dev-tech-audit-tool-api',
       copilot:
         process.env.COPILOT_BUCKET_NAME || 'sdp-dev-copilot-usage-dashboard',
+      policyAudit:
+        process.env.POLICY_AUDIT_BUCKET_NAME || 'sdp-dev-github-policy-audit',
     };
 
     // If the caller passes a known logical key, use it directly
@@ -104,6 +129,69 @@ class LocalS3Service {
    */
   getBucketName(bucketKey) {
     return this._resolveDir(bucketKey);
+  }
+
+  /**
+   * List objects in a local directory, mirroring S3Service.listObjects.
+   * Recursively walks the directory structure and returns file information.
+   * @param {string} bucket - Bucket key or full bucket name
+   * @param {string} prefix - Optional prefix to filter objects (directory path)
+   * @returns {Promise<Array>} Array of objects with Key and LastModified properties
+   */
+  async listObjects(bucket, prefix = '') {
+    const dir = this._resolveDir(bucket);
+    const basePath = this._resolveSafePath(dir, prefix);
+
+    try {
+      const results = [];
+
+      /**
+       * Recursively walk directory and collect files
+       */
+      const walk = async (currentPath, relativePath) => {
+        const entries = await fs.readdir(currentPath, {
+          withFileTypes: true,
+        });
+
+        for (const entry of entries) {
+          const fullPath = path.join(currentPath, entry.name);
+          const relPath = path.posix.join(relativePath, entry.name);
+
+          if (entry.isDirectory()) {
+            // Recursively walk subdirectories
+            await walk(fullPath, relPath);
+          } else if (entry.isFile()) {
+            // Get file stats for LastModified
+            const stats = await fs.stat(fullPath);
+            results.push({
+              Key: relPath,
+              LastModified: stats.mtime,
+              Size: stats.size,
+            });
+          }
+        }
+      };
+
+      // Start walking from the base path
+      try {
+        await walk(basePath, prefix);
+      } catch (error) {
+        // If the directory doesn't exist, return empty array
+        if (error.code === 'ENOENT') {
+          logger.info(`[LOCAL] Directory not found: ${dir}/${prefix}`);
+          return [];
+        }
+        throw error;
+      }
+
+      logger.info(`[LOCAL] Listed objects from ${dir}/${prefix}`);
+      return results;
+    } catch (error) {
+      logger.error(`[LOCAL] Error listing objects in ${dir}/${prefix}`, {
+        error: error.message,
+      });
+      throw error;
+    }
   }
 }
 
