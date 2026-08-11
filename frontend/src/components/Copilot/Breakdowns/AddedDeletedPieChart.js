@@ -51,11 +51,13 @@ const AddedDeletedPieChart = ({ pieData, formatLabel, title }) => {
     for (const item of rows) {
       const [name, fraction] = Object.entries(item)[0] ?? [];
       if (!name || name.toLowerCase() === 'unknown') continue;
-      aggregated[name] = (aggregated[name] ?? 0) + (fraction ?? 0) * 100;
+
+      const label = labelFn(name);
+      aggregated[label] = (aggregated[label] ?? 0) + (fraction ?? 0) * 100;
     }
 
     const sorted = Object.entries(aggregated)
-      .map(([name, value]) => ({ name: labelFn(name), value }))
+      .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
 
     const top = sorted.slice(0, MAX_SLICES);
