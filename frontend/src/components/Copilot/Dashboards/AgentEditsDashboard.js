@@ -29,8 +29,9 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
     <div className="copilot-dashboard">
       <h2>Agent Mode</h2>
       <p className="disclaimer-banner">
-        Lines of code added or deleted are from agent sessions where Copilot autonomously writes changes
-        directly into files as a part of a multi-step task. Weekend data can be toggled in the settings menu
+        Lines of code added or deleted are from agent sessions where Copilot
+        autonomously writes changes directly into files as a part of a
+        multi-step task. Weekend data can be toggled in the settings menu
         (cogwheel) on this page.
       </p>
 
