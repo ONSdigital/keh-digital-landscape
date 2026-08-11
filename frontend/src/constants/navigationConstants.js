@@ -69,8 +69,8 @@ const baseNavigationItems = {
   },
   review: {
     path: '/review/dashboard',
-    label: 'Edit Page',
-    description: 'Authorised users can edit and update the data on the Tech Radar.',
+    label: 'Review',
+    description: 'Authorised users can update the data on the Tech Radar.',
     icon: TbEditCircle,
     isLink: false,
     homeUseAnchor: true,

@@ -365,7 +365,7 @@ function HelpModal({ show, onClose }) {
         };
       case '/review/dashboard':
         return {
-          title: 'Edit Page',
+          title: 'Review Dashboard',
           content: (
             <div className="help-modal-body">
               {githubPagesLink()}
