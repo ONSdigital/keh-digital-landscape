@@ -3,13 +3,13 @@ import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
-import AgentsEditsDashboard from '../../components/Copilot/Dashboards/AgentsEditsDashboard';
+import AgentEditsDashboard from '../../components/Copilot/Dashboards/AgentEditsDashboard';
 import { processAgentEditsData } from '../../utilities/agentEditsData/processAgentEditsData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
 
-function AgentsEditsPage() {
+function AgentEditsPage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
@@ -56,7 +56,7 @@ function AgentsEditsPage() {
           settings={settings}
           onSettingChange={handleSettingChange}
         />
-        <AgentsEditsDashboard
+        <AgentEditsDashboard
           data={processedData}
           isLoading={isLoading}
           chartDisplaySettings={chartDisplaySettings}
@@ -66,4 +66,4 @@ function AgentsEditsPage() {
   );
 }
 
-export default AgentsEditsPage;
+export default AgentEditsPage;
