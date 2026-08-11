@@ -86,7 +86,10 @@ const LinesAddedDeletedBarChart = ({ data, includeWeekendUsage = true }) => {
   const formatXAxisDate = value => {
     const date = new Date(value);
     if (timeBreakdown === 'month') {
-      return date.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' });
+      return date.toLocaleDateString('en-GB', {
+        month: 'short',
+        year: '2-digit',
+      });
     }
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',

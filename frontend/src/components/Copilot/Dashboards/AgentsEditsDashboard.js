@@ -52,7 +52,9 @@ function AgentsEditsDashboard({ data, isLoading, chartDisplaySettings }) {
         ) : (
           <LinesAddedDeletedBarChart
             data={data.dailyGraph}
-            includeWeekendUsage={chartDisplaySettings?.includeWeekendUsage ?? true}
+            includeWeekendUsage={
+              chartDisplaySettings?.includeWeekendUsage ?? true
+            }
           />
         )}
       </div>
