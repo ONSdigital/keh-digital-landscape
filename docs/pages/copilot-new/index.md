@@ -24,7 +24,7 @@ The landing page is designed around **progressive disclosure**: users see just e
 | General Usage        | `/copilot/general`     |
 | IDE Code Completions | `/copilot/completions` |
 | Copilot Chat         | `/copilot/chat`        |
-| Agent Edits          | `/copilot/edits`       |
+| Agent Mode           | `/copilot/agent`       |
 | Legacy Usage         | `/copilot/legacy`      |
 
 ## Features
@@ -91,7 +91,7 @@ A feature-focused dashboard for Agent Edit sessions. This page follows the same 
 
 - Code Completions route: `/copilot/completions`.
 
-- Agent Edits route: `/copilot/edits`.
+- Agent Mode route: `/copilot/agent`.
 
 - Back button behavior: returns from each feature page to `/copilot/home`.
 
