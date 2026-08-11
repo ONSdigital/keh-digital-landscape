@@ -95,7 +95,7 @@ const App = () => {
           path="/copilot/general"
           element={<CopilotDashboardGeneralUsagePage />}
         />
-        <Route path="/copilot/edits" element={<CopilotAgentEditsPage />} />
+        <Route path="/copilot/agent" element={<CopilotAgentEditsPage />} />
       </Routes>
     </Suspense>
   );

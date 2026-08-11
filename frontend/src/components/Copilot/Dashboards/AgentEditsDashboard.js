@@ -27,10 +27,11 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
 
   return (
     <div className="copilot-dashboard">
-      <h2>Agent Edits</h2>
+      <h2>Agent Mode</h2>
       <p className="disclaimer-banner">
-        Lines of code added or deleted is from Agent Edit sessions. Weekend data
-        can be toggled in the settings menu (cogwheel) on this page.
+        Lines of code added or deleted are from agent sessions where Copilot autonomously writes changes
+        directly into files as a part of a multi-step task. Weekend data can be toggled in the settings menu
+        (cogwheel) on this page.
       </p>
 
       <div className="copilot-dashboard-section">
@@ -75,12 +76,6 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
             <AddedDeletedPieChart
               title="Model Breakdown"
               pieData={data.modelPieChart}
-              formatLabel={name =>
-                name
-                  .split(/[-_\s]+/)
-                  .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-                  .join(' ')
-              }
             />
           </div>
         )}
