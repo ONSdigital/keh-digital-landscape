@@ -1,5 +1,6 @@
 // This file is responsible for processing the Copilot usage data and formatting it
 // into relevant data for the Agent Edits dashboard.
+import { LANGUAGE_NAMES, MODEL_NAMES } from '../../constants/copilotConstants';
 
 /**
  * Returns true when the given date string falls on a Saturday or Sunday.
@@ -78,7 +79,7 @@ export function processAgentEditsData(data, options = {}) {
     );
 
     for (const row of agentLangRows) {
-      const lang = row.language;
+      const lang = LANGUAGE_NAMES[row.language] ?? row.language;
       const added = row.loc_added_sum ?? 0;
       const deleted = row.loc_deleted_sum ?? 0;
 
@@ -94,7 +95,7 @@ export function processAgentEditsData(data, options = {}) {
     );
 
     for (const row of agentModelRows) {
-      const model = row.model;
+      const model = MODEL_NAMES[row.model] ?? row.model;
       const added = row.loc_added_sum ?? 0;
       const deleted = row.loc_deleted_sum ?? 0;
 
