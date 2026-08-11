@@ -72,7 +72,7 @@ function CopilotDashboardLandingPage() {
             />
             <CopilotNavCard
               icon={RiRobot2Line}
-              title="Agents Edits"
+              title="Agent Edits"
               href="/copilot/edits"
             />
           </div>
