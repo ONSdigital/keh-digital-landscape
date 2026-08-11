@@ -11,7 +11,9 @@ async function mockCopilotAPI(page, data = copilotAgentEditsData) {
   });
 }
 
-test('Agent Edits page routes correctly from landing page', async ({ page }) => {
+test('Agent Edits page routes correctly from landing page', async ({
+  page,
+}) => {
   await page.goto('http://localhost:3000/copilot/home');
   await page.getByText('Agent Edits').click();
   await expect(page).toHaveURL('http://localhost:3000/copilot/edits');
@@ -40,8 +42,12 @@ test('Agent Edits page displays correct page structure', async ({ page }) => {
     timeout: 10000,
   });
 
-  await expect(page.getByRole('heading', { name: 'Agent Edits' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Overall Usage' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Agent Edits' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Overall Usage' })
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Breakdowns' })).toBeVisible();
 
   await expect(
