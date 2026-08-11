@@ -10,7 +10,6 @@ import {
 import { useTheme } from '../../../contexts/ThemeContext';
 import GraphSelect from '../../GraphSelect/GraphSelect';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
-import { LANGUAGE_NAMES } from '../../../constants/copilotConstants';
 import '../../../styles/Copilot/ReusableStyles.css';
 
 const MODE_OPTIONS = [
@@ -22,11 +21,8 @@ const MAX_SLICES = 7;
 
 /**
  * Generic donut pie chart for data keyed by 'added' / 'deleted'.
- * Accepts the same fraction-array format produced by processAgentEditsData:
- *   { added: [{ <label>: fraction }, …], deleted: [{ <label>: fraction }, …] }
- *
- * The `formatLabel` prop lets callers control how raw keys are displayed
- * (defaults to LANGUAGE_NAMES look-up, which also works fine for model names).
+ * Expects pre-formatted display-name keys as produced by processAgentEditsData.
+ * The optional `formatLabel` prop can override label rendering if needed.
  *
  * @param {{ added: Array, deleted: Array }} pieData
  * @param {(name: string) => string} [formatLabel]
@@ -37,12 +33,7 @@ const AddedDeletedPieChart = ({ pieData, formatLabel, title }) => {
   const isDark = theme === 'dark';
   const colorPalette = getChartPalette(MAX_SLICES, isDark);
 
-  const defaultFormat = name => {
-    const lower = name.toLowerCase();
-    return LANGUAGE_NAMES[lower] ?? name;
-  };
-
-  const labelFn = formatLabel ?? defaultFormat;
+  const labelFn = formatLabel ?? (name => name);
 
   const chartData = useMemo(() => {
     const rows = pieData?.[mode] ?? [];
