@@ -109,24 +109,24 @@ describe('processAgentEditsData', () => {
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([
-        { javascript: 70 / 120 },
-        { python: 30 / 120 },
-        { go: 20 / 120 },
+        { JavaScript: 70 / 120 },
+        { Python: 30 / 120 },
+        { Go: 20 / 120 },
       ])
     );
 
     expect(result.languagePieChart.deleted).toEqual(
       expect.arrayContaining([
-        { javascript: 20 / 50 },
-        { python: 20 / 50 },
-        { go: 10 / 50 },
+        { JavaScript: 20 / 50 },
+        { Python: 20 / 50 },
+        { Go: 10 / 50 },
       ])
     );
 
     expect(result.modelPieChart.added).toEqual(
       expect.arrayContaining([
         { 'gpt-5': 80 / 120 },
-        { 'gpt-4.1': 20 / 120 },
+        { 'GPT-4.1': 20 / 120 },
         { 'claude-3.7': 20 / 120 },
       ])
     );
@@ -134,7 +134,7 @@ describe('processAgentEditsData', () => {
     expect(result.modelPieChart.deleted).toEqual(
       expect.arrayContaining([
         { 'gpt-5': 30 / 50 },
-        { 'gpt-4.1': 10 / 50 },
+        { 'GPT-4.1': 10 / 50 },
         { 'claude-3.7': 10 / 50 },
       ])
     );
