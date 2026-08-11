@@ -24,7 +24,7 @@ The landing page is designed around **progressive disclosure**: users see just e
 | General Usage        | `/copilot/general`     |
 | IDE Code Completions | `/copilot/completions` |
 | Copilot Chat         | `/copilot/chat`        |
-| Agent Edits          | `/copilot/agent`       |
+| Agent Edits          | `/copilot/edits`       |
 | Legacy Usage         | `/copilot/legacy`      |
 
 ## Features
@@ -69,11 +69,29 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
 
+### Agent Edits
+
+A feature-focused dashboard for Agent Edit sessions. This page follows the same architecture pattern as the other Copilot feature pages:
+
+- **Page responsibilities**: route-level layout, back navigation, chart settings state, and data fetch/transform.
+
+- **Dashboard responsibilities**: presentational rendering of summary cards and charts from processed props.
+
+**Sections:**
+
+- **Overall Usage**: two summary cards for total lines added and total lines deleted.
+
+- **Lines Added vs Lines Deleted**: a stacked bar chart with selectable day/week/month aggregation. The day view can optionally exclude weekends.
+
+- **Breakdowns**: two donut charts for Language Breakdown and Model Breakdown, each with selectable mode for lines added vs lines deleted.
+
 ### Navigation and Routing
 
-- Entry point from landing page: **General Usage** and **IDE Code Completions** cards on `/copilot/home`.
+- Entry point from landing page: **General Usage**, **IDE Code Completions**, and **Agent Edits** cards on `/copilot/home`.
 
 - Code Completions route: `/copilot/completions`.
+
+- Agent Edits route: `/copilot/edits`.
 
 - Back button behavior: returns from each feature page to `/copilot/home`.
 
@@ -94,6 +112,8 @@ All data is fetched from the backend and processed on the frontend. See the proc
 - **General Usage**: `utilities/generalUsageCopilotData/processGeneralUsageCopilotData.js`
 
 - **IDE Code Completions**: `utilities/codeCompletionCopilotdata/processCodeCompletionData.js`
+
+- **Agent Edits**: `utilities/agentEditsData/processAgentEditsData.js`
 
 - **Legacy Usage**: `utilities/legacyCopilotData/processLegacyCopilotData.js`
 
