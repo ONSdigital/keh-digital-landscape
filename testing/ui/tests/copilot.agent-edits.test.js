@@ -15,8 +15,8 @@ test('Agent Edits page routes correctly from landing page', async ({
   page,
 }) => {
   await page.goto('http://localhost:3000/copilot/home');
-  await page.getByText('Agent Edits').click();
-  await expect(page).toHaveURL('http://localhost:3000/copilot/edits');
+  await page.getByText('Agent Mode').click();
+  await expect(page).toHaveURL('http://localhost:3000/copilot/agent');
 });
 
 test('Agent Edits page shows skeleton loading state', async ({ page }) => {
@@ -29,7 +29,7 @@ test('Agent Edits page shows skeleton loading state', async ({ page }) => {
     });
   });
 
-  await page.goto('http://localhost:3000/copilot/edits');
+  await page.goto('http://localhost:3000/copilot/agent');
   await expect(page.locator('.stat-card.skeleton').first()).toBeVisible();
   await expect(page.locator('.copilot-graph-container.skeleton')).toBeVisible();
 });
@@ -37,13 +37,13 @@ test('Agent Edits page shows skeleton loading state', async ({ page }) => {
 test('Agent Edits page displays correct page structure', async ({ page }) => {
   await mockCopilotAPI(page);
 
-  await page.goto('http://localhost:3000/copilot/edits');
+  await page.goto('http://localhost:3000/copilot/agent');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
   });
 
   await expect(
-    page.getByRole('heading', { name: 'Agent Edits' })
+    page.getByRole('heading', { name: 'Agent Mode' })
   ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Overall Usage' })
@@ -68,7 +68,7 @@ test('Agent Edits page displays correct page structure', async ({ page }) => {
 test('Agent Edits page shows weekend setting control', async ({ page }) => {
   await mockCopilotAPI(page);
 
-  await page.goto('http://localhost:3000/copilot/edits');
+  await page.goto('http://localhost:3000/copilot/agent');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
   });
@@ -80,7 +80,7 @@ test('Agent Edits page shows weekend setting control', async ({ page }) => {
 test('Agent Edits page back button navigates to landing page', async ({
   page,
 }) => {
-  await page.goto('http://localhost:3000/copilot/edits');
+  await page.goto('http://localhost:3000/copilot/agent');
   await page.locator('.copilot-back-button').click();
   await expect(page).toHaveURL('http://localhost:3000/copilot/home');
 });

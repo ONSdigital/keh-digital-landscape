@@ -19,7 +19,7 @@ test('Landing page sections are displayed correctly', async ({ page }) => {
     exploreUsageByFeatureSection.getByText('Copilot Chat')
   ).toBeVisible();
   await expect(
-    exploreUsageByFeatureSection.getByText('Agent Edits')
+    exploreUsageByFeatureSection.getByText('Agent Mode')
   ).toBeVisible();
 
   const otherSection = page
