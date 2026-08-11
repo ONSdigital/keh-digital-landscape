@@ -22,6 +22,9 @@ const CopilotDashboardGeneralUsagePage = lazy(
 const CopilotCodeCompletionsPage = lazy(
   () => import('./pages/Copilot/CodeCompletionsPage')
 );
+const CopilotAgentsEditsPage = lazy(
+  () => import('./pages/Copilot/AgentsEditsPage')
+);
 
 import { getDirectorates } from './utilities/getDirectorates';
 
@@ -91,6 +94,10 @@ const App = () => {
         <Route
           path="/copilot/general"
           element={<CopilotDashboardGeneralUsagePage />}
+        />
+        <Route
+          path="/copilot/edits"
+          element={<CopilotAgentsEditsPage />}
         />
       </Routes>
     </Suspense>
