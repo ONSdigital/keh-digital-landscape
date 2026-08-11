@@ -19,7 +19,7 @@ function StatCard({ title, value }) {
   );
 }
 
-function AgentsEditsDashboard({ data, isLoading, chartDisplaySettings }) {
+function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
   const totalLinesAdded = data?.summaryCards?.totalLinesAdded ?? 0;
@@ -89,4 +89,4 @@ function AgentsEditsDashboard({ data, isLoading, chartDisplaySettings }) {
   );
 }
 
-export default AgentsEditsDashboard;
+export default AgentEditsDashboard;
