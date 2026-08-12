@@ -50,6 +50,9 @@ support_mail=$(echo "$secrets" | jq -r .support_mail)
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
 tech_radar_submissions_url=$(echo "$secrets" | jq -r .tech_radar_submissions_url)
 
+# Google Analytics Container ID
+ga_container_id=$(echo "$secrets" | jq -r .ga_container_id)
+
 # Cognito variables for AzureAD SAML
 domain_extension=$(echo "$secrets" | jq -r .domain_extension)
 enable_azuread_saml=$(echo "$secrets" | jq -r .enable_azuread_saml)
@@ -128,4 +131,5 @@ terraform apply \
 	-var "support_mail=$support_mail" \
 	-var "alerts_channel_id=$alerts_channel_id" \
 	-var "tech_radar_submissions_url=$tech_radar_submissions_url" \
+	-var "ga_container_id=$ga_container_id" \
 	-auto-approve
