@@ -60,6 +60,7 @@ terraform-task: &terraform-task
       secrets: ((sdp_((env))_digital_landscape_secrets))
       # kics-scan ignore-line (This one alert is a false positive)
       github_access_token: ((github_access_token))
+      aws_role_arn: arn:aws:iam::((aws_account_sdp_dev)):role/sdp-concourse-dev-test
       env: ((env))
       branch: ((branch))
     run:
@@ -79,7 +80,9 @@ terraform-task: &terraform-task
             echo "ERROR: Tag '$tag' is not in semantic versioning format (vX.Y.Z)"
             exit 1
           fi
+          chmod u+x ./resource-repo/concourse/scripts/assume_role.sh
           chmod u+x ./resource-repo/concourse/scripts/terraform_infra.sh
+          source ./resource-repo/concourse/scripts/assume_role.sh
           ./resource-repo/concourse/scripts/terraform_infra.sh
     timeout: 30m
 
@@ -213,7 +216,7 @@ jobs:
                 - name: release-tag-output
               params:
                 aws_account_id: ((aws_account_sdp_dev))
-                aws_role_arn: arn:aws:iam::((aws_account_sdp_dev)):role/sdp-concourse-dev
+                aws_role_arn: arn:aws:iam::((aws_account_sdp_dev)):role/sdp-concourse-dev-test
                 secrets: ((sdp_dev_digital_landscape_secrets))
                 env: dev
                 tag: github-release-tag/tag # Use the release tag from the resource

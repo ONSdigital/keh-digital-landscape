@@ -56,8 +56,9 @@ enable_azuread_saml=$(echo "$secrets" | jq -r .enable_azuread_saml)
 azure_ad_metadata_url=$(echo "$secrets" | jq -r .azure_ad_metadata_url)
 azuread_provider_name=$(echo "$secrets" | jq -r .azuread_provider_name)
 
-export AWS_ACCESS_KEY_ID="$aws_access_key_id"
-export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
+# Temporarily commenting out to test assume rule for Terraform apply.
+# export AWS_ACCESS_KEY_ID="$aws_access_key_id"
+# export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
 
 git config --global url."https://x-access-token:${github_access_token}@github.com/".insteadOf "https://github.com/"
 
