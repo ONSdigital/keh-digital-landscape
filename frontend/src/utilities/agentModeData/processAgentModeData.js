@@ -1,5 +1,5 @@
 // This file is responsible for processing the Copilot usage data and formatting it
-// into relevant data for the Agent Edits dashboard.
+// into relevant data for the Agent Mode dashboard.
 import { LANGUAGE_NAMES, MODEL_NAMES } from '../../constants/copilotConstants';
 
 /**
@@ -29,7 +29,7 @@ function isWeekendDate(dateString) {
  * @param {boolean} [options.includeWeekendUsage=true]
  * @returns {Object}
  */
-export function processAgentEditsData(data, options = {}) {
+export function processAgentModeData(data, options = {}) {
   const { includeWeekendUsage = true } = options;
 
   // ── Summary totals ─────────────────────────────────────────────────────────

@@ -69,7 +69,7 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
 
-### Agent Edits
+### Agent Mode
 
 A feature-focused dashboard for Agent Edit sessions. This page follows the same architecture pattern as the other Copilot feature pages:
 
@@ -87,7 +87,7 @@ A feature-focused dashboard for Agent Edit sessions. This page follows the same 
 
 ### Navigation and Routing
 
-- Entry point from landing page: **General Usage**, **IDE Code Completions**, and **Agent Edits** cards on `/copilot/home`.
+- Entry point from landing page: **General Usage**, **IDE Code Completions**, and **Agent Mode** cards on `/copilot/home`.
 
 - Code Completions route: `/copilot/completions`.
 
@@ -113,7 +113,7 @@ All data is fetched from the backend and processed on the frontend. See the proc
 
 - **IDE Code Completions**: `utilities/codeCompletionCopilotdata/processCodeCompletionData.js`
 
-- **Agent Edits**: `utilities/agentEditsData/processAgentEditsData.js`
+- **Agent Mode**: `utilities/agentModeData/processAgentModeData.js`
 
 - **Legacy Usage**: `utilities/legacyCopilotData/processLegacyCopilotData.js`
 

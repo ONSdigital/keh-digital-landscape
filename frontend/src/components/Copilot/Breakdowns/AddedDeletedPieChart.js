@@ -21,7 +21,7 @@ const MAX_SLICES = 7;
 
 /**
  * Generic donut pie chart for data keyed by 'added' / 'deleted'.
- * Expects pre-formatted display-name keys as produced by processAgentEditsData.
+ * Expects pre-formatted display-name keys as produced by processAgentModeData.
  * The optional `formatLabel` prop can override label rendering if needed.
  *
  * @param {{ added: Array, deleted: Array }} pieData
