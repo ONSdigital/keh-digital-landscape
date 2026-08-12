@@ -1,4 +1,4 @@
-import { COPILOT_CHART_PALETTE } from '../constants/copilotConstants';
+import { COPILOT_CHART_PALETTE, OTHER_SLICE_COLOR } from '../constants/copilotConstants';
 
 /**
  * Returns a consecutive array of colours for a chart.
@@ -16,4 +16,13 @@ export function getChartPalette(count, isDark) {
   // Then maps each index in the array containing "undefined" to a colour from the palette
   // Cycling through if necessary.
   return Array.from({ length: count }, (_, i) => palette[i % palette.length]);
+}
+
+/**
+ * Returns the colour to use for an 'Other' catch-all slice.
+ * @param {boolean} isDark - Whether dark mode is active
+ * @returns {string}
+ */
+export function getOtherSliceColor(isDark) {
+  return isDark ? OTHER_SLICE_COLOR.dark : OTHER_SLICE_COLOR.light;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import StatCard from '../../StatCard/StatCard';
 import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarChart';
-import AddedDeletedPieChart from '../Breakdowns/AddedDeletedPieChart';
+import AddedDeletedPieChart from '../Breakdowns/AddedVsDeletedPieChart';
 import '../../../styles/components/Statistics.css';
 import '../../../styles/CopilotPage.css';
 import '../../../styles/Copilot/ReusableStyles.css';
