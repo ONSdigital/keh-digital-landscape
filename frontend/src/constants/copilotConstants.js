@@ -108,7 +108,7 @@ export const LANGUAGE_NAMES = {
  */
 export const OTHER_SLICE_COLOR = {
   light: '#708090', // Slate grey
-  dark: '#d9d9d9',  // Light grey
+  dark: '#d9d9d9', // Light grey
 };
 
 export const COPILOT_CHART_PALETTE = {

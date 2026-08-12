@@ -9,7 +9,10 @@ import {
 } from 'recharts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import GraphSelect from '../../GraphSelect/GraphSelect';
-import { getChartPalette, getOtherSliceColor } from '../../../utilities/copilotChartColours';
+import {
+  getChartPalette,
+  getOtherSliceColor,
+} from '../../../utilities/copilotChartColours';
 import { LANGUAGE_NAMES } from '../../../constants/copilotConstants';
 import '../../../styles/Copilot/ReusableStyles.css';
 
