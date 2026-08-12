@@ -59,7 +59,7 @@ function aggregateByPeriod(rows, breakdown) {
  * @param {Array}   data
  * @param {boolean} includeWeekendUsage
  */
-const LinesAddedDeletedBarChart = ({ data, includeWeekendUsage = true }) => {
+const LinesAddedVsDeletedBarChart = ({ data, includeWeekendUsage = true }) => {
   const [timeBreakdown, setTimeBreakdown] = useState('day');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -164,4 +164,4 @@ const LinesAddedDeletedBarChart = ({ data, includeWeekendUsage = true }) => {
   );
 };
 
-export default LinesAddedDeletedBarChart;
+export default LinesAddedVsDeletedBarChart;

@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright/test';
-import { copilotAgentEditsData } from './data/copilotAgentEditsData';
+import { copilotAgentModeData } from './data/copilotAgentModeData';
 
-async function mockCopilotAPI(page, data = copilotAgentEditsData) {
+async function mockCopilotAPI(page, data = copilotAgentModeData) {
   await page.route('**/copilot/api/org/historic', async route => {
     await route.fulfill({
       status: 200,
@@ -11,7 +11,7 @@ async function mockCopilotAPI(page, data = copilotAgentEditsData) {
   });
 }
 
-test('Agent Edits page routes correctly from landing page', async ({
+test('Agent Mode page routes correctly from landing page', async ({
   page,
 }) => {
   await page.goto('http://localhost:3000/copilot/home');
@@ -19,13 +19,13 @@ test('Agent Edits page routes correctly from landing page', async ({
   await expect(page).toHaveURL('http://localhost:3000/copilot/agent');
 });
 
-test('Agent Edits page shows skeleton loading state', async ({ page }) => {
+test('Agent Mode page shows skeleton loading state', async ({ page }) => {
   await page.route('**/copilot/api/org/historic', async route => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(copilotAgentEditsData),
+      body: JSON.stringify(copilotAgentModeData),
     });
   });
 
@@ -34,7 +34,7 @@ test('Agent Edits page shows skeleton loading state', async ({ page }) => {
   await expect(page.locator('.copilot-graph-container.skeleton')).toBeVisible();
 });
 
-test('Agent Edits page displays correct page structure', async ({ page }) => {
+test('Agent Mode page displays correct page structure', async ({ page }) => {
   await mockCopilotAPI(page);
 
   await page.goto('http://localhost:3000/copilot/agent');
@@ -63,7 +63,7 @@ test('Agent Edits page displays correct page structure', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('Agent Edits page shows weekend setting control', async ({ page }) => {
+test('Agent Mode page shows weekend setting control', async ({ page }) => {
   await mockCopilotAPI(page);
 
   await page.goto('http://localhost:3000/copilot/agent');
@@ -75,7 +75,7 @@ test('Agent Edits page shows weekend setting control', async ({ page }) => {
   await expect(page.getByLabel('Include weekend usage')).toBeVisible();
 });
 
-test('Agent Edits page back button navigates to landing page', async ({
+test('Agent Mode page back button navigates to landing page', async ({
   page,
 }) => {
   await page.goto('http://localhost:3000/copilot/agent');
