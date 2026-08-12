@@ -1,23 +1,12 @@
 import React from 'react';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
+import StatCard from '../../StatCard/StatCard';
 import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarChart';
 import AddedDeletedPieChart from '../Breakdowns/AddedDeletedPieChart';
-import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
-import useCountUp from '../../../hooks/useCountUp';
 import '../../../styles/components/Statistics.css';
 import '../../../styles/CopilotPage.css';
 import '../../../styles/Copilot/ReusableStyles.css';
 import '../../../styles/Copilot/GeneralUsagePage.css';
-
-function StatCard({ title, value }) {
-  const animated = useCountUp(Number.isFinite(value) ? value : 0);
-  return (
-    <div className="stat-card">
-      <h2>{title}</h2>
-      <p>{formatNumberWithCommas(Math.round(animated))}</p>
-    </div>
-  );
-}
 
 function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
