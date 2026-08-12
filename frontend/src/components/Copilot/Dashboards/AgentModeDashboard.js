@@ -1,6 +1,6 @@
 import React from 'react';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
-import LinesAddedDeletedBarChart from '../Breakdowns/LinesAddedDeletedBarChart';
+import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarChart';
 import AddedDeletedPieChart from '../Breakdowns/AddedDeletedPieChart';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import useCountUp from '../../../hooks/useCountUp';
@@ -19,7 +19,7 @@ function StatCard({ title, value }) {
   );
 }
 
-function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
+function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
   const totalLinesAdded = data?.summaryCards?.totalLinesAdded ?? 0;
@@ -52,7 +52,7 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <LinesAddedDeletedBarChart
+          <LinesAddedVsDeletedBarChart
             data={data.dailyGraph}
             includeWeekendUsage={
               chartDisplaySettings?.includeWeekendUsage ?? true
@@ -85,4 +85,4 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
   );
 }
 
-export default AgentEditsDashboard;
+export default AgentModeDashboard;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { processAgentEditsData } from './processAgentEditsData';
+import { processAgentModeData } from './processAgentModeData';
 
-describe('processAgentEditsData', () => {
+describe('processAgentModeData', () => {
   const sampleData = [
     {
       day: '2026-03-06',
@@ -70,7 +70,7 @@ describe('processAgentEditsData', () => {
   ];
 
   it('returns summary totals and daily graph rows', () => {
-    const result = processAgentEditsData(sampleData);
+    const result = processAgentModeData(sampleData);
 
     expect(result.summaryCards.totalLinesAdded).toBe(120);
     expect(result.summaryCards.totalLinesDeleted).toBe(50);
@@ -89,7 +89,7 @@ describe('processAgentEditsData', () => {
   });
 
   it('excludes weekend rows when includeWeekendUsage is false', () => {
-    const result = processAgentEditsData(sampleData, {
+    const result = processAgentModeData(sampleData, {
       includeWeekendUsage: false,
     });
 
@@ -105,7 +105,7 @@ describe('processAgentEditsData', () => {
   });
 
   it('builds language and model pie data as fractions', () => {
-    const result = processAgentEditsData(sampleData);
+    const result = processAgentModeData(sampleData);
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([
