@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { useTheme } from '../../../contexts/ThemeContext';
 import GraphSelect from '../../GraphSelect/GraphSelect';
-import { getChartPalette } from '../../../utilities/copilotChartColours';
+import { getChartPalette, getOtherSliceColor } from '../../../utilities/copilotChartColours';
 import '../../../styles/Copilot/ReusableStyles.css';
 
 const MODE_OPTIONS = [
@@ -65,7 +65,7 @@ const AddedDeletedPieChart = ({ pieData, formatLabel, title }) => {
       result.push({
         name: 'Other',
         value: otherValue,
-        color: isDark ? '#d9d9d9' : '#708090',
+        color: getOtherSliceColor(isDark),
       });
     }
 
