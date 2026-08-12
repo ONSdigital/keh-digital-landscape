@@ -1,4 +1,7 @@
-import { COPILOT_CHART_PALETTE, OTHER_SLICE_COLOR } from '../constants/copilotConstants';
+import {
+  COPILOT_CHART_PALETTE,
+  OTHER_SLICE_COLOR,
+} from '../constants/copilotConstants';
 
 /**
  * Returns a consecutive array of colours for a chart.
