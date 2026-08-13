@@ -53,7 +53,7 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <LinesAddedDeletedBarChart
+          <LinesAddedVsDeletedBarChart
             data={data.dailyGraph}
             includeWeekendUsage={
               chartDisplaySettings?.includeWeekendUsage ?? true
@@ -86,4 +86,4 @@ function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
   );
 }
 
-export default AgentEditsDashboard;
+export default AgentModeDashboard;

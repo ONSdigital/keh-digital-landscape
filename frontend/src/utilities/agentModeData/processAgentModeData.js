@@ -30,7 +30,7 @@ function isWeekendDate(dateString) {
  * @param {boolean} [options.includeWeekendUsage=true]
  * @returns {Object}
  */
-export function processAgentEditsData(data, options = {}) {
+export function processAgentModeData(data, options = {}) {
   const { includeWeekendUsage = true } = options;
 
   // ── Summary totals ─────────────────────────────────────────────────────────

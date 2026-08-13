@@ -3,13 +3,13 @@ import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
-import AgentEditsDashboard from '../../components/Copilot/Dashboards/AgentEditsDashboard';
-import { processAgentEditsData } from '../../utilities/agentEditsData/processAgentEditsData';
+import AgentModeDashboard from '../../components/Copilot/Dashboards/AgentModeDashboard';
+import { processAgentModeData } from '../../utilities/agentModeData/processAgentModeData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
 
-function AgentEditsPage() {
+function AgentModePage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
@@ -37,7 +37,7 @@ function AgentEditsPage() {
   };
 
   const processedData = historicUsageData
-    ? processAgentEditsData(historicUsageData, {
+    ? processAgentModeData(historicUsageData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
@@ -56,7 +56,7 @@ function AgentEditsPage() {
           settings={settings}
           onSettingChange={handleSettingChange}
         />
-        <AgentEditsDashboard
+        <AgentModeDashboard
           data={processedData}
           isLoading={isLoading}
           chartDisplaySettings={chartDisplaySettings}
@@ -66,4 +66,4 @@ function AgentEditsPage() {
   );
 }
 
-export default AgentEditsPage;
+export default AgentModePage;

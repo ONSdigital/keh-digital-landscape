@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright/test';
-import { copilotAgentEditsData } from './data/copilotAgentEditsData';
+import { copilotAgentModeData } from './data/copilotAgentModeData';
 
-async function mockCopilotAPI(page, data = copilotAgentEditsData) {
+async function mockCopilotAPI(page, data = copilotAgentModeData) {
   await page.route('**/copilot/api/org/historic', async route => {
     await route.fulfill({
       status: 200,
@@ -25,7 +25,7 @@ test('Agent Mode page shows skeleton loading state', async ({ page }) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(copilotAgentEditsData),
+      body: JSON.stringify(copilotAgentModeData),
     });
   });
 
