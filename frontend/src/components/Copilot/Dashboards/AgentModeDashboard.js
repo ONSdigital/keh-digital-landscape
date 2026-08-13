@@ -8,7 +8,7 @@ import '../../../styles/CopilotPage.css';
 import '../../../styles/Copilot/ReusableStyles.css';
 import '../../../styles/Copilot/GeneralUsagePage.css';
 
-function AgentEditsDashboard({ data, isLoading, chartDisplaySettings }) {
+function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
   const totalLinesAdded = data?.summaryCards?.totalLinesAdded ?? 0;
