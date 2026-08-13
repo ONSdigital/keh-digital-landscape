@@ -25,7 +25,7 @@ const CopilotCodeCompletionsPage = lazy(
 const CopilotAgentEditsPage = lazy(
   () => import('./pages/Copilot/AgentEditsPage')
 );
-const CopilotChatPage = lazy(() => import('./pages/Copilot/CopilotChatPage'));
+const CopilotChatPage = lazy(() => import('./pages/Copilot/ChatModePage'));
 
 import { getDirectorates } from './utilities/getDirectorates';
 
