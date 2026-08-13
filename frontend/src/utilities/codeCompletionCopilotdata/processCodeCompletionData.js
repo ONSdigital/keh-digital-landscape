@@ -1,15 +1,16 @@
 // This file is responsible for processing the Copilot usage data and formatting it into relevant data for the code completion dashboard
 
-/**
- * Process the Copilot data and format it into useful data for graphs and data cards
- * @param {Object} data
- * @returns {Object} An object containing the total Copilot suggestions and suggested lines of code,
- * the total Copilot accepted suggestions and accepted lines of code
- */
+import { LANGUAGE_NAMES } from '../../constants/copilotConstants';
+import { buildPieSlices } from '../buildPieSlices';
+
 function isWeekendDate(dateString) {
   const date = new Date(`${dateString}T00:00:00`);
   const day = date.getDay();
   return day === 0 || day === 6;
+}
+
+function formatLanguageName(language) {
+  return LANGUAGE_NAMES[language] || language;
 }
 
 export function processCodeCompletionData(data, options = {}) {
@@ -27,24 +28,6 @@ export function processCodeCompletionData(data, options = {}) {
   // Overall Dictionary
   let codeCompletionMetrics = {};
 
-  // Dictionary for the all pages Chat Cards
-  let suggestedCards = {
-    suggestions: {
-      totalSuggestions: 0,
-      totalAcceptances: 0,
-      acceptanceRate: 0,
-    },
-    loc: {
-      totalLOCSuggestions: 0,
-      totalLOCAcceptances: 0,
-      acceptanceLOCRate: 0,
-    },
-    average: {
-      averageLOCSuggestions: 0,
-      averageLOCAccepted: 0,
-    },
-  };
-
   // List for Acceptance graph (suggestions vs acceptances),
   // Format: [{ date: 'YYYY-MM-DD', suggestions: daySuggested, acceptances: dayAccepted, acceptanceRate: dayAcceptanceRate }]
   let suggestedGraph = [];
@@ -57,23 +40,11 @@ export function processCodeCompletionData(data, options = {}) {
   // Format: [{ date: 'YYYY-MM-DD', avgLOCSuggested: dayLOCSuggested / daySuggested, avgLOCAccepted: dayLOCAccepted / dayAccepted}]
   let averageSuggestedLOCGraph = [];
 
-  // Dictionary for percentage of suggestions/acceptances using 'x' language,
-  // Format: {suggestions: [language: percentageUsed], acceptances: [language: percentageUsged]}
-  let languagesUsedPieChart = {
-    suggestions: [],
-    acceptances: [],
-  };
-
   let suggestionsSum = 0;
   let acceptancesSum = 0;
   let suggestionsLOCSum = 0;
   let acceptancesLOCSum = 0;
 
-  let numberLOCSuggestions = 0;
-  let numberLOCAcceptances = 0;
-
-  let totalGeneratedSuggestions = 0;
-  let totalGeneratedAcceptances = 0;
   const langSuggestionCounts = {};
   const langAcceptanceCounts = {};
 
@@ -103,14 +74,6 @@ export function processCodeCompletionData(data, options = {}) {
     suggestionsLOCSum += dayLOCSuggested;
     acceptancesLOCSum += dayLOCAccepted;
 
-    // Counting number of times LOC was accepted
-    if (dayLOCSuggested > 0) {
-      numberLOCSuggestions += 1;
-    }
-    if (dayLOCAccepted > 0) {
-      numberLOCAcceptances += 1;
-    }
-
     const dayAcceptanceRate =
       daySuggested > 0 ? (dayAccepted / daySuggested) * 100 : 0;
     const dayLOCAcceptanceRate =
@@ -136,67 +99,42 @@ export function processCodeCompletionData(data, options = {}) {
       avgLOCAccepted: dayAccepted > 0 ? dayLOCAccepted / dayAccepted : 0,
     });
 
-    // Pie Chart Language
-    const languages = day.totals_by_language_feature ?? [];
-    const completionLangRows = languages.filter(
+    // Language breakdown
+    const completionLangRows = (day.totals_by_language_feature ?? []).filter(
       item => item.feature === 'code_completion'
     );
 
-    // Total suggestions generated overall
-    totalGeneratedSuggestions += completionLangRows.reduce(
-      (sum, item) => sum + (item.code_generation_activity_count ?? 0),
-      0
-    );
-    totalGeneratedAcceptances += completionLangRows.reduce(
-      (sum, item) => sum + (item.code_acceptance_activity_count ?? 0),
-      0
-    );
-
-    for (const pieChartLanguage of completionLangRows) {
-      const lang = pieChartLanguage.language;
+    for (const row of completionLangRows) {
+      const lang = formatLanguageName(row.language);
       langSuggestionCounts[lang] =
         (langSuggestionCounts[lang] ?? 0) +
-        (pieChartLanguage.code_generation_activity_count ?? 0);
+        (row.code_generation_activity_count ?? 0);
       langAcceptanceCounts[lang] =
         (langAcceptanceCounts[lang] ?? 0) +
-        (pieChartLanguage.code_acceptance_activity_count ?? 0);
+        (row.code_acceptance_activity_count ?? 0);
     }
   }
 
-  for (const [lang, count] of Object.entries(langSuggestionCounts)) {
-    languagesUsedPieChart.suggestions.push({
-      [lang]:
-        totalGeneratedSuggestions > 0 ? count / totalGeneratedSuggestions : 0,
-    });
-    languagesUsedPieChart.acceptances.push({
-      [lang]:
-        totalGeneratedAcceptances > 0
-          ? (langAcceptanceCounts[lang] ?? 0) / totalGeneratedAcceptances
-          : 0,
-    });
-  }
-
-  suggestedCards.suggestions.totalSuggestions = suggestionsSum;
-  suggestedCards.suggestions.totalAcceptances = acceptancesSum;
-  suggestedCards.suggestions.acceptanceRate =
-    suggestionsSum > 0 ? acceptancesSum / suggestionsSum : 0;
-
-  suggestedCards.loc.totalLOCSuggestions = suggestionsLOCSum;
-  suggestedCards.loc.totalLOCAcceptances = acceptancesLOCSum;
-  suggestedCards.loc.acceptanceLOCRate =
-    suggestionsLOCSum > 0 ? acceptancesLOCSum / suggestionsLOCSum : 0;
-
-  suggestedCards.average.averageLOCSuggestions =
-    suggestionsSum > 0 ? suggestionsLOCSum / suggestionsSum : 0;
-  suggestedCards.average.averageLOCAccepted =
-    acceptancesSum > 0 ? acceptancesLOCSum / acceptancesSum : 0;
+  const suggestedCards = {
+    totalSuggestionInstances: suggestionsSum,
+    totalAcceptances: acceptancesSum,
+    overallAcceptanceRate: suggestionsSum > 0 ? acceptancesSum / suggestionsSum : 0,
+    totalLinesSuggested: suggestionsLOCSum,
+    totalLinesAccepted: acceptancesLOCSum,
+    overallLineAcceptanceRate: suggestionsLOCSum > 0 ? acceptancesLOCSum / suggestionsLOCSum : 0,
+    averageLocPerSuggestion: suggestionsSum > 0 ? suggestionsLOCSum / suggestionsSum : 0,
+    averageLocPerAcceptance: acceptancesSum > 0 ? acceptancesLOCSum / acceptancesSum : 0,
+  };
 
   codeCompletionMetrics = {
-    suggestedCards: suggestedCards,
-    suggestedGraph: suggestedGraph,
-    suggestedLOCGraph: suggestedLOCGraph,
-    averageSuggestedLOCGraph: averageSuggestedLOCGraph,
-    languagesUsedPieChart: languagesUsedPieChart,
+    suggestedCards,
+    suggestedGraph,
+    suggestedLOCGraph,
+    averageSuggestedLOCGraph,
+    languagePieChart: {
+      suggestions: buildPieSlices(langSuggestionCounts),
+      acceptances: buildPieSlices(langAcceptanceCounts),
+    },
   };
 
   return codeCompletionMetrics;

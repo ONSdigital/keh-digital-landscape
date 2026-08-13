@@ -29,12 +29,14 @@ function GeneralUsageDashboard({ data, isLoading }) {
                 numerator={data.chatUsers.count}
                 denominator={data.chatUsers.total}
                 paletteIndex={1}
+                tooltip="Percentage of active Copilot users who used the chat panel (Ask, Edit, Agent, Plan, or Inline Chat) at least once this month."
               />
               <PercentageCard
                 title="Agent Mode Adoption"
                 numerator={data.agentAdoption.count}
                 denominator={data.agentAdoption.total}
                 paletteIndex={2}
+                tooltip="Percentage of active Copilot users who triggered at least one agent mode session (autonomous file writes) this month."
               />
             </>
           )}

@@ -1,6 +1,7 @@
 // This file is responsible for processing the Copilot usage data and formatting it
-// into relevant data for the Agent Edits dashboard.
+// into relevant data for the Agent Mode dashboard.
 import { LANGUAGE_NAMES, MODEL_NAMES } from '../../constants/copilotConstants';
+import { buildPieSlices } from '../buildPieSlices';
 
 /**
  * Returns true when the given date string falls on a Saturday or Sunday.
@@ -106,23 +107,14 @@ export function processAgentEditsData(data, options = {}) {
     }
   }
 
-  // ── Build pie chart arrays as fractions (same pattern as code completions) ─
   const languagePieChart = {
-    added: Object.entries(langAdded).map(([lang, count]) => ({
-      [lang]: totalLangAdded > 0 ? count / totalLangAdded : 0,
-    })),
-    deleted: Object.entries(langDeleted).map(([lang, count]) => ({
-      [lang]: totalLangDeleted > 0 ? count / totalLangDeleted : 0,
-    })),
+    added: buildPieSlices(langAdded),
+    deleted: buildPieSlices(langDeleted),
   };
 
   const modelPieChart = {
-    added: Object.entries(modelAdded).map(([model, count]) => ({
-      [model]: totalModelAdded > 0 ? count / totalModelAdded : 0,
-    })),
-    deleted: Object.entries(modelDeleted).map(([model, count]) => ({
-      [model]: totalModelDeleted > 0 ? count / totalModelDeleted : 0,
-    })),
+    added: buildPieSlices(modelAdded),
+    deleted: buildPieSlices(modelDeleted),
   };
 
   return {

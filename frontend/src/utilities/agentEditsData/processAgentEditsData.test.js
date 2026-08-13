@@ -104,38 +104,38 @@ describe('processAgentEditsData', () => {
     ]);
   });
 
-  it('builds language and model pie data as fractions', () => {
+  it('builds language and model pie data as percentages with { name, value } format', () => {
     const result = processAgentEditsData(sampleData);
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([
-        { javascript: 70 / 120 },
-        { python: 30 / 120 },
-        { go: 20 / 120 },
+        { name: 'JavaScript', value: parseFloat(((70 / 120) * 100).toFixed(2)) },
+        { name: 'Python', value: parseFloat(((30 / 120) * 100).toFixed(2)) },
+        { name: 'Go', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
       ])
     );
 
     expect(result.languagePieChart.deleted).toEqual(
       expect.arrayContaining([
-        { javascript: 20 / 50 },
-        { python: 20 / 50 },
-        { go: 10 / 50 },
+        { name: 'JavaScript', value: parseFloat(((20 / 50) * 100).toFixed(2)) },
+        { name: 'Python', value: parseFloat(((20 / 50) * 100).toFixed(2)) },
+        { name: 'Go', value: parseFloat(((10 / 50) * 100).toFixed(2)) },
       ])
     );
 
     expect(result.modelPieChart.added).toEqual(
       expect.arrayContaining([
-        { 'gpt-5': 80 / 120 },
-        { 'gpt-4.1': 20 / 120 },
-        { 'claude-3.7': 20 / 120 },
+        { name: 'gpt-5', value: parseFloat(((80 / 120) * 100).toFixed(2)) },
+        { name: 'GPT-4.1', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
+        { name: 'claude-3.7', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
       ])
     );
 
     expect(result.modelPieChart.deleted).toEqual(
       expect.arrayContaining([
-        { 'gpt-5': 30 / 50 },
-        { 'gpt-4.1': 10 / 50 },
-        { 'claude-3.7': 10 / 50 },
+        { name: 'gpt-5', value: parseFloat(((30 / 50) * 100).toFixed(2)) },
+        { name: 'GPT-4.1', value: parseFloat(((10 / 50) * 100).toFixed(2)) },
+        { name: 'claude-3.7', value: parseFloat(((10 / 50) * 100).toFixed(2)) },
       ])
     );
   });

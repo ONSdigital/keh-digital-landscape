@@ -5,70 +5,29 @@ import '../../../styles/CopilotPage.css';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import SuggestionsAcceptancesBarChart from '../Breakdowns/SuggestionsAcceptancesBarChart';
 import SuggestionsAcceptancesSizeComparisonGraph from '../Breakdowns/SuggestionsAcceptancesSizeComparionGraph';
-import LanguageBreakdownPieChart from '../Breakdowns/LanguageBreakdownPieChart';
+import TogglePieChart from '../Breakdowns/TogglePieChart';
+import DashboardStatCard from '../Breakdowns/DashboardStatCard';
 import Tooltip from '../../Tooltip/Tooltip';
-import { getPercentage } from '../../../utilities/getPercentage';
-import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
-import useCountUp from '../../../hooks/useCountUp';
 
-function mapSuggestionCardsToDashboardCards(suggestedCards) {
-  if (!suggestedCards) {
-    return {
-      totalSuggestionInstances: 0,
-      totalAcceptances: 0,
-      overallAcceptanceRate: 0,
-      totalLinesSuggested: 0,
-      totalLinesAccepted: 0,
-      overallLineAcceptanceRate: 0,
-      averageLocPerSuggestion: 0,
-      averageLocPerAcceptance: 0,
-    };
-  }
-
-  return {
-    totalSuggestionInstances: suggestedCards.suggestions?.totalSuggestions ?? 0,
-    totalAcceptances: suggestedCards.suggestions?.totalAcceptances ?? 0,
-    overallAcceptanceRate: suggestedCards.suggestions?.acceptanceRate ?? 0,
-    totalLinesSuggested: suggestedCards.loc?.totalLOCSuggestions ?? 0,
-    totalLinesAccepted: suggestedCards.loc?.totalLOCAcceptances ?? 0,
-    overallLineAcceptanceRate: suggestedCards.loc?.acceptanceLOCRate ?? 0,
-    averageLocPerSuggestion: suggestedCards.average?.averageLOCSuggestions ?? 0,
-    averageLocPerAcceptance: suggestedCards.average?.averageLOCAccepted ?? 0,
-  };
-}
-
-function DashboardStatCard({ title, value, displayMode = 'count' }) {
-  const numericValue = Number.isFinite(value) ? value : 0;
-  const animatedValue = useCountUp(numericValue);
-
-  const formattedValue =
-    displayMode === 'percentage'
-      ? getPercentage(animatedValue)
-      : displayMode === 'fixed2'
-        ? animatedValue.toFixed(2)
-        : formatNumberWithCommas(Math.round(animatedValue));
-
-  return (
-    <div className="stat-card">
-      <h2>{title}</h2>
-      <p>{formattedValue}</p>
-    </div>
-  );
-}
+const LANGUAGE_PIE_MODES = [
+  { value: 'suggestions', label: 'Suggestions' },
+  { value: 'acceptances', label: 'Acceptances' },
+];
 
 function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
-  const dashboardCards = mapSuggestionCardsToDashboardCards(
-    data?.suggestedCards
-  );
+  const cards = data?.suggestedCards ?? {};
 
   return (
     <div className="copilot-dashboard">
       <h2>IDE Code Completions</h2>
       <p className="disclaimer-banner">
-        Usage data in the form of lines of code (LoC), and the inclusion of
-        weekend data can be toggled in the settings menu (cogwheel) on this page
+        Tracks ghost-text suggestions that appear inline as you type in the
+        editor. A suggestion is counted each time Copilot offers code, and an
+        acceptance is counted when you press Tab to insert it. This does not
+        include chat-based interactions or agent file writes. Weekend data and
+        lines of code (LoC) can be toggled in the settings menu (cogwheel).
       </p>
 
       <div className="copilot-dashboard-section">
@@ -83,17 +42,17 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           <div className="copilot-grid">
             <DashboardStatCard
               title="Total Suggestion Instances"
-              value={dashboardCards.totalSuggestionInstances}
+              value={cards.totalSuggestionInstances}
               displayMode="count"
             />
             <DashboardStatCard
               title="Total Acceptances"
-              value={dashboardCards.totalAcceptances}
+              value={cards.totalAcceptances}
               displayMode="count"
             />
             <DashboardStatCard
               title="Overall Acceptance Rate"
-              value={dashboardCards.overallAcceptanceRate}
+              value={cards.overallAcceptanceRate}
               displayMode="percentage"
             />
           </div>
@@ -122,17 +81,17 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
             <div className="copilot-grid">
               <DashboardStatCard
                 title="Total Lines Suggested"
-                value={dashboardCards.totalLinesSuggested}
+                value={cards.totalLinesSuggested}
                 displayMode="count"
               />
               <DashboardStatCard
                 title="Total Lines Accepted"
-                value={dashboardCards.totalLinesAccepted}
+                value={cards.totalLinesAccepted}
                 displayMode="count"
               />
               <DashboardStatCard
                 title="Overall Line Acceptance Rate"
-                value={dashboardCards.overallLineAcceptanceRate}
+                value={cards.overallLineAcceptanceRate}
                 displayMode="percentage"
               />
             </div>
@@ -157,10 +116,11 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
             title={
               <p className="copilot-tooltip-paragraph">
                 Tracks the average size of suggestions Copilot generates versus
-                the average size of suggestions developers actually accept. A
-                growing gap means developers are consistently accepting smaller
-                (or larger) suggestions than what Copilot offers, indicating a
-                size preference signal.
+                the average size of suggestions developers actually accept. When
+                the acceptance line is higher, it means developers are
+                selectively accepting the longer suggestions and rejecting
+                shorter ones - indicating a preference for more substantial code
+                blocks.
               </p>
             }
           >
@@ -178,12 +138,12 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
           <div className="copilot-grid-average">
             <DashboardStatCard
               title="Average LoC per suggestion"
-              value={dashboardCards.averageLocPerSuggestion}
+              value={cards.averageLocPerSuggestion}
               displayMode="fixed2"
             />
             <DashboardStatCard
               title="Average LoC per acceptance"
-              value={dashboardCards.averageLocPerAcceptance}
+              value={cards.averageLocPerAcceptance}
               displayMode="fixed2"
             />
           </div>
@@ -204,8 +164,10 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <LanguageBreakdownPieChart
-            languageData={data.languagesUsedPieChart}
+          <TogglePieChart
+            title="Language Breakdown"
+            pieData={data.languagePieChart}
+            modeOptions={LANGUAGE_PIE_MODES}
           />
         )}
       </div>
