@@ -105,7 +105,7 @@ describe('processAgentModeData', () => {
   });
 
   it('builds language and model pie data as percentages with { name, value } format', () => {
-    const result = processAgentEditsData(sampleData);
+    const result = processAgentModeData(sampleData);
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([

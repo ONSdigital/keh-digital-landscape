@@ -59,11 +59,11 @@ export function processAgentModeData(data, options = {}) {
     }
 
     // ── Agent edit feature row from totals_by_feature ──────────────────────
-    const agentEditFeature =
+    const agentModeFeature =
       entry.totals_by_feature?.find(f => f.feature === 'agent_edit') ?? {};
 
-    const dayAdded = agentEditFeature.loc_added_sum ?? 0;
-    const dayDeleted = agentEditFeature.loc_deleted_sum ?? 0;
+    const dayAdded = agentModeFeature.loc_added_sum ?? 0;
+    const dayDeleted = agentModeFeature.loc_deleted_sum ?? 0;
 
     totalLinesAdded += dayAdded;
     totalLinesDeleted += dayDeleted;

@@ -135,7 +135,7 @@ All data is fetched from the backend and processed on the frontend. See the proc
 
 - **Copilot Chat**: `utilities/chatModeCopilotData/processChatModeCopilotData.js`
 
-- **Agent Mode**: `utilities/agentEditsData/processAgentEditsData.js`
+- **Agent Mode**: `utilities/agentModeData/processAgentModeData.js`
 
 - **Legacy Usage**: `utilities/legacyCopilotData/processLegacyCopilotData.js`
 
