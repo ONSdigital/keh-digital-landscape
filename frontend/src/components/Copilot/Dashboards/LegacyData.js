@@ -290,7 +290,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
               <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
-              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <XAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={marChatGraphData.length - 2}
                 tickLine={false}
@@ -328,7 +329,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Copy Rate"
               />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
                 axisLine={{ stroke: '' }}
@@ -336,7 +338,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 tickCount={5}
                 tickFormatter={value => formatNumberWithCommas(value)}
               />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="right"
                 orientation="right"
@@ -366,7 +369,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
               <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
-              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <XAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={marUserMetricsGraphData.length - 2}
                 tickLine={false}
@@ -404,7 +408,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Chat Users"
               />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
                 axisLine={{ stroke: '' }}
@@ -496,7 +501,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
               <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
-              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <XAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={febChatGraphData.length - 2}
                 tickLine={false}
@@ -523,7 +529,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Acceptance Rate"
               />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
                 axisLine={{ stroke: '' }}
@@ -531,7 +538,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 tickCount={5}
                 tickFormatter={value => formatNumberWithCommas(value)}
               />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="right"
                 orientation="right"
@@ -561,7 +569,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
               <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
-              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <XAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={febUserMetricsGraphData.length - 2}
                 tickLine={false}
@@ -599,7 +608,8 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Chat Users"
               />
-              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
                 axisLine={{ stroke: '' }}
