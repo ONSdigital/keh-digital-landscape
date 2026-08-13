@@ -29,7 +29,9 @@ test('Chat Mode page shows skeleton loading state', async ({ page }) => {
 
   await page.goto('http://localhost:3000/copilot/chat');
   await expect(page.locator('.stat-card.skeleton').first()).toBeVisible();
-  await expect(page.locator('.copilot-graph-container.skeleton').first()).toBeVisible();
+  await expect(
+    page.locator('.copilot-graph-container.skeleton').first()
+  ).toBeVisible();
 });
 
 test('Chat Mode page displays correct page structure', async ({ page }) => {
@@ -40,7 +42,9 @@ test('Chat Mode page displays correct page structure', async ({ page }) => {
     timeout: 10000,
   });
 
-  await expect(page.getByRole('heading', { name: 'Copilot Chat' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Copilot Chat' })
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Overall Usage' })
   ).toBeVisible();

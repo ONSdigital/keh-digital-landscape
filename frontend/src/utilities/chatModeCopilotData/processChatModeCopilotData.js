@@ -176,12 +176,16 @@ export function processChatModeData(data, options = {}) {
     suggestedCards: {
       totalSuggestionInstances: totalSuggestions,
       totalAcceptances: totalAcceptances,
-      overallAcceptanceRate: totalSuggestions > 0 ? totalAcceptances / totalSuggestions : 0,
+      overallAcceptanceRate:
+        totalSuggestions > 0 ? totalAcceptances / totalSuggestions : 0,
       totalLinesSuggested: totalLOCSuggested,
       totalLinesAccepted: totalLOCAccepted,
-      overallLineAcceptanceRate: totalLOCSuggested > 0 ? totalLOCAccepted / totalLOCSuggested : 0,
-      averageLocPerSuggestion: totalSuggestions > 0 ? totalLOCSuggested / totalSuggestions : 0,
-      averageLocPerAcceptance: totalAcceptances > 0 ? totalLOCAccepted / totalAcceptances : 0,
+      overallLineAcceptanceRate:
+        totalLOCSuggested > 0 ? totalLOCAccepted / totalLOCSuggested : 0,
+      averageLocPerSuggestion:
+        totalSuggestions > 0 ? totalLOCSuggested / totalSuggestions : 0,
+      averageLocPerAcceptance:
+        totalAcceptances > 0 ? totalLOCAccepted / totalAcceptances : 0,
     },
     suggestedGraph,
     suggestedLOCGraph,

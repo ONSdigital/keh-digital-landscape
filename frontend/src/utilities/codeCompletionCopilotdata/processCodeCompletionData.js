@@ -118,12 +118,16 @@ export function processCodeCompletionData(data, options = {}) {
   const suggestedCards = {
     totalSuggestionInstances: suggestionsSum,
     totalAcceptances: acceptancesSum,
-    overallAcceptanceRate: suggestionsSum > 0 ? acceptancesSum / suggestionsSum : 0,
+    overallAcceptanceRate:
+      suggestionsSum > 0 ? acceptancesSum / suggestionsSum : 0,
     totalLinesSuggested: suggestionsLOCSum,
     totalLinesAccepted: acceptancesLOCSum,
-    overallLineAcceptanceRate: suggestionsLOCSum > 0 ? acceptancesLOCSum / suggestionsLOCSum : 0,
-    averageLocPerSuggestion: suggestionsSum > 0 ? suggestionsLOCSum / suggestionsSum : 0,
-    averageLocPerAcceptance: acceptancesSum > 0 ? acceptancesLOCSum / acceptancesSum : 0,
+    overallLineAcceptanceRate:
+      suggestionsLOCSum > 0 ? acceptancesLOCSum / suggestionsLOCSum : 0,
+    averageLocPerSuggestion:
+      suggestionsSum > 0 ? suggestionsLOCSum / suggestionsSum : 0,
+    averageLocPerAcceptance:
+      acceptancesSum > 0 ? acceptancesLOCSum / acceptancesSum : 0,
   };
 
   codeCompletionMetrics = {

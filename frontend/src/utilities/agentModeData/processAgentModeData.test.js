@@ -109,7 +109,10 @@ describe('processAgentModeData', () => {
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([
-        { name: 'JavaScript', value: parseFloat(((70 / 120) * 100).toFixed(2)) },
+        {
+          name: 'JavaScript',
+          value: parseFloat(((70 / 120) * 100).toFixed(2)),
+        },
         { name: 'Python', value: parseFloat(((30 / 120) * 100).toFixed(2)) },
         { name: 'Go', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
       ])
@@ -127,7 +130,10 @@ describe('processAgentModeData', () => {
       expect.arrayContaining([
         { name: 'gpt-5', value: parseFloat(((80 / 120) * 100).toFixed(2)) },
         { name: 'GPT-4.1', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
-        { name: 'claude-3.7', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
+        {
+          name: 'claude-3.7',
+          value: parseFloat(((20 / 120) * 100).toFixed(2)),
+        },
       ])
     );
 

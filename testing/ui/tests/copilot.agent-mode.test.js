@@ -11,9 +11,7 @@ async function mockCopilotAPI(page, data = copilotAgentModeData) {
   });
 }
 
-test('Agent Mode page routes correctly from landing page', async ({
-  page,
-}) => {
+test('Agent Mode page routes correctly from landing page', async ({ page }) => {
   await page.goto('http://localhost:3000/copilot/home');
   await page.getByText('Agent Mode').click();
   await expect(page).toHaveURL('http://localhost:3000/copilot/agent');
