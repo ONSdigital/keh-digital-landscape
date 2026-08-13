@@ -131,7 +131,7 @@ All data is fetched from the backend and processed on the frontend. See the proc
 
 - **General Usage**: `utilities/generalUsageCopilotData/processGeneralUsageCopilotData.js`
 
-- **IDE Code Completions**: `utilities/codeCompletionCopilotdata/processCodeCompletionData.js`
+- **IDE Code Completions**: `utilities/codeCompletionCopilotData/processCodeCompletionData.js`
 
 - **Copilot Chat**: `utilities/chatModeCopilotData/processChatModeCopilotData.js`
 
