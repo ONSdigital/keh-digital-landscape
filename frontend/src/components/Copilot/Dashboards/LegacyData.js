@@ -289,12 +289,12 @@ function LegacyDataVisualisation({ data, isLoading }) {
               data={marChatGraphData}
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
-              <CartesianGrid stroke="#f5f5f5" vertical={false} />
-              <XAxis
+              <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
+              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={marChatGraphData.length - 2}
                 tickLine={false}
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
               />
               <Legend verticalAlign="top" align="left" height={36} />
               <Bar
@@ -328,25 +328,25 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Copy Rate"
               />
-              <YAxis
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
                 domain={[0, 'dataMax + 5']}
                 tickCount={5}
                 tickFormatter={value => formatNumberWithCommas(value)}
               />
-              <YAxis
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="right"
                 orientation="right"
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
                 domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
                 tickFormatter={value => `${value.toFixed(0)}%`}
                 tickCount={5}
               />
               <Tooltip
-                wrapperStyle={{ color: 'black' }}
+                wrapperStyle={{ color: 'hsl(var(--foreground))' }}
                 formatter={(value, name) =>
                   name === 'Chats'
                     ? formatNumberWithCommas(value)
@@ -365,12 +365,12 @@ function LegacyDataVisualisation({ data, isLoading }) {
               data={marUserMetricsGraphData}
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
-              <CartesianGrid stroke="#f5f5f5" vertical={false} />
-              <XAxis
+              <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
+              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={marUserMetricsGraphData.length - 2}
                 tickLine={false}
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
               />
               <Legend verticalAlign="top" align="left" height={36} />
               <Bar
@@ -404,16 +404,16 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Chat Users"
               />
-              <YAxis
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
                 domain={[0, 'dataMax + 5']}
                 tickCount={5}
                 tickFormatter={value => formatNumberWithCommas(value)}
               />
               <Tooltip
-                wrapperStyle={{ color: 'black' }}
+                wrapperStyle={{ color: 'hsl(var(--foreground))' }}
                 formatter={value => formatNumberWithCommas(value)}
               />
             </ComposedChart>
@@ -495,12 +495,12 @@ function LegacyDataVisualisation({ data, isLoading }) {
               data={febChatGraphData}
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
-              <CartesianGrid stroke="#f5f5f5" vertical={false} />
-              <XAxis
+              <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
+              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={febChatGraphData.length - 2}
                 tickLine={false}
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
               />
               <Legend verticalAlign="top" align="left" height={36} />
               <Bar
@@ -523,25 +523,25 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Acceptance Rate"
               />
-              <YAxis
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
                 domain={[0, 'dataMax + 5']}
                 tickCount={5}
                 tickFormatter={value => formatNumberWithCommas(value)}
               />
-              <YAxis
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="right"
                 orientation="right"
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
                 domain={[0, dataMax => Math.ceil(dataMax / 10) * 10]}
                 tickFormatter={value => `${value.toFixed(0)}%`}
                 tickCount={5}
               />
               <Tooltip
-                wrapperStyle={{ color: 'black' }}
+                wrapperStyle={{ color: 'hsl(var(--foreground))' }}
                 formatter={(value, name) =>
                   name === 'Chats'
                     ? formatNumberWithCommas(value)
@@ -560,12 +560,12 @@ function LegacyDataVisualisation({ data, isLoading }) {
               data={febUserMetricsGraphData}
               margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
             >
-              <CartesianGrid stroke="#f5f5f5" vertical={false} />
-              <XAxis
+              <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
+              <XAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 dataKey="date"
                 interval={febUserMetricsGraphData.length - 2}
                 tickLine={false}
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
               />
               <Legend verticalAlign="top" align="left" height={36} />
               <Bar
@@ -599,16 +599,16 @@ function LegacyDataVisualisation({ data, isLoading }) {
                 legendType="rect"
                 name="Chat Users"
               />
-              <YAxis
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))' }}
                 tickLine={false}
                 yAxisId="left"
-                axisLine={{ stroke: '#f5f5f5' }}
+                axisLine={{ stroke: '' }}
                 domain={[0, 'dataMax + 5']}
                 tickCount={5}
                 tickFormatter={value => formatNumberWithCommas(value)}
               />
               <Tooltip
-                wrapperStyle={{ color: 'black' }}
+                wrapperStyle={{ color: 'hsl(var(--foreground))' }}
                 formatter={value => formatNumberWithCommas(value)}
               />
             </ComposedChart>

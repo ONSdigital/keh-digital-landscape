@@ -160,12 +160,11 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
       </div>
 
       <div className="copilot-dashboard-section-bottom">
-        <h3>Language Breakdown</h3>
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
           <TogglePieChart
-            title="Language Breakdown"
+            sectionTitle="Language Breakdown"
             pieData={data.languagePieChart}
             modeOptions={LANGUAGE_PIE_MODES}
           />

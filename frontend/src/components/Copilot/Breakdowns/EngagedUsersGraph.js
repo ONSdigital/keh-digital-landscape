@@ -21,12 +21,13 @@ const EngagedUsersGraph = ({ data }) => {
           data={data}
           margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
         >
-          <CartesianGrid stroke="#f5f5f5" vertical={false} />
+          <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
           <XAxis
             dataKey="date"
             interval={data.length - 2}
             tickLine={false}
-            axisLine={{ stroke: '#f5f5f5' }}
+            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            axisLine={{ stroke: '' }}
           />
           <Legend verticalAlign="top" align="left" height={36} />
           <Bar
@@ -41,13 +42,14 @@ const EngagedUsersGraph = ({ data }) => {
           <YAxis
             tickLine={false}
             yAxisId="left"
-            axisLine={{ stroke: '#f5f5f5' }}
+            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            axisLine={{ stroke: '' }}
             domain={[0, 'dataMax + 5']}
             tickCount={5}
             tickFormatter={value => formatNumberWithCommas(value)}
           />
           <Tooltip
-            wrapperStyle={{ color: 'black' }}
+            wrapperStyle={{ color: 'hsl(var(--foreground))' }}
             formatter={value => formatNumberWithCommas(value)}
           />
         </ComposedChart>
