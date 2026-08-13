@@ -29,6 +29,12 @@
   z-index: -1;
 }
 
+.usage-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .usage-card-title {
   font-size: 14px;
   font-weight: 500;
