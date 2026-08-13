@@ -1,6 +1,6 @@
 import React from 'react';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
-import LinesAddedDeletedBarChart from '../Breakdowns/LinesAddedDeletedBarChart';
+import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarChart';
 import TogglePieChart from '../Breakdowns/TogglePieChart';
 import DashboardStatCard from '../Breakdowns/DashboardStatCard';
 import '../../../styles/components/Statistics.css';
