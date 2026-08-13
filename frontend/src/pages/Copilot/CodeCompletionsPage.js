@@ -8,7 +8,6 @@ import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCo
 import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotData/processCodeCompletionData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
-import '../../styles/Copilot/CodeCompletionsPage.css';
 import '../../styles/components/Statistics.css';
 
 function CodeCompletionsPage() {

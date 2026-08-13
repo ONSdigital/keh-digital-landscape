@@ -12,7 +12,13 @@ import GraphSelect from '../../GraphSelect/GraphSelect';
 import { getChartPalette } from '../../../utilities/copilotChartColours';
 import '../../../styles/Copilot/ReusableStyles.css';
 
-const TogglePieChart = ({ pieData, title, sectionTitle, modeOptions }) => {
+const TogglePieChart = ({
+  pieData,
+  title,
+  sectionTitle,
+  modeOptions,
+  noPadding,
+}) => {
   const modes = modeOptions ?? [
     { value: 'added', label: 'Lines Added' },
     { value: 'deleted', label: 'Lines Deleted' },
@@ -25,14 +31,24 @@ const TogglePieChart = ({ pieData, title, sectionTitle, modeOptions }) => {
   const colours = getChartPalette(data.length, isDark);
 
   const heading = sectionTitle ? (
-    <h3>{sectionTitle}</h3>
+    <h3 style={{ margin: 0 }}>{sectionTitle}</h3>
   ) : title ? (
     <h4 className="usage-pie-chart-title">{title}</h4>
   ) : null;
 
+  const headerStyle = sectionTitle
+    ? { flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }
+    : {};
+
   return (
-    <div className="usage-pie-chart-card" style={{ touchAction: 'pan-y' }}>
-      <div className="usage-pie-chart-header">
+    <div
+      className="usage-pie-chart-card"
+      style={{
+        touchAction: 'pan-y',
+        padding: noPadding ? '8px 0 0 0' : undefined,
+      }}
+    >
+      <div className="usage-pie-chart-header" style={headerStyle}>
         {heading}
         <GraphSelect options={modes} value={mode} onChange={setMode} />
       </div>

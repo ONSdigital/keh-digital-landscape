@@ -1,7 +1,5 @@
 import React from 'react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import '../../../styles/components/Statistics.css';
-import '../../../styles/CopilotPage.css';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import SuggestionsAcceptancesBarChart from '../Breakdowns/SuggestionsAcceptancesBarChart';
 import SuggestionsAcceptancesSizeComparisonGraph from '../Breakdowns/SuggestionsAcceptancesSizeComparionGraph';
@@ -167,6 +165,7 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
             sectionTitle="Language Breakdown"
             pieData={data.languagePieChart}
             modeOptions={LANGUAGE_PIE_MODES}
+            noPadding
           />
         )}
       </div>

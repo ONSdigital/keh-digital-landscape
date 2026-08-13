@@ -7,7 +7,6 @@ import ChatModeDashboard from '../../components/Copilot/Dashboards/ChatModeDashb
 import { processChatModeData } from '../../utilities/chatModeCopilotData/processChatModeCopilotData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
-import '../../styles/Copilot/CodeCompletionsPage.css';
 import '../../styles/components/Statistics.css';
 
 function ChatModePage() {

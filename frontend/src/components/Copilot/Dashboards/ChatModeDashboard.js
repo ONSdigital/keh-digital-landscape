@@ -1,9 +1,5 @@
 import React from 'react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import '../../../styles/components/Statistics.css';
-import '../../../styles/CopilotPage.css';
-import '../../../styles/Copilot/ReusableStyles.css';
-import '../../../styles/Copilot/GeneralUsagePage.css';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import SuggestionsAcceptancesBarChart from '../Breakdowns/SuggestionsAcceptancesBarChart';
 import SuggestionsAcceptancesSizeComparisonGraph from '../Breakdowns/SuggestionsAcceptancesSizeComparionGraph';

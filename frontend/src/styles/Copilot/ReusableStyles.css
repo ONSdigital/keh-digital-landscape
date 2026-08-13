@@ -1,5 +1,6 @@
-/* This file contains CSS styles for re-usable page-level styles used across all pages of the
-Copilot Dashboard */
+/* Shared styles used across all pages of the Copilot Dashboard */
+
+/* Dashboard sections */
 
 .copilot-dashboard-section {
   margin-bottom: 64px;
@@ -10,6 +11,20 @@ Copilot Dashboard */
   padding-bottom: 32px;
   margin-top: 20px;
 }
+
+/* Dashboard headings */
+
+.copilot-dashboard h1 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.copilot-dashboard h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Back button */
 
 .copilot-back-button {
   display: flex;
@@ -42,6 +57,8 @@ Copilot Dashboard */
   position: relative;
   right: 16px;
 }
+
+/* Page controls and settings */
 
 .copilot-page-controls {
   display: flex;
@@ -108,21 +125,18 @@ Copilot Dashboard */
   height: 16px;
 }
 
-@media (width <= 640px) {
-  .copilot-page-controls {
-    gap: 8px;
-  }
+/* Stat card grids */
 
-  .copilot-back-button {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
+.copilot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
 
-  .copilot-settings-menu {
-    right: 0;
-    left: auto;
-    min-width: 200px;
-  }
+.copilot-grid-average {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
 }
 
 .copilot-chat-grid {
@@ -139,6 +153,47 @@ Copilot Dashboard */
   margin-bottom: 75px;
 }
 
+/* Disclaimer banner */
+
+.disclaimer-banner {
+  background-color: hsl(210deg 100% 97%);
+  border: 1px solid hsl(210deg 100% 50%);
+  color: hsl(210deg 100% 20%);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  width: fit-content;
+}
+
+.disclaimer-banner a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.disclaimer-banner a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+:root[class~='dark'] .disclaimer-banner {
+  background-color: hsl(210deg 50% 20%);
+  color: hsl(210deg 100% 90%);
+}
+
+/* Graph containers */
+
+.copilot-graph-container {
+  background: hsl(var(--card));
+  overflow: hidden;
+}
+
+.copilot-graph-container.skeleton {
+  height: 600px;
+  border-radius: var(--radius);
+}
+
 .copilot-graph-container--old {
   width: calc(100% - 16px);
   height: calc(50vh - 16px);
@@ -149,10 +204,11 @@ Copilot Dashboard */
   margin-bottom: 24px;
 }
 
-.copilot-graph-container {
-  background: hsl(var(--card));
-  overflow: hidden;
+.copilot-dashboard .copilot-graph-container {
+  border: none;
 }
+
+/* Tooltip */
 
 .copilot-tooltip-paragraph {
   white-space: normal;
@@ -162,6 +218,8 @@ Copilot Dashboard */
   margin: 0;
 }
 
+/* Pie chart card and grid */
+
 .usage-pie-chart-card {
   background: hsl(var(--card));
   padding: 20px;
@@ -170,4 +228,43 @@ Copilot Dashboard */
 
 .usage-pie-chart-card.skeleton {
   height: 320px;
+}
+
+.usage-pie-charts-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.usage-pie-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.usage-pie-chart-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+}
+
+/* Responsive */
+
+@media (width <= 640px) {
+  .copilot-page-controls {
+    gap: 8px;
+  }
+
+  .copilot-back-button {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .copilot-settings-menu {
+    right: 0;
+    left: auto;
+    min-width: 200px;
+  }
 }

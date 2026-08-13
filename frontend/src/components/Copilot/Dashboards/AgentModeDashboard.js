@@ -3,10 +3,6 @@ import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarChart';
 import TogglePieChart from '../Breakdowns/TogglePieChart';
 import DashboardStatCard from '../Breakdowns/DashboardStatCard';
-import '../../../styles/components/Statistics.css';
-import '../../../styles/CopilotPage.css';
-import '../../../styles/Copilot/ReusableStyles.css';
-import '../../../styles/Copilot/GeneralUsagePage.css';
 
 function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
