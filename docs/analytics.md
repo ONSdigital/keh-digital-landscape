@@ -18,8 +18,8 @@ Set `VITE_GA_MEASUREMENT_ID` in your `.env` file with your Google Analytics Meas
 
 **Deployment Environments:**
 
-- **Development**: Google Analytics can be disabled or configured with a separate Measurement ID
-- **Production**: Uses the primary production Measurement ID
+- **Development**: Uses the development environment Measurement ID
+- **Production**: Uses the production environment Measurement ID
 
 ### Key Files
 
