@@ -3,9 +3,6 @@ set -eu
 
 apk add --no-cache jq
 
-aws_account_id=$(echo "$secrets" | jq -r .aws_account_id)
-aws_access_key_id=$(echo "$secrets" | jq -r .aws_access_key_id)
-
 if [ -z "${secrets:-}" ]; then
 	echo "Error: secrets is not set."
 	exit 1
@@ -23,7 +20,11 @@ if [ -z "${env:-}" ]; then
 	exit 1
 fi
 
+# These credentials are not used to run the terraform commands, but are used to create the AWS resources in the terraform scripts (mainly the Service Terraform).
+aws_account_id=$(echo "$secrets" | jq -r .aws_account_id)
+aws_access_key_id=$(echo "$secrets" | jq -r .aws_access_key_id)
 aws_secret_access_key=$(echo "$secrets" | jq -r .aws_secret_access_key)
+
 github_app_id=$(echo "$secrets" | jq -r .github_app_id)
 
 github_app_client_id=$(echo "$secrets" | jq -r .github_app_client_id)
@@ -40,11 +41,11 @@ github_org=$(echo "$secrets" | jq -r .github_org)
 
 s3_bucket_name=$(echo "$secrets" | jq -r .s3_bucket_name)
 api_s3_bucket_name=$(echo "$secrets" | jq -r .api_s3_bucket_name)
+copilot_bucket_name=$(echo "$secrets" | jq -r .copilot_bucket_name)
+policy_audit_bucket_name=$(echo "$secrets" | jq -r .policy_audit_bucket_name)
 
 container_image_frontend=$(echo "$secrets" | jq -r .container_image_frontend)
 container_image_backend=$(echo "$secrets" | jq -r .container_image_backend)
-
-copilot_bucket_name=$(echo "$secrets" | jq -r .copilot_bucket_name)
 
 support_mail=$(echo "$secrets" | jq -r .support_mail)
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
@@ -55,10 +56,6 @@ domain_extension=$(echo "$secrets" | jq -r .domain_extension)
 enable_azuread_saml=$(echo "$secrets" | jq -r .enable_azuread_saml)
 azure_ad_metadata_url=$(echo "$secrets" | jq -r .azure_ad_metadata_url)
 azuread_provider_name=$(echo "$secrets" | jq -r .azuread_provider_name)
-
-# Temporarily commenting out to test assume rule for Terraform apply.
-# export AWS_ACCESS_KEY_ID="$aws_access_key_id"
-# export AWS_SECRET_ACCESS_KEY="$aws_secret_access_key"
 
 git config --global url."https://x-access-token:${github_access_token}@github.com/".insteadOf "https://github.com/"
 
@@ -73,9 +70,6 @@ cd resource-repo/terraform/storage
 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
 terraform apply \
-	-var "aws_account_id=${aws_account_id}" \
-	-var "aws_access_key_id=${aws_access_key_id}" \
-	-var "aws_secret_access_key=${aws_secret_access_key}" \
 	-var "domain=${domain}" \
 	-var "service_subdomain=${service_subdomain}" \
 	-auto-approve
@@ -85,9 +79,6 @@ cd ../authentication
 terraform init -backend-config=env/"${env}"/backend-"${env}".tfbackend -reconfigure
 
 terraform apply \
-	-var "aws_account_id=${aws_account_id}" \
-	-var "aws_access_key_id=${aws_access_key_id}" \
-	-var "aws_secret_access_key=${aws_secret_access_key}" \
 	-var "domain=${domain}" \
 	-var "service_subdomain=${service_subdomain}" \
 	-var "domain_extension=${domain_extension}" \
@@ -121,11 +112,12 @@ terraform apply \
 	-var "service_cpu=$service_cpu" \
 	-var "s3_bucket_name=$s3_bucket_name" \
 	-var "api_s3_bucket_name=$api_s3_bucket_name" \
+	-var "copilot_bucket_name=$copilot_bucket_name" \
+	-var "policy_audit_bucket_name=$policy_audit_bucket_name" \
 	-var "container_ver=$tag" \
 	-var "container_ver_backend=$tag" \
 	-var "frontend_ecr_repo=$container_image_frontend" \
 	-var "backend_ecr_repo=$container_image_backend" \
-	-var "copilot_bucket_name=$copilot_bucket_name" \
 	-var "support_mail=$support_mail" \
 	-var "alerts_channel_id=$alerts_channel_id" \
 	-var "tech_radar_submissions_url=$tech_radar_submissions_url" \

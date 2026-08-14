@@ -34,12 +34,6 @@ variable "aws_secret_name" {
   type        = string
 }
 
-variable "container_image" {
-  description = "Container image"
-  type        = string
-  default     = "sdp-dev-tech-radar"
-}
-
 variable "container_ver" {
   description = "Container tag"
   type        = string
@@ -50,18 +44,6 @@ variable "container_ver_backend" {
   description = "Container tag"
   type        = string
   default     = "v0.0.1"
-}
-
-variable "container_port" {
-  description = "Container port"
-  type        = number
-  default     = 3000
-}
-
-variable "from_port" {
-  description = "From port"
-  type        = number
-  default     = 3000
 }
 
 variable "service_subdomain" {
