@@ -9,7 +9,6 @@ const ReviewDashboard = lazy(() => import('./pages/ReviewPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const AddressBookPage = lazy(() => import('./pages/AddressBookPage'));
 const PolicyReportsPage = lazy(() => import('./pages/PolicyReportsPage'));
-const CopilotDashboard = lazy(() => import('./pages/CopilotPage'));
 const CopilotDashboardLandingPage = lazy(
   () => import('./pages/Copilot/LandingPage')
 );
@@ -50,10 +49,6 @@ const App = () => {
         <Route path="/radar" element={<Radar />} />
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/projects" element={<Projects />} />
-        <Route
-          path="/copilot/team"
-          element={<Navigate to="/copilot/org/historic" replace />}
-        />
         <Route path="/addressbook" element={<AddressBookPage />} />
         <Route path="/github-policy-reports" element={<PolicyReportsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -79,10 +74,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/copilot" element={<CopilotDashboard />} />
-        <Route path="/copilot/org/:view" element={<CopilotDashboard />} />
-        <Route path="/copilot/team/:teamSlug" element={<CopilotDashboard />} />
-        <Route path="/copilot/:scope" element={<CopilotDashboard />} />
+        <Route path="/copilot" element={<CopilotDashboardLandingPage />} />
         <Route path="/copilot/home" element={<CopilotDashboardLandingPage />} />
         <Route
           path="/copilot/general"

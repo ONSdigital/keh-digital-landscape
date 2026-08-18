@@ -6,7 +6,7 @@ import {
   fetchRepositoryStats,
 } from '../utilities/getRepositoryData';
 import { fetchBanners } from '../utilities/getBanner';
-import { fetchOrgHistoricUsageData } from '../utilities/getUsageData';
+import { getOrgHistoryData } from '../utilities/getOrgHistoryData';
 import { getLegacyCopilotData } from '../utilities/legacyCopilotData/getLegacyCopilotData';
 import { fetchUserInfo } from '../utilities/getUser';
 /**
@@ -220,7 +220,7 @@ export function DataProvider({ children }) {
       return pendingRequests.current.historicUsageData;
     }
 
-    const promise = fetchOrgHistoricUsageData().then(data => {
+    const promise = getOrgHistoryData().then(data => {
       setHistoricUsageData(data);
       pendingRequests.current.historicUsageData = null;
       return data;

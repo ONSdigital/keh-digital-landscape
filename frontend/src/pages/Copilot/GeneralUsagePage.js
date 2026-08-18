@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import GeneralUsageDashboard from '../../components/Copilot/Dashboards/GeneralUsage';
 import { processGeneralUsageData } from '../../utilities/generalUsageCopilotData/processGeneralUsageCopilotData';
-import { getOrgHistoryData } from '../../utilities/getOrgHistoryData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/Copilot/GeneralUsagePage.css';
 import '../../styles/components/Statistics.css';
 
 function GeneralUsagePage() {
-  const [data, setData] = useState(null);
+  const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const rawData = await getOrgHistoryData();
-      if (rawData) {
-        setData(processGeneralUsageData(rawData));
-      }
+      await getHistoricUsageData();
       setIsLoading(false);
     })();
   }, []);
+
+  const data = historicUsageData ? processGeneralUsageData(historicUsageData) : null;
 
   return (
     <Layout headerProps={{ hideSearch: true }}>

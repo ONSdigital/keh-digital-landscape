@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { getChartPalette } from '../../../utilities/copilotChartColours';
 import {
   ResponsiveContainer,
-  ComposedChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -10,49 +11,84 @@ import {
   Legend,
 } from 'recharts';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 const EngagedUsersGraph = ({ data }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const palette = getChartPalette(3, isDark);
+  const colours = {
+    allActiveUsers: palette[0],
+    chatUsers: palette[1],
+    agentUsers: palette[2],
+  };
+
   return (
     <div className="copilot-graph-container">
-      <ResponsiveContainer>
-        <ComposedChart
-          width={400}
-          height={300}
+      <ResponsiveContainer height={600}>
+        <LineChart
           data={data}
-          margin={{ top: 0, right: 64, left: 0, bottom: 0 }}
+          margin={{ top: 32, right: 96, left: 32, bottom: 32 }}
         >
           <CartesianGrid stroke="hsl(var(--muted))" vertical={false} />
           <XAxis
             dataKey="date"
             interval={data.length - 2}
             tickLine={false}
-            tick={{ fill: 'hsl(var(--muted-foreground))' }}
-            axisLine={{ stroke: '' }}
+            axisLine={{ stroke: 'hsl(var(--border))' }}
           />
-          <Legend verticalAlign="top" align="left" height={36} />
-          <Bar
-            radius={[10, 10, 0, 0]}
-            dataKey="engagedUsers"
-            barSize={20}
-            fill="#3B7AD9"
+          <Legend verticalAlign="top" align="center" height={36} />
+          <Line
+            dot={false}
+            strokeWidth={4}
+            strokeLinecap="round"
+            type="monotone"
+            dataKey="allActiveUsers"
+            stroke={colours.allActiveUsers}
             yAxisId="left"
             legendType="rect"
-            name="Engaged Users"
+            name="All Active Users"
+          />
+          <Line
+            dot={false}
+            strokeWidth={4}
+            strokeLinecap="round"
+            type="monotone"
+            dataKey="chatUsers"
+            stroke={colours.chatUsers}
+            yAxisId="left"
+            legendType="rect"
+            name="Chat Users"
+          />
+          <Line
+            dot={false}
+            strokeWidth={4}
+            strokeLinecap="round"
+            type="monotone"
+            dataKey="agentUsers"
+            stroke={colours.agentUsers}
+            yAxisId="left"
+            legendType="rect"
+            name="Agent Users"
           />
           <YAxis
             tickLine={false}
             yAxisId="left"
-            tick={{ fill: 'hsl(var(--muted-foreground))' }}
-            axisLine={{ stroke: '' }}
-            domain={[0, 'dataMax + 5']}
+            axisLine={{ stroke: 'hsl(var(--border))' }}
+            domain={[0, 'dataMax + 10']}
             tickCount={5}
             tickFormatter={value => formatNumberWithCommas(value)}
           />
           <Tooltip
             wrapperStyle={{ color: 'hsl(var(--foreground))' }}
-            formatter={value => formatNumberWithCommas(value)}
+            formatter={(value, name) =>
+              name === 'Acceptance Rate'
+                ? `${value.toFixed(2)}%`
+                : formatNumberWithCommas(value)
+            }
           />
-        </ComposedChart>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
