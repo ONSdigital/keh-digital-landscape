@@ -25,6 +25,7 @@ The landing page is designed around **progressive disclosure**: users see just e
 | IDE Code Completions | `/copilot/completions` |
 | Copilot Chat         | `/copilot/chat`        |
 | Agent Mode           | `/copilot/agent`       |
+| Agent Mode           | `/copilot/agent`       |
 | Legacy Usage         | `/copilot/legacy`      |
 
 ## Features

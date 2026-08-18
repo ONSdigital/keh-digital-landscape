@@ -6,7 +6,7 @@ This guide walks through all the changes required to add a new page to the appli
 
 ## Overview
 
-Adding a new page involves five steps:
+Adding a new page involves six steps:
 
 - [Adding New Pages](#adding-new-pages)
   - [Overview](#overview)
@@ -14,12 +14,13 @@ Adding a new page involves five steps:
     - [Service](#service)
     - [Route](#route)
   - [2. Register the Backend Route](#2-register-the-backend-route)
-  - [3. Vite Dev Proxy](#3-vite-dev-proxy)
-  - [4. Frontend Page Component](#4-frontend-page-component)
+  - [3. AWS ALB Listener Rule](#3-aws-alb-listener-rule)
+  - [4. Vite Dev Proxy](#4-vite-dev-proxy)
+  - [5. Frontend Page Component](#5-frontend-page-component)
     - [Utility (data fetching)](#utility-data-fetching)
     - [Page component](#page-component)
     - [Stylesheet](#stylesheet)
-  - [5. Router and Navigation](#5-router-and-navigation)
+  - [6. Router and Navigation](#6-router-and-navigation)
     - [Router (`App.js`)](#router-appjs)
     - [Navigation (`navigationConstants.js`)](#navigation-navigationconstantsjs)
   - [Checklist](#checklist)
@@ -106,7 +107,38 @@ The full URL for the example route above becomes `GET /policy-reports/api/organi
 
 ---
 
-## 3. Vite Dev Proxy
+## 3. AWS ALB Listener Rule
+
+In AWS, traffic passes through an Application Load Balancer before reaching the backend container. The ALB has listener rules that match requests by path pattern and forward them to the backend target group. **If your new path prefix is not listed in one of these rules, the ALB will not forward the requests to the backend** — they will fall through to the frontend rule and the endpoint will appear to silently fail.
+
+Add your new path prefix to the appropriate rule in `terraform/service/alb.tf`. There are two backend rules (split because ALB limits each rule to five path patterns):
+
+| Rule resource | Current path patterns |
+| --- | --- |
+| `digital_landscape_backend_rule_1` | `/api/*`, `/copilot/api/*`, `/addressbook/api/*`, `/policy-reports/api/*` |
+| `digital_landscape_backend_rule_2` | `/review/api/*`, `/admin/api/*`, `/user/api/*` |
+
+Add the new prefix to whichever rule has fewer than five patterns, or create a `digital_landscape_backend_rule_3` following the same structure:
+
+```hcl
+# terraform/service/alb.tf
+
+resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
+  # ...
+  condition {
+    path_pattern {
+      values = ["/api/*", "/copilot/api/*", "/addressbook/api/*", "/policy-reports/api/*", "/your-new-feature/api/*"]
+    }
+  }
+  # ...
+}
+```
+
+Deploy the change by running `terraform apply` on the `terraform/service` module (or via the Concourse pipeline (**preferred**)). Until this is deployed, the endpoint will only work in local development.
+
+---
+
+## 4. Vite Dev Proxy
 
 During local development, the Vite dev server runs on port `3000` and the backend on port `5001`. The Vite proxy forwards matching URL paths to the backend, so that `customFetch('/policy-reports/api/organisations')` resolves correctly without CORS issues.
 
@@ -142,7 +174,7 @@ server: {
 
 ---
 
-## 4. Frontend Page Component
+## 5. Frontend Page Component
 
 ### Utility (data fetching)
 
@@ -214,7 +246,7 @@ Add a co-located stylesheet at `frontend/src/styles/<FeatureName>Page.css` and i
 
 ---
 
-## 5. Router and Navigation
+## 6. Router and Navigation
 
 ### Router (`App.js`)
 
@@ -296,6 +328,7 @@ Restricted pages (review, admin) should **not** be added to `generalNavigationIt
 - [ ] `backend/src/services/<featureName>Service.js` created
 - [ ] `backend/src/routes/<featureName>.js` created
 - [ ] Route mounted in `backend/src/index.js`
+- [ ] Path prefix added to ALB listener rule in `terraform/service/alb.tf` and deployed
 - [ ] Path prefix added to Vite proxy in `frontend/vite.config.js`
 - [ ] `frontend/src/utilities/get<FeatureName>.js` created
 - [ ] `frontend/src/pages/<FeatureName>Page.js` created

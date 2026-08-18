@@ -220,7 +220,7 @@ resource "aws_lb_listener_rule" "digital_landscape_backend_rule_1" {
 
   condition {
     path_pattern {
-      values = ["/api/*", "/copilot/api/*", "/addressbook/api/*"]
+      values = ["/api/*", "/copilot/api/*", "/addressbook/api/*", "/policy-reports/api/*"]
     }
   }
 
