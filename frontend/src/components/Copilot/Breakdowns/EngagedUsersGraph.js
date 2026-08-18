@@ -13,7 +13,7 @@ import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 
 const EngagedUsersGraph = ({ data }) => {
   return (
-    <div className="copilot-graph-container--old">
+    <div className="copilot-graph-container">
       <ResponsiveContainer>
         <ComposedChart
           width={400}

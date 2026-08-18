@@ -194,11 +194,6 @@
   border-radius: var(--radius);
 }
 
-.copilot-graph-container--old {
-  width: calc(100% - 16px);
-  height: calc(50vh - 16px);
-}
-
 .copilot-graph-container--stacked {
   height: auto;
   margin-bottom: 24px;

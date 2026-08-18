@@ -54,7 +54,7 @@ test('Legacy Usage page displays the January 2025 - March 2026 dataset correctly
   ).toBeVisible();
 
   // 2 graph containers: 1 AcceptanceGraph + 1 stacked (chat + user metrics)
-  await expect(section.locator('.copilot-graph-container--old')).toHaveCount(2);
+  await expect(section.locator('.copilot-graph-container')).toHaveCount(2);
 });
 
 test('Legacy Usage page displays the May 2024 - January 2025 dataset correctly', async ({
@@ -94,7 +94,7 @@ test('Legacy Usage page displays the May 2024 - January 2025 dataset correctly',
   ).toBeVisible();
 
   // 2 graph containers: 1 AcceptanceGraph + 1 stacked (chat + user metrics)
-  await expect(section.locator('.copilot-graph-container--old')).toHaveCount(2);
+  await expect(section.locator('.copilot-graph-container')).toHaveCount(2);
 });
 
 test('Legacy Usage page back button navigates to landing page', async ({
