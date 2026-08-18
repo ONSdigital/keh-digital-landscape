@@ -70,7 +70,11 @@ function CopilotDashboardLandingPage() {
               title="Copilot Chat"
               href="#"
             />
-            <CopilotNavCard icon={RiRobot2Line} title="Agent Edits" href="#" />
+            <CopilotNavCard
+              icon={RiRobot2Line}
+              title="Agent Mode"
+              href="/copilot/agent"
+            />
           </div>
         </div>
 
