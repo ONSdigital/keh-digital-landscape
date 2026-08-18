@@ -7,25 +7,27 @@ import TogglePieChart from '../Breakdowns/TogglePieChart';
 import DashboardStatCard from '../Breakdowns/DashboardStatCard';
 import Tooltip from '../../Tooltip/Tooltip';
 
-const LANGUAGE_PIE_MODES = [
+const CHAT_PIE_MODES = [
   { value: 'suggestions', label: 'Suggestions' },
   { value: 'acceptances', label: 'Acceptances' },
 ];
 
-function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
+function ChatModeDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
   const cards = data?.suggestedCards ?? {};
 
   return (
     <div className="copilot-dashboard">
-      <h2>IDE Code Completions</h2>
+      <h2>Copilot Chat</h2>
       <p className="disclaimer-banner">
-        Tracks ghost-text suggestions that appear inline as you type in the
-        editor. A suggestion is counted each time Copilot offers code, and an
-        acceptance is counted when you press Tab to insert it. This does not
-        include chat-based interactions or agent file writes. Weekend data and
-        lines of code (LoC) can be toggled in the settings menu (cogwheel).
+        Tracks code suggestions generated through Copilot Chat across all modes
+        (Ask, Edit, Agent, and Plan). A suggestion is counted each time Copilot
+        generates a code block, and an acceptance is counted when the code is
+        applied to your workspace. This does not include the autonomous file
+        writes made by agent mode, those are tracked separately under{' '}
+        <a href="/copilot/agent">Agent Mode</a>. Weekend data and lines of code
+        (LoC) can be toggled in the settings menu (cogwheel).
       </p>
 
       <div className="copilot-dashboard-section">
@@ -158,14 +160,33 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
       </div>
 
       <div className="copilot-dashboard-section-bottom">
+        <h3>Breakdowns</h3>
         {loading ? (
-          <div className="copilot-graph-container skeleton" />
+          <div className="usage-pie-charts-grid">
+            <div className="usage-pie-chart-card skeleton" />
+            <div className="usage-pie-chart-card skeleton" />
+          </div>
+        ) : (
+          <div className="usage-pie-charts-grid">
+            <TogglePieChart
+              title="Language Breakdown"
+              pieData={data.languagePieChart}
+              modeOptions={CHAT_PIE_MODES}
+            />
+            <TogglePieChart
+              title="Model Breakdown"
+              pieData={data.modelPieChart}
+              modeOptions={CHAT_PIE_MODES}
+            />
+          </div>
+        )}
+        {loading ? (
+          <div className="usage-pie-chart-card skeleton" />
         ) : (
           <TogglePieChart
-            sectionTitle="Language Breakdown"
-            pieData={data.languagePieChart}
-            modeOptions={LANGUAGE_PIE_MODES}
-            noPadding
+            title="Chat Mode Breakdown"
+            pieData={data.chatModePieChart}
+            modeOptions={CHAT_PIE_MODES}
           />
         )}
       </div>
@@ -173,4 +194,4 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
   );
 }
 
-export default CodeCompletionsDashboard;
+export default ChatModeDashboard;

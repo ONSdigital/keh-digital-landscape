@@ -104,38 +104,44 @@ describe('processAgentModeData', () => {
     ]);
   });
 
-  it('builds language and model pie data as fractions', () => {
+  it('builds language and model pie data as percentages with { name, value } format', () => {
     const result = processAgentModeData(sampleData);
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([
-        { JavaScript: 70 / 120 },
-        { Python: 30 / 120 },
-        { Go: 20 / 120 },
+        {
+          name: 'JavaScript',
+          value: parseFloat(((70 / 120) * 100).toFixed(2)),
+        },
+        { name: 'Python', value: parseFloat(((30 / 120) * 100).toFixed(2)) },
+        { name: 'Go', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
       ])
     );
 
     expect(result.languagePieChart.deleted).toEqual(
       expect.arrayContaining([
-        { JavaScript: 20 / 50 },
-        { Python: 20 / 50 },
-        { Go: 10 / 50 },
+        { name: 'JavaScript', value: parseFloat(((20 / 50) * 100).toFixed(2)) },
+        { name: 'Python', value: parseFloat(((20 / 50) * 100).toFixed(2)) },
+        { name: 'Go', value: parseFloat(((10 / 50) * 100).toFixed(2)) },
       ])
     );
 
     expect(result.modelPieChart.added).toEqual(
       expect.arrayContaining([
-        { 'gpt-5': 80 / 120 },
-        { 'GPT-4.1': 20 / 120 },
-        { 'claude-3.7': 20 / 120 },
+        { name: 'gpt-5', value: parseFloat(((80 / 120) * 100).toFixed(2)) },
+        { name: 'GPT-4.1', value: parseFloat(((20 / 120) * 100).toFixed(2)) },
+        {
+          name: 'claude-3.7',
+          value: parseFloat(((20 / 120) * 100).toFixed(2)),
+        },
       ])
     );
 
     expect(result.modelPieChart.deleted).toEqual(
       expect.arrayContaining([
-        { 'gpt-5': 30 / 50 },
-        { 'GPT-4.1': 10 / 50 },
-        { 'claude-3.7': 10 / 50 },
+        { name: 'gpt-5', value: parseFloat(((30 / 50) * 100).toFixed(2)) },
+        { name: 'GPT-4.1', value: parseFloat(((10 / 50) * 100).toFixed(2)) },
+        { name: 'claude-3.7', value: parseFloat(((10 / 50) * 100).toFixed(2)) },
       ])
     );
   });

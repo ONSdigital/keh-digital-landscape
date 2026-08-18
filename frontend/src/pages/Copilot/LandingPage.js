@@ -68,7 +68,7 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={VscCommentDiscussionSparkle}
               title="Copilot Chat"
-              href="#"
+              href="/copilot/chat"
             />
             <CopilotNavCard
               icon={RiRobot2Line}

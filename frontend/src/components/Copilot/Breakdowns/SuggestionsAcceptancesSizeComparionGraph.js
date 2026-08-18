@@ -183,7 +183,7 @@ const SuggestionsAcceptancesSizeComparisonGraph = ({
             yAxisId="left"
             tick={{ fill: colors.text }}
             axisLine={{ stroke: '' }}
-            domain={[0, dataMax => Math.ceil(dataMax / 10) * 3]}
+            domain={[0, dataMax => Math.ceil(dataMax * 1.2)]}
             tickCount={5}
             tickFormatter={value => formatNumberWithCommas(value)}
           />

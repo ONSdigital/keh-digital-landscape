@@ -85,13 +85,13 @@ In `backend/src/index.js`, import the new routes module and mount it under an ap
 
 Available rate limiters (defined in `backend/src/config/rateLimiter.js`):
 
-| Limiter | Intended use |
-| --- | --- |
-| `generalApiLimiter` | Public/unauthenticated endpoints |
-| `userApiLimiter` | Authenticated user endpoints |
-| `adminApiLimiter` | Admin-only endpoints |
-| `externalApiLimiter` | Routes that call external APIs (e.g. GitHub) |
-| `policyReportsApiLimiter` | High-throughput Policy Reports endpoints |
+| Limiter                   | Intended use                                 |
+| ------------------------- | -------------------------------------------- |
+| `generalApiLimiter`       | Public/unauthenticated endpoints             |
+| `userApiLimiter`          | Authenticated user endpoints                 |
+| `adminApiLimiter`         | Admin-only endpoints                         |
+| `externalApiLimiter`      | Routes that call external APIs (e.g. GitHub) |
+| `policyReportsApiLimiter` | High-throughput Policy Reports endpoints     |
 
 ```js
 // backend/src/index.js
@@ -258,7 +258,7 @@ Lazy-import the page and add a `<Route>` in `frontend/src/App.js`:
 const PolicyReportsPage = lazy(() => import('./pages/PolicyReportsPage'));
 
 // inside <Routes>:
-<Route path="/github-policy-reports" element={<PolicyReportsPage />} />
+<Route path="/github-policy-reports" element={<PolicyReportsPage />} />;
 ```
 
 For protected pages (admin/reviewer roles only), wrap with `ProtectedRoute`:
@@ -291,7 +291,7 @@ const baseNavigationItems = {
     description: 'Generate and view reports on GitHub Usage Policy compliance.',
     icon: TbReport,
     isLink: true,
-    homeUseAnchor: true,   // renders as <a> on the home page card grid
+    homeUseAnchor: true, // renders as <a> on the home page card grid
   },
 };
 
@@ -309,15 +309,15 @@ export const homePageNavigationItems = [
 
 **Navigation item fields:**
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `path` | `string` | React Router path |
-| `label` | `string` | Display name in sidebar and home page |
-| `description` | `string` | Subtitle shown on the home page card |
-| `icon` | `ReactComponent` | Icon from `react-icons` |
-| `isLink` | `boolean` | `true` for public pages; `false` for protected pages (renders as `<a>` for auth redirect) |
-| `homeUseAnchor` | `boolean` | Use an `<a>` tag instead of `<Link>` on the home page (required for auth-gated pages) |
-| `hasChildren` | `boolean` | `true` if the page has sub-routes (e.g. Copilot) |
+| Field           | Type             | Description                                                                               |
+| --------------- | ---------------- | ----------------------------------------------------------------------------------------- |
+| `path`          | `string`         | React Router path                                                                         |
+| `label`         | `string`         | Display name in sidebar and home page                                                     |
+| `description`   | `string`         | Subtitle shown on the home page card                                                      |
+| `icon`          | `ReactComponent` | Icon from `react-icons`                                                                   |
+| `isLink`        | `boolean`        | `true` for public pages; `false` for protected pages (renders as `<a>` for auth redirect) |
+| `homeUseAnchor` | `boolean`        | Use an `<a>` tag instead of `<Link>` on the home page (required for auth-gated pages)     |
+| `hasChildren`   | `boolean`        | `true` if the page has sub-routes (e.g. Copilot)                                          |
 
 Restricted pages (review, admin) should **not** be added to `generalNavigationItems` - they are included only in `restrictedNavigationItems` and `homePageNavigationItems`.
 

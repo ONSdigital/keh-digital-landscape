@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { COPILOT_CHART_PALETTE } from '../../../constants/copilotConstants';
+import Tooltip from '../../Tooltip/Tooltip';
 import useCountUp from '../../../hooks/useCountUp';
 
-function PercentageCard({ title, numerator, denominator, paletteIndex }) {
+function PercentageCard({
+  title,
+  numerator,
+  denominator,
+  paletteIndex,
+  tooltip,
+}) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const ratio = denominator > 0 ? numerator / denominator : 0;
@@ -22,7 +30,18 @@ function PercentageCard({ title, numerator, denominator, paletteIndex }) {
 
   return (
     <div className="usage-card">
-      <h4 className="usage-card-title">{title}</h4>
+      <div className="usage-card-header">
+        <h4 className="usage-card-title">{title}</h4>
+        {tooltip && (
+          <Tooltip
+            title={<p className="copilot-tooltip-paragraph">{tooltip}</p>}
+          >
+            <span className="info-icon">
+              <IoInformationCircleOutline />
+            </span>
+          </Tooltip>
+        )}
+      </div>
       <div className="usage-card-body">
         <p className="usage-card-percentage">
           {Math.round(animatedPercentage)}%

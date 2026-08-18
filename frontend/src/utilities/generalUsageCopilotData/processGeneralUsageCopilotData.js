@@ -3,49 +3,7 @@ import {
   IDE_NAMES,
   LANGUAGE_NAMES,
 } from '../../constants/copilotConstants';
-
-function aggregateToPercentages(totals, formatName, minPercent) {
-  const grandTotal =
-    Object.values(totals).reduce((sum, val) => sum + val, 0) || 1;
-
-  const bucketKeys = ['others', 'unknown', 'Other', 'OTHERS', 'UNKNOWN'];
-
-  // otherSum will accumulate the values of entries that are either in bucketKeys or below the minPercent threshold
-  let otherSum = 0;
-
-  const entries = Object.entries(totals)
-    .filter(([key, val]) => {
-      if (val <= 0) return false;
-      if (bucketKeys.includes(key)) {
-        otherSum += val;
-        return false;
-      }
-      return true;
-    })
-    .sort((a, b) => b[1] - a[1]);
-
-  const result = [];
-  for (const [name, value] of entries) {
-    const percent = (value / grandTotal) * 100;
-    if (percent < minPercent) {
-      otherSum += value;
-    } else {
-      result.push({
-        name: formatName(name),
-        value: parseFloat(percent.toFixed(2)),
-      });
-    }
-  }
-
-  if (otherSum > 0) {
-    result.push({
-      name: 'Other',
-      value: parseFloat(((otherSum / grandTotal) * 100).toFixed(2)),
-    });
-  }
-
-  return result;
-}
+import { buildPieSlices } from '../buildPieSlices';
 
 function formatModelName(model) {
   return MODEL_NAMES[model] || model;
@@ -109,13 +67,13 @@ function buildModelUsage(data) {
 
   for (const day of data) {
     for (const entry of day.totals_by_model_feature || []) {
-      const model = entry.model;
+      const model = formatModelName(entry.model);
       if (!modelTotals[model]) modelTotals[model] = 0;
       modelTotals[model] += entry.user_initiated_interaction_count || 0;
     }
   }
 
-  return aggregateToPercentages(modelTotals, formatModelName, 7);
+  return buildPieSlices(modelTotals);
 }
 
 function buildIdeUsage(data) {
@@ -123,13 +81,13 @@ function buildIdeUsage(data) {
 
   for (const day of data) {
     for (const entry of day.totals_by_ide || []) {
-      const ide = entry.ide;
+      const ide = formatIdeName(entry.ide);
       if (!ideTotals[ide]) ideTotals[ide] = 0;
       ideTotals[ide] += entry.user_initiated_interaction_count || 0;
     }
   }
 
-  return aggregateToPercentages(ideTotals, formatIdeName, 1);
+  return buildPieSlices(ideTotals);
 }
 
 function buildCodeImpact(data) {
@@ -144,7 +102,7 @@ function buildCodeImpact(data) {
     }
   }
 
-  return aggregateToPercentages(langTotals, name => name, 1);
+  return buildPieSlices(langTotals);
 }
 
 /**

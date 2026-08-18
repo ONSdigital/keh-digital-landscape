@@ -1,12 +1,8 @@
 import React from 'react';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
-import StatCard from '../../StatCard/StatCard';
 import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarChart';
-import AddedDeletedPieChart from '../Breakdowns/AddedVsDeletedPieChart';
-import '../../../styles/components/Statistics.css';
-import '../../../styles/CopilotPage.css';
-import '../../../styles/Copilot/ReusableStyles.css';
-import '../../../styles/Copilot/GeneralUsagePage.css';
+import TogglePieChart from '../Breakdowns/TogglePieChart';
+import DashboardStatCard from '../Breakdowns/DashboardStatCard';
 
 function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
@@ -18,10 +14,14 @@ function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
     <div className="copilot-dashboard">
       <h2>Agent Mode</h2>
       <p className="disclaimer-banner">
-        Lines of code added or deleted are from agent sessions where Copilot
-        autonomously writes changes directly into files as a part of a
-        multi-step task. Weekend data can be toggled in the settings menu
-        (cogwheel) on this page.
+        Tracks lines of code that Copilot writes directly into your workspace
+        files during agent mode sessions, without you clicking Apply on each
+        change. These are the autonomous multi-file edits that appear as inline
+        diffs in the editor. This does not include code blocks shown in the chat
+        panel (tracked under <a href="/copilot/chat">Copilot Chat</a>) or inline
+        ghost-text completions (tracked under{' '}
+        <a href="/copilot/completions">Code Completions</a>). Weekend data can
+        be toggled in the settings menu (cogwheel).
       </p>
 
       <div className="copilot-dashboard-section">
@@ -33,8 +33,16 @@ function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
           </div>
         ) : (
           <div className="copilot-grid-average">
-            <StatCard title="Total Lines Added" value={totalLinesAdded} />
-            <StatCard title="Total Lines Deleted" value={totalLinesDeleted} />
+            <DashboardStatCard
+              title="Total Lines Added"
+              value={totalLinesAdded}
+              displayMode="count"
+            />
+            <DashboardStatCard
+              title="Total Lines Deleted"
+              value={totalLinesDeleted}
+              displayMode="count"
+            />
           </div>
         )}
 
@@ -59,11 +67,11 @@ function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
           </div>
         ) : (
           <div className="usage-pie-charts-grid">
-            <AddedDeletedPieChart
+            <TogglePieChart
               title="Language Breakdown"
               pieData={data.languagePieChart}
             />
-            <AddedDeletedPieChart
+            <TogglePieChart
               title="Model Breakdown"
               pieData={data.modelPieChart}
             />
