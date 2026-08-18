@@ -33,4 +33,3 @@ Access the Google Analytics dashboard to view:
 - User demographics and locations
 - Top performing pages
 - Session duration and bounce rates
-
