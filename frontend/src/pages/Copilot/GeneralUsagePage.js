@@ -22,7 +22,9 @@ function GeneralUsagePage() {
     })();
   }, []);
 
-  const data = historicUsageData ? processGeneralUsageData(historicUsageData) : null;
+  const data = historicUsageData
+    ? processGeneralUsageData(historicUsageData)
+    : null;
 
   return (
     <Layout headerProps={{ hideSearch: true }}>
