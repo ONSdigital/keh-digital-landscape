@@ -1,45 +1,53 @@
 const MAX_SLICES = 6;
-const EXCLUDED_KEYS = new Set([
-  'others',
-  'unknown',
-  'Other',
-  'OTHERS',
-  'UNKNOWN',
-]);
+
+// Keys that GitHub's API uses for unclassified data bucketed into "Other" rather than shown as named slices
+const UNNAMED_KEYS = new Set(['others', 'unknown']);
 
 /**
  * Converts raw count totals into a pie-chart-ready array: [{ name, value }]
  * where value is a percentage. Caps at MAX_SLICES entries and buckets the
- * rest into "Other". Filters out unknown/zero entries.
+ * rest (including unnamed keys like 'unknown' and 'others') into "Other".
  *
  * @param {Object} totals - { displayName: rawCount }
  * @param {number} [maxSlices] - Maximum number of slices before bucketing
  * @returns {Array<{ name: string, value: number }>}
  */
 export function buildPieSlices(totals, maxSlices = MAX_SLICES) {
-  // Calculate the grand total of all counts, defaulting to 1 to avoid division by zero
+  // Grand total across all entries, used as the denominator for percentage calculation
   const grandTotal =
     Object.values(totals).reduce((sum, val) => sum + val, 0) || 1;
 
-  // Filter out entries that are either in EXCLUDED_KEYS or have a count of zero or less
-  // Sort the remaining entries in descending order based on their counts
-  const entries = Object.entries(totals)
-    .filter(([key, val]) => val > 0 && !EXCLUDED_KEYS.has(key))
-    .sort((a, b) => b[1] - a[1]);
+  // Remove zero-count entries
+  const entries = Object.entries(totals).filter(([, val]) => val > 0);
 
-  // Takes the top `maxSlices` entries and buckets the rest into "Other"
-  const top = entries.slice(0, maxSlices);
-  const rest = entries.slice(maxSlices);
+  // Separate unnamed keys (e.g. 'unknown', 'others') from named entries
+  // Unnamed keys are added to otherSum rather than appearing as their own slice
+  const named = [];
+  let otherSum = 0;
 
-  // Map the top entries to the desired format, calculating their percentage values
-  // e.g. { name: 'JavaScript', value: 25.5 }
+  for (const [key, val] of entries) {
+    if (UNNAMED_KEYS.has(key.toLowerCase())) {
+      otherSum += val;
+    } else {
+      named.push([key, val]);
+    }
+  }
+
+  // Sort named entries by count descending, then take the top slices
+  named.sort((a, b) => b[1] - a[1]);
+
+  const top = named.slice(0, maxSlices);
+
+  // Any named entries beyond the slice cap also go into "Other"
+  otherSum += named.slice(maxSlices).reduce((sum, [, count]) => sum + count, 0);
+
+  // Convert counts to percentages
   const result = top.map(([name, count]) => ({
     name,
     value: parseFloat(((count / grandTotal) * 100).toFixed(2)),
   }));
 
-  // If there are leftover entries, adds a single "Other" slice with their combined percentage.
-  const otherSum = rest.reduce((sum, [, count]) => sum + count, 0);
+  // Add a single "Other" slice combining unnamed keys + overflow entries
   if (otherSum > 0) {
     result.push({
       name: 'Other',
