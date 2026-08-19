@@ -7,7 +7,7 @@ import {
 } from '../utilities/getRepositoryData';
 import { fetchBanners } from '../utilities/getBanner';
 import { getOrgHistoryData } from '../utilities/getOrgHistoryData';
-import { getLegacyCopilotData } from '../utilities/legacyCopilotData/getLegacyCopilotData';
+import { getLegacyCopilotData } from '../utilities/githubCopilot/legacyCopilotData/getLegacyCopilotData';
 import { fetchUserInfo } from '../utilities/getUser';
 /**
  * DataContext provides centralized data management and caching for the application.

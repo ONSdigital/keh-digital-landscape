@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import { useEffect, useMemo } from 'react';
 import {
   VscGraphLine,
   VscLightbulbEmpty,
@@ -8,6 +9,8 @@ import { RiRobot2Line } from 'react-icons/ri';
 import { BsArchive } from 'react-icons/bs';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import Layout from '../../components/Layout/Layout';
+import { useData } from '../../contexts/dataContext';
+import { processPreviewCopilotData } from '../../utilities/githubCopilot/previewCopilotData/processPreviewCopilotData';
 import '../../styles/Copilot/LandingPage.css';
 import { RxDoubleArrowRight } from 'react-icons/rx';
 
@@ -27,7 +30,23 @@ function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
           <Icon />
           <p>{title}</p>
         </div>
-        <div className="copilot-nav-card-stats">{previewStats}</div>
+        {previewStats && (
+          <div className="copilot-nav-card-preview-stats">
+            <p>
+              {previewStats.label}:{' '}
+              <span
+                className={`copilot-preview-value ${
+                  previewStats.increased
+                    ? 'copilot-preview-up'
+                    : 'copilot-preview-down'
+                }`}
+              >
+                {previewStats.value?.toLocaleString()}{' '}
+                {previewStats.increased ? '▲' : '▼'}
+              </span>
+            </p>
+          </div>
+        )}
       </div>
       <div className="copilot-nav-card-arrow">
         <RxDoubleArrowRight size={20} />
@@ -37,6 +56,20 @@ function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
 }
 
 function CopilotDashboardLandingPage() {
+  const { historicUsageData, getHistoricUsageData } = useData();
+
+  useEffect(() => {
+    (async () => {
+      await getHistoricUsageData();
+    })();
+  }, []);
+
+  const data = historicUsageData
+    ? processPreviewCopilotData(historicUsageData)
+    : null;
+
+  console.log('Processed Preview Copilot Data:', data);
+
   return (
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
@@ -53,6 +86,11 @@ function CopilotDashboardLandingPage() {
               icon={VscGraphLine}
               title="General Usage"
               href="/copilot/general"
+              previewStats={
+                data
+                  ? { label: 'Engaged Users (30d)', ...data.engagedUsers }
+                  : null
+              }
             />
           </div>
         </div>
@@ -64,16 +102,29 @@ function CopilotDashboardLandingPage() {
               icon={VscLightbulbEmpty}
               title="IDE Code Completions"
               href="/copilot/completions"
+              previewStats={
+                data
+                  ? { label: 'Lines Accepted (30d)', ...data.linesAccepted }
+                  : null
+              }
             />
             <CopilotNavCard
               icon={VscCommentDiscussionSparkle}
               title="Copilot Chat"
               href="/copilot/chat"
+              previewStats={
+                data ? { label: 'Total Chats (30d)', ...data.totalChats } : null
+              }
             />
             <CopilotNavCard
               icon={RiRobot2Line}
               title="Agent Mode"
               href="/copilot/agent"
+              previewStats={
+                data
+                  ? { label: 'Lines Added (30d)', ...data.agentLinesAdded }
+                  : null
+              }
             />
           </div>
         </div>

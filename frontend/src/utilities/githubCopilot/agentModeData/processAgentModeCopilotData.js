@@ -1,7 +1,10 @@
 // This file is responsible for processing the Copilot usage data and formatting it
-// into relevant data for the Agent Mode dashboard.
-import { LANGUAGE_NAMES, MODEL_NAMES } from '../../constants/copilotConstants';
-import { buildPieSlices } from '../buildPieSlices';
+// into relevant data for the Agent Mode section of the dashboard.
+import {
+  LANGUAGE_NAMES,
+  MODEL_NAMES,
+} from '../../../constants/copilotConstants';
+import { buildPieSlices } from '../../buildPieSlices';
 
 /**
  * Returns true when the given date string falls on a Saturday or Sunday.
@@ -30,7 +33,7 @@ function isWeekendDate(dateString) {
  * @param {boolean} [options.includeWeekendUsage=true]
  * @returns {Object}
  */
-export function processAgentModeData(data, options = {}) {
+export function processAgentModeCopilotData(data, options = {}) {
   const { includeWeekendUsage = true } = options;
 
   // ── Summary totals ─────────────────────────────────────────────────────────

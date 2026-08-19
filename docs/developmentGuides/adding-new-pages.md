@@ -113,10 +113,10 @@ In AWS, traffic passes through an Application Load Balancer before reaching the 
 
 Add your new path prefix to the appropriate rule in `terraform/service/alb.tf`. There are two backend rules (split because ALB limits each rule to five path patterns):
 
-| Rule resource | Current path patterns |
-| --- | --- |
+| Rule resource                      | Current path patterns                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------- |
 | `digital_landscape_backend_rule_1` | `/api/*`, `/copilot/api/*`, `/addressbook/api/*`, `/policy-reports/api/*` |
-| `digital_landscape_backend_rule_2` | `/review/api/*`, `/admin/api/*`, `/user/api/*` |
+| `digital_landscape_backend_rule_2` | `/review/api/*`, `/admin/api/*`, `/user/api/*`                            |
 
 Add the new prefix to whichever rule has fewer than five patterns, or create a `digital_landscape_backend_rule_3` following the same structure:
 

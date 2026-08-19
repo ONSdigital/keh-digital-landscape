@@ -130,15 +130,19 @@ Each dataset is visualised separately as the metrics are not directly comparable
 
 All data is fetched from the backend and processed on the frontend. See the processing utilities for full detail:
 
-- **General Usage**: `utilities/generalUsageCopilotData/processGeneralUsageCopilotData.js`
+From `utilities/gitHubCopilot`:
 
-- **IDE Code Completions**: `utilities/codeCompletionCopilotData/processCodeCompletionData.js`
+- **General Usage**: `./generalUsageCopilotData/processGeneralUsageCopilotData.js`
 
-- **Copilot Chat**: `utilities/chatModeCopilotData/processChatModeCopilotData.js`
+- **IDE Code Completions**: `./codeCompletionCopilotData/processCodeCompletionData.js`
 
-- **Agent Mode**: `utilities/agentModeData/processAgentModeData.js`
+- **Copilot Chat**: `./chatModeCopilotData/processChatModeCopilotData.js`
 
-- **Legacy Usage**: `utilities/legacyCopilotData/processLegacyCopilotData.js`
+- **Agent Mode**: `./agentModeData/processAgentModeCopilotData.js`
+
+- **Legacy Usage**: `./legacyCopilotData/processLegacyCopilotData.js`
+
+For more detail on Legacy Usage, see [Legacy Copilot Data](../../functionality/legacyCopilotData.md)
 
 All pie chart data is processed through the shared `utilities/buildPieSlices.js` utility, which converts raw count totals into a standardised `[{ name, value }]` format with percentages, capped at 6 slices with an "Other" bucket.
 

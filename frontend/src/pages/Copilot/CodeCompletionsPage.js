@@ -5,7 +5,7 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
-import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotData/processCodeCompletionData';
+import { processCodeCompletionData } from '../../utilities/githubCopilot/codeCompletionCopilotData/processCodeCompletionData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';

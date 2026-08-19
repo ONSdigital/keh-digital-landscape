@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { processAgentModeData } from './processAgentModeData';
+import { processAgentModeCopilotData } from './processAgentModeCopilotData';
 
-describe('processAgentModeData', () => {
+describe('processAgentModeCopilotData', () => {
   const sampleData = [
     {
       day: '2026-03-06',
@@ -70,7 +70,7 @@ describe('processAgentModeData', () => {
   ];
 
   it('returns summary totals and daily graph rows', () => {
-    const result = processAgentModeData(sampleData);
+    const result = processAgentModeCopilotData(sampleData);
 
     expect(result.summaryCards.totalLinesAdded).toBe(120);
     expect(result.summaryCards.totalLinesDeleted).toBe(50);
@@ -89,7 +89,7 @@ describe('processAgentModeData', () => {
   });
 
   it('excludes weekend rows when includeWeekendUsage is false', () => {
-    const result = processAgentModeData(sampleData, {
+    const result = processAgentModeCopilotData(sampleData, {
       includeWeekendUsage: false,
     });
 
@@ -105,7 +105,7 @@ describe('processAgentModeData', () => {
   });
 
   it('builds language and model pie data as percentages with { name, value } format', () => {
-    const result = processAgentModeData(sampleData);
+    const result = processAgentModeCopilotData(sampleData);
 
     expect(result.languagePieChart.added).toEqual(
       expect.arrayContaining([

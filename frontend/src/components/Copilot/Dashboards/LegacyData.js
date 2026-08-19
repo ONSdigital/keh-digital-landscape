@@ -5,7 +5,7 @@ import {
   prepareFebruaryChatGraphData,
   prepareMarchChatGraphData,
   prepareUserMetricsGraphData,
-} from '../../../utilities/legacyCopilotData/processLegacyCopilotData';
+} from '../../../utilities/githubCopilot/legacyCopilotData/processLegacyCopilotData';
 import AcceptanceGraph from '../Breakdowns/AcceptanceGraph';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import { getPercentage } from '../../../utilities/getPercentage';

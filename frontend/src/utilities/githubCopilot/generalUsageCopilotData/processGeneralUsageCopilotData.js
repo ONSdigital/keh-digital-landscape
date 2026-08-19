@@ -2,8 +2,8 @@ import {
   MODEL_NAMES,
   IDE_NAMES,
   LANGUAGE_NAMES,
-} from '../../constants/copilotConstants';
-import { buildPieSlices } from '../buildPieSlices';
+} from '../../../constants/copilotConstants';
+import { buildPieSlices } from '../../buildPieSlices';
 
 function formatModelName(model) {
   return MODEL_NAMES[model] || model;

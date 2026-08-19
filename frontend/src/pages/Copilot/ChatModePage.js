@@ -4,7 +4,7 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import ChatModeDashboard from '../../components/Copilot/Dashboards/ChatModeDashboard';
-import { processChatModeData } from '../../utilities/chatModeCopilotData/processChatModeCopilotData';
+import { processChatModeData } from '../../utilities/githubCopilot/chatModeCopilotData/processChatModeCopilotData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';

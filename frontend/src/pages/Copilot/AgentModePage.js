@@ -4,7 +4,7 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import AgentModeDashboard from '../../components/Copilot/Dashboards/AgentModeDashboard';
-import { processAgentModeData } from '../../utilities/agentModeData/processAgentModeData';
+import { processAgentModeCopilotData } from '../../utilities/githubCopilot/agentModeData/processAgentModeCopilotData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
@@ -37,7 +37,7 @@ function AgentModePage() {
   };
 
   const processedData = historicUsageData
-    ? processAgentModeData(historicUsageData, {
+    ? processAgentModeCopilotData(historicUsageData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
