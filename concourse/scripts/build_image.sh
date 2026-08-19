@@ -31,12 +31,13 @@ if [ -z "$tech_radar_submissions_url" ] || [ "$tech_radar_submissions_url" = "nu
 fi
 
 alerts_channel_id=$(echo "$secrets" | jq -r .alerts_channel_id)
+ga_container_id=$(echo "$secrets" | jq -r .ga_container_id)
 container_image_frontend=$(echo "$secrets" | jq -r .container_image_frontend)
 container_image_backend=$(echo "$secrets" | jq -r .container_image_backend)
 
 # Build images in parallel
 echo "Building images in parallel..."
-podman build --build-arg "VITE_SUPPORT_MAIL=${support_mail}" --build-arg "VITE_ALERTS_CHANNEL_ID=${alerts_channel_id}" --build-arg "VITE_TECH_RADAR_SUBMISSIONS_URL=${tech_radar_submissions_url}" -t "${container_image_frontend}":"${tag}" resource-repo/frontend &
+podman build --build-arg "VITE_SUPPORT_MAIL=${support_mail}" --build-arg "VITE_ALERTS_CHANNEL_ID=${alerts_channel_id}" --build-arg "VITE_TECH_RADAR_SUBMISSIONS_URL=${tech_radar_submissions_url}" --build-arg "VITE_GA_CONTAINER_ID=${ga_container_id}" -t "${container_image_frontend}":"${tag}" resource-repo/frontend &
 pid1=$!
 podman build -t "${container_image_backend}":"${tag}" resource-repo/backend &
 pid2=$!

@@ -74,6 +74,8 @@ nav:
       - Playwright: testing/playwright.md
   - Infrastructure:
       - Cognito: cognito.md
+  - Analytics:
+      - Analytics: analytics.md
   - MkDocs:
       - Documentation: documentation.md
 theme:
