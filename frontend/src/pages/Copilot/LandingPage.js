@@ -12,6 +12,8 @@ import Layout from '../../components/Layout/Layout';
 import { useData } from '../../contexts/dataContext';
 import { processPreviewCopilotData } from '../../utilities/githubCopilot/previewCopilotData/processPreviewCopilotData';
 import '../../styles/Copilot/LandingPage.css';
+import '../../styles/Copilot/ReusableStyles.css';
+import '../../styles/ReviewPage.css';
 import { RxDoubleArrowRight } from 'react-icons/rx';
 
 function CopilotNavCard({ icon: Icon, title, previewStats, href }) {
@@ -74,7 +76,7 @@ function CopilotDashboardLandingPage() {
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
         title="GitHub Copilot Usage Dashboard"
-        description="Analyse usage statistics organisation-wide and by team"
+        description="Analyse usage statistics organisation-wide"
         tabs={[]}
       />
 

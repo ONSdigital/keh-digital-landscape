@@ -26,7 +26,7 @@ function LegacyUsagePage() {
       <div className="admin-page">
         <PageBanner
           title="GitHub Copilot Usage Dashboard"
-          description="Analyse Copilot usage statistics organisation-wide and by team"
+          description="Analyse Copilot usage statistics organisation-wide"
           tabs={[]}
         />
         <div className="admin-container">
