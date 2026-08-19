@@ -1,21 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
-import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
-import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotData/processCodeCompletionData';
+import AgentModeDashboard from '../../components/Copilot/Dashboards/AgentModeDashboard';
+import { processAgentModeData } from '../../utilities/agentModeData/processAgentModeData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
 
-function CodeCompletionsPage() {
+function AgentModePage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
     includeWeekendUsage: true,
-    locUsage: false,
   });
 
   useEffect(() => {
@@ -32,11 +30,6 @@ function CodeCompletionsPage() {
       label: 'Include weekend usage',
       checked: chartDisplaySettings.includeWeekendUsage,
     },
-    {
-      key: 'locUsage',
-      label: 'Include LoC usage',
-      checked: chartDisplaySettings.locUsage,
-    },
   ];
 
   const handleSettingChange = (key, checked) => {
@@ -44,18 +37,18 @@ function CodeCompletionsPage() {
   };
 
   const processedData = historicUsageData
-    ? processCodeCompletionData(historicUsageData, {
+    ? processAgentModeData(historicUsageData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
+
   return (
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
         title="GitHub Copilot Usage Dashboard"
-        description="Analyse Copilot usage statistics organisation-wide"
+        description="Analyse Copilot Agent Edit usage organisation-wide"
         tabs={[]}
       />
-
       <div className="admin-container">
         <PageControls
           previousPage="/copilot/home"
@@ -63,7 +56,7 @@ function CodeCompletionsPage() {
           settings={settings}
           onSettingChange={handleSettingChange}
         />
-        <CodeCompletionsDashboard
+        <AgentModeDashboard
           data={processedData}
           isLoading={isLoading}
           chartDisplaySettings={chartDisplaySettings}
@@ -73,4 +66,4 @@ function CodeCompletionsPage() {
   );
 }
 
-export default CodeCompletionsPage;
+export default AgentModePage;

@@ -1,16 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
-import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
-import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotData/processCodeCompletionData';
+import ChatModeDashboard from '../../components/Copilot/Dashboards/ChatModeDashboard';
+import { processChatModeData } from '../../utilities/chatModeCopilotData/processChatModeCopilotData';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
 
-function CodeCompletionsPage() {
+function ChatModePage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
@@ -44,15 +43,16 @@ function CodeCompletionsPage() {
   };
 
   const processedData = historicUsageData
-    ? processCodeCompletionData(historicUsageData, {
+    ? processChatModeData(historicUsageData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
+
   return (
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
         title="GitHub Copilot Usage Dashboard"
-        description="Analyse Copilot usage statistics organisation-wide"
+        description="Analyse Copilot Chat usage statistics organisation-wide"
         tabs={[]}
       />
 
@@ -63,7 +63,7 @@ function CodeCompletionsPage() {
           settings={settings}
           onSettingChange={handleSettingChange}
         />
-        <CodeCompletionsDashboard
+        <ChatModeDashboard
           data={processedData}
           isLoading={isLoading}
           chartDisplaySettings={chartDisplaySettings}
@@ -73,4 +73,4 @@ function CodeCompletionsPage() {
   );
 }
 
-export default CodeCompletionsPage;
+export default ChatModePage;

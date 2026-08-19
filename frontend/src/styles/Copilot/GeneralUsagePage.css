@@ -29,6 +29,12 @@
   z-index: -1;
 }
 
+.usage-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .usage-card-title {
   font-size: 14px;
   font-weight: 500;
@@ -77,39 +83,4 @@
 
 .usage-card.skeleton {
   height: 140px;
-}
-
-.copilot-graph-container.skeleton {
-  height: 600px;
-  border-radius: var(--radius);
-}
-
-.usage-pie-chart-card.skeleton {
-  height: 320px;
-}
-
-.usage-pie-charts-grid {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-}
-
-.usage-pie-chart-card {
-  background: hsl(var(--card));
-  padding: 20px;
-  flex: 1;
-}
-
-.usage-pie-chart-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.usage-pie-chart-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: hsl(var(--muted-foreground));
-  margin: 0;
 }

@@ -81,7 +81,7 @@ const NewEngagedUsersGraph = ({ data }) => {
             tickFormatter={value => formatNumberWithCommas(value)}
           />
           <Tooltip
-            wrapperStyle={{ color: 'black' }}
+            wrapperStyle={{ color: 'hsl(var(--foreground))' }}
             formatter={(value, name) =>
               name === 'Acceptance Rate'
                 ? `${value.toFixed(2)}%`

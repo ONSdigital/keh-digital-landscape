@@ -1,18 +1,3 @@
-variable "aws_account_id" {
-  description = "AWS Account ID"
-  type        = string
-}
-
-variable "aws_access_key_id" {
-  description = "AWS Access Key ID"
-  type        = string
-}
-
-variable "aws_secret_access_key" {
-  description = "AWS Secret Access Key"
-  type        = string
-}
-
 variable "service_subdomain" {
   description = "Service subdomain"
   type        = string
@@ -67,24 +52,6 @@ variable "user_groups" {
   default = {
     "admin"    = "The admin users for the Digital Landscape"
     "reviewer" = "The reviewer users for the Digital Landscape"
-  }
-}
-
-variable "token_validity_values" {
-  description = "Token validity duration values"
-  type = object({
-    refresh_token = number
-    access_token  = number
-    id_token      = number
-  })
-  default = {
-    # kics-scan ignore-line (This one alert is a false positive)
-    refresh_token = 30 # 30 days
-    # kics-scan ignore-line (This one alert is a false positive)
-    access_token = 3 # 3 hours
-    # kics-scan ignore-line (This one alert is a false positive)
-    id_token = 3 # 3 hours
-
   }
 }
 

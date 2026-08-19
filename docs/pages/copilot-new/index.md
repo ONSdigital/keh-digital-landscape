@@ -24,7 +24,8 @@ The landing page is designed around **progressive disclosure**: users see just e
 | General Usage        | `/copilot/general`     |
 | IDE Code Completions | `/copilot/completions` |
 | Copilot Chat         | `/copilot/chat`        |
-| Agent Edits          | `/copilot/agent`       |
+| Agent Mode           | `/copilot/agent`       |
+| Agent Mode           | `/copilot/agent`       |
 | Legacy Usage         | `/copilot/legacy`      |
 
 ## Features
@@ -43,9 +44,9 @@ An organisation-wide summary of Copilot adoption and usage patterns, covering me
 
 - **Engaged Users Over Time**: a line chart of monthly unique active users across three series: All Active Users, Chat Users, and Agent Users. Incomplete months are excluded.
 
-- **Model & IDE Usage**: two donut charts showing the share of user-initiated interactions by AI model and by development environment. Not constrained to any one Copilot feature. Entries below threshold are grouped into **Other** (7% for models, 1% for IDEs).
+- **Model & IDE Usage**: two donut charts showing the share of user-initiated interactions by AI model and by development environment. Not constrained to any one Copilot feature. Entries beyond the top 6 are grouped into **Other**.
 
-- **Code Impact by Language**: a donut chart showing the share of total lines added and deleted across all Copilot features, broken down by language. Not constrained to any one feature. Entries below 1% are grouped into **Other**.
+- **Code Impact by Language**: a donut chart showing the share of total lines added and deleted across all Copilot features, broken down by language. Not constrained to any one feature. Entries beyond the top 6 are grouped into **Other**.
 
 ### IDE Code Completions
 
@@ -69,11 +70,49 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 - **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
 
+### Copilot Chat
+
+A feature-focused dashboard for all chat-based Copilot interactions. Aggregates data across all `chat_*` features (Ask, Edit, Agent, Plan, and Inline Chat modes), excluding `chat_panel_unknown_mode`. This page follows the same architecture pattern as IDE Code Completions.
+
+The page banner explains the distinction between chat suggestions (code blocks shown in the chat panel) and autonomous agent file writes (tracked separately under Agent Mode).
+
+**Sections:**
+
+- **Overall Usage**: three summary cards for total suggestion instances, total acceptances, and overall acceptance rate. Days where acceptances exceed suggestions are filtered out as anomalous.
+
+- **Suggestions, Acceptances and Acceptance Rate**: a combined chart with selectable day/week/month aggregation.
+
+- **Optional LoC Usage View**: toggleable LoC section with summary cards and LoC suggestions/acceptances chart.
+
+- **Suggestions vs Acceptances Size**: cards for average LoC per suggestion and per acceptance, plus a trend chart.
+
+- **Breakdowns**: three donut charts — Language Breakdown, Model Breakdown, and Chat Mode Breakdown — each with a selectable mode for suggestions vs acceptances.
+
+### Agent Mode
+
+A feature-focused dashboard for Agent Edit sessions. Tracks lines of code that Copilot writes directly into workspace files during agent mode sessions. The page banner explains the distinction between autonomous file writes and chat-based code suggestions, with a hyperlink to the Copilot Chat page. This page follows the same architecture pattern as the other Copilot feature pages:
+
+- **Page responsibilities**: route-level layout, back navigation, chart settings state, and data fetch/transform.
+
+- **Dashboard responsibilities**: presentational rendering of summary cards and charts from processed props.
+
+**Sections:**
+
+- **Overall Usage**: two summary cards for total lines added and total lines deleted.
+
+- **Lines Added vs Lines Deleted**: a stacked bar chart with selectable day/week/month aggregation. The day view can optionally exclude weekends.
+
+- **Breakdowns**: two donut charts for Language Breakdown and Model Breakdown, each with selectable mode for lines added vs lines deleted.
+
 ### Navigation and Routing
 
-- Entry point from landing page: **General Usage** and **IDE Code Completions** cards on `/copilot/home`.
+- Entry point from landing page: **General Usage**, **IDE Code Completions**, **Copilot Chat**, and **Agent Mode** cards on `/copilot/home`.
 
 - Code Completions route: `/copilot/completions`.
+
+- Copilot Chat route: `/copilot/chat`.
+
+- Agent Mode route: `/copilot/agent`.
 
 - Back button behavior: returns from each feature page to `/copilot/home`.
 
@@ -93,9 +132,15 @@ All data is fetched from the backend and processed on the frontend. See the proc
 
 - **General Usage**: `utilities/generalUsageCopilotData/processGeneralUsageCopilotData.js`
 
-- **IDE Code Completions**: `utilities/codeCompletionCopilotdata/processCodeCompletionData.js`
+- **IDE Code Completions**: `utilities/codeCompletionCopilotData/processCodeCompletionData.js`
+
+- **Copilot Chat**: `utilities/chatModeCopilotData/processChatModeCopilotData.js`
+
+- **Agent Mode**: `utilities/agentModeData/processAgentModeData.js`
 
 - **Legacy Usage**: `utilities/legacyCopilotData/processLegacyCopilotData.js`
+
+All pie chart data is processed through the shared `utilities/buildPieSlices.js` utility, which converts raw count totals into a standardised `[{ name, value }]` format with percentages, capped at 6 slices with an "Other" bucket.
 
 ## Colour System
 

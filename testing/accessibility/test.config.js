@@ -65,6 +65,16 @@ const config = {
       url: '/copilot/completions',
       authentication: [],
     },
+    {
+      name: 'GitHub Copilot Chat Mode',
+      url: '/copilot/chat',
+      authentication: [],
+    },
+    {
+      name: 'GitHub Copilot Agent Mode',
+      url: '/copilot/agent',
+      authentication: [],
+    },
   ],
 };
 
