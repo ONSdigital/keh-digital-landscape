@@ -83,8 +83,8 @@ function CopilotDashboardLandingPage() {
       <div className="copilot-page">
         <div className="copilot-section">
           <p className="disclaimer-banner">
-              Preview statistics show totals for the current calendar month to date,
-              compared to the same period last month.
+            Preview statistics show totals for the current calendar month to
+            date, compared to the same period last month.
           </p>
           <h3 className="copilot-section-title">Summary</h3>
           <div className="copilot-nav-cards">

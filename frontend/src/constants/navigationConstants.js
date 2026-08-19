@@ -44,8 +44,7 @@ const baseNavigationItems = {
   copilot: {
     path: '/copilot',
     label: 'GitHub Copilot',
-    description:
-      'Analyse GitHub Copilot usage statistics organisation-wide.',
+    description: 'Analyse GitHub Copilot usage statistics organisation-wide.',
     icon: VscCopilot,
     isLink: true,
     hasChildren: true,
