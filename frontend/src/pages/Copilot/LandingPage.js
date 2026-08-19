@@ -82,6 +82,10 @@ function CopilotDashboardLandingPage() {
 
       <div className="copilot-page">
         <div className="copilot-section">
+          <p className="disclaimer-banner">
+              Preview statistics show totals for the current calendar month to date,
+              compared to the same period last month.
+          </p>
           <h3 className="copilot-section-title">Summary</h3>
           <div className="copilot-nav-cards">
             <CopilotNavCard
@@ -90,7 +94,7 @@ function CopilotDashboardLandingPage() {
               href="/copilot/general"
               previewStats={
                 data
-                  ? { label: 'Engaged Users (30d)', ...data.engagedUsers }
+                  ? { label: 'Engaged Users (MTD)', ...data.engagedUsers }
                   : null
               }
             />
@@ -106,7 +110,7 @@ function CopilotDashboardLandingPage() {
               href="/copilot/completions"
               previewStats={
                 data
-                  ? { label: 'Lines Accepted (30d)', ...data.linesAccepted }
+                  ? { label: 'Lines Accepted (MTD)', ...data.linesAccepted }
                   : null
               }
             />
@@ -115,7 +119,7 @@ function CopilotDashboardLandingPage() {
               title="Copilot Chat"
               href="/copilot/chat"
               previewStats={
-                data ? { label: 'Total Chats (30d)', ...data.totalChats } : null
+                data ? { label: 'Total Chats (MTD)', ...data.totalChats } : null
               }
             />
             <CopilotNavCard
@@ -124,7 +128,7 @@ function CopilotDashboardLandingPage() {
               href="/copilot/agent"
               previewStats={
                 data
-                  ? { label: 'Lines Added (30d)', ...data.agentLinesAdded }
+                  ? { label: 'Lines Added (MTD)', ...data.agentLinesAdded }
                   : null
               }
             />
