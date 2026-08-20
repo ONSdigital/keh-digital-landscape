@@ -37,7 +37,9 @@ function SettingsMenu({ settings, yearSelect, onChange }) {
                 onChange={e => onChange('selectedYear', e.target.value)}
               >
                 {yearSelect.options.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
                 ))}
               </select>
             </label>

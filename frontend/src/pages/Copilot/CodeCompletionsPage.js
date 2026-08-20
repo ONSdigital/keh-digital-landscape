@@ -6,7 +6,10 @@ import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
 import { processCodeCompletionData } from '../../utilities/githubCopilot/codeCompletionCopilotData/processCodeCompletionData';
-import { filterByYear, getAvailableYears } from '../../utilities/githubCopilot/filterByYear';
+import {
+  filterByYear,
+  getAvailableYears,
+} from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
@@ -33,7 +36,10 @@ function CodeCompletionsPage() {
     ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
   ];
 
-  const yearSelect = { value: chartDisplaySettings.selectedYear, options: yearOptions };
+  const yearSelect = {
+    value: chartDisplaySettings.selectedYear,
+    options: yearOptions,
+  };
 
   const settings = [
     {
@@ -52,7 +58,10 @@ function CodeCompletionsPage() {
     setChartDisplaySettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const filteredData = filterByYear(historicUsageData, chartDisplaySettings.selectedYear);
+  const filteredData = filterByYear(
+    historicUsageData,
+    chartDisplaySettings.selectedYear
+  );
   const processedData = filteredData
     ? processCodeCompletionData(filteredData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,

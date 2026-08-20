@@ -5,7 +5,10 @@ import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import ChatModeDashboard from '../../components/Copilot/Dashboards/ChatModeDashboard';
 import { processChatModeData } from '../../utilities/githubCopilot/chatModeCopilotData/processChatModeCopilotData';
-import { filterByYear, getAvailableYears } from '../../utilities/githubCopilot/filterByYear';
+import {
+  filterByYear,
+  getAvailableYears,
+} from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
@@ -32,7 +35,10 @@ function ChatModePage() {
     ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
   ];
 
-  const yearSelect = { value: chartDisplaySettings.selectedYear, options: yearOptions };
+  const yearSelect = {
+    value: chartDisplaySettings.selectedYear,
+    options: yearOptions,
+  };
 
   const settings = [
     {
@@ -51,7 +57,10 @@ function ChatModePage() {
     setChartDisplaySettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const filteredData = filterByYear(historicUsageData, chartDisplaySettings.selectedYear);
+  const filteredData = filterByYear(
+    historicUsageData,
+    chartDisplaySettings.selectedYear
+  );
   const processedData = filteredData
     ? processChatModeData(filteredData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,

@@ -13,4 +13,3 @@ export function getAvailableYears(data) {
   }
   return years;
 }
-

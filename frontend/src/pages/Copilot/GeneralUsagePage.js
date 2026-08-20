@@ -5,7 +5,10 @@ import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import GeneralUsageDashboard from '../../components/Copilot/Dashboards/GeneralUsage';
 import { processGeneralUsageData } from '../../utilities/githubCopilot/generalUsageCopilotData/processGeneralUsageCopilotData';
-import { filterByYear, getAvailableYears } from '../../utilities/githubCopilot/filterByYear';
+import {
+  filterByYear,
+  getAvailableYears,
+} from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/Copilot/GeneralUsagePage.css';
