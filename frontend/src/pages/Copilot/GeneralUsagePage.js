@@ -5,6 +5,7 @@ import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import GeneralUsageDashboard from '../../components/Copilot/Dashboards/GeneralUsage';
 import { processGeneralUsageData } from '../../utilities/githubCopilot/generalUsageCopilotData/processGeneralUsageCopilotData';
+import { filterByYear, getAvailableYears } from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/Copilot/GeneralUsagePage.css';
@@ -13,6 +14,7 @@ import '../../styles/components/Statistics.css';
 function GeneralUsagePage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedYear, setSelectedYear] = useState('all');
 
   useEffect(() => {
     (async () => {
@@ -22,9 +24,15 @@ function GeneralUsagePage() {
     })();
   }, []);
 
-  const data = historicUsageData
-    ? processGeneralUsageData(historicUsageData)
-    : null;
+  const yearOptions = [
+    { label: 'All time', value: 'all' },
+    ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
+  ];
+
+  const yearSelect = { value: selectedYear, options: yearOptions };
+
+  const filteredData = filterByYear(historicUsageData, selectedYear);
+  const data = filteredData ? processGeneralUsageData(filteredData) : null;
 
   return (
     <Layout headerProps={{ hideSearch: true }}>
@@ -38,6 +46,8 @@ function GeneralUsagePage() {
           <PageControls
             previousPage="/copilot/home"
             backAriaLabel="Back to Copilot Dashboard Homepage"
+            yearSelect={yearSelect}
+            onSettingChange={(key, value) => setSelectedYear(value)}
           />
           <GeneralUsageDashboard
             data={

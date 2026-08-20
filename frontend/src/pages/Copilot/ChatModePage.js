@@ -5,6 +5,7 @@ import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import ChatModeDashboard from '../../components/Copilot/Dashboards/ChatModeDashboard';
 import { processChatModeData } from '../../utilities/githubCopilot/chatModeCopilotData/processChatModeCopilotData';
+import { filterByYear, getAvailableYears } from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
@@ -15,6 +16,7 @@ function ChatModePage() {
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
     includeWeekendUsage: true,
     locUsage: false,
+    selectedYear: 'all',
   });
 
   useEffect(() => {
@@ -24,6 +26,13 @@ function ChatModePage() {
       setIsLoading(false);
     })();
   }, []);
+
+  const yearOptions = [
+    { label: 'All time', value: 'all' },
+    ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
+  ];
+
+  const yearSelect = { value: chartDisplaySettings.selectedYear, options: yearOptions };
 
   const settings = [
     {
@@ -38,12 +47,13 @@ function ChatModePage() {
     },
   ];
 
-  const handleSettingChange = (key, checked) => {
-    setChartDisplaySettings(prev => ({ ...prev, [key]: checked }));
+  const handleSettingChange = (key, value) => {
+    setChartDisplaySettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const processedData = historicUsageData
-    ? processChatModeData(historicUsageData, {
+  const filteredData = filterByYear(historicUsageData, chartDisplaySettings.selectedYear);
+  const processedData = filteredData
+    ? processChatModeData(filteredData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
@@ -61,6 +71,7 @@ function ChatModePage() {
           previousPage="/copilot/home"
           backAriaLabel="Back to Copilot Dashboard Homepage"
           settings={settings}
+          yearSelect={yearSelect}
           onSettingChange={handleSettingChange}
         />
         <ChatModeDashboard

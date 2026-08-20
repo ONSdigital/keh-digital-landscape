@@ -125,6 +125,31 @@
   height: 16px;
 }
 
+.copilot-settings-select-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  color: hsl(var(--foreground));
+}
+
+.copilot-settings-select-label select {
+  font-size: 13px;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.25rem;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.copilot-settings-divider {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 6px 0;
+}
+
 /* Stat card grids */
 
 .copilot-grid {
