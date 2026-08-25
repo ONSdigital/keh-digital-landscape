@@ -6,7 +6,6 @@ const {
   formatCheckName,
   getInputList,
   getInputString,
-  normaliseForFileName,
   normaliseSectionAnchor,
   percentage,
 } = require('../../functions/common');
