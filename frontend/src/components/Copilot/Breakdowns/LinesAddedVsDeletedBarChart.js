@@ -155,6 +155,14 @@ const LinesAddedVsDeletedBarChart = ({ data, includeWeekendUsage = true }) => {
             tickFormatter={value => formatNumberWithCommas(value)}
           />
           <Tooltip
+            contentStyle={{
+              backgroundColor: isDark
+                ? 'hsl(240, 10%, 8%)'
+                : 'hsl(0, 0%, 100%)',
+              border: `1px solid ${isDark ? 'hsl(240, 3.7%, 25.9%)' : 'hsl(240, 5.9%, 90%)'}`,
+              borderRadius: '0.5rem',
+              color: isDark ? 'hsl(0, 0%, 98%)' : 'hsl(240, 10%, 3.9%)',
+            }}
             labelFormatter={value => formatXAxisDate(value)}
             formatter={(value, name) => [formatNumberWithCommas(value), name]}
           />

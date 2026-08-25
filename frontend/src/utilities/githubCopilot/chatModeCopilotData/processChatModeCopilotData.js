@@ -1,5 +1,8 @@
-import { MODEL_NAMES, LANGUAGE_NAMES } from '../../constants/copilotConstants';
-import { buildPieSlices } from '../buildPieSlices';
+import {
+  MODEL_NAMES,
+  LANGUAGE_NAMES,
+} from '../../../constants/copilotConstants';
+import { buildPieSlices } from '../../buildPieSlices';
 
 const CHAT_FEATURE_PREFIX = 'chat_';
 

@@ -44,8 +44,7 @@ const baseNavigationItems = {
   copilot: {
     path: '/copilot',
     label: 'GitHub Copilot',
-    description:
-      'Analyse GitHub Copilot usage statistics organisation-wide and by team.',
+    description: 'Analyse GitHub Copilot usage statistics organisation-wide.',
     icon: VscCopilot,
     isLink: true,
     hasChildren: true,
@@ -92,7 +91,7 @@ export const generalNavigationItems = [
   baseNavigationItems.projects,
   baseNavigationItems.copilot,
   baseNavigationItems.addressBook,
-  baseNavigationItems.policyReports,
+  // baseNavigationItems.policyReports,
 ];
 
 export const restrictedNavigationItems = [
@@ -106,7 +105,7 @@ export const homePageNavigationItems = [
   baseNavigationItems.projects,
   baseNavigationItems.copilot,
   baseNavigationItems.addressBook,
-  baseNavigationItems.policyReports,
+  // baseNavigationItems.policyReports,
   baseNavigationItems.review,
   baseNavigationItems.admin,
 ];

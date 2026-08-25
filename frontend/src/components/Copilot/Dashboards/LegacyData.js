@@ -5,7 +5,7 @@ import {
   prepareFebruaryChatGraphData,
   prepareMarchChatGraphData,
   prepareUserMetricsGraphData,
-} from '../../../utilities/legacyCopilotData/processLegacyCopilotData';
+} from '../../../utilities/githubCopilot/legacyCopilotData/processLegacyCopilotData';
 import AcceptanceGraph from '../Breakdowns/AcceptanceGraph';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
 import { getPercentage } from '../../../utilities/getPercentage';
@@ -21,8 +21,12 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 function LegacyDataVisualisation({ data, isLoading }) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   if (isLoading) {
     return (
       <div>
@@ -68,7 +72,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container--old copilot-graph-container--stacked">
+        <div className="copilot-graph-container copilot-graph-container--stacked">
           <div
             className="skeleton"
             style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
@@ -107,7 +111,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
             <SkeletonStatCard />
           </div>
 
-          <div className="copilot-graph-container--old copilot-graph-container--stacked">
+          <div className="copilot-graph-container copilot-graph-container--stacked">
             <div
               className="skeleton"
               style={{ height: 300, borderRadius: 8, marginBottom: 16 }}
@@ -281,7 +285,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container--old copilot-graph-container--stacked">
+        <div className="copilot-graph-container copilot-graph-container--stacked">
           <ResponsiveContainer width="100%" height={300}>
             <ComposedChart
               width={400}
@@ -350,6 +354,14 @@ function LegacyDataVisualisation({ data, isLoading }) {
               />
               <Tooltip
                 wrapperStyle={{ color: 'hsl(var(--foreground))' }}
+                contentStyle={{
+                  backgroundColor: isDark
+                    ? 'hsl(240, 10%, 8%)'
+                    : 'hsl(0, 0%, 100%)',
+                  border: `1px solid ${isDark ? 'hsl(240, 3.7%, 25.9%)' : 'hsl(240, 5.9%, 90%)'}`,
+                  borderRadius: '0.5rem',
+                  color: isDark ? 'hsl(0, 0%, 98%)' : 'hsl(240, 10%, 3.9%)',
+                }}
                 formatter={(value, name) =>
                   name === 'Chats'
                     ? formatNumberWithCommas(value)
@@ -419,6 +431,14 @@ function LegacyDataVisualisation({ data, isLoading }) {
               />
               <Tooltip
                 wrapperStyle={{ color: 'hsl(var(--foreground))' }}
+                contentStyle={{
+                  backgroundColor: isDark
+                    ? 'hsl(240, 10%, 8%)'
+                    : 'hsl(0, 0%, 100%)',
+                  border: `1px solid ${isDark ? 'hsl(240, 3.7%, 25.9%)' : 'hsl(240, 5.9%, 90%)'}`,
+                  borderRadius: '0.5rem',
+                  color: isDark ? 'hsl(0, 0%, 98%)' : 'hsl(240, 10%, 3.9%)',
+                }}
                 formatter={value => formatNumberWithCommas(value)}
               />
             </ComposedChart>
@@ -492,7 +512,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
           </div>
         </div>
 
-        <div className="copilot-graph-container--old copilot-graph-container--stacked">
+        <div className="copilot-graph-container copilot-graph-container--stacked">
           <ResponsiveContainer width="100%" height={300}>
             <ComposedChart
               width={400}
@@ -550,6 +570,14 @@ function LegacyDataVisualisation({ data, isLoading }) {
               />
               <Tooltip
                 wrapperStyle={{ color: 'hsl(var(--foreground))' }}
+                contentStyle={{
+                  backgroundColor: isDark
+                    ? 'hsl(240, 10%, 8%)'
+                    : 'hsl(0, 0%, 100%)',
+                  border: `1px solid ${isDark ? 'hsl(240, 3.7%, 25.9%)' : 'hsl(240, 5.9%, 90%)'}`,
+                  borderRadius: '0.5rem',
+                  color: isDark ? 'hsl(0, 0%, 98%)' : 'hsl(240, 10%, 3.9%)',
+                }}
                 formatter={(value, name) =>
                   name === 'Chats'
                     ? formatNumberWithCommas(value)
@@ -619,6 +647,14 @@ function LegacyDataVisualisation({ data, isLoading }) {
               />
               <Tooltip
                 wrapperStyle={{ color: 'hsl(var(--foreground))' }}
+                contentStyle={{
+                  backgroundColor: isDark
+                    ? 'hsl(240, 10%, 8%)'
+                    : 'hsl(0, 0%, 100%)',
+                  border: `1px solid ${isDark ? 'hsl(240, 3.7%, 25.9%)' : 'hsl(240, 5.9%, 90%)'}`,
+                  borderRadius: '0.5rem',
+                  color: isDark ? 'hsl(0, 0%, 98%)' : 'hsl(240, 10%, 3.9%)',
+                }}
                 formatter={value => formatNumberWithCommas(value)}
               />
             </ComposedChart>

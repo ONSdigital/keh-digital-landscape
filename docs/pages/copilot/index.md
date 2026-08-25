@@ -1,74 +1,163 @@
 # GitHub Copilot Usage Dashboard
 
-The Copilot dashboard allows users to analyse GitHub Copilot usage statistics across the organisation and within individual teams.
+The GitHub Copilot Usage Dashboard provides an overview of how GitHub Copilot is being used across the organisation.
+
+## Overview
+
+The GitHub Copilot API exposes a rich dataset covering multiple features and usage dimensions:
+
+- **Agent feature usage**: adoption and interaction data for agent-based Copilot modes
+
+- **Multiple Copilot Chat modes**: usage broken down across distinct chat interaction types
+
+- **Cross-feature language and model breakdowns**: lines of code and interactions attributed to specific programming languages and AI models, not constrained to any single feature
+
+The dashboard is structured as a **landing page with individual pages per feature**, allowing users to navigate to the level of detail they need without being overwhelmed upfront.
+
+The landing page is designed around **progressive disclosure**: users see just enough summary information on each navigation card to understand what a page contains, and reveal deeper insights only when they choose to engage.
+
+## Structure
+
+| Section              | Route                  |
+| -------------------- | ---------------------- |
+| Landing Page         | `/copilot/home`        |
+| General Usage        | `/copilot/general`     |
+| IDE Code Completions | `/copilot/completions` |
+| Copilot Chat         | `/copilot/chat`        |
+| Agent Mode           | `/copilot/agent`       |
+| Agent Mode           | `/copilot/agent`       |
+| Legacy Usage         | `/copilot/legacy`      |
 
 ## Features
 
-### Organisation vs Team View
+### Landing Page
 
-Switch between organisation-wide and team-specific usage data using the tabs at the top of the page.
+A navigation hub linking to each feature page. Each card displays summary data to give users an upfront indication of what the page contains, then navigates to the full detail on click.
 
-### Historic Data
+### General Usage
 
-All Copilot usage data displayed is historic data sourced from S3:
+An organisation-wide summary of Copilot adoption and usage patterns, covering metrics that span all Copilot features rather than being tied to one specific feature.
 
-- **Organisation View**: Displays aggregated historic trends with options to view by day, week, month, or year
-- **Team View**: Displays daily usage data with customisable date range filtering
+**Sections:**
 
-### Team Selection
+- **User Adoption**: two progress bar cards showing Chat Mode and Agent Mode adoption as a percentage of total monthly active users. Figures are derived from the most recent day in the dataset.
 
-When in "Team Usage" mode, authenticated users can select a team they belong to from a list. The dashboard then displays usage data for that team.
+- **Engaged Users Over Time**: a line chart of monthly unique active users across three series: All Active Users, Chat Users, and Agent Users. Incomplete months are excluded.
 
-Teams that you are a member of are highlighted with a special border to help you quickly identify your own teams.
+- **Model & IDE Usage**: two donut charts showing the share of user-initiated interactions by AI model and by development environment. Not constrained to any one Copilot feature. Entries beyond the top 6 are grouped into **Other**.
 
-### Copilot Admin Access
+- **Code Impact by Language**: a donut chart showing the share of total lines added and deleted across all Copilot features, broken down by language. Not constrained to any one feature. Entries beyond the top 6 are grouped into **Other**.
 
-Users who are members of teams listed in the `admin_teams.json` configuration file have Copilot admin privileges. These users can:
+### IDE Code Completions
 
-- View usage data for all configured teams in the organisation, not just their own teams
-- Access team metrics regardless of team membership
-- See a "Copilot Admin" badge indicating their elevated access level
+A feature-focused dashboard for IDE code completion activity. This page follows the same architecture pattern as General Usage:
 
-### Date Range Filtering
+- **Page responsibilities**: route-level layout, back navigation, chart settings state, and data fetch/transform.
 
-Use the date input fields to filter data by selecting a custom start and end date. The date inputs are constrained to the available data range.
+- **Dashboard responsibilities**: presentational rendering of summary cards and charts from processed props.
 
-### Authentication
+**Sections:**
 
-Users must authenticate with GitHub to view and select their teams. The dashboard displays a GitHub login button if the user is not authenticated or their session has expired.
+- **Overall Usage**: three summary cards for total suggestion instances, total acceptances, and overall acceptance rate.
 
-## Usage
+- **Card Animation**: summary card values animate on render using `useCountUp`.
 
-### Select Scope
+- **Suggestions, Acceptances and Acceptance Rate**: a combined chart with selectable day/week/month aggregation. The day view can optionally exclude weekends.
 
-- Choose between viewing data for the whole organisation or for a specific team. On dashboard load, organisation scope is selected by default.
+- **Optional LoC Usage View**: a toggleable LoC section from the settings menu. When enabled, this reveals LoC summary cards (total lines suggested, total lines accepted, overall line acceptance rate) and a LoC suggestions/acceptances/acceptance-rate chart.
 
-### Authenticate
+- **Suggestions vs Acceptances Size**: cards for average LoC per suggestion and average LoC per acceptance, plus a trend chart with the same day/week/month controls.
 
-- If you select "Team Usage" scope and are not authenticated, you will be prompted to log in with GitHub to see your teams.
+- **Language Breakdown**: pie chart of language share with selectable mode for suggestions vs acceptances.
 
-### Pick a Team
+### Copilot Chat
 
-- Select a team from the list to view its Copilot usage metrics.
-- Teams you are a member of will be highlighted with a special border.
+A feature-focused dashboard for all chat-based Copilot interactions. Aggregates data across all `chat_*` features (Ask, Edit, Agent, Plan, and Inline Chat modes), excluding `chat_panel_unknown_mode`. This page follows the same architecture pattern as IDE Code Completions.
 
-### View Data
+The page banner explains the distinction between chat suggestions (code blocks shown in the chat panel) and autonomous agent file writes (tracked separately under Agent Mode).
 
-- **Organisation**: Change the "View Dates By" dropdown to aggregate historic data by day, week, month, or year.
-- **Team**: Adjust the start and end date input fields to focus on specific periods.
+**Sections:**
+
+- **Overall Usage**: three summary cards for total suggestion instances, total acceptances, and overall acceptance rate. Days where acceptances exceed suggestions are filtered out as anomalous.
+
+- **Suggestions, Acceptances and Acceptance Rate**: a combined chart with selectable day/week/month aggregation.
+
+- **Optional LoC Usage View**: toggleable LoC section with summary cards and LoC suggestions/acceptances chart.
+
+- **Suggestions vs Acceptances Size**: cards for average LoC per suggestion and per acceptance, plus a trend chart.
+
+- **Breakdowns**: three donut charts — Language Breakdown, Model Breakdown, and Chat Mode Breakdown — each with a selectable mode for suggestions vs acceptances.
+
+### Agent Mode
+
+A feature-focused dashboard for Agent Edit sessions. Tracks lines of code that Copilot writes directly into workspace files during agent mode sessions. The page banner explains the distinction between autonomous file writes and chat-based code suggestions, with a hyperlink to the Copilot Chat page. This page follows the same architecture pattern as the other Copilot feature pages:
+
+- **Page responsibilities**: route-level layout, back navigation, chart settings state, and data fetch/transform.
+
+- **Dashboard responsibilities**: presentational rendering of summary cards and charts from processed props.
+
+**Sections:**
+
+- **Overall Usage**: two summary cards for total lines added and total lines deleted.
+
+- **Lines Added vs Lines Deleted**: a stacked bar chart with selectable day/week/month aggregation. The day view can optionally exclude weekends.
+
+- **Breakdowns**: two donut charts for Language Breakdown and Model Breakdown, each with selectable mode for lines added vs lines deleted.
+
+### Navigation and Routing
+
+- Entry point from landing page: **General Usage**, **IDE Code Completions**, **Copilot Chat**, and **Agent Mode** cards on `/copilot/home`.
+
+- Code Completions route: `/copilot/completions`.
+
+- Copilot Chat route: `/copilot/chat`.
+
+- Agent Mode route: `/copilot/agent`.
+
+- Back button behavior: returns from each feature page to `/copilot/home`.
+
+### Legacy Usage
+
+Historic Copilot data visualised as two separate datasets, as the GitHub API schema changed between periods and the available metrics differ.
+
+Each dataset is visualised separately as the metrics are not directly comparable across periods.
+
+- **January 2025 - March 2026** (March schema): IDE Code Completions metrics (suggestions, acceptances, lines suggested, lines accepted, acceptance rate) and IDE Chat metrics (chat turns, insertions, copies, insertion rate, copy rate), plus user metrics over time.
+
+- **May 2024 - January 2025** (February schema): IDE Code Completions metrics and IDE Chat metrics (chat turns and chat acceptances), plus user metrics over time.
+
+## Data Processing
+
+All data is fetched from the backend and processed on the frontend. See the processing utilities for full detail:
+
+From `utilities/gitHubCopilot`:
+
+- **General Usage**: `./generalUsageCopilotData/processGeneralUsageCopilotData.js`
+
+- **IDE Code Completions**: `./codeCompletionCopilotData/processCodeCompletionData.js`
+
+- **Copilot Chat**: `./chatModeCopilotData/processChatModeCopilotData.js`
+
+- **Agent Mode**: `./agentModeData/processAgentModeCopilotData.js`
+
+- **Legacy Usage**: `./legacyCopilotData/processLegacyCopilotData.js`
+
+For more detail on Legacy Usage, see [Legacy Copilot Data](../../functionality/legacyCopilotData.md)
+
+All pie chart data is processed through the shared `utilities/buildPieSlices.js` utility, which converts raw count totals into a standardised `[{ name, value }]` format with percentages, capped at 6 slices with an "Other" bucket.
+
+## Colour System
+
+All charts use `COPILOT_CHART_PALETTE` from `constants/copilotConstants.js`, accessed via `getChartPalette()` in `utilities/copilotChartColours.js`. Colours are assigned by palette index so the same series always gets the same colour across charts on the same page.
+
+See the [Copilot Constants documentation](../../constants/copilotConstants.md) for the full palette, ONS rationale, and guidance on extending it.
 
 ## Use Cases
 
-### Organisation Admins
+- Track overall Copilot adoption across the organisation month by month.
 
-- Track Copilot adoption and engagement across all teams.
+- Understand which AI models and IDEs developers are using most.
 
-### Copilot Admins
+- Identify which languages are seeing the most code impact from Copilot.
 
-- Access usage data for all configured teams across the organisation.
-- Monitor team performance and identify areas for improvement.
-- Support team leads with data-driven insights.
-
-### Team Leads
-
-- Monitor how their team is using Copilot and identify trends.
+- View historic data to understand long-term trends in completions, chat usage, and user engagement.

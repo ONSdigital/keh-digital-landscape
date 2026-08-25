@@ -28,7 +28,7 @@ The legacy data is collected from S3 via the backend API route `/copilot/api/org
 In the frontend, the legacy data gets consumed and visualised within the GitHub Copilot dashboard. A few utilities are needed to present the data:
 
 - `/frontend/src`:
-  - `/utilities/legacyCopilotData`:
+  - `/utilities/githubCopilot/legacyCopilotData`:
     - `getLegacyCopilotData.js`: Fetches the legacy data from the backend API.
     - `processLegacyCopilotData.js`: Contains a range of functions to process and transform the legacy data into a format suitable for visualisation, including calculating top level aggregates, simplifying the nested structure, and formatting the data to be shown within graphs on the frontend.
 - `/components/Copilot`:

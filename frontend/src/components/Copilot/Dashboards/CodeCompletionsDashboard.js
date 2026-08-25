@@ -2,7 +2,7 @@ import React from 'react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import SkeletonStatCard from '../../Statistics/Skeletons/SkeletonStatCard';
 import SuggestionsAcceptancesBarChart from '../Breakdowns/SuggestionsAcceptancesBarChart';
-import SuggestionsAcceptancesSizeComparisonGraph from '../Breakdowns/SuggestionsAcceptancesSizeComparionGraph';
+import SuggestionsAcceptancesSizeComparisonGraph from '../Breakdowns/SuggestionsAcceptancesSizeComparisonGraph';
 import TogglePieChart from '../Breakdowns/TogglePieChart';
 import DashboardStatCard from '../Breakdowns/DashboardStatCard';
 import Tooltip from '../../Tooltip/Tooltip';

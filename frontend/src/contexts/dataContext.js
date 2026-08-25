@@ -6,8 +6,8 @@ import {
   fetchRepositoryStats,
 } from '../utilities/getRepositoryData';
 import { fetchBanners } from '../utilities/getBanner';
-import { fetchOrgHistoricUsageData } from '../utilities/getUsageData';
-import { getLegacyCopilotData } from '../utilities/legacyCopilotData/getLegacyCopilotData';
+import { getOrgHistoryData } from '../utilities/getOrgHistoryData';
+import { getLegacyCopilotData } from '../utilities/githubCopilot/legacyCopilotData/getLegacyCopilotData';
 import { fetchUserInfo } from '../utilities/getUser';
 /**
  * DataContext provides centralized data management and caching for the application.
@@ -220,7 +220,7 @@ export function DataProvider({ children }) {
       return pendingRequests.current.historicUsageData;
     }
 
-    const promise = fetchOrgHistoricUsageData().then(data => {
+    const promise = getOrgHistoryData().then(data => {
       setHistoricUsageData(data);
       pendingRequests.current.historicUsageData = null;
       return data;

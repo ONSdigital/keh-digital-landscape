@@ -4,7 +4,11 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import AgentModeDashboard from '../../components/Copilot/Dashboards/AgentModeDashboard';
-import { processAgentModeData } from '../../utilities/agentModeData/processAgentModeData';
+import { processAgentModeCopilotData } from '../../utilities/githubCopilot/agentModeData/processAgentModeCopilotData';
+import {
+  filterByYear,
+  getAvailableYears,
+} from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
@@ -14,6 +18,7 @@ function AgentModePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
     includeWeekendUsage: true,
+    selectedYear: 'all',
   });
 
   useEffect(() => {
@@ -24,6 +29,16 @@ function AgentModePage() {
     })();
   }, []);
 
+  const yearOptions = [
+    { label: 'All time', value: 'all' },
+    ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
+  ];
+
+  const yearSelect = {
+    value: chartDisplaySettings.selectedYear,
+    options: yearOptions,
+  };
+
   const settings = [
     {
       key: 'includeWeekendUsage',
@@ -32,12 +47,16 @@ function AgentModePage() {
     },
   ];
 
-  const handleSettingChange = (key, checked) => {
-    setChartDisplaySettings(prev => ({ ...prev, [key]: checked }));
+  const handleSettingChange = (key, value) => {
+    setChartDisplaySettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const processedData = historicUsageData
-    ? processAgentModeData(historicUsageData, {
+  const filteredData = filterByYear(
+    historicUsageData,
+    chartDisplaySettings.selectedYear
+  );
+  const processedData = filteredData
+    ? processAgentModeCopilotData(filteredData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
@@ -54,6 +73,7 @@ function AgentModePage() {
           previousPage="/copilot/home"
           backAriaLabel="Back to Copilot Dashboard Homepage"
           settings={settings}
+          yearSelect={yearSelect}
           onSettingChange={handleSettingChange}
         />
         <AgentModeDashboard

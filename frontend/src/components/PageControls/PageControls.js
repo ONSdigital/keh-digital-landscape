@@ -15,8 +15,10 @@ function PageControls({
   backLabel,
   backAriaLabel,
   settings,
+  yearSelect,
   onSettingChange,
 }) {
+  const showSettings = (settings || yearSelect) && onSettingChange;
   return (
     <div className="copilot-page-controls">
       <BackButton
@@ -24,8 +26,12 @@ function PageControls({
         label={backLabel}
         ariaLabel={backAriaLabel}
       />
-      {settings && onSettingChange && (
-        <SettingsMenu settings={settings} onChange={onSettingChange} />
+      {showSettings && (
+        <SettingsMenu
+          settings={settings}
+          yearSelect={yearSelect}
+          onChange={onSettingChange}
+        />
       )}
     </div>
   );

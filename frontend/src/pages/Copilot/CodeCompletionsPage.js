@@ -5,7 +5,11 @@ import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
 import CodeCompletionsDashboard from '../../components/Copilot/Dashboards/CodeCompletionsDashboard';
-import { processCodeCompletionData } from '../../utilities/codeCompletionCopilotData/processCodeCompletionData';
+import { processCodeCompletionData } from '../../utilities/githubCopilot/codeCompletionCopilotData/processCodeCompletionData';
+import {
+  filterByYear,
+  getAvailableYears,
+} from '../../utilities/githubCopilot/filterByYear';
 import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
@@ -16,6 +20,7 @@ function CodeCompletionsPage() {
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
     includeWeekendUsage: true,
     locUsage: false,
+    selectedYear: 'all',
   });
 
   useEffect(() => {
@@ -25,6 +30,16 @@ function CodeCompletionsPage() {
       setIsLoading(false);
     })();
   }, []);
+
+  const yearOptions = [
+    { label: 'All time', value: 'all' },
+    ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
+  ];
+
+  const yearSelect = {
+    value: chartDisplaySettings.selectedYear,
+    options: yearOptions,
+  };
 
   const settings = [
     {
@@ -39,12 +54,16 @@ function CodeCompletionsPage() {
     },
   ];
 
-  const handleSettingChange = (key, checked) => {
-    setChartDisplaySettings(prev => ({ ...prev, [key]: checked }));
+  const handleSettingChange = (key, value) => {
+    setChartDisplaySettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const processedData = historicUsageData
-    ? processCodeCompletionData(historicUsageData, {
+  const filteredData = filterByYear(
+    historicUsageData,
+    chartDisplaySettings.selectedYear
+  );
+  const processedData = filteredData
+    ? processCodeCompletionData(filteredData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
@@ -61,6 +80,7 @@ function CodeCompletionsPage() {
           previousPage="/copilot/home"
           backAriaLabel="Back to Copilot Dashboard Homepage"
           settings={settings}
+          yearSelect={yearSelect}
           onSettingChange={handleSettingChange}
         />
         <CodeCompletionsDashboard

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { IoSettingsOutline } from 'react-icons/io5';
 
-function SettingsMenu({ settings, onChange }) {
+function SettingsMenu({ settings, yearSelect, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const settingsRef = useRef(null);
 
@@ -29,7 +29,25 @@ function SettingsMenu({ settings, onChange }) {
       </button>
       {isOpen && (
         <div className="copilot-settings-menu" id="copilot-settings-menu">
-          {settings.map(setting => (
+          {yearSelect && (
+            <label className="copilot-settings-select-label">
+              Year
+              <select
+                value={yearSelect.value}
+                onChange={e => onChange('selectedYear', e.target.value)}
+              >
+                {yearSelect.options.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {yearSelect && settings?.length > 0 && (
+            <hr className="copilot-settings-divider" />
+          )}
+          {settings?.map(setting => (
             <label
               key={setting.key}
               className="copilot-settings-checkbox-label"

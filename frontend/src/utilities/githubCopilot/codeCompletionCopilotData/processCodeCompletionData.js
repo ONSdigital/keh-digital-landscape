@@ -1,7 +1,7 @@
 // This file is responsible for processing the Copilot usage data and formatting it into relevant data for the code completion dashboard
 
-import { LANGUAGE_NAMES } from '../../constants/copilotConstants';
-import { buildPieSlices } from '../buildPieSlices';
+import { LANGUAGE_NAMES } from '../../../constants/copilotConstants';
+import { buildPieSlices } from '../../buildPieSlices';
 
 function isWeekendDate(dateString) {
   const date = new Date(`${dateString}T00:00:00`);

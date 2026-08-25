@@ -4,7 +4,7 @@ import useCountUp from '../../../hooks/useCountUp';
 import { COPILOT_CHART_PALETTE } from '../../../constants/copilotConstants';
 import Tooltip from '../../Tooltip/Tooltip';
 import { useTheme } from '../../../contexts/ThemeContext';
-import NewEngagedUsersGraph from '../Breakdowns/NewEngagedUsersGraph';
+import EngagedUsersGraph from '../Breakdowns/EngagedUsersGraph';
 import ModelIdeUsagePieChart from '../Breakdowns/ModelIdeUsagePieChart';
 import CodeImpactByLanguagePieChart from '../Breakdowns/CodeImpactByLanguagePieChart';
 import PercentageCard from '../Breakdowns/PercentageCard';
@@ -70,7 +70,7 @@ function GeneralUsageDashboard({ data, isLoading }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <NewEngagedUsersGraph data={data.engagedUsersOvertime} />
+          <EngagedUsersGraph data={data.engagedUsersOvertime} />
         )}
       </div>
       <div className="copilot-dashboard-section">
