@@ -91,7 +91,7 @@ export const generalNavigationItems = [
   baseNavigationItems.projects,
   baseNavigationItems.copilot,
   baseNavigationItems.addressBook,
-  baseNavigationItems.policyReports,
+  // baseNavigationItems.policyReports,
 ];
 
 export const restrictedNavigationItems = [
@@ -105,7 +105,7 @@ export const homePageNavigationItems = [
   baseNavigationItems.projects,
   baseNavigationItems.copilot,
   baseNavigationItems.addressBook,
-  baseNavigationItems.policyReports,
+  // baseNavigationItems.policyReports,
   baseNavigationItems.review,
   baseNavigationItems.admin,
 ];
