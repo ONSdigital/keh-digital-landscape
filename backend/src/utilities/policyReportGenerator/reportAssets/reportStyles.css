@@ -389,25 +389,25 @@ body {
   font-weight: 600;
 }
 
-.pill.rating-platinum {
+.pill.rating-tier-1 {
   border-color: hsl(195 100% 32% / 45%);
   color: hsl(195 100% 24%);
   background: hsl(195 100% 32% / 10%);
 }
 
-.pill.rating-gold {
+.pill.rating-tier-2 {
   border-color: hsl(45 96% 40% / 45%);
   color: hsl(45 96% 30%);
   background: hsl(45 96% 40% / 10%);
 }
 
-.pill.rating-silver {
+.pill.rating-tier-3 {
   border-color: hsl(216 15% 56% / 45%);
   color: hsl(216 15% 36%);
   background: hsl(216 15% 56% / 12%);
 }
 
-.pill.rating-bronze {
+.pill.rating-tier-4 {
   border-color: hsl(28 65% 42% / 45%);
   color: hsl(28 65% 32%);
   background: hsl(28 65% 42% / 10%);
