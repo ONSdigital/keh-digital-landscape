@@ -11,8 +11,12 @@ import {
   Legend,
 } from 'recharts';
 import { formatNumberWithCommas } from '../../../utilities/getCommaSeparated';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 const AcceptanceGraph = ({ data }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     <div className="copilot-graph-container">
       <ResponsiveContainer>
@@ -73,6 +77,12 @@ const AcceptanceGraph = ({ data }) => {
           />
           <Tooltip
             wrapperStyle={{ color: 'hsl(var(--foreground))' }}
+            contentStyle={{
+              backgroundColor: isDark ? 'hsl(240, 10%, 8%)' : 'hsl(0, 0%, 100%)',
+              border: `1px solid ${isDark ? 'hsl(240, 3.7%, 25.9%)' : 'hsl(240, 5.9%, 90%)'}`,
+              borderRadius: '0.5rem',
+              color: isDark ? 'hsl(0, 0%, 98%)' : 'hsl(240, 10%, 3.9%)',
+            }}
             formatter={(value, name) =>
               name === 'Acceptance Rate'
                 ? `${value.toFixed(2)}%`
