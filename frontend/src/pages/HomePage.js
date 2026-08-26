@@ -39,7 +39,7 @@ function HomePage() {
             <div className="home-content-header">
               <h1>The Digital Landscape of ONS</h1>
               <p>
-                Explore and analyse technology trends across the organisation
+                Do stuff!!
               </p>
             </div>
 
