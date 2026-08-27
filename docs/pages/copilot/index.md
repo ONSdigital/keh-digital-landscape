@@ -24,7 +24,7 @@ The landing page is designed around **progressive disclosure**: users see just e
 | General Usage        | `/copilot/general`     |
 | IDE Code Completions | `/copilot/completions` |
 | Copilot Chat         | `/copilot/chat`        |
-| Direct Edits           | `/copilot/edits`       |
+| Direct Edits         | `/copilot/edits`       |
 | Legacy Usage         | `/copilot/legacy`      |
 
 ## Features

@@ -42,7 +42,9 @@ test('Direct Edits page displays correct page structure', async ({ page }) => {
     timeout: 10000,
   });
 
-  await expect(page.getByRole('heading', { name: 'Direct Edits' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Direct Edits' })
+  ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Overall Usage' })
   ).toBeVisible();
