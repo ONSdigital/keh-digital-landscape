@@ -16,7 +16,9 @@ test('General Usage page shows skeleton loading state', async ({ page }) => {
   });
   await page.goto('http://localhost:3000/copilot/general');
   await expect(page.locator('.usage-card.skeleton').first()).toBeVisible();
-  await expect(page.locator('.copilot-graph-container.skeleton').first()).toBeVisible();
+  await expect(
+    page.locator('.copilot-graph-container.skeleton').first()
+  ).toBeVisible();
   await expect(
     page.locator('.usage-pie-chart-card.skeleton').first()
   ).toBeVisible();
