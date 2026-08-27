@@ -131,7 +131,7 @@ function CopilotDashboardLandingPage() {
             <CopilotNavCard
               icon={RiRobot2Line}
               title="Direct Edits"
-              href="/copilot/agent"
+              href="/copilot/edits"
               previewStats={
                 data
                   ? { label: 'Lines Added (MTD)', ...data.agentLinesAdded }

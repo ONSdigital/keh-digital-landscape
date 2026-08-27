@@ -1,5 +1,5 @@
 // This file is responsible for processing the Copilot usage data and formatting it
-// into relevant data for the Agent Mode section of the dashboard.
+// into relevant data for the Direct Edits section of the dashboard.
 import {
   LANGUAGE_NAMES,
   MODEL_NAMES,
@@ -33,7 +33,7 @@ function isWeekendDate(dateString) {
  * @param {boolean} [options.includeWeekendUsage=true]
  * @returns {Object}
  */
-export function processAgentModeCopilotData(data, options = {}) {
+export function processDirectEditsCopilotData(data, options = {}) {
   const { includeWeekendUsage = true } = options;
 
   // ── Summary totals ─────────────────────────────────────────────────────────
@@ -62,11 +62,11 @@ export function processAgentModeCopilotData(data, options = {}) {
     }
 
     // ── Agent edit feature row from totals_by_feature ──────────────────────
-    const agentModeFeature =
+    const agentEditsFeature =
       entry.totals_by_feature?.find(f => f.feature === 'agent_edit') ?? {};
 
-    const dayAdded = agentModeFeature.loc_added_sum ?? 0;
-    const dayDeleted = agentModeFeature.loc_deleted_sum ?? 0;
+    const dayAdded = agentEditsFeature.loc_added_sum ?? 0;
+    const dayDeleted = agentEditsFeature.loc_deleted_sum ?? 0;
 
     totalLinesAdded += dayAdded;
     totalLinesDeleted += dayDeleted;

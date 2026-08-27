@@ -4,7 +4,7 @@ import LinesAddedVsDeletedBarChart from '../Breakdowns/LinesAddedVsDeletedBarCha
 import TogglePieChart from '../Breakdowns/TogglePieChart';
 import DashboardStatCard from '../Breakdowns/DashboardStatCard';
 
-function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
+function DirectEditsDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
   const totalLinesAdded = data?.summaryCards?.totalLinesAdded ?? 0;
@@ -16,10 +16,10 @@ function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
       <p className="disclaimer-banner">
         Tracks the volume of code that Copilot writes directly into your
         workspace files during agent and edit mode sessions, measured in lines
-        added and deleted. This is distinct from acceptance metrics (tracked
-        under <a href="/copilot/chat">Copilot Chat</a> and{' '}
-        <a href="/copilot/completions">Code Completions</a>). Weekend data can
-        be toggled in the settings menu (cogwheel).
+        added and deleted. Although you can accept or reject these changes in
+        the editor diff view, the GitHub API currently does not report
+        accept/reject data for file writes - only volume. Weekend data can be
+        toggled in the settings menu (cogwheel).
       </p>
 
       <div className="copilot-dashboard-section">
@@ -80,4 +80,4 @@ function AgentModeDashboard({ data, isLoading, chartDisplaySettings }) {
   );
 }
 
-export default AgentModeDashboard;
+export default DirectEditsDashboard;

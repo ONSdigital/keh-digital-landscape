@@ -1,7 +1,7 @@
 import { test, expect } from 'playwright/test';
-import { copilotAgentModeData } from './data/copilotAgentModeData';
+import { copilotDirectEditsData } from './data/copilotDirectEditsData';
 
-async function mockCopilotAPI(page, data = copilotAgentModeData) {
+async function mockCopilotAPI(page, data = copilotDirectEditsData) {
   await page.route('**/copilot/api/org/historic', async route => {
     await route.fulfill({
       status: 200,
@@ -11,36 +11,38 @@ async function mockCopilotAPI(page, data = copilotAgentModeData) {
   });
 }
 
-test('Agent Mode page routes correctly from landing page', async ({ page }) => {
+test('Direct Edits page routes correctly from landing page', async ({
+  page,
+}) => {
   await page.goto('http://localhost:3000/copilot/home');
-  await page.getByText('Agent Mode').click();
-  await expect(page).toHaveURL('http://localhost:3000/copilot/agent');
+  await page.getByText('Direct Edits').click();
+  await expect(page).toHaveURL('http://localhost:3000/copilot/edits');
 });
 
-test('Agent Mode page shows skeleton loading state', async ({ page }) => {
+test('Direct Edits page shows skeleton loading state', async ({ page }) => {
   await page.route('**/copilot/api/org/historic', async route => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(copilotAgentModeData),
+      body: JSON.stringify(copilotDirectEditsData),
     });
   });
 
-  await page.goto('http://localhost:3000/copilot/agent');
+  await page.goto('http://localhost:3000/copilot/edits');
   await expect(page.locator('.stat-card.skeleton').first()).toBeVisible();
   await expect(page.locator('.copilot-graph-container.skeleton')).toBeVisible();
 });
 
-test('Agent Mode page displays correct page structure', async ({ page }) => {
+test('Direct Edits page displays correct page structure', async ({ page }) => {
   await mockCopilotAPI(page);
 
-  await page.goto('http://localhost:3000/copilot/agent');
+  await page.goto('http://localhost:3000/copilot/edits');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
   });
 
-  await expect(page.getByRole('heading', { name: 'Agent Mode' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Direct Edits' })).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Overall Usage' })
   ).toBeVisible();
@@ -61,10 +63,10 @@ test('Agent Mode page displays correct page structure', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('Agent Mode page shows weekend setting control', async ({ page }) => {
+test('Direct Edits page shows weekend setting control', async ({ page }) => {
   await mockCopilotAPI(page);
 
-  await page.goto('http://localhost:3000/copilot/agent');
+  await page.goto('http://localhost:3000/copilot/edits');
   await expect(page.locator('.stat-card.skeleton')).toHaveCount(0, {
     timeout: 10000,
   });
@@ -73,10 +75,10 @@ test('Agent Mode page shows weekend setting control', async ({ page }) => {
   await expect(page.getByLabel('Include weekend usage')).toBeVisible();
 });
 
-test('Agent Mode page back button navigates to landing page', async ({
+test('Direct Edits page back button navigates to landing page', async ({
   page,
 }) => {
-  await page.goto('http://localhost:3000/copilot/agent');
+  await page.goto('http://localhost:3000/copilot/edits');
   await page.locator('.copilot-back-button').click();
   await expect(page).toHaveURL('http://localhost:3000/copilot/home');
 });

@@ -3,8 +3,8 @@ import { useData } from '../../contexts/dataContext';
 import Layout from '../../components/Layout/Layout';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import PageControls from '../../components/PageControls/PageControls';
-import AgentModeDashboard from '../../components/Copilot/Dashboards/AgentModeDashboard';
-import { processAgentModeCopilotData } from '../../utilities/githubCopilot/agentModeData/processAgentModeCopilotData';
+import DirectEditsDashboard from '../../components/Copilot/Dashboards/DirectEditsDashboard';
+import { processDirectEditsCopilotData } from '../../utilities/githubCopilot/directEditsData/processDirectEditsCopilotData';
 import {
   filterByYear,
   getAvailableYears,
@@ -13,7 +13,7 @@ import '../../styles/ReviewPage.css';
 import '../../styles/Copilot/ReusableStyles.css';
 import '../../styles/components/Statistics.css';
 
-function AgentModePage() {
+function DirectEditsPage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
   const [chartDisplaySettings, setChartDisplaySettings] = useState({
@@ -56,7 +56,7 @@ function AgentModePage() {
     chartDisplaySettings.selectedYear
   );
   const processedData = filteredData
-    ? processAgentModeCopilotData(filteredData, {
+    ? processDirectEditsCopilotData(filteredData, {
         includeWeekendUsage: chartDisplaySettings.includeWeekendUsage,
       })
     : null;
@@ -76,7 +76,7 @@ function AgentModePage() {
           yearSelect={yearSelect}
           onSettingChange={handleSettingChange}
         />
-        <AgentModeDashboard
+        <DirectEditsDashboard
           data={processedData}
           isLoading={isLoading}
           chartDisplaySettings={chartDisplaySettings}
@@ -86,4 +86,4 @@ function AgentModePage() {
   );
 }
 
-export default AgentModePage;
+export default DirectEditsPage;

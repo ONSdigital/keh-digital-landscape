@@ -1,4 +1,4 @@
-const copilotAgentModeData = [
+const copilotDirectEditsData = [
   {
     day: '2026-04-07',
     totals_by_feature: [
@@ -77,4 +77,4 @@ const copilotAgentModeData = [
   },
 ];
 
-export { copilotAgentModeData };
+export { copilotDirectEditsData };
