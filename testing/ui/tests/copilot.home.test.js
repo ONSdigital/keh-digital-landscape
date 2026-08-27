@@ -18,13 +18,11 @@ test('Landing page sections are displayed correctly', async ({ page }) => {
   await expect(
     exploreUsageByFeatureSection.getByText('Copilot Chat')
   ).toBeVisible();
-  await expect(
-    exploreUsageByFeatureSection.getByText('Direct Edits')
-  ).toBeVisible();
 
   const otherSection = page
     .locator('.copilot-section')
     .filter({ hasText: 'Other' });
+  await expect(otherSection.getByText('Direct Edits')).toBeVisible();
   await expect(otherSection.getByText('Legacy Usage')).toBeVisible();
 
   // Every card has a arrow button
