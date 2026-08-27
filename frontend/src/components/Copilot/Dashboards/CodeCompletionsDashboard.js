@@ -23,10 +23,9 @@ function CodeCompletionsDashboard({ data, isLoading, chartDisplaySettings }) {
       <p className="disclaimer-banner">
         Tracks ghost-text suggestions that appear inline as you type in the
         editor. A suggestion is counted each time Copilot offers code, and an
-        acceptance is counted when you press the Tab key to insert it. This
-        does not include chat-based interactions or agent file writes. Weekend
-        data and lines of code (LoC) can be toggled in the settings menu
-        (cogwheel).
+        acceptance is counted when you press the Tab key to insert it. This does
+        not include chat-based interactions or agent file writes. Weekend data
+        and lines of code (LoC) can be toggled in the settings menu (cogwheel).
       </p>
 
       <div className="copilot-dashboard-section">
