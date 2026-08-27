@@ -24,7 +24,7 @@ function ChatModeDashboard({ data, isLoading, chartDisplaySettings }) {
         Tracks code suggestions generated through Copilot Chat across all modes
         (Ask, Edit, Agent, and Plan). A suggestion is counted each time Copilot
         generates a code block in the chat panel, and an acceptance is counted
-        when you click 'Apply' to insert it into the editor. Autonomous file
+        when you click Apply to insert it into the editor. Autonomous file
         writes made in agent and edit mode are tracked separately under{' '}
         <a href="/copilot/agent">Direct Edits</a>, which measures volume (lines
         added and deleted) rather than acceptance. Weekend data and lines of
