@@ -7,10 +7,8 @@ import {
 } from 'react-icons/vsc';
 import { RiRobot2Line } from 'react-icons/ri';
 import { BsArchive } from 'react-icons/bs';
-import { IoInformationCircleOutline } from 'react-icons/io5';
 import PageBanner from '../../components/PageBanner/PageBanner';
 import Layout from '../../components/Layout/Layout';
-import Tooltip from '../../components/Tooltip/Tooltip';
 import { useData } from '../../contexts/dataContext';
 import { processPreviewCopilotData } from '../../utilities/githubCopilot/previewCopilotData/processPreviewCopilotData';
 import '../../styles/Copilot/LandingPage.css';
@@ -104,67 +102,7 @@ function CopilotDashboardLandingPage() {
         </div>
 
         <div className="copilot-section">
-          <h3 className="copilot-section-title">
-            Explore Usage by Feature
-            {data?.combinedStats && (
-              <Tooltip
-                side="right"
-                align="start"
-                title={
-                  <div className="copilot-feature-tooltip">
-                    <p className="copilot-feature-tooltip-heading">
-                      Acceptance statistics across all features
-                    </p>
-                    <div className="copilot-feature-tooltip-row">
-                      <span>Suggestions</span>
-                      <span>
-                        {data.combinedStats.suggestions.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="copilot-feature-tooltip-row">
-                      <span>Acceptances</span>
-                      <span>
-                        {data.combinedStats.acceptances.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="copilot-feature-tooltip-row">
-                      <span>Acceptance Rate</span>
-                      <span>
-                        {data.combinedStats.acceptanceRate.toFixed(1)}%
-                      </span>
-                    </div>
-                    <hr className="copilot-feature-tooltip-divider" />
-                    <div className="copilot-feature-tooltip-row">
-                      <span>Line Suggestions</span>
-                      <span>
-                        {data.combinedStats.locSuggested.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="copilot-feature-tooltip-row">
-                      <span>Line Acceptances</span>
-                      <span>
-                        {data.combinedStats.locAccepted.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="copilot-feature-tooltip-row">
-                      <span>Line Acceptance Rate</span>
-                      <span>
-                        {data.combinedStats.lineAcceptanceRate.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                }
-              >
-                <button
-                  type="button"
-                  className="info-icon info-icon-button"
-                  aria-label="Combined acceptance stats for this month"
-                >
-                  <IoInformationCircleOutline />
-                </button>
-              </Tooltip>
-            )}
-          </h3>
+          <h3 className="copilot-section-title">Explore Usage by Feature</h3>
           <div className="copilot-nav-cards">
             <CopilotNavCard
               icon={VscLightbulbEmpty}

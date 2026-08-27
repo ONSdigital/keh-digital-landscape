@@ -17,7 +17,10 @@ import '../../styles/components/Statistics.css';
 function GeneralUsagePage() {
   const { historicUsageData, getHistoricUsageData } = useData();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedYear, setSelectedYear] = useState('all');
+  const [chartDisplaySettings, setChartDisplaySettings] = useState({
+    selectedYear: 'all',
+    locUsage: false,
+  });
 
   useEffect(() => {
     (async () => {
@@ -32,9 +35,27 @@ function GeneralUsagePage() {
     ...getAvailableYears(historicUsageData).map(y => ({ label: y, value: y })),
   ];
 
-  const yearSelect = { value: selectedYear, options: yearOptions };
+  const yearSelect = {
+    value: chartDisplaySettings.selectedYear,
+    options: yearOptions,
+  };
 
-  const filteredData = filterByYear(historicUsageData, selectedYear);
+  const settings = [
+    {
+      key: 'locUsage',
+      label: 'Show line acceptance',
+      checked: chartDisplaySettings.locUsage,
+    },
+  ];
+
+  const handleSettingChange = (key, value) => {
+    setChartDisplaySettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const filteredData = filterByYear(
+    historicUsageData,
+    chartDisplaySettings.selectedYear
+  );
   const data = filteredData ? processGeneralUsageData(filteredData) : null;
 
   return (
@@ -49,8 +70,9 @@ function GeneralUsagePage() {
           <PageControls
             previousPage="/copilot/home"
             backAriaLabel="Back to Copilot Dashboard Homepage"
+            settings={settings}
             yearSelect={yearSelect}
-            onSettingChange={(key, value) => setSelectedYear(value)}
+            onSettingChange={handleSettingChange}
           />
           <GeneralUsageDashboard
             data={
@@ -58,7 +80,9 @@ function GeneralUsagePage() {
                 ? {
                     chatUsers: data.userAdoption.chatUsers,
                     agentAdoption: data.userAdoption.agentAdoption,
-                    engagedUsersOvertime: data.engagedUsersOvertime,
+                    engagedUsersOverTime: data.engagedUsersOverTime,
+                    cumulativeAcceptanceOverTime:
+                      data.cumulativeAcceptanceOverTime,
                     modelUsage: data.modelUsage,
                     ideUsage: data.ideUsage,
                     codeImpact: data.codeImpact,
@@ -66,6 +90,7 @@ function GeneralUsagePage() {
                 : null
             }
             isLoading={isLoading}
+            chartDisplaySettings={chartDisplaySettings}
           />
         </div>
       </div>

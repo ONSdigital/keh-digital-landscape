@@ -5,11 +5,12 @@ import { COPILOT_CHART_PALETTE } from '../../../constants/copilotConstants';
 import Tooltip from '../../Tooltip/Tooltip';
 import { useTheme } from '../../../contexts/ThemeContext';
 import EngagedUsersGraph from '../Breakdowns/EngagedUsersGraph';
+import CumulativeAcceptanceGraph from '../Breakdowns/CumulativeAcceptanceGraph';
 import ModelIdeUsagePieChart from '../Breakdowns/ModelIdeUsagePieChart';
 import CodeImpactByLanguagePieChart from '../Breakdowns/CodeImpactByLanguagePieChart';
 import PercentageCard from '../Breakdowns/PercentageCard';
 
-function GeneralUsageDashboard({ data, isLoading }) {
+function GeneralUsageDashboard({ data, isLoading, chartDisplaySettings }) {
   const loading = isLoading || !data;
 
   return (
@@ -44,7 +45,7 @@ function GeneralUsageDashboard({ data, isLoading }) {
       </div>
       <div className="copilot-dashboard-section">
         <h3>
-          Engaged Users Overtime
+          Engaged Users Over Time
           {!loading && (
             <Tooltip
               title={
@@ -70,7 +71,47 @@ function GeneralUsageDashboard({ data, isLoading }) {
         {loading ? (
           <div className="copilot-graph-container skeleton" />
         ) : (
-          <EngagedUsersGraph data={data.engagedUsersOvertime} />
+          <EngagedUsersGraph data={data.engagedUsersOverTime} />
+        )}
+      </div>
+      <div className="copilot-dashboard-section">
+        <h3>
+          Cumulative Acceptance Over Time
+          {!loading && (
+            <Tooltip
+              title={
+                <p className="copilot-tooltip-paragraph">
+                  Running totals accumulated month by month across IDE Code
+                  Completions and Copilot Chat.
+                  <br />
+                  <br />
+                  <strong>Acceptance</strong> counts how many code suggestions
+                  were shown vs accepted, regardless of size.
+                  <br />
+                  <br />
+                  <strong>Line Acceptance</strong> counts the actual lines of
+                  code suggested vs inserted - a better measure of code volume
+                  impact. Toggle between them in the settings menu (cogwheel).
+                </p>
+              }
+            >
+              <button
+                type="button"
+                className="info-icon info-icon-button"
+                aria-label="About cumulative acceptance"
+              >
+                <IoInformationCircleOutline />
+              </button>
+            </Tooltip>
+          )}
+        </h3>
+        {loading ? (
+          <div className="copilot-graph-container skeleton" />
+        ) : (
+          <CumulativeAcceptanceGraph
+            data={data.cumulativeAcceptanceOverTime}
+            showLines={chartDisplaySettings?.locUsage ?? false}
+          />
         )}
       </div>
       <div className="copilot-dashboard-section">

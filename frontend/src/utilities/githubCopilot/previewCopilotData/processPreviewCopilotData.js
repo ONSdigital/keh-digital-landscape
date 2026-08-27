@@ -11,43 +11,22 @@ function aggregateMetrics(records) {
   let linesAccepted = 0;
   let totalChats = 0;
   let agentLinesAdded = 0;
-  let suggestions = 0;
-  let acceptances = 0;
-  let locSuggested = 0;
-  let locAccepted = 0;
 
   for (const record of records) {
     for (const f of record.totals_by_feature || []) {
-      if (f.feature === 'code_completion') {
+      if (f.feature === 'code_completion')
         linesAccepted += f.loc_added_sum || 0;
-        suggestions += f.code_generation_activity_count || 0;
-        acceptances += f.code_acceptance_activity_count || 0;
-        locSuggested += f.loc_suggested_to_add_sum || 0;
-        locAccepted += f.loc_added_sum || 0;
-      }
       if (f.feature === 'agent_edit') agentLinesAdded += f.loc_added_sum || 0;
       if (
         f.feature.startsWith('chat_') &&
         !EXCLUDED_CHAT_FEATURES.has(f.feature)
       ) {
         totalChats += f.user_initiated_interaction_count || 0;
-        suggestions += f.code_generation_activity_count || 0;
-        acceptances += f.code_acceptance_activity_count || 0;
-        locSuggested += f.loc_suggested_to_add_sum || 0;
-        locAccepted += f.loc_added_sum || 0;
       }
     }
   }
 
-  return {
-    linesAccepted,
-    totalChats,
-    agentLinesAdded,
-    suggestions,
-    acceptances,
-    locSuggested,
-    locAccepted,
-  };
+  return { linesAccepted, totalChats, agentLinesAdded };
 }
 
 export function processPreviewCopilotData(data) {
@@ -69,7 +48,6 @@ export function processPreviewCopilotData(data) {
 
   const currentMetrics = aggregateMetrics(current);
   const priorMetrics = aggregateMetrics(prior);
-  const allTimeMetrics = aggregateMetrics(sorted);
 
   // monthly_active_users is a rolling 30-day count, so compare snapshots
   const currentEngagedUsers = sorted.at(-1).monthly_active_users || 0;
@@ -92,20 +70,6 @@ export function processPreviewCopilotData(data) {
     agentLinesAdded: {
       value: m.agentLinesAdded,
       increased: m.agentLinesAdded > priorMetrics.agentLinesAdded,
-    },
-    combinedStats: {
-      suggestions: allTimeMetrics.suggestions,
-      acceptances: allTimeMetrics.acceptances,
-      acceptanceRate:
-        allTimeMetrics.suggestions > 0
-          ? (allTimeMetrics.acceptances / allTimeMetrics.suggestions) * 100
-          : 0,
-      locSuggested: allTimeMetrics.locSuggested,
-      locAccepted: allTimeMetrics.locAccepted,
-      lineAcceptanceRate:
-        allTimeMetrics.locSuggested > 0
-          ? (allTimeMetrics.locAccepted / allTimeMetrics.locSuggested) * 100
-          : 0,
     },
   };
 }
