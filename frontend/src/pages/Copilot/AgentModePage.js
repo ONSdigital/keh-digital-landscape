@@ -65,7 +65,7 @@ function AgentModePage() {
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
         title="GitHub Copilot Usage Dashboard"
-        description="Analyse Copilot Agent Edit usage organisation-wide"
+        description="Analyse Copilot usage statistics organisation-wide"
         tabs={[]}
       />
       <div className="admin-container">

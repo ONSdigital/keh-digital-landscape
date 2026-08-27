@@ -71,7 +71,7 @@ function ChatModePage() {
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
         title="GitHub Copilot Usage Dashboard"
-        description="Analyse Copilot Chat usage statistics organisation-wide"
+        description="Analyse Copilot usage statistics organisation-wide"
         tabs={[]}
       />
 
