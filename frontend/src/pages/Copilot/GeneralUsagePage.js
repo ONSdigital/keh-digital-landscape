@@ -43,7 +43,7 @@ function GeneralUsagePage() {
   const settings = [
     {
       key: 'locUsage',
-      label: 'Show line acceptance',
+      label: 'Switch to line acceptance',
       checked: chartDisplaySettings.locUsage,
     },
   ];
