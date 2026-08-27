@@ -39,7 +39,15 @@ function aggregateMetrics(records) {
     }
   }
 
-  return { linesAccepted, totalChats, agentLinesAdded, suggestions, acceptances, locSuggested, locAccepted };
+  return {
+    linesAccepted,
+    totalChats,
+    agentLinesAdded,
+    suggestions,
+    acceptances,
+    locSuggested,
+    locAccepted,
+  };
 }
 
 export function processPreviewCopilotData(data) {

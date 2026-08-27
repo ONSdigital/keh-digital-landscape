@@ -117,28 +117,40 @@ function CopilotDashboardLandingPage() {
                     </p>
                     <div className="copilot-feature-tooltip-row">
                       <span>Suggestions</span>
-                      <span>{data.combinedStats.suggestions.toLocaleString()}</span>
+                      <span>
+                        {data.combinedStats.suggestions.toLocaleString()}
+                      </span>
                     </div>
                     <div className="copilot-feature-tooltip-row">
                       <span>Acceptances</span>
-                      <span>{data.combinedStats.acceptances.toLocaleString()}</span>
+                      <span>
+                        {data.combinedStats.acceptances.toLocaleString()}
+                      </span>
                     </div>
                     <div className="copilot-feature-tooltip-row">
                       <span>Acceptance Rate</span>
-                      <span>{data.combinedStats.acceptanceRate.toFixed(1)}%</span>
+                      <span>
+                        {data.combinedStats.acceptanceRate.toFixed(1)}%
+                      </span>
                     </div>
                     <hr className="copilot-feature-tooltip-divider" />
                     <div className="copilot-feature-tooltip-row">
                       <span>Line Suggestions</span>
-                      <span>{data.combinedStats.locSuggested.toLocaleString()}</span>
+                      <span>
+                        {data.combinedStats.locSuggested.toLocaleString()}
+                      </span>
                     </div>
                     <div className="copilot-feature-tooltip-row">
                       <span>Line Acceptances</span>
-                      <span>{data.combinedStats.locAccepted.toLocaleString()}</span>
+                      <span>
+                        {data.combinedStats.locAccepted.toLocaleString()}
+                      </span>
                     </div>
                     <div className="copilot-feature-tooltip-row">
                       <span>Line Acceptance Rate</span>
-                      <span>{data.combinedStats.lineAcceptanceRate.toFixed(1)}%</span>
+                      <span>
+                        {data.combinedStats.lineAcceptanceRate.toFixed(1)}%
+                      </span>
                     </div>
                   </div>
                 }
