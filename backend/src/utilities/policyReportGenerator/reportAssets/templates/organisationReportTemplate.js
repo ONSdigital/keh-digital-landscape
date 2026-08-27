@@ -10,6 +10,7 @@ const {
 const {
   buildScorecardCriteriaRows,
   formatRatingLabel,
+  getRatingTierClass,
   getScorecardCriteriaEntries,
 } = require('../../functions/scorecard');
 const {
@@ -213,6 +214,8 @@ const buildRepositoryRatingCards = ({
     scorecardCriteria,
   });
 
+  const sortedCriteriaEntries = getScorecardCriteriaEntries(scorecardCriteria);
+
   return orderedRatings
     .map(rating => {
       const matchingEntry = ratingEntries.find(
@@ -228,9 +231,10 @@ const buildRepositoryRatingCards = ({
         forceNeutral: true,
       });
       const share = percentage(count, totalRepositories);
+      const tierClass = getRatingTierClass(rating, sortedCriteriaEntries);
 
       return `              <article class="rating-stat-card">
-                <p class="rating-stat-heading"><span class="pill rating rating-${escapeHtml(rating)}">${escapeHtml(formatRatingLabel(rating))}</span></p>
+                <p class="rating-stat-heading"><span class="pill rating ${escapeHtml(tierClass)}">${escapeHtml(formatRatingLabel(rating))}</span></p>
                 <p class="rating-stat-value">${count}</p>
                 <p class="rating-stat-sub">${share}% of repositories</p>
                 <p class="rating-delta ${deltaView.className}">${escapeHtml(deltaView.text)}</p>

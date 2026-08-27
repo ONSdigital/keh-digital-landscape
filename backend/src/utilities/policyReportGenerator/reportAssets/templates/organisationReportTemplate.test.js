@@ -209,8 +209,8 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('Required checks');
     expect(html).toContain('No mandatory checks');
     expect(html).toContain('Repository Rating Breakdown');
-    expect(html).toContain('class="pill rating rating-gold"');
-    expect(html).toContain('class="pill rating rating-bronze"');
+    expect(html).toContain('class="pill rating rating-tier-2"');
+    expect(html).toContain('class="pill rating rating-tier-4"');
     expect(html).toContain(
       'class="rating-delta neutral">No change vs comparison dataset.</p>'
     );
@@ -325,18 +325,18 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('>67<');
     expect(html).toContain('>108<');
     expect(html).toContain('Repository Rating Breakdown');
-    expect(html).toContain('class="pill rating rating-platinum"');
+    expect(html).toContain('class="pill rating rating-tier-1"');
     expect(html).toContain('class="pill rating rating-unrated"');
-    expect(html.indexOf('rating-platinum')).toBeLessThan(
-      html.indexOf('rating-gold')
+    expect(html.indexOf('rating-tier-1')).toBeLessThan(
+      html.indexOf('rating-tier-2')
     );
-    expect(html.indexOf('rating-gold')).toBeLessThan(
-      html.indexOf('rating-silver')
+    expect(html.indexOf('rating-tier-2')).toBeLessThan(
+      html.indexOf('rating-tier-3')
     );
-    expect(html.indexOf('rating-silver')).toBeLessThan(
-      html.indexOf('rating-bronze')
+    expect(html.indexOf('rating-tier-3')).toBeLessThan(
+      html.indexOf('rating-tier-4')
     );
-    expect(html.indexOf('rating-bronze')).toBeLessThan(
+    expect(html.indexOf('rating-tier-4')).toBeLessThan(
       html.indexOf('rating-unrated')
     );
     expect(html).toContain(

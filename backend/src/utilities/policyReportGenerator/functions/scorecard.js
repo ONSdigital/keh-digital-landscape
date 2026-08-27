@@ -7,6 +7,22 @@ const formatRatingLabel = rating =>
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 
+const getRatingTierClass = (rating, sortedCriteriaEntries) => {
+  const normalisedRating = String(rating || '')
+    .trim()
+    .toLowerCase();
+
+  if (!normalisedRating || normalisedRating === 'unrated') {
+    return 'rating-unrated';
+  }
+
+  const tierIndex = (sortedCriteriaEntries || []).findIndex(
+    entry => entry.rating === normalisedRating
+  );
+
+  return tierIndex === -1 ? 'rating-unrated' : `rating-tier-${tierIndex + 1}`;
+};
+
 const getScorecardCriteriaEntries = scorecardCriteria => {
   if (!scorecardCriteria || typeof scorecardCriteria !== 'object') {
     return [];
@@ -39,7 +55,7 @@ const getScorecardCriteriaEntries = scorecardCriteria => {
 
 const buildScorecardCriteriaRows = scorecardCriteriaEntries => {
   return scorecardCriteriaEntries
-    .map(criteriaEntry => {
+    .map((criteriaEntry, index) => {
       const requiredChecksLabel =
         criteriaEntry.requiredChecks.length > 0
           ? criteriaEntry.requiredChecks
@@ -48,7 +64,7 @@ const buildScorecardCriteriaRows = scorecardCriteriaEntries => {
           : 'No mandatory checks';
 
       return `                <tr>
-                  <td><span class="pill rating rating-${escapeHtml(criteriaEntry.rating)}">${escapeHtml(formatRatingLabel(criteriaEntry.rating))}</span></td>
+                  <td><span class="pill rating rating-tier-${index + 1}">${escapeHtml(formatRatingLabel(criteriaEntry.rating))}</span></td>
                   <td>${criteriaEntry.minCompliance.toFixed(1)}%</td>
                   <td>${requiredChecksLabel}</td>
                 </tr>`;
@@ -59,5 +75,6 @@ const buildScorecardCriteriaRows = scorecardCriteriaEntries => {
 module.exports = {
   buildScorecardCriteriaRows,
   formatRatingLabel,
+  getRatingTierClass,
   getScorecardCriteriaEntries,
 };

@@ -114,8 +114,8 @@ describe('entityReportTemplate', () => {
     expect(html).toContain('id="repo-alpha-data-pipeline"');
     expect(html).toContain('id="repo-beta-insights-service"');
     expect(html).toContain('<th>Rating</th>');
-    expect(html).toContain('class="pill rating rating-bronze"');
-    expect(html).toContain('class="pill rating rating-gold"');
+    expect(html).toContain('class="pill rating rating-tier-4"');
+    expect(html).toContain('class="pill rating rating-tier-2"');
     expect(html).toContain('What do these ratings mean?');
     expect(html).toContain('Minimum compliance');
     expect(html).toContain('Required checks');
@@ -132,10 +132,10 @@ describe('entityReportTemplate', () => {
     expect(html.split('View on GitHub').length - 1).toBe(2);
     expect(html).toContain('alpha-data-pipeline');
     expect(html).toMatch(
-      /alpha-data-pipeline<\/h3>\s*<span class="pill rating rating-bronze">Bronze<\/span>/
+      /alpha-data-pipeline<\/h3>\s*<span class="pill rating rating-tier-4">Bronze<\/span>/
     );
     expect(html).toMatch(
-      /beta-insights-service<\/h3>\s*<span class="pill rating rating-gold">Gold<\/span>/
+      /beta-insights-service<\/h3>\s*<span class="pill rating rating-tier-2">Gold<\/span>/
     );
     expect(html.indexOf('Selected Repositories Summary')).toBeLessThan(
       html.indexOf('What do these ratings mean?')

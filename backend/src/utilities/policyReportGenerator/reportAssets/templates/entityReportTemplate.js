@@ -6,13 +6,13 @@ const {
   formatCheckName,
   getInputList,
   getInputString,
-  normaliseForFileName,
   normaliseSectionAnchor,
   percentage,
 } = require('../../functions/common');
 const {
   buildScorecardCriteriaRows,
   formatRatingLabel,
+  getRatingTierClass,
   getScorecardCriteriaEntries,
 } = require('../../functions/scorecard');
 const {
@@ -284,7 +284,7 @@ const buildEntityViewModel = (entityName, entityRecord) => {
   };
 };
 
-const getEntityRatingView = entityRecord => {
+const getEntityRatingView = (entityRecord, sortedCriteriaEntries) => {
   const rawRating = String(entityRecord?.rating || 'unrated')
     .trim()
     .toLowerCase();
@@ -293,7 +293,7 @@ const getEntityRatingView = entityRecord => {
 
   return {
     label: formatRatingLabel(safeRating),
-    className: `rating-${normaliseForFileName(safeRating || 'unrated')}`,
+    className: getRatingTierClass(safeRating, sortedCriteriaEntries || []),
   };
 };
 
@@ -441,7 +441,8 @@ const buildEntityReportHtml = ({
     ...(includeEntityRatings
       ? (() => {
           const ratingView = getEntityRatingView(
-            entityRecords[entityView.name]
+            entityRecords[entityView.name],
+            scorecardCriteriaEntries
           );
 
           return {
