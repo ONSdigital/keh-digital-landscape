@@ -26,7 +26,7 @@ function ChatModeDashboard({ data, isLoading, chartDisplaySettings }) {
         generates a code block in the chat panel, and an acceptance is counted
         when you click Apply to insert it into the editor. Autonomous file
         writes made in agent and edit mode are tracked separately under{' '}
-        <a href="/copilot/agent">Direct Edits</a>, which measures volume (lines
+        <a href="/copilot/edits">Direct Edits</a>, which measures volume (lines
         added and deleted) rather than acceptance. Weekend data and lines of
         code (LoC) can be toggled in the settings menu (cogwheel).
       </p>
