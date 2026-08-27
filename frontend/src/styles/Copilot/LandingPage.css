@@ -106,3 +106,31 @@
 .copilot-preview-down {
   color: hsl(var(--destructive));
 }
+
+.copilot-feature-tooltip {
+  white-space: normal;
+  width: 300px;
+  padding: 2px 0;
+}
+
+.copilot-feature-tooltip-heading {
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px 0;
+}
+
+.copilot-feature-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 0.85rem;
+  padding: 2px 0;
+}
+
+.copilot-feature-tooltip-divider {
+  border: none;
+  border-top: 1px solid hsl(var(--border) / 0.4);
+  margin: 6px 0;
+}
