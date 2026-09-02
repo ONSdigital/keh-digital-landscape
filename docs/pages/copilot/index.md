@@ -24,15 +24,20 @@ The landing page is designed around **progressive disclosure**: users see just e
 | General Usage        | `/copilot/general`     |
 | IDE Code Completions | `/copilot/completions` |
 | Copilot Chat         | `/copilot/chat`        |
-| Agent Mode           | `/copilot/agent`       |
-| Agent Mode           | `/copilot/agent`       |
+| Direct Edits         | `/copilot/edits`       |
 | Legacy Usage         | `/copilot/legacy`      |
 
 ## Features
 
 ### Landing Page
 
-A navigation hub linking to each feature page. Each card displays summary data to give users an upfront indication of what the page contains, then navigates to the full detail on click.
+A navigation hub linking to each feature page. Cards are grouped into three sections:
+
+- **Summary**: General Usage card showing engaged users month-to-date.
+- **Explore Usage by Feature**: IDE Code Completions and Copilot Chat cards.
+- **Other**: Direct Edits and Legacy Usage cards.
+
+Each card displays summary data to give users an upfront indication of what the page contains, then navigates to the full detail on click.
 
 ### General Usage
 
@@ -43,6 +48,8 @@ An organisation-wide summary of Copilot adoption and usage patterns, covering me
 - **User Adoption**: two progress bar cards showing Chat Mode and Agent Mode adoption as a percentage of total monthly active users. Figures are derived from the most recent day in the dataset.
 
 - **Engaged Users Over Time**: a line chart of monthly unique active users across three series: All Active Users, Chat Users, and Agent Users. Incomplete months are excluded.
+
+- **Cumulative Acceptance**: a line chart of running totals accumulated month by month, combining IDE Code Completions and Copilot Chat. Shows Suggestions, Acceptances, and Acceptance Rate (right axis). Toggle **Show line acceptance** in the settings menu (cogwheel) to switch to Lines Suggested, Lines Accepted, and Line Acceptance Rate instead.
 
 - **Model & IDE Usage**: two donut charts showing the share of user-initiated interactions by AI model and by development environment. Not constrained to any one Copilot feature. Entries beyond the top 6 are grouped into **Other**.
 
@@ -74,7 +81,7 @@ A feature-focused dashboard for IDE code completion activity. This page follows 
 
 A feature-focused dashboard for all chat-based Copilot interactions. Aggregates data across all `chat_*` features (Ask, Edit, Agent, Plan, and Inline Chat modes), excluding `chat_panel_unknown_mode`. This page follows the same architecture pattern as IDE Code Completions.
 
-The page banner explains the distinction between chat suggestions (code blocks shown in the chat panel) and autonomous agent file writes (tracked separately under Agent Mode).
+The page banner explains the distinction between chat suggestions (code blocks shown in the chat panel, where acceptance is counted when you click Apply) and autonomous file writes (tracked separately under Direct Edits, which measures volume rather than acceptance).
 
 **Sections:**
 
@@ -88,9 +95,9 @@ The page banner explains the distinction between chat suggestions (code blocks s
 
 - **Breakdowns**: three donut charts — Language Breakdown, Model Breakdown, and Chat Mode Breakdown — each with a selectable mode for suggestions vs acceptances.
 
-### Agent Mode
+### Direct Edits
 
-A feature-focused dashboard for Agent Edit sessions. Tracks lines of code that Copilot writes directly into workspace files during agent mode sessions. The page banner explains the distinction between autonomous file writes and chat-based code suggestions, with a hyperlink to the Copilot Chat page. This page follows the same architecture pattern as the other Copilot feature pages:
+A feature-focused dashboard for direct file writes made by Copilot during agent and edit mode sessions. Tracks lines of code that Copilot writes directly into workspace files. The page banner explains why there is no acceptance rate: although users can accept or reject changes in the editor diff view, the GitHub API does not report accept/reject data for file writes - only volume. This page follows the same architecture pattern as the other Copilot feature pages:
 
 - **Page responsibilities**: route-level layout, back navigation, chart settings state, and data fetch/transform.
 
@@ -106,13 +113,13 @@ A feature-focused dashboard for Agent Edit sessions. Tracks lines of code that C
 
 ### Navigation and Routing
 
-- Entry point from landing page: **General Usage**, **IDE Code Completions**, **Copilot Chat**, and **Agent Mode** cards on `/copilot/home`.
+- Entry point from landing page: **General Usage**, **IDE Code Completions**, **Copilot Chat**, **Direct Edits**, and **Legacy Usage** cards on `/copilot/home`.
 
 - Code Completions route: `/copilot/completions`.
 
 - Copilot Chat route: `/copilot/chat`.
 
-- Agent Mode route: `/copilot/agent`.
+- Direct Edits route: `/copilot/edits`.
 
 - Back button behavior: returns from each feature page to `/copilot/home`.
 
@@ -138,7 +145,7 @@ From `utilities/gitHubCopilot`:
 
 - **Copilot Chat**: `./chatModeCopilotData/processChatModeCopilotData.js`
 
-- **Agent Mode**: `./agentModeData/processAgentModeCopilotData.js`
+- **Direct Edits**: `./directEditsData/processDirectEditsCopilotData.js`
 
 - **Legacy Usage**: `./legacyCopilotData/processLegacyCopilotData.js`
 

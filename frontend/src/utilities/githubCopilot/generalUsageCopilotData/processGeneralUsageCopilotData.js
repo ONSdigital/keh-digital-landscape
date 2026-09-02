@@ -5,6 +5,59 @@ import {
 } from '../../../constants/copilotConstants';
 import { buildPieSlices } from '../../buildPieSlices';
 
+const EXCLUDED_CHAT_FEATURES = new Set(['chat_panel_unknown_mode']);
+
+function buildCumulativeAcceptanceGraph(data) {
+  const monthly = {};
+
+  for (const day of data) {
+    const month = day.day.slice(0, 7);
+    if (!monthly[month]) {
+      monthly[month] = {
+        suggestions: 0,
+        acceptances: 0,
+        locSuggested: 0,
+        locAccepted: 0,
+      };
+    }
+    for (const f of day.totals_by_feature ?? []) {
+      const isCompletion = f.feature === 'code_completion';
+      const isChat =
+        f.feature.startsWith('chat_') && !EXCLUDED_CHAT_FEATURES.has(f.feature);
+      if (!isCompletion && !isChat) continue;
+      monthly[month].suggestions += f.code_generation_activity_count ?? 0;
+      monthly[month].acceptances += f.code_acceptance_activity_count ?? 0;
+      monthly[month].locSuggested += f.loc_suggested_to_add_sum ?? 0;
+      monthly[month].locAccepted += f.loc_added_sum ?? 0;
+    }
+  }
+
+  let cumSuggestions = 0;
+  let cumAcceptances = 0;
+  let cumLocSuggested = 0;
+  let cumLocAccepted = 0;
+
+  return Object.keys(monthly)
+    .sort()
+    .map(month => {
+      cumSuggestions += monthly[month].suggestions;
+      cumAcceptances += monthly[month].acceptances;
+      cumLocSuggested += monthly[month].locSuggested;
+      cumLocAccepted += monthly[month].locAccepted;
+      return {
+        date: month,
+        suggestions: cumSuggestions,
+        acceptances: cumAcceptances,
+        acceptanceRate:
+          cumSuggestions > 0 ? (cumAcceptances / cumSuggestions) * 100 : 0,
+        locSuggested: cumLocSuggested,
+        locAccepted: cumLocAccepted,
+        lineAcceptanceRate:
+          cumLocSuggested > 0 ? (cumLocAccepted / cumLocSuggested) * 100 : 0,
+      };
+    });
+}
+
 function formatModelName(model) {
   return MODEL_NAMES[model] || model;
 }
@@ -30,7 +83,7 @@ function buildUserAdoption(day) {
   };
 }
 
-function buildEngagedUsersOvertime(data) {
+function buildEngagedUsersOverTime(data) {
   const months = {};
 
   for (const day of data) {
@@ -119,7 +172,8 @@ export function processGeneralUsageData(data) {
 
   return {
     userAdoption: buildUserAdoption(latestDay),
-    engagedUsersOvertime: buildEngagedUsersOvertime(data),
+    engagedUsersOverTime: buildEngagedUsersOverTime(data),
+    cumulativeAcceptanceOverTime: buildCumulativeAcceptanceGraph(data),
     modelUsage: buildModelUsage(data),
     ideUsage: buildIdeUsage(data),
     codeImpact: buildCodeImpact(data),

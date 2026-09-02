@@ -72,7 +72,7 @@ const config = {
     },
     {
       name: 'GitHub Copilot Agent Mode',
-      url: '/copilot/agent',
+      url: '/copilot/edits',
       authentication: [],
     },
   ],

@@ -76,7 +76,7 @@ function CopilotDashboardLandingPage() {
     <Layout headerProps={{ hideSearch: true }}>
       <PageBanner
         title="GitHub Copilot Usage Dashboard"
-        description="Analyse usage statistics organisation-wide"
+        description="Analyse Copilot usage statistics organisation-wide"
         tabs={[]}
       />
 
@@ -122,22 +122,22 @@ function CopilotDashboardLandingPage() {
                 data ? { label: 'Total Chats (MTD)', ...data.totalChats } : null
               }
             />
-            <CopilotNavCard
-              icon={RiRobot2Line}
-              title="Agent Mode"
-              href="/copilot/agent"
-              previewStats={
-                data
-                  ? { label: 'Lines Added (MTD)', ...data.agentLinesAdded }
-                  : null
-              }
-            />
           </div>
         </div>
 
         <div className="copilot-section">
           <h3 className="copilot-section-title">Other</h3>
           <div className="copilot-nav-cards">
+            <CopilotNavCard
+              icon={RiRobot2Line}
+              title="Direct Edits"
+              href="/copilot/edits"
+              previewStats={
+                data
+                  ? { label: 'Lines Added (MTD)', ...data.agentLinesAdded }
+                  : null
+              }
+            />
             <CopilotNavCard
               icon={BsArchive}
               title="Legacy Usage"

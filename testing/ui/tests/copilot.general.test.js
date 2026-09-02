@@ -16,7 +16,9 @@ test('General Usage page shows skeleton loading state', async ({ page }) => {
   });
   await page.goto('http://localhost:3000/copilot/general');
   await expect(page.locator('.usage-card.skeleton').first()).toBeVisible();
-  await expect(page.locator('.copilot-graph-container.skeleton')).toBeVisible();
+  await expect(
+    page.locator('.copilot-graph-container.skeleton').first()
+  ).toBeVisible();
   await expect(
     page.locator('.usage-pie-chart-card.skeleton').first()
   ).toBeVisible();
@@ -47,11 +49,16 @@ test('General Usage page displays correct page structure', async ({ page }) => {
   ).toBeVisible();
   await expect(page.locator('.usage-card')).toHaveCount(2);
 
-  // Engaged Users Overtime section
+  // Engaged Users Over Time section
   await expect(
-    page.getByRole('heading', { name: 'Engaged Users Overtime' })
+    page.getByRole('heading', { name: 'Engaged Users Over Time' })
   ).toBeVisible();
-  await expect(page.locator('.copilot-graph-container')).toHaveCount(1);
+
+  // Cumulative Acceptance Over Time section
+  await expect(
+    page.getByRole('heading', { name: 'Cumulative Acceptance Over Time' })
+  ).toBeVisible();
+  await expect(page.locator('.copilot-graph-container')).toHaveCount(2);
 
   // Model & IDE Usage section
   await expect(

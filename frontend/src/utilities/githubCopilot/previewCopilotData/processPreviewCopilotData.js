@@ -53,22 +53,23 @@ export function processPreviewCopilotData(data) {
   const currentEngagedUsers = sorted.at(-1).monthly_active_users || 0;
   const priorEngagedUsers = prior.at(-1)?.monthly_active_users || 0;
 
+  const m = currentMetrics;
   return {
     engagedUsers: {
       value: currentEngagedUsers,
       increased: currentEngagedUsers > priorEngagedUsers,
     },
     linesAccepted: {
-      value: currentMetrics.linesAccepted,
-      increased: currentMetrics.linesAccepted > priorMetrics.linesAccepted,
+      value: m.linesAccepted,
+      increased: m.linesAccepted > priorMetrics.linesAccepted,
     },
     totalChats: {
-      value: currentMetrics.totalChats,
-      increased: currentMetrics.totalChats > priorMetrics.totalChats,
+      value: m.totalChats,
+      increased: m.totalChats > priorMetrics.totalChats,
     },
     agentLinesAdded: {
-      value: currentMetrics.agentLinesAdded,
-      increased: currentMetrics.agentLinesAdded > priorMetrics.agentLinesAdded,
+      value: m.agentLinesAdded,
+      increased: m.agentLinesAdded > priorMetrics.agentLinesAdded,
     },
   };
 }

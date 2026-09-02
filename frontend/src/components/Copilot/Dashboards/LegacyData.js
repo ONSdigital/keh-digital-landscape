@@ -31,7 +31,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
     return (
       <div>
         <h2>Legacy Copilot Data</h2>
-        <p>
+        <p className="disclaimer-banner">
           This section visualises the legacy Copilot data for previous revisions
           of the dashboard. For each legacy dataset, the GitHub API endpoints
           were different, so the available metrics vary and may not be directly
@@ -197,7 +197,7 @@ function LegacyDataVisualisation({ data, isLoading }) {
   return (
     <div>
       <h2>Legacy Copilot Data</h2>
-      <p>
+      <p className="disclaimer-banner">
         This section visualises the legacy Copilot data for previous revisions
         of the dashboard. For each legacy dataset, the GitHub API endpoints were
         different, so the available metrics vary and may not be directly
