@@ -16,9 +16,13 @@ const buildReportHeaderHtml = ({
   metadataItems = [],
   useThreeColumns = false,
 }) => {
-  const priorityClassName = useThreeColumns
-    ? 'meta-priority three-col'
-    : 'meta-priority';
+  const priorityClassName = [
+    'meta-priority',
+    useThreeColumns ? 'three-col' : '',
+    `metadata-count-${metadataItems.length}`,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return `      <header class="page-header">
         <h1>${escapeHtml(heading)}</h1>

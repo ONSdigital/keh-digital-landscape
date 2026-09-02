@@ -9,7 +9,11 @@ const MOCK_DATASETS = [
   { name: '2025-05-01T10:00:00Z', displayName: '2025-05-01T10:00:00Z' },
 ];
 
-const MOCK_REPOSITORIES = ['repo-alpha', 'repo-beta', 'repo-gamma'];
+const MOCK_REPOSITORIES = [
+  { name: 'repo-alpha', visibility: 'public' },
+  { name: 'repo-beta', visibility: 'private' },
+  { name: 'repo-gamma', visibility: 'internal' },
+];
 const MOCK_TEAMS = ['team-one', 'team-two'];
 
 // Mock the base APIs that the page always calls on load
@@ -249,6 +253,45 @@ test('Organisation Report generate button is disabled without a comparison datas
   await expect(generateBtn).toBeEnabled();
 });
 
+test('Organisation Report visibility filter defaults to all options and can be narrowed', async ({
+  page,
+}) => {
+  await mockBaseApis(page);
+  await mockDatasetsApi(page);
+  await page.goto(PAGE_URL);
+
+  await page.locator('#organisation').selectOption('ONS-Innovation');
+  await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
+  await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+
+  const visibilityFilter = page.getByRole('combobox', {
+    name: 'Organisation repository visibility',
+  });
+  await expect(visibilityFilter).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Remove public' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Remove private' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Remove internal' })
+  ).toBeVisible();
+
+  await page.getByRole('button', { name: 'Remove private' }).click();
+  await page.getByRole('button', { name: 'Remove internal' }).click();
+
+  await expect(
+    page.getByRole('button', { name: 'Remove public' })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Remove private' })
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Remove internal' })
+  ).toHaveCount(0);
+});
+
 test('Signed-in username appears in Repository Report section when authenticated', async ({
   page,
 }) => {
@@ -360,6 +403,40 @@ test('Repository Report pagination controls are always visible', async ({
   await expect(panel.getByRole('button', { name: /next/i })).toBeVisible({
     timeout: 5000,
   });
+});
+
+test('Repository Report displays visibility labels and filters repositories', async ({
+  page,
+}) => {
+  await mockBaseApis(page);
+  await mockAuthenticatedApis(page);
+  await mockDatasetsApi(page);
+  await page.goto(PAGE_URL);
+
+  await page.locator('#organisation').selectOption('ONS-Innovation');
+  await expect(page.locator('#source-dataset')).toBeEnabled({ timeout: 5000 });
+  await page.locator('#source-dataset').selectOption(MOCK_DATASETS[0].name);
+  await page.getByRole('tab', { name: 'Repository Report' }).click();
+
+  const panel = page.locator('#panel-repository');
+  await expect(panel.getByText('repo-alpha')).toBeVisible({ timeout: 10000 });
+  await expect(
+    panel.locator('.policy-reports-pill', { hasText: 'public' })
+  ).toBeVisible();
+  await expect(
+    panel.locator('.policy-reports-pill', { hasText: 'private' })
+  ).toBeVisible();
+  await expect(
+    panel.locator('.policy-reports-pill', { hasText: 'internal' })
+  ).toBeVisible();
+
+  await panel.getByRole('combobox', { name: 'Repository visibility' }).click();
+  await panel.getByRole('option', { name: 'private' }).click();
+  await panel.getByRole('option', { name: 'internal' }).click();
+
+  await expect(panel.getByText('repo-alpha')).toBeVisible();
+  await expect(panel.getByText('repo-beta')).toHaveCount(0);
+  await expect(panel.getByText('repo-gamma')).toHaveCount(0);
 });
 
 test('Results per page dropdown is visible in Repository Report panel', async ({

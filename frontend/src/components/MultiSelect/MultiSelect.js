@@ -8,6 +8,7 @@ const MultiSelect = ({
   onChange,
   placeholder = 'Select...',
   isDisabled = false,
+  ariaLabel = 'Search options',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -127,7 +128,7 @@ const MultiSelect = ({
             placeholder={value.length === 0 ? placeholder : ''}
             disabled={isDisabled}
             type="text"
-            aria-label="Search options"
+            aria-label={ariaLabel}
             aria-autocomplete="list"
             aria-controls="multi-select-dropdown"
             aria-expanded={isOpen}

@@ -73,6 +73,19 @@ describe('SelectableEntityReport', () => {
     );
   });
 
+  it('shows a repository visibility label for structured items', () => {
+    render(
+      <SelectableEntityReport
+        {...buildProps({
+          selectedItems: [],
+          filteredItems: [{ name: 'repo-alpha', visibility: 'internal' }],
+        })}
+      />
+    );
+
+    expect(screen.getByText('internal')).toBeInTheDocument();
+  });
+
   it('always renders pagination controls even on the first page', () => {
     render(
       <SelectableEntityReport

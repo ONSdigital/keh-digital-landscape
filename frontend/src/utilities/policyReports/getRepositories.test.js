@@ -30,6 +30,17 @@ describe('fetchDatasetRepositoriesForUser', () => {
     expect(result).toEqual(mockRepos);
   });
 
+  it('preserves repository visibility returned by the API', async () => {
+    const repositories = [{ name: 'repo-a', visibility: 'internal' }];
+    customFetch.mockResolvedValue({
+      json: async () => ({ repositories }),
+    });
+
+    await expect(
+      fetchDatasetRepositoriesForUser('ONS-Innovation', '2024-01-15T10:00:00Z')
+    ).resolves.toEqual(repositories);
+  });
+
   it('URL-encodes the organisation and dataset parameters', async () => {
     customFetch.mockResolvedValue({ json: async () => ({ repositories: [] }) });
 

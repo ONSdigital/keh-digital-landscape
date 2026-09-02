@@ -379,12 +379,36 @@ describe('PolicyReportsPage', () => {
           reportType: 'Organisation',
           inputs: expect.objectContaining({
             sourceDataset: DATASETS[0].name,
+            repositoryVisibility: ['public', 'private', 'internal'],
             sourceDatasetDisplay: formatDatasetLabel(DATASETS[0].displayName),
             comparisonDataset: DATASETS[1].name,
             comparisonDatasetDisplay: formatDatasetLabel(
               DATASETS[1].displayName
             ),
           }),
+        })
+      );
+    });
+
+    it('submits the selected organisation repository visibilities', async () => {
+      setupDefaultMocks();
+      await renderPage();
+      await selectOrgAndDataset();
+
+      await userEvent.click(
+        screen.getByRole('combobox', {
+          name: /organisation repository visibility/i,
+        })
+      );
+      await userEvent.click(screen.getByRole('option', { name: 'private' }));
+      await userEvent.click(screen.getByRole('option', { name: 'internal' }));
+      await userEvent.click(
+        screen.getByRole('button', { name: /generate organisation report/i })
+      );
+
+      expect(generatePolicyReport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          inputs: expect.objectContaining({ repositoryVisibility: ['public'] }),
         })
       );
     });

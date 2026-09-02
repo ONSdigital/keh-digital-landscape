@@ -122,6 +122,12 @@
   color: hsl(var(--muted-foreground));
 }
 
+.policy-reports-field .policy-reports-section-label {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-weight: 400;
+}
+
 .policy-reports-text-input,
 .policy-reports-select-input,
 .policy-reports-date-input {
@@ -146,6 +152,16 @@
 .policy-reports-select-input-highlight {
   border-color: hsl(var(--info-box-border));
   background: hsl(var(--info-box) / 10%);
+}
+
+.policy-reports-field .multi-select {
+  max-width: none;
+}
+
+.policy-reports-field .multi-select-control {
+  height: auto;
+  min-height: 36px;
+  padding: 8px 10px;
 }
 
 .policy-reports-disclaimer-banner {

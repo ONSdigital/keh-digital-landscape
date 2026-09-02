@@ -5,6 +5,66 @@ const require = createRequire(import.meta.url);
 const { buildOrganisationReportHtml } = require('./organisationReportTemplate');
 
 describe('organisationReportTemplate', () => {
+  it('filters repository metrics and SLO alerts by selected visibility', () => {
+    const buildDataset = (publicAlerts, privateAlerts) => ({
+      summary: {
+        total_repositories: 2,
+        compliant_repositories: 1,
+        total_teams: 1,
+        compliant_teams: 1,
+        repository_checks: { codeowners: { total: 2, compliant: 1 } },
+        team_checks: { team_maintainer: { total: 1, compliant: 1 } },
+        repository_ratings: { gold: 1, bronze: 1 },
+      },
+      repositories: {
+        'public-repository': {
+          visibility: 'public',
+          rating: 'gold',
+          is_compliant: true,
+          checks: { codeowners: { result: 'pass' } },
+        },
+        'private-repository': {
+          visibility: 'private',
+          rating: 'bronze',
+          is_compliant: false,
+          checks: { codeowners: { result: 'fail' } },
+        },
+      },
+      organisation_checks: {
+        dependabot_slo: {
+          result: 'fail',
+          details: {
+            failing_alerts: publicAlerts + privateAlerts,
+            total_repositories_affected: 2,
+            repositories: {
+              'example/public-repository': { high: publicAlerts },
+              'example/private-repository': { critical: privateAlerts },
+            },
+          },
+        },
+        secret_scanning_slo: { result: 'pass', details: { repositories: {} } },
+      },
+    });
+
+    const html = buildOrganisationReportHtml({
+      organisation: 'example',
+      sourceDataset: 'source',
+      sourceDatasetDisplay: 'Source',
+      comparisonDataset: 'comparison',
+      comparisonDatasetDisplay: 'Comparison',
+      repositoryVisibility: ['public'],
+      sourceDatasetData: buildDataset(5, 64),
+      comparisonDatasetData: buildDataset(2, 4),
+    });
+
+    expect(html).toContain('>1<');
+    expect(html).toContain('>100.0%<');
+    expect(html).toContain('>5<');
+    expect(html).toContain('<strong>1</strong> repositories affected by SLO');
+    expect(html).toContain('+3 vs comparison dataset.');
+    expect(html).not.toContain('>64<');
+  });
+
   it('renders organisation metadata and organisation-specific sections', () => {
     const html = buildOrganisationReportHtml({
       organisation: 'ONS-Innovation',

@@ -88,6 +88,28 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.meta-priority.three-col.metadata-count-4 .meta-priority-item:last-child {
+  grid-column: 1 / -1;
+}
+
+.meta-priority.three-col.metadata-count-5 .meta-priority-item:nth-child(4),
+.meta-priority.three-col.metadata-count-5 .meta-priority-item:nth-child(5) {
+  grid-column: span 1;
+}
+
+.meta-priority.three-col.metadata-count-5 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.meta-priority.three-col.metadata-count-5
+  .meta-priority-item:nth-child(-n + 3) {
+  grid-column: span 2;
+}
+
+.meta-priority.three-col.metadata-count-5 .meta-priority-item:nth-child(n + 4) {
+  grid-column: span 3;
+}
+
 .meta-priority-item {
   margin: 0;
   padding: 10px 12px;

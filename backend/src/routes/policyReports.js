@@ -9,6 +9,7 @@ const router = express.Router();
 
 const REPORT_TYPES = ['organisation', 'repository', 'team'];
 const SAFE_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
+const REPOSITORY_VISIBILITIES = ['public', 'private', 'internal'];
 const GITHUB_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
 const DATASET_ENTITY_CACHE_TTL_MS = 15 * 60 * 1000;
 const HUMAN_READABLE_ERRORS = {
@@ -45,7 +46,7 @@ const githubRepositoryPageCache = new Map();
 const githubTeamPageCache = new Map();
 
 // Dataset entities cache to prevent repeated S3 fetches during page-by-page requests.
-// Key: organisation:dataset  Value: { entities: { repositories: string[], teams: string[] }, cachedAt: number }
+// Key: organisation:dataset  Value: { entities: { repositories: Array<{name: string, visibility: string}>, teams: string[] }, cachedAt: number }
 const datasetEntitiesCache = new Map();
 
 const createUserScopedCacheKey = (userToken, organisation) => {
@@ -78,6 +79,14 @@ const parsePositiveIntegerQuery = value => {
 
   return parsedValue;
 };
+
+const isValidRepositoryVisibilityFilter = visibility =>
+  Array.isArray(visibility) &&
+  visibility.length > 0 &&
+  visibility.every(
+    value =>
+      typeof value === 'string' && REPOSITORY_VISIBILITIES.includes(value)
+  );
 
 const createDatasetCacheKey = (organisation, dataset) =>
   `${organisation}:${dataset}`;
@@ -240,6 +249,17 @@ router.post('/generateReport', async (req, res) => {
       .json({ error: HUMAN_READABLE_ERRORS.sourceDatasetRequired });
   }
 
+  if (
+    ['organisation', 'repository'].includes(normalizedReportType) &&
+    !isValidRepositoryVisibilityFilter(safeInputs.repositoryVisibility)
+  ) {
+    logger.warn('Invalid repository visibility filter specified');
+    return res.status(400).json({
+      error:
+        'Choose at least one valid repository visibility: public, private or internal.',
+    });
+  }
+
   try {
     const reportInputs = { ...safeInputs };
 
@@ -319,7 +339,12 @@ router.get('/repositories', async (req, res) => {
       organisation,
       dataset,
     });
-    const datasetRepositories = new Set(datasetEntities.repositories);
+    const datasetRepositoriesByName = new Map(
+      datasetEntities.repositories.map(repository => [
+        repository.name,
+        repository,
+      ])
+    );
 
     const shouldRefreshCache = parseRefreshCacheQuery(refreshCache);
     const requestedGitHubPage = parsePositiveIntegerQuery(githubPage);
@@ -356,11 +381,13 @@ router.get('/repositories', async (req, res) => {
         existingEntry.pages[requestedGitHubPage]
       ) {
         const cachedPage = existingEntry.pages[requestedGitHubPage];
-        const filteredFromCache = cachedPage.filter(repo =>
-          datasetRepositories.has(repo)
-        );
+        const filteredFromCache = cachedPage
+          .map(repositoryName => datasetRepositoriesByName.get(repositoryName))
+          .filter(Boolean);
         return res.status(200).json({
-          repositories: filteredFromCache.sort(),
+          repositories: filteredFromCache.sort((left, right) =>
+            left.name.localeCompare(right.name)
+          ),
           cacheUsed: true,
           cachedAt: existingEntry.cachedAt,
           githubCurrentPage: requestedGitHubPage,
@@ -390,12 +417,14 @@ router.get('/repositories', async (req, res) => {
         existingEntry.totalPages = pageResponse.totalPages;
       }
 
-      const accessibleDatasetRepositories = pageResponse.repositories.filter(
-        repo => datasetRepositories.has(repo)
-      );
+      const accessibleDatasetRepositories = pageResponse.repositories
+        .map(repositoryName => datasetRepositoriesByName.get(repositoryName))
+        .filter(Boolean);
 
       return res.status(200).json({
-        repositories: accessibleDatasetRepositories.sort(),
+        repositories: accessibleDatasetRepositories.sort((left, right) =>
+          left.name.localeCompare(right.name)
+        ),
         cacheUsed: false,
         cachedAt: now,
         githubCurrentPage: pageResponse.currentPage,
