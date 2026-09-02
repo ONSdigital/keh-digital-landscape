@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useId, useState, useRef, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 import '../../styles/components/MultiSelect.css';
 
@@ -10,6 +10,7 @@ const MultiSelect = ({
   isDisabled = false,
   ariaLabel = 'Search options',
 }) => {
+  const dropdownId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const containerRef = useRef(null);
@@ -130,7 +131,7 @@ const MultiSelect = ({
             type="text"
             aria-label={ariaLabel}
             aria-autocomplete="list"
-            aria-controls="multi-select-dropdown"
+            aria-controls={dropdownId}
             aria-expanded={isOpen}
             aria-haspopup="listbox"
             role="combobox"
@@ -140,7 +141,7 @@ const MultiSelect = ({
       {isOpen && filteredOptions.length > 0 && (
         <div
           ref={dropdownRef}
-          id="multi-select-dropdown"
+          id={dropdownId}
           className="multi-select-dropdown"
           role="listbox"
           aria-label="Available options"
