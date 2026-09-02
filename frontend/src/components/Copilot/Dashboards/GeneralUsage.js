@@ -80,19 +80,21 @@ function GeneralUsageDashboard({ data, isLoading, chartDisplaySettings }) {
           {!loading && (
             <Tooltip
               title={
-                <p className="copilot-tooltip-paragraph">
-                  Running totals accumulated month by month across IDE Code
-                  Completions and Copilot Chat.
-                  <br />
-                  <br />
-                  <strong>Acceptance</strong> counts how many code suggestions
-                  were shown vs accepted, regardless of size.
-                  <br />
-                  <br />
-                  <strong>Line Acceptance</strong> counts the actual lines of
-                  code suggested vs inserted - a better measure of code volume
-                  impact. Toggle between them in the settings menu (cogwheel).
-                </p>
+                <div className="copilot-tooltip-paragraph">
+                  <p>
+                    Running totals accumulated month by month across IDE Code
+                    Completions and Copilot Chat.
+                  </p>
+                  <p>
+                    <strong>Acceptance</strong> counts how many code suggestions
+                    were shown vs accepted, regardless of size.
+                  </p>
+                  <p>
+                    <strong>Line Acceptance</strong> counts the actual lines of
+                    code suggested vs inserted - a better measure of code volume
+                    impact. Toggle between them in the settings menu (cogwheel).
+                  </p>
+                </div>
               }
             >
               <button
