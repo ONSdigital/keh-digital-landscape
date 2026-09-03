@@ -122,6 +122,12 @@
   color: hsl(var(--muted-foreground));
 }
 
+.policy-reports-field .policy-reports-section-label {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-weight: 400;
+}
+
 .policy-reports-text-input,
 .policy-reports-select-input,
 .policy-reports-date-input {
@@ -146,6 +152,16 @@
 .policy-reports-select-input-highlight {
   border-color: hsl(var(--info-box-border));
   background: hsl(var(--info-box) / 10%);
+}
+
+.policy-reports-field .multi-select {
+  max-width: none;
+}
+
+.policy-reports-field .multi-select-control {
+  height: auto;
+  min-height: 36px;
+  padding: 8px 10px;
 }
 
 .policy-reports-disclaimer-banner {
@@ -434,10 +450,25 @@
 }
 
 .policy-reports-resource-item-action {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: space-between;
+  grid-template-columns: minmax(0, 1fr) 68px auto;
   gap: 10px;
+}
+
+.policy-reports-resource-item-action strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.policy-reports-resource-item-action .policy-reports-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 68px;
+  margin-top: 0;
+  text-align: center;
 }
 
 .policy-reports-selection-summary {

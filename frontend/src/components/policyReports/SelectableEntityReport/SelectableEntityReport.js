@@ -30,6 +30,7 @@ const SelectableEntityReport = ({
   pluralLabel,
 }) => {
   const isSelectionRequired = selectedItems.length === 0;
+  const getItemName = item => (typeof item === 'string' ? item : item.name);
   const resultsPerPageControlId = `${searchId}-results-per-page`;
   const availablePageSizes =
     pageSizeOptions && pageSizeOptions.length > 0
@@ -64,21 +65,28 @@ const SelectableEntityReport = ({
 
       <div className="policy-reports-resource-list policy-reports-space-top-sm">
         {filteredItems.length > 0 ? (
-          filteredItems.map(item => (
-            <article
-              key={item}
-              className="policy-reports-resource-item policy-reports-resource-item-action"
-            >
-              <strong>{item}</strong>
-              <button
-                className="policy-reports-btn policy-reports-btn-compact"
-                type="button"
-                onClick={() => onToggleSelection(item)}
+          filteredItems.map(item => {
+            const itemName = getItemName(item);
+
+            return (
+              <article
+                key={itemName}
+                className="policy-reports-resource-item policy-reports-resource-item-action"
               >
-                {selectedItems.includes(item) ? 'Remove' : 'Add'}
-              </button>
-            </article>
-          ))
+                <strong>{itemName}</strong>
+                {item.visibility && (
+                  <span className="policy-reports-pill">{item.visibility}</span>
+                )}
+                <button
+                  className="policy-reports-btn policy-reports-btn-compact"
+                  type="button"
+                  onClick={() => onToggleSelection(itemName)}
+                >
+                  {selectedItems.includes(itemName) ? 'Remove' : 'Add'}
+                </button>
+              </article>
+            );
+          })
         ) : (
           <p className="policy-reports-hint policy-reports-no-margin">
             {emptyStateMessage}

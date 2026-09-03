@@ -56,11 +56,14 @@ Required inputs:
 - `organisation`
 - `sourceDataset`
 - `comparisonDataset`
+- `repositoryVisibility` (at least one of `public`, `private`, or `internal`)
 
 #### Organisation Behaviour Notes
 
 - The comparison dataset options are constrained to datasets older than the selected source dataset.
 - If no older datasets exist, the source dataset is reused as comparison.
+- The repository visibility multi-select defaults to all three visibility values.
+- Repository KPIs, ratings, check breakdowns, and SLO figures are calculated only from repositories matching the selected visibilities. SLO alert totals are rebuilt from the per-repository severity values.
 
 ### Repository report
 
@@ -69,12 +72,14 @@ Required inputs:
 - `organisation`
 - `sourceDataset`
 - `selectedRepositories` (at least one)
+- `repositoryVisibility` (at least one of `public`, `private`, or `internal`)
 
 #### Repository Behaviour Notes
 
 - Repository options are the intersection of:
   - repositories present in the selected dataset
   - repositories accessible to the signed-in GitHub user in that organisation
+- The visibility multi-select defaults to all three visibility values and filters the accessible repository list.
 
 ### Team report
 
@@ -113,7 +118,7 @@ Returns dataset repositories that are also accessible to the signed-in user.
 
 Response includes:
 
-- `repositories`
+- `repositories`: objects with `name` and `visibility` fields
 - `cacheUsed`
 - `cachedAt`
 - `githubCurrentPage`
@@ -150,6 +155,7 @@ Request body:
     "organisation": "ONS-Innovation",
     "sourceDataset": "2026-07-30T12-00-00",
     "comparisonDataset": "2026-07-23T12-00-00",
+    "repositoryVisibility": ["public", "private", "internal"],
     "selectedRepositories": ["repo-a"],
     "selectedTeams": ["team-a"]
   }
@@ -175,6 +181,8 @@ The entity templates (repository/team) and organisation template interpret check
 - `error`
 
 Unknown or missing values are defensively treated as unknown in rendering.
+
+Repository entries include a `visibility` field with one of `public`, `private`, or `internal`. Organisation and repository report generation validates that a non-empty selection of these visibility values is supplied.
 
 ## Authentication and Access Control
 

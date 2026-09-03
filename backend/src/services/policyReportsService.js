@@ -109,16 +109,21 @@ const getDatasetsByOrganisation = async organisation => {
 };
 
 /**
- * Fetches repository and team names from a specific dataset audit file.
+ * Fetches repository visibility data and team names from a specific dataset audit file.
  * @param {string} organisation - The organisation folder name in S3
  * @param {string} datasetName - The dataset filename (UUID) without .json extension
- * @returns {Promise<{repositories: string[], teams: string[]}>}
+ * @returns {Promise<{repositories: Array<{name: string, visibility: string}>, teams: string[]}>}
  */
 const getDatasetEntities = async (organisation, datasetName) => {
   try {
     const data = await getDatasetAuditData(organisation, datasetName);
 
-    const repositories = Object.keys(data.repositories || {});
+    const repositories = Object.entries(data.repositories || {}).map(
+      ([name, repository]) => ({
+        name,
+        visibility: repository.visibility,
+      })
+    );
     const teams = Object.keys(data.teams || {});
 
     logger.info(
@@ -127,7 +132,9 @@ const getDatasetEntities = async (organisation, datasetName) => {
     );
 
     return {
-      repositories: repositories.sort(),
+      repositories: repositories.sort((left, right) =>
+        left.name.localeCompare(right.name)
+      ),
       teams: teams.sort(),
     };
   } catch (error) {

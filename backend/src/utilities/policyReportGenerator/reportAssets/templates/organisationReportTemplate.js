@@ -267,6 +267,103 @@ const getSloAffectedRepositoryCount = sloRecord => {
     : null;
 };
 
+const getRepositoryChecks = repository => {
+  if (repository?.checks && typeof repository.checks === 'object') {
+    return repository.checks;
+  }
+
+  return Object.fromEntries(
+    Object.entries(repository || {}).filter(
+      ([key, value]) =>
+        !['is_compliant', 'rating', 'visibility'].includes(key) &&
+        value &&
+        typeof value === 'object' &&
+        typeof value.result === 'string'
+    )
+  );
+};
+
+const getFilteredRepositoryMetrics = ({ datasetData, visibility }) => {
+  const repositories = Object.entries(datasetData.repositories || {}).filter(
+    ([, repository]) => visibility.includes(repository.visibility)
+  );
+  const repositoryChecks = {};
+  const repositoryRatings = Object.keys(
+    datasetData.summary?.repository_ratings || {}
+  ).reduce((ratings, rating) => {
+    ratings[String(rating).toLowerCase()] = 0;
+    return ratings;
+  }, {});
+  let compliant = 0;
+
+  repositories.forEach(([, repository]) => {
+    if (repository.is_compliant) compliant += 1;
+
+    const rating = String(repository.rating || 'unrated').toLowerCase();
+    repositoryRatings[rating] = (repositoryRatings[rating] || 0) + 1;
+
+    Object.entries(getRepositoryChecks(repository)).forEach(
+      ([checkName, check]) => {
+        if (!repositoryChecks[checkName]) {
+          repositoryChecks[checkName] = { total: 0, compliant: 0 };
+        }
+
+        repositoryChecks[checkName].total += 1;
+        if (String(check.result).toLowerCase() === 'pass') {
+          repositoryChecks[checkName].compliant += 1;
+        }
+      }
+    );
+  });
+
+  return {
+    summary: {
+      total: repositories.length,
+      compliant,
+      complianceRate: percentage(compliant, repositories.length),
+    },
+    repositoryChecks,
+    repositoryRatings,
+    repositoriesByName: new Map(repositories),
+  };
+};
+
+const buildFilteredSloRecord = ({ sloRecord, repositoriesByName }) => {
+  if (!sloRecord || typeof sloRecord !== 'object') return sloRecord;
+
+  const repositories = sloRecord.details?.repositories;
+  if (!repositories || typeof repositories !== 'object') return sloRecord;
+
+  const severity = { critical: 0, high: 0, medium: 0, low: 0 };
+  let totalRepositoriesAffected = 0;
+
+  Object.entries(repositories).forEach(([repositoryKey, alerts]) => {
+    const repositoryName = repositoryKey.split('/').at(-1);
+    if (!repositoriesByName.has(repositoryName)) return;
+
+    totalRepositoriesAffected += 1;
+    Object.keys(severity).forEach(level => {
+      severity[level] += sanitiseSeverityCount(alerts?.[level]);
+    });
+  });
+
+  const failingAlerts = Object.values(severity).reduce(
+    (total, count) => total + count,
+    0
+  );
+
+  return {
+    ...sloRecord,
+    result: failingAlerts === 0 ? 'pass' : 'fail',
+    details: {
+      ...sloRecord.details,
+      failing_alerts: failingAlerts,
+      total_repositories_affected: totalRepositoriesAffected,
+      number_exceeded_by_severity: severity,
+    },
+  };
+};
+
 // Sanitise a severity count to a safe non-negative integer.
 // Prevents unexpected dataset values (strings, objects, etc.) from
 // being interpolated as raw HTML into the report.
@@ -379,6 +476,9 @@ const buildOrganisationReportHtml = inputs => {
   );
   const sourceDatasetData = inputs.sourceDatasetData || {};
   const comparisonDatasetData = inputs.comparisonDatasetData || null;
+  const repositoryVisibility = inputs.repositoryVisibility;
+  const useVisibilityFiltering =
+    Array.isArray(repositoryVisibility) && repositoryVisibility.length > 0;
   const sourceSummary = sourceDatasetData.summary;
   const comparisonSummary = comparisonDatasetData?.summary || null;
 
@@ -386,20 +486,41 @@ const buildOrganisationReportHtml = inputs => {
     throw new Error('Comparison dataset summary is missing or invalid.');
   }
 
-  const repositorySummary = getSummaryEntityMetrics({
-    summary: sourceSummary,
-    totalKey: 'total_repositories',
-    compliantKey: 'compliant_repositories',
-    summaryLabel: 'Source dataset summary',
+  const getUnfilteredRepositoryMetrics = datasetData => ({
+    summary: getSummaryEntityMetrics({
+      summary: datasetData.summary,
+      totalKey: 'total_repositories',
+      compliantKey: 'compliant_repositories',
+      summaryLabel: 'Source dataset summary',
+    }),
+    repositoryChecks: getRequiredSummaryObjectValue({
+      summary: datasetData.summary,
+      summaryLabel: 'Source dataset summary',
+      fieldKey: 'repository_checks',
+    }),
+    repositoryRatings: getRequiredSummaryObjectValue({
+      summary: datasetData.summary,
+      summaryLabel: 'Source dataset summary',
+      fieldKey: 'repository_ratings',
+    }),
+    repositoriesByName: new Map(Object.entries(datasetData.repositories || {})),
   });
-  const comparisonRepositorySummary = comparisonSummary
-    ? getSummaryEntityMetrics({
-        summary: comparisonSummary,
-        totalKey: 'total_repositories',
-        compliantKey: 'compliant_repositories',
-        summaryLabel: 'Comparison dataset summary',
+  const sourceRepositoryMetrics = useVisibilityFiltering
+    ? getFilteredRepositoryMetrics({
+        datasetData: sourceDatasetData,
+        visibility: repositoryVisibility,
       })
+    : getUnfilteredRepositoryMetrics(sourceDatasetData);
+  const comparisonRepositoryMetrics = comparisonDatasetData
+    ? useVisibilityFiltering
+      ? getFilteredRepositoryMetrics({
+          datasetData: comparisonDatasetData,
+          visibility: repositoryVisibility,
+        })
+      : getUnfilteredRepositoryMetrics(comparisonDatasetData)
     : null;
+  const repositorySummary = sourceRepositoryMetrics.summary;
+  const comparisonRepositorySummary = comparisonRepositoryMetrics?.summary;
   const teamSummary = getSummaryEntityMetrics({
     summary: sourceSummary,
     totalKey: 'total_teams',
@@ -446,23 +567,15 @@ const buildOrganisationReportHtml = inputs => {
       : null,
   });
 
-  const sourceRepositoryChecks = getRequiredSummaryObjectValue({
-    summary: sourceSummary,
-    summaryLabel: 'Source dataset summary',
-    fieldKey: 'repository_checks',
-  });
   const sourceTeamChecks = getRequiredSummaryObjectValue({
     summary: sourceSummary,
     summaryLabel: 'Source dataset summary',
     fieldKey: 'team_checks',
   });
-  const sourceRepositoryRatings = getRequiredSummaryObjectValue({
-    summary: sourceSummary,
-    summaryLabel: 'Source dataset summary',
-    fieldKey: 'repository_ratings',
-  });
+  const sourceRepositoryChecks = sourceRepositoryMetrics.repositoryChecks;
+  const sourceRepositoryRatings = sourceRepositoryMetrics.repositoryRatings;
   const comparisonRepositoryRatings = normaliseRepositoryRatings(
-    comparisonSummary?.repository_ratings
+    comparisonRepositoryMetrics?.repositoryRatings
   );
   const sourceScorecardCriteria =
     sourceDatasetData.scorecard_criteria &&
@@ -484,14 +597,33 @@ const buildOrganisationReportHtml = inputs => {
   const scorecardCriteriaRows = buildScorecardCriteriaRows(
     scorecardCriteriaEntries
   );
-  const sourceDependabotSloRecord =
-    sourceDatasetData.organisation_checks?.dependabot_slo;
-  const sourceSecretScanningSloRecord =
-    sourceDatasetData.organisation_checks?.secret_scanning_slo;
-  const comparisonDependabotSloRecord =
-    comparisonDatasetData?.organisation_checks?.dependabot_slo;
-  const comparisonSecretScanningSloRecord =
-    comparisonDatasetData?.organisation_checks?.secret_scanning_slo;
+  const sourceDependabotSloRecord = useVisibilityFiltering
+    ? buildFilteredSloRecord({
+        sloRecord: sourceDatasetData.organisation_checks?.dependabot_slo,
+        repositoriesByName: sourceRepositoryMetrics.repositoriesByName,
+      })
+    : sourceDatasetData.organisation_checks?.dependabot_slo;
+  const sourceSecretScanningSloRecord = useVisibilityFiltering
+    ? buildFilteredSloRecord({
+        sloRecord: sourceDatasetData.organisation_checks?.secret_scanning_slo,
+        repositoriesByName: sourceRepositoryMetrics.repositoriesByName,
+      })
+    : sourceDatasetData.organisation_checks?.secret_scanning_slo;
+  const comparisonDependabotSloRecord = useVisibilityFiltering
+    ? buildFilteredSloRecord({
+        sloRecord: comparisonDatasetData?.organisation_checks?.dependabot_slo,
+        repositoriesByName:
+          comparisonRepositoryMetrics?.repositoriesByName || new Map(),
+      })
+    : comparisonDatasetData?.organisation_checks?.dependabot_slo;
+  const comparisonSecretScanningSloRecord = useVisibilityFiltering
+    ? buildFilteredSloRecord({
+        sloRecord:
+          comparisonDatasetData?.organisation_checks?.secret_scanning_slo,
+        repositoriesByName:
+          comparisonRepositoryMetrics?.repositoriesByName || new Map(),
+      })
+    : comparisonDatasetData?.organisation_checks?.secret_scanning_slo;
 
   const dependabotDelta = buildDeltaView({
     current: getSloBreachCount(sourceDependabotSloRecord) ?? 0,
@@ -524,6 +656,10 @@ const buildOrganisationReportHtml = inputs => {
       { label: 'Organisation scanned', value: organisation },
       { label: 'Data from', value: sourceDatasetDisplay },
       { label: 'Compared against', value: comparisonDatasetDisplay },
+      {
+        label: 'Selected visibilities',
+        value: repositoryVisibility?.join(', ') || 'All',
+      },
     ],
   });
 
