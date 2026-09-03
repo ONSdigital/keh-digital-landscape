@@ -233,14 +233,45 @@ const buildRepositoryRatingCards = ({
       const share = percentage(count, totalRepositories);
       const tierClass = getRatingTierClass(rating, sortedCriteriaEntries);
 
-      return `              <article class="rating-stat-card">
-                <p class="rating-stat-heading"><span class="pill rating ${escapeHtml(tierClass)}">${escapeHtml(formatRatingLabel(rating))}</span></p>
+      return `              <button class="rating-stat-card" type="button" data-rating="${escapeHtml(rating)}">
+                  <p class="rating-stat-heading"><span class="pill rating ${escapeHtml(tierClass)}">${escapeHtml(formatRatingLabel(rating))}</span></p>
                 <p class="rating-stat-value">${count}</p>
                 <p class="rating-stat-sub">${share}% of repositories</p>
                 <p class="rating-delta ${deltaView.className}">${escapeHtml(deltaView.text)}</p>
-              </article>`;
+              </button>`;
     })
     .join('\n');
+};
+
+const buildRepositoryRatingViewer = ({ repositoriesByName, organisation }) => {
+  const repositories = [...(repositoriesByName?.entries() || [])]
+    .map(
+      ([repositoryName, repository]) =>
+        `<li data-rating="${escapeHtml(String(repository.rating || 'unrated').toLowerCase())}"><a href="https://github.com/${escapeHtml(
+          String(repositoryName).includes('/')
+            ? String(repositoryName)
+                .split('/')
+                .filter(Boolean)
+                .map(encodeURIComponent)
+                .join('/')
+            : `${encodeURIComponent(organisation)}/${encodeURIComponent(repositoryName)}`
+        )}" target="_blank" rel="noreferrer">${escapeHtml(repositoryName)}</a></li>`
+    )
+    .join('');
+
+  return `            <section class="block rating-repository-viewer" aria-labelledby="rating-repository-viewer-title" hidden>
+              <h4 id="rating-repository-viewer-title">Repositories in selected category</h4>
+              <div class="rating-repository-viewer-body">
+              <p class="rating-repository-selection" aria-live="polite"></p>
+              <p class="rating-repository-instruction">Select a repository to visit it on GitHub.</p>
+              <ul class="rating-repository-list">${repositories}</ul>
+              <div class="rating-repository-pagination">
+                <button type="button" class="rating-repository-previous">Previous</button>
+                <span class="rating-repository-page" aria-live="polite"></span>
+                <button type="button" class="rating-repository-next">Next</button>
+              </div>
+              </div>
+            </section>`;
 };
 
 const getSloBreachCount = sloRecord => {
@@ -594,6 +625,10 @@ const buildOrganisationReportHtml = inputs => {
     totalRepositories: repositorySummary.total,
     scorecardCriteria: sourceScorecardCriteria,
   });
+  const repositoryRatingViewer = buildRepositoryRatingViewer({
+    repositoriesByName: sourceRepositoryMetrics.repositoriesByName,
+    organisation,
+  });
   const scorecardCriteriaRows = buildScorecardCriteriaRows(
     scorecardCriteriaEntries
   );
@@ -710,9 +745,11 @@ ${reportHeaderHtml}
 
             <article class="block rating-breakdown-card">
               <h3>Repository Rating Breakdown</h3>
+              <p class="section-subtitle">Click a rating to view the repositories within it.</p>
               <div class="rating-card-grid">
 ${repositoryRatingCards}
               </div>
+${repositoryRatingViewer}
 
               <details class="collapsible-block rating-criteria-collapsible scorecard-help-card">
                 <summary>What do these ratings mean?</summary>
@@ -846,7 +883,71 @@ ${teamCheckRows.join('\n')}
       </section>
 
 ${reportFooterHtml}
-    </main>`,
+  </main>
+<script>
+      const ratingCards = document.querySelectorAll('.rating-stat-card');
+      const ratingViewer = document.querySelector('.rating-repository-viewer');
+      const ratingRepositories = ratingViewer?.querySelectorAll('li') || [];
+      const pageSize = 25;
+      let selectedRating;
+      let currentPage = 1;
+
+      const updateRatingViewer = () => {
+        if (!ratingViewer || !selectedRating) return;
+        const selectedRepositories = [...ratingRepositories].filter(
+          repository => repository.dataset.rating === selectedRating
+        );
+        const pageCount = Math.max(
+          1,
+          Math.ceil(selectedRepositories.length / pageSize)
+        );
+        currentPage = Math.min(currentPage, pageCount);
+        selectedRepositories.forEach((repository, index) => {
+          repository.hidden =
+            index < (currentPage - 1) * pageSize || index >= currentPage * pageSize;
+        });
+        ratingRepositories.forEach(repository => {
+          if (repository.dataset.rating !== selectedRating) repository.hidden = true;
+        });
+        const selectedCard = document.querySelector(
+          '[data-rating="' + CSS.escape(selectedRating) + '"]'
+        );
+        const label = selectedCard?.querySelector('.pill')?.textContent || selectedRating;
+        ratingViewer.querySelector('.rating-repository-selection').textContent =
+          label + ' (' + selectedRepositories.length + ' repositories)';
+        ratingViewer.querySelector('.rating-repository-page').textContent =
+          'Page ' + currentPage + ' of ' + pageCount;
+        ratingViewer.querySelector('.rating-repository-previous').disabled = currentPage === 1;
+        ratingViewer.querySelector('.rating-repository-next').disabled = currentPage === pageCount;
+        ratingCards.forEach(card => {
+          card.setAttribute('aria-pressed', String(card.dataset.rating === selectedRating));
+        });
+      };
+
+      ratingCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const isSelected = card.dataset.rating === selectedRating;
+          if (isSelected && !ratingViewer.hidden) {
+            ratingViewer.hidden = true;
+            ratingCards.forEach(item => item.setAttribute('aria-pressed', 'false'));
+            return;
+          }
+          selectedRating = card.dataset.rating;
+          currentPage = 1;
+          ratingViewer.hidden = false;
+          updateRatingViewer();
+        });
+      });
+      ratingViewer?.querySelector('.rating-repository-previous').addEventListener('click', () => {
+        currentPage -= 1;
+        updateRatingViewer();
+      });
+      ratingViewer?.querySelector('.rating-repository-next').addEventListener('click', () => {
+        currentPage += 1;
+        updateRatingViewer();
+      });
+      updateRatingViewer();
+    </script>`,
   });
 };
 

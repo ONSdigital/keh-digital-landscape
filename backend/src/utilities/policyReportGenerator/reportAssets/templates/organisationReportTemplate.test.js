@@ -60,6 +60,22 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('>1<');
     expect(html).toContain('>100.0%<');
     expect(html).toContain('>5<');
+    expect(html).toContain(
+      'Click a rating to view the repositories within it.'
+    );
+    expect(html).toContain(
+      '<button class="rating-stat-card" type="button" data-rating="gold">'
+    );
+    expect(html).toContain('class="block rating-repository-viewer"');
+    expect(html).toContain(
+      '<section class="block rating-repository-viewer" aria-labelledby="rating-repository-viewer-title" hidden>'
+    );
+    expect(html).toContain('Select a repository to visit it on GitHub.');
+    expect(html).toContain(
+      'href="https://github.com/example/public-repository"'
+    );
+    expect(html).not.toContain('>private-repository</li>');
+    expect(html).toContain('class="rating-repository-next">Next</button>');
     expect(html).toContain('<strong>1</strong> repositories affected by SLO');
     expect(html).toContain('+3 vs comparison dataset.');
     expect(html).not.toContain('>64<');
