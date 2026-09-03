@@ -272,10 +272,96 @@ body {
 }
 
 .rating-stat-card {
+  width: 100%;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
   background: hsl(var(--secondary) / 40%);
   padding: 10px;
+}
+
+.rating-stat-card[aria-pressed='true'] {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--secondary));
+}
+
+.rating-stat-card:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+.rating-repository-list {
+  max-height: 460px;
+  overflow-y: auto;
+  margin: 12px 0 0;
+  padding: 12px 12px 12px 28px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.rating-repository-list li + li {
+  margin-top: 4px;
+}
+
+.rating-repository-list a {
+  color: hsl(var(--foreground));
+  text-decoration: none;
+}
+
+.rating-repository-list a:hover {
+  text-decoration: underline;
+}
+
+.rating-repository-list a:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+.rating-repository-viewer {
+  margin-top: 16px;
+  padding: 0;
+}
+
+.rating-repository-viewer > h4 {
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+.rating-repository-viewer-body {
+  padding: 0 16px 16px;
+}
+
+.rating-repository-viewer h4,
+.rating-repository-selection {
+  margin: 0;
+}
+
+.rating-repository-selection {
+  margin-top: 4px;
+  color: hsl(var(--muted-foreground));
+  font-size: 13px;
+}
+
+.rating-repository-instruction {
+  margin: 12px 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 14px;
+}
+
+.rating-repository-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.rating-repository-pagination button {
+  padding: 6px 10px;
 }
 
 .rating-stat-heading {
