@@ -335,6 +335,7 @@ const buildFilteredSloRecord = ({ sloRecord, repositoriesByName }) => {
   if (!repositories || typeof repositories !== 'object') return sloRecord;
 
   const severity = { critical: 0, high: 0, medium: 0, low: 0 };
+  let numericAlerts = 0;
   let totalRepositoriesAffected = 0;
 
   Object.entries(repositories).forEach(([repositoryKey, alerts]) => {
@@ -342,14 +343,18 @@ const buildFilteredSloRecord = ({ sloRecord, repositoriesByName }) => {
     if (!repositoriesByName.has(repositoryName)) return;
 
     totalRepositoriesAffected += 1;
-    Object.keys(severity).forEach(level => {
-      severity[level] += sanitiseSeverityCount(alerts?.[level]);
-    });
+    if (typeof alerts === 'number') {
+      numericAlerts += sanitiseSeverityCount(alerts);
+    } else {
+      Object.keys(severity).forEach(level => {
+        severity[level] += sanitiseSeverityCount(alerts?.[level]);
+      });
+    }
   });
 
   const failingAlerts = Object.values(severity).reduce(
     (total, count) => total + count,
-    0
+    numericAlerts
   );
 
   return {
@@ -359,7 +364,7 @@ const buildFilteredSloRecord = ({ sloRecord, repositoriesByName }) => {
       ...sloRecord.details,
       failing_alerts: failingAlerts,
       total_repositories_affected: totalRepositoriesAffected,
-      number_exceeded_by_severity: severity,
+      ...(numericAlerts === 0 && { number_exceeded_by_severity: severity }),
     },
   };
 };
