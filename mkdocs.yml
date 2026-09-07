@@ -63,6 +63,7 @@ nav:
       - Repository Data: utilities/repositoryData.md
       - Custom Fetch: utilities/customFetch.md
   - Constants:
+      - Copilot Constants: constants/copilotConstants.md
       - Project Constants: constants/projectConstants.md
   - Functionality:
       - Banner Support: functionality/bannerSupport.md

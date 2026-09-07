@@ -61,4 +61,3 @@ Full commands on doing this are available within KEH's Confluence. There is a `D
 ## Notes
 
 - Keep downloaded data local and avoid committing real environment data.
-- For application runtime details, see [Running the Project](../index.md#running-the-project).
