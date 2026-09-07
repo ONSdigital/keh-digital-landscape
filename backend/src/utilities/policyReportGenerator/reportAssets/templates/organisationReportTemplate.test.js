@@ -42,7 +42,15 @@ describe('organisationReportTemplate', () => {
             },
           },
         },
-        secret_scanning_slo: { result: 'pass', details: { repositories: {} } },
+        secret_scanning_slo: {
+          result: 'fail',
+          details: {
+            repositories: {
+              'example/public-repository': 2,
+              'example/private-repository': 4,
+            },
+          },
+        },
       },
     });
 
@@ -61,6 +69,7 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('>100.0%<');
     expect(html).toContain('>5<');
     expect(html).toContain('<strong>1</strong> repositories affected by SLO');
+    expect(html).toContain('<strong>2</strong> open alerts breaching SLO');
     expect(html).toContain('+3 vs comparison dataset.');
     expect(html).not.toContain('>64<');
   });
