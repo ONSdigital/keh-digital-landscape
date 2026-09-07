@@ -1,5 +1,6 @@
 const s3Service = require('./s3Service');
 const logger = require('../config/logger');
+const postToWebhook = require('../services/alertService');
 
 const { TECH_RADAR_ENTRIES_FILENAME } = require('../constants');
 
@@ -134,6 +135,9 @@ class TechRadarService {
       logger.error(`Error updating tech radar (${role}):`, {
         error: error.message,
       });
+      postToWebhook({channel: process.env.CHANNEL_ID, message: `Error updating tech radar (${role}): ${error.message}`})
+        .then((result) => logger.info("Success:", result))
+        .catch((err) => logger.error("Failed:", err.message));
       throw error;
     }
   }
