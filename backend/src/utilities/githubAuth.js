@@ -82,6 +82,9 @@ const fetchGitHubUserProfile = async userToken => {
       avatar_url: data.avatar_url,
     };
   } catch (error) {
+    postToWebhook({channel: process.env.CHANNEL_ID, message: `Failed to fetch GitHub user profile: ${error.message}`})
+      .then((result) => logger.info("Success:", result))
+      .catch((err) => logger.error("Failed:", err.message));
     throw new Error(`Failed to fetch GitHub user profile: ${error.message}`);
   }
 };
