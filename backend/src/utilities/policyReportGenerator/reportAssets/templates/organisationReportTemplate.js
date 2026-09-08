@@ -250,8 +250,12 @@ const buildSloMetricsPerRating = ({
   }
 
   // Pre-build lookup maps for O(1) access per repository
-  const dependabotMap = buildSloRepoMap(dependabotSloRecord?.details?.repositories || {});
-  const secretScanningMap = buildSloRepoMap(secretScanningSloRecord?.details?.repositories || {});
+  const dependabotMap = buildSloRepoMap(
+    dependabotSloRecord?.details?.repositories || {}
+  );
+  const secretScanningMap = buildSloRepoMap(
+    secretScanningSloRecord?.details?.repositories || {}
+  );
 
   repositories.forEach(([repositoryName, repository]) => {
     if (!repository) return;
@@ -268,14 +272,20 @@ const buildSloMetricsPerRating = ({
     }
 
     // Check Dependabot breaches
-    const dependabotAlertCount = findSloRecordForRepository(dependabotMap, repositoryName);
+    const dependabotAlertCount = findSloRecordForRepository(
+      dependabotMap,
+      repositoryName
+    );
     if (dependabotAlertCount !== null) {
       sloPerRating[rating].dependabotBreaches += 1;
       sloPerRating[rating].dependabotAlerts += dependabotAlertCount;
     }
 
     // Check Secret Scanning breaches
-    const secretScanningAlertCount = findSloRecordForRepository(secretScanningMap, repositoryName);
+    const secretScanningAlertCount = findSloRecordForRepository(
+      secretScanningMap,
+      repositoryName
+    );
     if (secretScanningAlertCount !== null) {
       sloPerRating[rating].secretScanningBreaches += 1;
       sloPerRating[rating].secretScanningAlerts += secretScanningAlertCount;
@@ -288,7 +298,11 @@ const buildSloMetricsPerRating = ({
 const pluralize = (count, singular) =>
   count === 1 ? singular : `${singular}s`;
 
-const buildSloMetricItem = (label, breaches, alerts) => `<div class="rating-card-slo-item">
+const buildSloMetricItem = (
+  label,
+  breaches,
+  alerts
+) => `<div class="rating-card-slo-item">
                     <div class="rating-card-slo-heading">${label}</div>
                     <div class="rating-card-slo-value"><strong>${breaches}</strong> ${pluralize(breaches, 'breach')} (<strong>${alerts}</strong> ${pluralize(alerts, 'alert')})</div>
                   </div>`;
