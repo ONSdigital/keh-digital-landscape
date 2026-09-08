@@ -463,15 +463,21 @@ const renderEntityDetailBlocks = ({
           ? '            <p class="note repository-slo-clear-note">No SLO alert breaches for this repository.</p>'
           : '';
 
-      return `          <article class="block" id="${anchorId}">
-        <div class="detail-block-header">
-          <div class="detail-block-title-row">
-            <h3>${escapedEntity}</h3>
+      return `          <details class="repository-detail-collapsible" id="${anchorId}">
+            <summary class="repository-detail-summary">
+              <div class="summary-left">
+                <div class="detail-block-title-row">
+                  <h3>${escapedEntity}</h3>
 ${ratingHeader}
 ${sloHeader}
-          </div>
-    ${githubAction ? `              ${githubAction}` : ''}
-        </div>
+                </div>
+              </div>
+              <span class="expand-prompt"></span>
+              <div class="summary-right">
+                ${githubAction ? `${githubAction}` : ''}
+              </div>
+            </summary>
+            <div class="repository-detail-content">
             <div class="check-table-wrapper">
               <table class="check-table">
                 <colgroup>
@@ -493,7 +499,8 @@ ${detailRows}
             </div>
 ${repositorySloSection || ''}
 ${noRepositorySloBreachesMessage}
-          </article>`;
+            </div>
+          </details>`;
     })
     .join('\n');
 
@@ -682,6 +689,24 @@ ${renderEntityDetailBlocks({
       </section>
 
 ${reportFooterHtml}
+    <script>
+      function expandDetailsForHash() {
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+          const detailsElement = document.getElementById(hash);
+          if (detailsElement && detailsElement.tagName === 'DETAILS') {
+            detailsElement.open = true;
+            detailsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }
+
+      // Handle hash on page load
+      window.addEventListener('load', expandDetailsForHash);
+      
+      // Handle hash changes (when user clicks anchor links)
+      window.addEventListener('hashchange', expandDetailsForHash);
+    </script>
     </main>`,
   });
 };

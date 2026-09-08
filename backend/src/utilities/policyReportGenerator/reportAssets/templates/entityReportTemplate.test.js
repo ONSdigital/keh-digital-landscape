@@ -110,7 +110,7 @@ describe('entityReportTemplate', () => {
 
     expect(html).toContain('Repository GitHub Usage Policy Report');
     expect(html).not.toContain('<th>GitHub</th>');
-    expect(html).toContain('class="detail-block-header"');
+    expect(html).toContain('class="repository-detail-collapsible"');
     expect(html).toContain('id="repo-alpha-data-pipeline"');
     expect(html).toContain('id="repo-beta-insights-service"');
     expect(html).toContain('<th>Rating</th>');
@@ -213,7 +213,7 @@ describe('entityReportTemplate', () => {
     expect(html).toContain(
       'https://github.com/orgs/my-org/teams/platform-core'
     );
-    expect(html).toContain('class="detail-block-header"');
+    expect(html).toContain('class="repository-detail-collapsible"');
     expect(html).toContain('View on GitHub');
   });
 });
