@@ -296,6 +296,35 @@ body {
   font-size: 12px;
 }
 
+.rating-card-slo-metrics {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid hsl(var(--border));
+  font-size: 11px;
+}
+
+.rating-card-slo-item {
+  margin: 6px 0;
+}
+
+.rating-card-slo-heading {
+  color: hsl(var(--muted-foreground));
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.rating-card-slo-value {
+  color: hsl(var(--muted-foreground));
+}
+
+.rating-card-slo-value strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
 .rating-criteria-collapsible {
   margin-top: 12px;
   padding-top: 10px;
