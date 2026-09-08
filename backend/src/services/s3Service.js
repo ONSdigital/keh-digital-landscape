@@ -51,7 +51,7 @@ class S3Service {
       });
       postToWebhook({
         channel: process.env.CHANNEL_ID,
-        message: `Error getting object from S3: ${bucket}/${key}`,
+        message: `Error getting object from S3: ${bucket}/${key}: ${error.message}`,
       })
         .then(result => logger.info('Success:', result))
         .catch(err => logger.error('Failed:', err.message));
