@@ -199,6 +199,37 @@ const normaliseRepositoryRatings = repositoryRatings => {
   }, {});
 };
 
+const getAlertCountFromSloRecord = alerts => {
+  if (typeof alerts === 'number') return alerts;
+  return Object.values(alerts).reduce(
+    (sum, val) => sum + (typeof val === 'number' ? val : 0),
+    0
+  );
+};
+
+const repositoryMatchesSloRecord = (repoKey, repositoryName) =>
+  repoKey.endsWith(`/${repositoryName}`) || repoKey === repositoryName;
+
+const buildSloRepoMap = sloRepos => {
+  const map = new Map();
+  Object.entries(sloRepos).forEach(([repoKey, alerts]) => {
+    const alertCount = getAlertCountFromSloRecord(alerts);
+    if (alertCount > 0) {
+      map.set(repoKey, alertCount);
+    }
+  });
+  return map;
+};
+
+const findSloRecordForRepository = (sloMap, repositoryName) => {
+  for (const [repoKey, alertCount] of sloMap.entries()) {
+    if (repositoryMatchesSloRecord(repoKey, repositoryName)) {
+      return alertCount;
+    }
+  }
+  return null;
+};
+
 const buildSloMetricsPerRating = ({
   repositoriesByName,
   dependabotSloRecord,
@@ -218,9 +249,9 @@ const buildSloMetricsPerRating = ({
     return sloPerRating;
   }
 
-  const dependabotRepos = dependabotSloRecord?.details?.repositories || {};
-  const secretScanningRepos =
-    secretScanningSloRecord?.details?.repositories || {};
+  // Pre-build lookup maps for O(1) access per repository
+  const dependabotMap = buildSloRepoMap(dependabotSloRecord?.details?.repositories || {});
+  const secretScanningMap = buildSloRepoMap(secretScanningSloRecord?.details?.repositories || {});
 
   repositories.forEach(([repositoryName, repository]) => {
     if (!repository) return;
@@ -236,51 +267,31 @@ const buildSloMetricsPerRating = ({
       };
     }
 
-    // Check if repository has Dependabot breaches
-    Object.entries(dependabotRepos).forEach(([repoKey, alerts]) => {
-      if (
-        repoKey.endsWith(`/${repositoryName}`) ||
-        repoKey === repositoryName
-      ) {
-        const alertCount =
-          typeof alerts === 'number'
-            ? alerts
-            : Object.values(alerts).reduce(
-                (sum, val) => sum + (typeof val === 'number' ? val : 0),
-                0
-              );
+    // Check Dependabot breaches
+    const dependabotAlertCount = findSloRecordForRepository(dependabotMap, repositoryName);
+    if (dependabotAlertCount !== null) {
+      sloPerRating[rating].dependabotBreaches += 1;
+      sloPerRating[rating].dependabotAlerts += dependabotAlertCount;
+    }
 
-        if (alertCount > 0) {
-          sloPerRating[rating].dependabotBreaches += 1;
-          sloPerRating[rating].dependabotAlerts += alertCount;
-        }
-      }
-    });
-
-    // Check if repository has Secret Scanning breaches
-    Object.entries(secretScanningRepos).forEach(([repoKey, alerts]) => {
-      if (
-        repoKey.endsWith(`/${repositoryName}`) ||
-        repoKey === repositoryName
-      ) {
-        const alertCount =
-          typeof alerts === 'number'
-            ? alerts
-            : Object.values(alerts).reduce(
-                (sum, val) => sum + (typeof val === 'number' ? val : 0),
-                0
-              );
-
-        if (alertCount > 0) {
-          sloPerRating[rating].secretScanningBreaches += 1;
-          sloPerRating[rating].secretScanningAlerts += alertCount;
-        }
-      }
-    });
+    // Check Secret Scanning breaches
+    const secretScanningAlertCount = findSloRecordForRepository(secretScanningMap, repositoryName);
+    if (secretScanningAlertCount !== null) {
+      sloPerRating[rating].secretScanningBreaches += 1;
+      sloPerRating[rating].secretScanningAlerts += secretScanningAlertCount;
+    }
   });
 
   return sloPerRating;
 };
+
+const pluralize = (count, singular) =>
+  count === 1 ? singular : `${singular}s`;
+
+const buildSloMetricItem = (label, breaches, alerts) => `<div class="rating-card-slo-item">
+                    <div class="rating-card-slo-heading">${label}</div>
+                    <div class="rating-card-slo-value"><strong>${breaches}</strong> ${pluralize(breaches, 'breach')} (<strong>${alerts}</strong> ${pluralize(alerts, 'alert')})</div>
+                  </div>`;
 
 const buildRepositoryRatingCards = ({
   repositoryRatings,
@@ -325,14 +336,8 @@ const buildRepositoryRatingCards = ({
       };
 
       const sloMetricsHtml = `<div class="rating-card-slo-metrics">
-                  <div class="rating-card-slo-item">
-                    <div class="rating-card-slo-heading">Dependabot:</div>
-                    <div class="rating-card-slo-value"><strong>${sloMetrics.dependabotBreaches}</strong> breach${sloMetrics.dependabotBreaches === 1 ? '' : 'es'} (<strong>${sloMetrics.dependabotAlerts}</strong> alert${sloMetrics.dependabotAlerts === 1 ? '' : 's'})</div>
-                  </div>
-                  <div class="rating-card-slo-item">
-                    <div class="rating-card-slo-heading">Secret Scanning:</div>
-                    <div class="rating-card-slo-value"><strong>${sloMetrics.secretScanningBreaches}</strong> breach${sloMetrics.secretScanningBreaches === 1 ? '' : 'es'} (<strong>${sloMetrics.secretScanningAlerts}</strong> alert${sloMetrics.secretScanningAlerts === 1 ? '' : 's'})</div>
-                  </div>
+                  ${buildSloMetricItem('Dependabot:', sloMetrics.dependabotBreaches, sloMetrics.dependabotAlerts)}
+                  ${buildSloMetricItem('Secret Scanning:', sloMetrics.secretScanningBreaches, sloMetrics.secretScanningAlerts)}
                 </div>`;
 
       return `              <article class="rating-stat-card">

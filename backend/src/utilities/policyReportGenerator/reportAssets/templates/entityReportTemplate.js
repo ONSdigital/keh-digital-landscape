@@ -181,6 +181,8 @@ const buildRepositorySloDataByEntity = ({ entities, organisationChecks }) => {
         repositoryName,
         {
           totalAlertCount: dependabotAlertCount + secretScanningAlertCount,
+          dependabotAlertCount,
+          secretScanningAlertCount,
           sloComplianceStatus,
           sloStatusLabel,
           isDependabotCompliant,
@@ -262,11 +264,11 @@ const calculateTotalSloAlerts = repositorySloDataByEntity => {
   let totalSecretScanningAlerts = 0;
 
   Object.values(repositorySloDataByEntity).forEach(sloData => {
-    if (!sloData.isDependabotCompliant) {
-      totalDependabotAlerts += 1;
+    if (sloData.dependabotAlertCount) {
+      totalDependabotAlerts += sloData.dependabotAlertCount;
     }
-    if (!sloData.isSecretScanningCompliant) {
-      totalSecretScanningAlerts += 1;
+    if (sloData.secretScanningAlertCount) {
+      totalSecretScanningAlerts += sloData.secretScanningAlertCount;
     }
   });
 
@@ -641,12 +643,12 @@ ${reportHeaderHtml}
             <dl class="kpi">
               <dt>Dependabot SLO breaches</dt>
               <dd>${totalDependabotAlerts}</dd>
-              <p class="kpi-sub">${totalDependabotAlerts} repositor${totalDependabotAlerts === 1 ? 'y' : 'ies'} with open Dependabot alerts exceeding SLO.</p>
+              <p class="kpi-sub">${totalDependabotAlerts} open alert${totalDependabotAlerts === 1 ? '' : 's'} from Dependabot exceeding SLO.</p>
             </dl>
             <dl class="kpi">
               <dt>Secret Scanning SLO breaches</dt>
               <dd>${totalSecretScanningAlerts}</dd>
-              <p class="kpi-sub">${totalSecretScanningAlerts} repositor${totalSecretScanningAlerts === 1 ? 'y' : 'ies'} with open Secret Scanning alerts exceeding SLO.</p>
+              <p class="kpi-sub">${totalSecretScanningAlerts} open alert${totalSecretScanningAlerts === 1 ? '' : 's'} from Secret Scanning exceeding SLO.</p>
             </dl>
             `
                 : ''
