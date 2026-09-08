@@ -339,10 +339,17 @@ body {
   flex-wrap: wrap;
 }
 
+.check-table-wrapper {
+  overflow-x: auto;
+  margin-top: 8px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
 .check-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
+  margin: 0;
 }
 
 .check-table th,
@@ -440,6 +447,31 @@ body {
   color: hsl(0 0% 18%);
   background: hsl(0 0% 20% / 12%);
 }
+
+.slo-badge {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.slo-badge-green {
+  border-color: hsl(var(--pass) / 45%);
+  color: hsl(var(--pass));
+  background: hsl(var(--pass) / 10%);
+}
+
+.slo-badge-amber {
+  border-color: hsl(var(--warn) / 45%);
+  color: hsl(var(--warn));
+  background: hsl(var(--warn) / 10%);
+}
+
+.slo-badge-red {
+  border-color: hsl(var(--fail) / 45%);
+  color: hsl(var(--fail));
+  background: hsl(var(--fail) / 10%);
+}
+
+
 
 .github-link-button {
   display: inline-flex;
