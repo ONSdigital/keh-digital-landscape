@@ -646,7 +646,7 @@ ${reportHeaderHtml}
             ` : ''}
           </div>
 
-          <article class="block">
+          <article class="block" id="summary-section">
             <h3>Selected ${escapeHtml(entityNounPlural.charAt(0).toUpperCase() + entityNounPlural.slice(1))} Summary</h3>
             <div class="check-table-wrapper">
               <table class="check-table">
@@ -725,6 +725,9 @@ ${renderEntityDetailBlocks({
       </section>
 
 ${reportFooterHtml}
+    <div id="back-to-top-fab" class="back-to-top-fab" style="display: none;">
+      <button class="back-to-top-fab-button">⬆ Back to Top</button>
+    </div>
     <script>
       function expandDetailsForHash() {
         const hash = window.location.hash.slice(1);
@@ -737,8 +740,32 @@ ${reportFooterHtml}
         }
       }
 
+      function updateBackToTopVisibility() {
+        const fab = document.getElementById('back-to-top-fab');
+        if (!fab) return;
+        
+        fab.style.display = window.scrollY > 300 ? 'block' : 'none';
+      }
+      
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
       // Handle hash on page load
       window.addEventListener('load', expandDetailsForHash);
+      
+      // Handle hash changes (when user clicks anchor links)
+      window.addEventListener('hashchange', expandDetailsForHash);
+      
+      // Show/hide back-to-top button based on scroll
+      window.addEventListener('scroll', updateBackToTopVisibility);
+      window.addEventListener('resize', updateBackToTopVisibility);
+      
+      // Add click handler for back-to-top button
+      document.getElementById('back-to-top-fab').addEventListener('click', scrollToTop);
+      
+      // Initial check
+      updateBackToTopVisibility();
       
       // Handle hash changes (when user clicks anchor links)
       window.addEventListener('hashchange', expandDetailsForHash);
