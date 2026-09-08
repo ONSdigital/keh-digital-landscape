@@ -4,7 +4,6 @@ const {
   PutObjectCommand,
   ListObjectsV2Command,
 } = require('@aws-sdk/client-s3');
-require('dotenv').config();
 const logger = require('../config/logger');
 const postToWebhook = require('./alertService');
 
