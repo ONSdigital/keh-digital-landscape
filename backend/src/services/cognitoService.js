@@ -153,7 +153,7 @@ async function getUserInfo(req, res) {
     logger.error('JWT verification error:', { error: error.message });
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Error fetching user info: ${error.message}`,
+      message: `JWT verification error: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
