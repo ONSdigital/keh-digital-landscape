@@ -1,6 +1,6 @@
 const s3Service = require('./s3Service');
 const logger = require('../config/logger');
-const postToWebhook = require('../services/alertService');
+const postToWebhook = require('./alertService');
 
 const { TECH_RADAR_ENTRIES_FILENAME } = require('../constants');
 
