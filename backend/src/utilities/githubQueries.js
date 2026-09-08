@@ -93,9 +93,12 @@ const fetchUserRepositoriesInOrganisationPage = async (
       totalPages: pagination.totalPages,
     };
   } catch (error) {
-    postToWebhook({channel: process.env.CHANNEL_ID, message: `Failed to fetch repositories page for organisation: ${error.message}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `Failed to fetch repositories page for organisation: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw new Error(
       `Failed to fetch repositories page for organisation: ${error.message}`
     );
@@ -166,9 +169,12 @@ const fetchUserTeamsInOrganisationPage = async (
       totalPages: pagination.totalPages,
     };
   } catch (error) {
-    postToWebhook({channel: process.env.CHANNEL_ID, message: `Failed to fetch teams page for organisation: ${error.message}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `Failed to fetch teams page for organisation: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw new Error(
       `Failed to fetch teams page for organisation: ${error.message}`
     );
@@ -219,9 +225,12 @@ const fetchUserRepositoriesInOrganisation = async (userToken, organisation) => {
 
     return repositories.sort();
   } catch (error) {
-    postToWebhook({channel: process.env.CHANNEL_ID, message: `Failed to fetch repositories for organisation: ${error.message}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `Failed to fetch repositories for organisation: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw new Error(
       `Failed to fetch repositories for organisation: ${error.message}`
     );
@@ -271,9 +280,12 @@ const fetchUserTeamsInOrganisation = async (userToken, organisation) => {
 
     return teams.sort();
   } catch (error) {
-    postToWebhook({channel: process.env.CHANNEL_ID, message: `Failed to fetch teams for organisation: ${error.message}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `Failed to fetch teams for organisation: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw new Error(`Failed to fetch teams for organisation: ${error.message}`);
   }
 };

@@ -4,9 +4,9 @@ const {
   PutObjectCommand,
   ListObjectsV2Command,
 } = require('@aws-sdk/client-s3');
-require("dotenv").config();
+require('dotenv').config();
 const logger = require('../config/logger');
-const postToWebhook = require("./alertService");
+const postToWebhook = require('./alertService');
 
 /**
  * S3Service class for managing S3 operations
@@ -50,9 +50,12 @@ class S3Service {
       logger.error(`Error getting object from S3: ${bucket}/${key}`, {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `Error getting object from S3: ${bucket}/${key}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `Error getting object from S3: ${bucket}/${key}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }
@@ -80,9 +83,12 @@ class S3Service {
       logger.error(`Error putting object to S3: ${bucket}/${key}`, {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `Error putting object to S3: ${bucket}/${key}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `Error putting object to S3: ${bucket}/${key}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }
@@ -126,9 +132,12 @@ class S3Service {
           error: error.message,
         }
       );
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `Error listing objects in S3: ${bucket} with prefix ${prefix}`})
-      .then((result) => logger.info("Success:", result))
-      .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `Error listing objects in S3: ${bucket} with prefix ${prefix}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }

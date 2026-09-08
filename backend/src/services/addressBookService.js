@@ -36,9 +36,12 @@ class AddressBookService {
       logger.error('Error fetching address book data', {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `Error fetching address book data: ${error.message}`})
-        .then((result) => logger.info("Success:", result))
-        .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `Error fetching address book data: ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }

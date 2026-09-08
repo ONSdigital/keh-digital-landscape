@@ -27,7 +27,6 @@ async function getAccessToken() {
 }
 
 async function postToWebhook(obj) {
-  obj.message = "🚨 DIGITAL LANDSCAPE 🚨 <br/>" + obj.message;
   const token = await getAccessToken();
   const resp = await fetch(WEBHOOK_URL, {
     method: 'POST',

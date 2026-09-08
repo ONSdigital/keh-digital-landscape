@@ -54,9 +54,12 @@ class GitHubService {
       logger.error('GitHub API error while fetching team members:', {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `GitHub API error while fetching team members: ${error.message}`})
-        .then((result) => logger.info("Success:", result))
-        .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `GitHub API error while fetching team members: ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }
@@ -91,9 +94,12 @@ class GitHubService {
       logger.error("GitHub API error while fetching user's teams:", {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `GitHub API error while fetching user's teams: ${error.message}`})
-        .then((result) => logger.info("Success:", result))
-        .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `GitHub API error while fetching user's teams: ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }
@@ -123,9 +129,12 @@ class GitHubService {
       logger.error('GitHub API error while fetching team members:', {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `GitHub API error while fetching team members: ${error.message}`})
-        .then((result) => logger.info("Success:", result))
-        .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `GitHub API error while fetching team members: ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }

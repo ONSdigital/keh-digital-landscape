@@ -135,9 +135,12 @@ class TechRadarService {
       logger.error(`Error updating tech radar (${role}):`, {
         error: error.message,
       });
-      postToWebhook({channel: process.env.CHANNEL_ID, message: `Error updating tech radar (${role}): ${error.message}`})
-        .then((result) => logger.info("Success:", result))
-        .catch((err) => logger.error("Failed:", err.message));
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `Error updating tech radar (${role}): ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       throw error;
     }
   }
