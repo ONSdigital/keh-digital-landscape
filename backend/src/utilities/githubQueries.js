@@ -1,11 +1,11 @@
+const postToWebhook = require('../services/alertService');
+const logger = require('../config/logger');
 /**
  * Parse the GitHub Link header and extract pagination metadata.
  * @param {string|null} linkHeader - Value of the Link response header
  * @param {number} currentPage - Current requested page
  * @returns {{totalPages: number}}
  */
-const postToWebhook = require('../services/alertService');
-const logger = require('../config/logger');
 const parseGitHubPagination = (linkHeader, currentPage) => {
   if (!linkHeader) {
     return { totalPages: currentPage };
