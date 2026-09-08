@@ -425,11 +425,15 @@ body {
   transform: rotate(90deg);
 }
 
-.repository-detail-collapsible:not([open]) > .repository-detail-summary .expand-prompt::after {
+.repository-detail-collapsible:not([open])
+  > .repository-detail-summary
+  .expand-prompt::after {
   content: '[click to expand]';
 }
 
-.repository-detail-collapsible[open] > .repository-detail-summary .expand-prompt::after {
+.repository-detail-collapsible[open]
+  > .repository-detail-summary
+  .expand-prompt::after {
   content: '[click to collapse]';
 }
 
@@ -573,8 +577,6 @@ body {
   color: hsl(var(--fail));
   background: hsl(var(--fail) / 10%);
 }
-
-
 
 .github-link-button {
   display: inline-flex;

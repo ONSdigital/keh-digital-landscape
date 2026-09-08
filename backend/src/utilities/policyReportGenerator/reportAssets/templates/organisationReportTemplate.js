@@ -205,9 +205,9 @@ const buildSloMetricsPerRating = ({
   secretScanningSloRecord,
 }) => {
   const sloPerRating = {};
-  
+
   if (!repositoriesByName) return sloPerRating;
-  
+
   // Convert Map to entries if needed
   let repositories = [];
   if (repositoriesByName instanceof Map) {
@@ -219,13 +219,14 @@ const buildSloMetricsPerRating = ({
   }
 
   const dependabotRepos = dependabotSloRecord?.details?.repositories || {};
-  const secretScanningRepos = secretScanningSloRecord?.details?.repositories || {};
+  const secretScanningRepos =
+    secretScanningSloRecord?.details?.repositories || {};
 
   repositories.forEach(([repositoryName, repository]) => {
     if (!repository) return;
-    
+
     const rating = String(repository.rating || 'unrated').toLowerCase();
-    
+
     if (!sloPerRating[rating]) {
       sloPerRating[rating] = {
         dependabotBreaches: 0,
@@ -237,11 +238,18 @@ const buildSloMetricsPerRating = ({
 
     // Check if repository has Dependabot breaches
     Object.entries(dependabotRepos).forEach(([repoKey, alerts]) => {
-      if (repoKey.endsWith(`/${repositoryName}`) || repoKey === repositoryName) {
-        const alertCount = typeof alerts === 'number'
-          ? alerts
-          : Object.values(alerts).reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
-        
+      if (
+        repoKey.endsWith(`/${repositoryName}`) ||
+        repoKey === repositoryName
+      ) {
+        const alertCount =
+          typeof alerts === 'number'
+            ? alerts
+            : Object.values(alerts).reduce(
+                (sum, val) => sum + (typeof val === 'number' ? val : 0),
+                0
+              );
+
         if (alertCount > 0) {
           sloPerRating[rating].dependabotBreaches += 1;
           sloPerRating[rating].dependabotAlerts += alertCount;
@@ -251,11 +259,18 @@ const buildSloMetricsPerRating = ({
 
     // Check if repository has Secret Scanning breaches
     Object.entries(secretScanningRepos).forEach(([repoKey, alerts]) => {
-      if (repoKey.endsWith(`/${repositoryName}`) || repoKey === repositoryName) {
-        const alertCount = typeof alerts === 'number'
-          ? alerts
-          : Object.values(alerts).reduce((sum, val) => sum + (typeof val === 'number' ? val : 0), 0);
-        
+      if (
+        repoKey.endsWith(`/${repositoryName}`) ||
+        repoKey === repositoryName
+      ) {
+        const alertCount =
+          typeof alerts === 'number'
+            ? alerts
+            : Object.values(alerts).reduce(
+                (sum, val) => sum + (typeof val === 'number' ? val : 0),
+                0
+              );
+
         if (alertCount > 0) {
           sloPerRating[rating].secretScanningBreaches += 1;
           sloPerRating[rating].secretScanningAlerts += alertCount;
@@ -681,7 +696,7 @@ const buildOrganisationReportHtml = inputs => {
 
   const repositoryCheckRows = buildCheckPerformanceRows(sourceRepositoryChecks);
   const teamCheckRows = buildCheckPerformanceRows(sourceTeamChecks);
-  
+
   // Build SLO records first so we can calculate metrics per rating
   const sourceDependabotSloRecord = useVisibilityFiltering
     ? buildFilteredSloRecord({

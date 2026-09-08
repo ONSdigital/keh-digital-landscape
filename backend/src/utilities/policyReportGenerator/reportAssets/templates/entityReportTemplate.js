@@ -163,7 +163,7 @@ const buildRepositorySloDataByEntity = ({ entities, organisationChecks }) => {
       // Determine badge status and label
       let sloComplianceStatus = 'red'; // default: neither compliant
       let sloStatusLabel = 'SLOs Failing';
-      
+
       if (isDependabotCompliant && isSecretScanningCompliant) {
         sloComplianceStatus = 'green'; // both compliant
         sloStatusLabel = 'SLOs Passing';
@@ -250,8 +250,11 @@ ${cards.join('\n')}
   );
 };
 
-const calculateTotalSloAlerts = (repositorySloDataByEntity) => {
-  if (!repositorySloDataByEntity || Object.keys(repositorySloDataByEntity).length === 0) {
+const calculateTotalSloAlerts = repositorySloDataByEntity => {
+  if (
+    !repositorySloDataByEntity ||
+    Object.keys(repositorySloDataByEntity).length === 0
+  ) {
     return { totalDependabotAlerts: 0, totalSecretScanningAlerts: 0 };
   }
 
@@ -386,10 +389,10 @@ const renderEntitySummaryRows = ({
       const ratingCell = includeEntityRatings
         ? `<td><span class="pill rating ${escapeHtml(entityView.ratingClassName || 'rating-unrated')}">${escapeHtml(entityView.ratingLabel || 'Unrated')}</span></td>`
         : '';
-      
+
       let sloStatusCell = '';
       let sloAlertsCell = '';
-      
+
       if (isRepositoryReport && sloDataByEntity) {
         const sloData = sloDataByEntity[entityView.name];
         if (sloData) {
@@ -462,17 +465,18 @@ const renderEntityDetailBlocks = ({
       const ratingHeader = includeEntityRatings
         ? `            <span class="pill rating ${escapeHtml(entityView.ratingClassName || 'rating-unrated')}">${escapeHtml(entityView.ratingLabel || 'Unrated')}</span>`
         : '';
-      
-      const sloHeader = entityNounSingular === 'repository' && sloDataByEntity
-        ? (() => {
-            const sloData = sloDataByEntity[entityView.name];
-            if (sloData) {
-              const badgeClass = `slo-badge slo-badge-${sloData.sloComplianceStatus}`;
-              return `            <span class="pill ${badgeClass}">${escapeHtml(sloData.sloStatusLabel)}</span>`;
-            }
-            return '';
-          })()
-        : '';
+
+      const sloHeader =
+        entityNounSingular === 'repository' && sloDataByEntity
+          ? (() => {
+              const sloData = sloDataByEntity[entityView.name];
+              if (sloData) {
+                const badgeClass = `slo-badge slo-badge-${sloData.sloComplianceStatus}`;
+                return `            <span class="pill ${badgeClass}">${escapeHtml(sloData.sloStatusLabel)}</span>`;
+              }
+              return '';
+            })()
+          : '';
 
       const repositorySloSection =
         repositorySloCardsByEntity?.[entityView.name];
@@ -596,9 +600,8 @@ const buildEntityReportHtml = ({
   ).length;
   const complianceRate = percentage(assessedCount, totalSelected);
 
-  const { totalDependabotAlerts, totalSecretScanningAlerts } = calculateTotalSloAlerts(
-    repositorySloDataByEntity
-  );
+  const { totalDependabotAlerts, totalSecretScanningAlerts } =
+    calculateTotalSloAlerts(repositorySloDataByEntity);
 
   const reportHeaderHtml = buildReportHeaderHtml({
     heading: `${reportLabel} GitHub Usage Policy Report`,
@@ -632,7 +635,9 @@ ${reportHeaderHtml}
               <dd>${assessedCount} / ${totalSelected}</dd>
               <p class="kpi-sub">${complianceRate}% of selected ${escapeHtml(entityNounPlural)} are currently assessed as compliant.</p>
             </dl>
-            ${selectedInputKey === 'selectedRepositories' ? `
+            ${
+              selectedInputKey === 'selectedRepositories'
+                ? `
             <dl class="kpi">
               <dt>Dependabot SLO breaches</dt>
               <dd>${totalDependabotAlerts}</dd>
@@ -643,7 +648,9 @@ ${reportHeaderHtml}
               <dd>${totalSecretScanningAlerts}</dd>
               <p class="kpi-sub">${totalSecretScanningAlerts} repositor${totalSecretScanningAlerts === 1 ? 'y' : 'ies'} with open Secret Scanning alerts exceeding SLO.</p>
             </dl>
-            ` : ''}
+            `
+                : ''
+            }
           </div>
 
           <article class="block" id="summary-section">
