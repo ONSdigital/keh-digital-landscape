@@ -157,8 +157,8 @@ describe('entityReportTemplate', () => {
     expect(html).toContain('>3<');
     expect(html).toContain('>4<');
     expect(html).toContain('Critical');
-    expect(html.split('Dependabot SLO').length - 1).toBe(1);
-    expect(html.split('Secret Scanning SLO').length - 1).toBe(1);
+    expect(html.split('Dependabot SLO').length - 1).toBe(2);
+    expect(html.split('Secret Scanning SLO').length - 1).toBe(2);
     expect(html).toContain('No SLO alert breaches for this repository.');
     expect(html).toContain(
       'Source dataset file: dataset/20260723T121307Z.json'

@@ -250,6 +250,26 @@ ${cards.join('\n')}
   );
 };
 
+const calculateTotalSloAlerts = (repositorySloDataByEntity) => {
+  if (!repositorySloDataByEntity || Object.keys(repositorySloDataByEntity).length === 0) {
+    return { totalDependabotAlerts: 0, totalSecretScanningAlerts: 0 };
+  }
+
+  let totalDependabotAlerts = 0;
+  let totalSecretScanningAlerts = 0;
+
+  Object.values(repositorySloDataByEntity).forEach(sloData => {
+    if (!sloData.isDependabotCompliant) {
+      totalDependabotAlerts += 1;
+    }
+    if (!sloData.isSecretScanningCompliant) {
+      totalSecretScanningAlerts += 1;
+    }
+  });
+
+  return { totalDependabotAlerts, totalSecretScanningAlerts };
+};
+
 const encodePathSegments = value =>
   String(value || '')
     .split('/')
@@ -576,6 +596,10 @@ const buildEntityReportHtml = ({
   ).length;
   const complianceRate = percentage(assessedCount, totalSelected);
 
+  const { totalDependabotAlerts, totalSecretScanningAlerts } = calculateTotalSloAlerts(
+    repositorySloDataByEntity
+  );
+
   const reportHeaderHtml = buildReportHeaderHtml({
     heading: `${reportLabel} GitHub Usage Policy Report`,
     description: `Generated ${entityNounSingular}-level compliance report for selected ${entityNounPlural}.`,
@@ -603,11 +627,23 @@ ${reportHeaderHtml}
         </div>
         <div class="report-body">
           <div class="kpi-grid summary-kpi" aria-label="${escapeHtml(reportLabel)} compliance totals">
-            <dl class="kpi">
+            <dl class="kpi kpi-primary">
               <dt>Total ${escapeHtml(entityNounPlural)} compliant</dt>
               <dd>${assessedCount} / ${totalSelected}</dd>
               <p class="kpi-sub">${complianceRate}% of selected ${escapeHtml(entityNounPlural)} are currently assessed as compliant.</p>
             </dl>
+            ${selectedInputKey === 'selectedRepositories' ? `
+            <dl class="kpi">
+              <dt>Dependabot SLO breaches</dt>
+              <dd>${totalDependabotAlerts}</dd>
+              <p class="kpi-sub">${totalDependabotAlerts} repositor${totalDependabotAlerts === 1 ? 'y' : 'ies'} with open Dependabot alerts exceeding SLO.</p>
+            </dl>
+            <dl class="kpi">
+              <dt>Secret Scanning SLO breaches</dt>
+              <dd>${totalSecretScanningAlerts}</dd>
+              <p class="kpi-sub">${totalSecretScanningAlerts} repositor${totalSecretScanningAlerts === 1 ? 'y' : 'ies'} with open Secret Scanning alerts exceeding SLO.</p>
+            </dl>
+            ` : ''}
           </div>
 
           <article class="block">

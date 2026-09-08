@@ -163,7 +163,7 @@ body {
 }
 
 .kpi-grid.summary-kpi {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   margin-bottom: 12px;
 }
 
