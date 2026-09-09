@@ -301,9 +301,10 @@ const pluralize = (count, singular) =>
 const buildSloMetricItem = (
   label,
   breaches,
-  alerts
+  alerts,
+  colorClass
 ) => `<div class="rating-card-slo-item">
-                    <div class="rating-card-slo-heading">${label}</div>
+                    <div class="rating-card-slo-heading ${colorClass}">${label}</div>
                     <div class="rating-card-slo-value"><strong>${breaches}</strong> ${pluralize(breaches, 'breach')} (<strong>${alerts}</strong> ${pluralize(alerts, 'alert')})</div>
                   </div>`;
 
@@ -350,8 +351,8 @@ const buildRepositoryRatingCards = ({
       };
 
       const sloMetricsHtml = `<div class="rating-card-slo-metrics">
-                  ${buildSloMetricItem('Dependabot:', sloMetrics.dependabotBreaches, sloMetrics.dependabotAlerts)}
-                  ${buildSloMetricItem('Secret Scanning:', sloMetrics.secretScanningBreaches, sloMetrics.secretScanningAlerts)}
+                  ${buildSloMetricItem('Secret Scanning:', sloMetrics.secretScanningBreaches, sloMetrics.secretScanningAlerts, 'slo-secret-scanning')}
+                  ${buildSloMetricItem('Dependabot:', sloMetrics.dependabotBreaches, sloMetrics.dependabotAlerts, 'slo-dependabot')}
                 </div>`;
 
       return `              <article class="rating-stat-card">

@@ -316,6 +316,14 @@ body {
   margin-bottom: 2px;
 }
 
+.rating-card-slo-heading.slo-dependabot {
+  color: #7c3aed;
+}
+
+.rating-card-slo-heading.slo-secret-scanning {
+  color: #2563eb;
+}
+
 .rating-card-slo-value {
   color: hsl(var(--muted-foreground));
 }
