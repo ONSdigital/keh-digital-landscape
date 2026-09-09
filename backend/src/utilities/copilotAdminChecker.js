@@ -1,5 +1,6 @@
 const s3Service = require('../services/s3Service');
 const githubService = require('../services/githubService');
+const postToWebhook = require('../services/alertService');
 const logger = require('../config/logger');
 const { getTeamsHistoricDataWithCache } = require('./teamsHistoricCache');
 
@@ -40,6 +41,12 @@ async function checkCopilotAdminStatus(userToken) {
       logger.warn('Could not fetch admin_teams.json from S3:', {
         error: error.message,
       });
+      postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> Could not fetch admin_teams.json from S3: ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
       return {
         isAdmin: false,
         teams: userTeams,
@@ -63,6 +70,12 @@ async function checkCopilotAdminStatus(userToken) {
         logger.warn('Could not fetch teams_history.json from S3:', {
           error: error.message,
         });
+        postToWebhook({
+          channel: process.env.CHANNEL_ID,
+          message: `<b>🚨 Digital Landscape Error 🚨</b><br> Could not fetch teams_history.json from S3: ${error.message}`,
+        })
+          .then(result => logger.info('Success:', result))
+          .catch(err => logger.error('Failed:', err.message));
         // Fallback to user teams
         copilotTeams = userTeams;
       }
@@ -84,6 +97,12 @@ async function checkCopilotAdminStatus(userToken) {
     logger.error('Error checking copilot admin status:', {
       error: error.message,
     });
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error checking copilot admin status: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 }

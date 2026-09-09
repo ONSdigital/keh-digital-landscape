@@ -1,5 +1,6 @@
 const s3Service = require('./s3Service');
 const logger = require('../config/logger');
+const postToWebhook = require('./alertService');
 
 const BUCKET = 'policyAudit';
 const AUDIT_PREFIX = 'audit-results/';
@@ -60,6 +61,12 @@ const getPolicyReportOrganisationOptions = async () => {
     };
   } catch (error) {
     logger.error('Error fetching policy reports configuration:', error);
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching policy reports configuration: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 };
@@ -104,6 +111,12 @@ const getDatasetsByOrganisation = async organisation => {
       `Error fetching datasets for organisation ${organisation}:`,
       error
     );
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching datasets for organisation ${organisation}: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 };
@@ -142,6 +155,12 @@ const getDatasetEntities = async (organisation, datasetName) => {
       `Error fetching dataset entities for ${organisation}/${datasetName}:`,
       error
     );
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching dataset entities for ${organisation}/${datasetName}: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 };
