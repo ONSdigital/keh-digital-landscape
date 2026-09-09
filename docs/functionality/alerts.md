@@ -93,7 +93,7 @@ For the backend, we use the `postToWebhook` function for sending teams alerts. T
 
 The functionality for `postToWebhook` can be found in `backend/src/services/alertService.js` and the logger can be found in `backend/src/config/logger.js`.
 
-### Sending logs and alerts.
+### Sending logs and alerts
 
 Teams alerts should be sent out after an error has been logged. This is usually done on services that would be deemed critical. For instance, a good chunk of Digital Landscape's functionality would be rendered unusable if the S3 service were broken, and it would make sense to have an alert present in the event that happens.
 
@@ -125,7 +125,3 @@ try {
 
 - `channel`: This is the Teams channel where the alerts will be sent. Usually this will be defined in the `.env` file and so the channel will almost always be set to `process.env.CHANNEL_ID`.
 - `message`: The actual error message from the code that failed in the `try` block.
-
-
-
-
