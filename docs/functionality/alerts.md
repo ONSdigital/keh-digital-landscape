@@ -21,6 +21,7 @@ The following environment variables need to be set in the backend:
 - `AZURE_CLIENT_SECRET`
 - `WEBHOOK_SCOPE`
 - `WEBHOOK_URL` (the URL of the Azure webhook endpoint)
+- `CHANNEL_ID`
 
 More information on setting up alerts can be found in the README at the root of the project. See the Alerts (Azure Webhook) section within "Running the Project" for more details.
 
@@ -85,3 +86,46 @@ try {
   );
 }
 ```
+
+## Backend
+
+For the backend, we use the `postToWebhook` function for sending teams alerts. The function works similarly to the `sendAlert` function in the frontend and is used after a log has been sent. For logging we simply use `logger.error` when reporting errors.
+
+The functionality for `postToWebhook` can be found in `backend/src/services/alertService.js` and the logger can be found in `backend/src/config/logger.js`.
+
+### Sending logs and alerts.
+
+Teams alerts should be sent out after an error has been logged. This is usually done on services that would be deemed critical. For instance, a good chunk of Digital Landscape's functionality would be rendered unusable if the S3 service were broken, and it would make sense to have an alert present in the event that happens.
+
+### Example
+
+```javascript
+const logger = require('../config/logger');
+const postToWebhook = require('./alertService');
+
+try {
+  // Some code that may throw an error
+} catch (error) {
+    logger.error(`<summary of error message here>:`, {
+      error: error.message,
+    });
+    postToWebhook({
+        channel: process.env.CHANNEL_ID,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> <summary of error message here>: ${error.message}`,
+      })
+        .then(result => logger.info('Success:', result))
+        .catch(err => logger.error('Failed:', err.message));
+      throw error;
+}
+```
+
+#### postToWebhook parameters
+
+`postToWebhook` takes a single JSON structure that takes the following keys:
+
+- `channel`: This is the Teams channel where the alerts will be sent. Usually this will be defined in the `.env` file and so the channel will almost always be set to `process.env.CHANNEL_ID`.
+- `message`: The actual error message from the code that failed in the `try` block.
+
+
+
+
