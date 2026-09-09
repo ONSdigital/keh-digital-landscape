@@ -95,7 +95,7 @@ const fetchUserRepositoriesInOrganisationPage = async (
   } catch (error) {
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Failed to fetch repositories page for organisation: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Failed to fetch repositories page for organisation: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
@@ -171,7 +171,7 @@ const fetchUserTeamsInOrganisationPage = async (
   } catch (error) {
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Failed to fetch teams page for organisation: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Failed to fetch teams page for organisation: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
@@ -227,7 +227,7 @@ const fetchUserRepositoriesInOrganisation = async (userToken, organisation) => {
   } catch (error) {
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Failed to fetch repositories for organisation: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Failed to fetch repositories for organisation: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
@@ -282,7 +282,7 @@ const fetchUserTeamsInOrganisation = async (userToken, organisation) => {
   } catch (error) {
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Failed to fetch teams for organisation: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Failed to fetch teams for organisation: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));

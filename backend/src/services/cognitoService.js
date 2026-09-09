@@ -94,7 +94,7 @@ async function verifyJwt(req, res, next) {
     logger.error('JWT verification error:', { error: error.message });
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `JWT verification error: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> JWT verification error: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
@@ -153,7 +153,7 @@ async function getUserInfo(req, res) {
     logger.error('JWT verification error:', { error: error.message });
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `JWT verification error: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> JWT verification error: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));

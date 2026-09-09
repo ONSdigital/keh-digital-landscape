@@ -43,7 +43,7 @@ async function checkCopilotAdminStatus(userToken) {
       });
       postToWebhook({
         channel: process.env.CHANNEL_ID,
-        message: `Could not fetch admin_teams.json from S3: ${error.message}`,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> Could not fetch admin_teams.json from S3: ${error.message}`,
       })
         .then(result => logger.info('Success:', result))
         .catch(err => logger.error('Failed:', err.message));
@@ -72,7 +72,7 @@ async function checkCopilotAdminStatus(userToken) {
         });
         postToWebhook({
           channel: process.env.CHANNEL_ID,
-          message: `Could not fetch teams_history.json from S3: ${error.message}`,
+          message: `<b>🚨 Digital Landscape Error 🚨</b><br> Could not fetch teams_history.json from S3: ${error.message}`,
         })
           .then(result => logger.info('Success:', result))
           .catch(err => logger.error('Failed:', err.message));
@@ -99,7 +99,7 @@ async function checkCopilotAdminStatus(userToken) {
     });
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Error checking copilot admin status: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error checking copilot admin status: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));

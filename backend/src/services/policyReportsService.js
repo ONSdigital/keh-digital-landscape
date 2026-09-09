@@ -63,7 +63,7 @@ const getPolicyReportOrganisationOptions = async () => {
     logger.error('Error fetching policy reports configuration:', error);
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Error fetching policy reports configuration: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching policy reports configuration: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
@@ -113,7 +113,7 @@ const getDatasetsByOrganisation = async organisation => {
     );
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Error fetching datasets for organisation ${organisation}: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching datasets for organisation ${organisation}: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));
@@ -150,7 +150,7 @@ const getDatasetEntities = async (organisation, datasetName) => {
     );
     postToWebhook({
       channel: process.env.CHANNEL_ID,
-      message: `Error fetching dataset entities for ${organisation}/${datasetName}: ${error.message}`,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching dataset entities for ${organisation}/${datasetName}: ${error.message}`,
     })
       .then(result => logger.info('Success:', result))
       .catch(err => logger.error('Failed:', err.message));

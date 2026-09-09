@@ -51,7 +51,7 @@ class S3Service {
       });
       postToWebhook({
         channel: process.env.CHANNEL_ID,
-        message: `Error getting object from S3: ${bucket}/${key}: ${error.message}`,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error getting object from S3: ${bucket}/${key}: ${error.message}`,
       })
         .then(result => logger.info('Success:', result))
         .catch(err => logger.error('Failed:', err.message));
@@ -84,7 +84,7 @@ class S3Service {
       });
       postToWebhook({
         channel: process.env.CHANNEL_ID,
-        message: `Error putting object to S3: ${bucket}/${key}`,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error putting object to S3: ${bucket}/${key}: ${error.message}`,
       })
         .then(result => logger.info('Success:', result))
         .catch(err => logger.error('Failed:', err.message));
@@ -133,7 +133,7 @@ class S3Service {
       );
       postToWebhook({
         channel: process.env.CHANNEL_ID,
-        message: `Error listing objects in S3: ${bucket} with prefix ${prefix}`,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error listing objects in S3: ${bucket} with prefix ${prefix}: ${error.message}`,
       })
         .then(result => logger.info('Success:', result))
         .catch(err => logger.error('Failed:', err.message));

@@ -137,7 +137,7 @@ class TechRadarService {
       });
       postToWebhook({
         channel: process.env.CHANNEL_ID,
-        message: `Error updating tech radar (${role}): ${error.message}`,
+        message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error updating tech radar (${role}): ${error.message}`,
       })
         .then(result => logger.info('Success:', result))
         .catch(err => logger.error('Failed:', err.message));
