@@ -207,27 +207,23 @@ const getAlertCountFromSloRecord = alerts => {
   );
 };
 
-const repositoryMatchesSloRecord = (repoKey, repositoryName) =>
-  repoKey.endsWith(`/${repositoryName}`) || repoKey === repositoryName;
+const extractRepositoryNameSuffix = repoKey => {
+  const lastSlashIndex = repoKey.lastIndexOf('/');
+  return lastSlashIndex === -1
+    ? repoKey
+    : repoKey.substring(lastSlashIndex + 1);
+};
 
 const buildSloRepoMap = sloRepos => {
   const map = new Map();
   Object.entries(sloRepos).forEach(([repoKey, alerts]) => {
     const alertCount = getAlertCountFromSloRecord(alerts);
     if (alertCount > 0) {
-      map.set(repoKey, alertCount);
+      const suffix = extractRepositoryNameSuffix(repoKey);
+      map.set(suffix, alertCount);
     }
   });
   return map;
-};
-
-const findSloRecordForRepository = (sloMap, repositoryName) => {
-  for (const [repoKey, alertCount] of sloMap.entries()) {
-    if (repositoryMatchesSloRecord(repoKey, repositoryName)) {
-      return alertCount;
-    }
-  }
-  return null;
 };
 
 const buildSloMetricsPerRating = ({
@@ -272,21 +268,15 @@ const buildSloMetricsPerRating = ({
     }
 
     // Check Dependabot breaches
-    const dependabotAlertCount = findSloRecordForRepository(
-      dependabotMap,
-      repositoryName
-    );
-    if (dependabotAlertCount !== null) {
+    const dependabotAlertCount = dependabotMap.get(repositoryName);
+    if (dependabotAlertCount !== undefined) {
       sloPerRating[rating].dependabotBreaches += 1;
       sloPerRating[rating].dependabotAlerts += dependabotAlertCount;
     }
 
     // Check Secret Scanning breaches
-    const secretScanningAlertCount = findSloRecordForRepository(
-      secretScanningMap,
-      repositoryName
-    );
-    if (secretScanningAlertCount !== null) {
+    const secretScanningAlertCount = secretScanningMap.get(repositoryName);
+    if (secretScanningAlertCount !== undefined) {
       sloPerRating[rating].secretScanningBreaches += 1;
       sloPerRating[rating].secretScanningAlerts += secretScanningAlertCount;
     }
@@ -295,8 +285,14 @@ const buildSloMetricsPerRating = ({
   return sloPerRating;
 };
 
-const pluralize = (count, singular) =>
-  count === 1 ? singular : `${singular}s`;
+const pluralize = (count, singular) => {
+  if (count === 1) return singular;
+  // Handle words ending in 'ch' or 'sh' which need 'es'
+  if (singular.endsWith('ch') || singular.endsWith('sh')) {
+    return `${singular}es`;
+  }
+  return `${singular}s`;
+};
 
 const buildSloMetricItem = (
   label,

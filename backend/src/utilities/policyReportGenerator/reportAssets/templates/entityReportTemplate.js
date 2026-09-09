@@ -775,9 +775,6 @@ ${reportFooterHtml}
       
       // Initial check
       updateBackToTopVisibility();
-      
-      // Handle hash changes (when user clicks anchor links)
-      window.addEventListener('hashchange', expandDetailsForHash);
     </script>
     </main>`,
   });
