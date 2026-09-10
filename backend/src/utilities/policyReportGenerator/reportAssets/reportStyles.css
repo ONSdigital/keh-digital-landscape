@@ -24,6 +24,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -163,7 +164,7 @@ body {
 }
 
 .kpi-grid.summary-kpi {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   margin-bottom: 12px;
 }
 
@@ -295,6 +296,43 @@ body {
   font-size: 12px;
 }
 
+.rating-card-slo-metrics {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid hsl(var(--border));
+  font-size: 11px;
+}
+
+.rating-card-slo-item {
+  margin: 6px 0;
+}
+
+.rating-card-slo-heading {
+  color: hsl(var(--muted-foreground));
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.rating-card-slo-heading.slo-dependabot {
+  color: #7c3aed;
+}
+
+.rating-card-slo-heading.slo-secret-scanning {
+  color: #2563eb;
+}
+
+.rating-card-slo-value {
+  color: hsl(var(--muted-foreground));
+}
+
+.rating-card-slo-value strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
 .rating-criteria-collapsible {
   margin-top: 12px;
   padding-top: 10px;
@@ -339,10 +377,94 @@ body {
   flex-wrap: wrap;
 }
 
+.repository-detail-collapsible {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  margin-bottom: var(--space-section);
+}
+
+.repository-detail-summary {
+  cursor: pointer;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  user-select: none;
+  list-style: none;
+}
+
+.summary-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-right {
+  flex-shrink: 0;
+}
+
+.expand-prompt {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  margin-left: auto;
+}
+
+.repository-detail-summary::marker {
+  content: '';
+}
+
+.repository-detail-summary::-webkit-details-marker {
+  display: none;
+}
+
+.repository-detail-summary::before {
+  content: '▶';
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.2s ease;
+  display: inline-block;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.repository-detail-collapsible[open] > .repository-detail-summary::before {
+  transform: rotate(90deg);
+}
+
+.repository-detail-collapsible:not([open])
+  > .repository-detail-summary
+  .expand-prompt::after {
+  content: '[click to expand]';
+}
+
+.repository-detail-collapsible[open]
+  > .repository-detail-summary
+  .expand-prompt::after {
+  content: '[click to collapse]';
+}
+
+.repository-detail-summary:hover {
+  background: hsl(var(--secondary) / 50%);
+}
+
+.repository-detail-content {
+  border-top: 1px solid hsl(var(--border));
+  padding: 12px 16px;
+}
+
+.check-table-wrapper {
+  overflow-x: auto;
+  margin-top: 8px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
 .check-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
+  margin: 0;
 }
 
 .check-table th,
@@ -439,6 +561,29 @@ body {
   border-color: hsl(0 0% 20% / 60%);
   color: hsl(0 0% 18%);
   background: hsl(0 0% 20% / 12%);
+}
+
+.slo-badge {
+  text-transform: none;
+  font-weight: 600;
+}
+
+.slo-badge-green {
+  border-color: hsl(var(--pass) / 45%);
+  color: hsl(var(--pass));
+  background: hsl(var(--pass) / 10%);
+}
+
+.slo-badge-amber {
+  border-color: hsl(var(--warn) / 45%);
+  color: hsl(var(--warn));
+  background: hsl(var(--warn) / 10%);
+}
+
+.slo-badge-red {
+  border-color: hsl(var(--fail) / 45%);
+  color: hsl(var(--fail));
+  background: hsl(var(--fail) / 10%);
 }
 
 .github-link-button {
@@ -614,7 +759,44 @@ body {
   }
 }
 
+.back-to-top-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+}
+
+.back-to-top-fab-button {
+  display: inline-block;
+  padding: 12px 16px;
+  background: hsl(var(--primary));
+  color: hsl(var(--background));
+  border: none;
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 20%);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.back-to-top-fab-button:hover {
+  background: hsl(var(--foreground));
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 30%);
+}
+
 @media (width <= 640px) {
+  .back-to-top-fab {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .back-to-top-fab-button {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
   .page {
     padding: 12px;
   }

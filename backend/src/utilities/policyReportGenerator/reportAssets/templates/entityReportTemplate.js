@@ -136,6 +136,63 @@ const buildDependabotSeverityHtml = dependabotCounts => {
           </div>`;
 };
 
+const buildRepositorySloDataByEntity = ({ entities, organisationChecks }) => {
+  const dependabotRepositories =
+    organisationChecks?.dependabot_slo?.details?.repositories;
+  const secretScanningRepositories =
+    organisationChecks?.secret_scanning_slo?.details?.repositories;
+
+  return Object.fromEntries(
+    entities.map(repositoryName => {
+      const dependabotCounts = getRepositoryEntry({
+        repositories: dependabotRepositories,
+        repositoryName,
+      });
+      const secretScanningCounts = getRepositoryEntry({
+        repositories: secretScanningRepositories,
+        repositoryName,
+      });
+
+      const dependabotAlertCount = getAlertCount(dependabotCounts);
+      const secretScanningAlertCount = getAlertCount(secretScanningCounts);
+
+      // Determine compliance: 0 alerts means compliant
+      const isDependabotCompliant = dependabotAlertCount === 0;
+      const isSecretScanningCompliant = secretScanningAlertCount === 0;
+
+      // Determine badge status and label
+      let sloComplianceStatus = 'red'; // default: neither compliant
+      let sloStatusLabel = 'SLOs Failing';
+
+      if (isDependabotCompliant && isSecretScanningCompliant) {
+        sloComplianceStatus = 'green'; // both compliant
+        sloStatusLabel = 'SLOs Passing';
+      } else if (isDependabotCompliant || isSecretScanningCompliant) {
+        sloComplianceStatus = 'amber'; // one compliant
+        // Determine which one is failing
+        if (!isDependabotCompliant) {
+          sloStatusLabel = 'Dependabot Failing';
+        } else {
+          sloStatusLabel = 'Secret Scanning Failing';
+        }
+      }
+
+      return [
+        repositoryName,
+        {
+          totalAlertCount: dependabotAlertCount + secretScanningAlertCount,
+          dependabotAlertCount,
+          secretScanningAlertCount,
+          sloComplianceStatus,
+          sloStatusLabel,
+          isDependabotCompliant,
+          isSecretScanningCompliant,
+        },
+      ];
+    })
+  );
+};
+
 const buildRepositorySloCardsByEntity = ({ entities, organisationChecks }) => {
   const dependabotRepositories =
     organisationChecks?.dependabot_slo?.details?.repositories;
@@ -193,6 +250,29 @@ ${cards.join('\n')}
       ];
     })
   );
+};
+
+const calculateTotalSloAlerts = repositorySloDataByEntity => {
+  if (
+    !repositorySloDataByEntity ||
+    Object.keys(repositorySloDataByEntity).length === 0
+  ) {
+    return { totalDependabotAlerts: 0, totalSecretScanningAlerts: 0 };
+  }
+
+  let totalDependabotAlerts = 0;
+  let totalSecretScanningAlerts = 0;
+
+  Object.values(repositorySloDataByEntity).forEach(sloData => {
+    if (sloData.dependabotAlertCount) {
+      totalDependabotAlerts += sloData.dependabotAlertCount;
+    }
+    if (sloData.secretScanningAlertCount) {
+      totalSecretScanningAlerts += sloData.secretScanningAlertCount;
+    }
+  });
+
+  return { totalDependabotAlerts, totalSecretScanningAlerts };
 };
 
 const encodePathSegments = value =>
@@ -301,6 +381,8 @@ const renderEntitySummaryRows = ({
   entityViews,
   anchorPrefix,
   includeEntityRatings,
+  sloDataByEntity,
+  isRepositoryReport,
 }) =>
   entityViews
     .map(entityView => {
@@ -310,10 +392,27 @@ const renderEntitySummaryRows = ({
         ? `<td><span class="pill rating ${escapeHtml(entityView.ratingClassName || 'rating-unrated')}">${escapeHtml(entityView.ratingLabel || 'Unrated')}</span></td>`
         : '';
 
+      let sloStatusCell = '';
+      let sloAlertsCell = '';
+
+      if (isRepositoryReport && sloDataByEntity) {
+        const sloData = sloDataByEntity[entityView.name];
+        if (sloData) {
+          const badgeClass = `slo-badge slo-badge-${sloData.sloComplianceStatus}`;
+          sloStatusCell = `<td><span class="pill ${badgeClass}">${escapeHtml(sloData.sloStatusLabel)}</span></td>`;
+          sloAlertsCell = `<td>${sloData.totalAlertCount}</td>`;
+        } else {
+          sloStatusCell = '<td>-</td>';
+          sloAlertsCell = '<td>-</td>';
+        }
+      }
+
       return `                <tr>
                   <td><a href="#${anchorId}">${escapedEntity}</a></td>
                   ${ratingCell}
+                  ${sloStatusCell}
                   <td>${escapeHtml(entityView.checksPassedSummary)}</td>
+                  ${sloAlertsCell}
                 </tr>`;
     })
     .join('\n');
@@ -325,6 +424,7 @@ const renderEntityDetailBlocks = ({
   repositorySloCardsByEntity,
   organisation,
   includeEntityRatings,
+  sloDataByEntity,
 }) =>
   entityViews
     .map(entityView => {
@@ -368,6 +468,18 @@ const renderEntityDetailBlocks = ({
         ? `            <span class="pill rating ${escapeHtml(entityView.ratingClassName || 'rating-unrated')}">${escapeHtml(entityView.ratingLabel || 'Unrated')}</span>`
         : '';
 
+      const sloHeader =
+        entityNounSingular === 'repository' && sloDataByEntity
+          ? (() => {
+              const sloData = sloDataByEntity[entityView.name];
+              if (sloData) {
+                const badgeClass = `slo-badge slo-badge-${sloData.sloComplianceStatus}`;
+                return `            <span class="pill ${badgeClass}">${escapeHtml(sloData.sloStatusLabel)}</span>`;
+              }
+              return '';
+            })()
+          : '';
+
       const repositorySloSection =
         repositorySloCardsByEntity?.[entityView.name];
       const noRepositorySloBreachesMessage =
@@ -377,34 +489,44 @@ const renderEntityDetailBlocks = ({
           ? '            <p class="note repository-slo-clear-note">No SLO alert breaches for this repository.</p>'
           : '';
 
-      return `          <article class="block" id="${anchorId}">
-        <div class="detail-block-header">
-          <div class="detail-block-title-row">
-            <h3>${escapedEntity}</h3>
+      return `          <details class="repository-detail-collapsible" id="${anchorId}">
+            <summary class="repository-detail-summary">
+              <div class="summary-left">
+                <div class="detail-block-title-row">
+                  <h3>${escapedEntity}</h3>
 ${ratingHeader}
-          </div>
-    ${githubAction ? `              ${githubAction}` : ''}
-        </div>
-            <table class="check-table">
-              <colgroup>
-                <col style="width: 24%" />
-                <col style="width: 16%" />
-                <col style="width: 60%" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Check</th>
-                  <th>Result</th>
-                  <th>Detail</th>
-                </tr>
-              </thead>
-              <tbody>
+${sloHeader}
+                </div>
+              </div>
+              <span class="expand-prompt"></span>
+              <div class="summary-right">
+                ${githubAction ? `${githubAction}` : ''}
+              </div>
+            </summary>
+            <div class="repository-detail-content">
+            <div class="check-table-wrapper">
+              <table class="check-table">
+                <colgroup>
+                  <col style="width: 24%" />
+                  <col style="width: 16%" />
+                  <col style="width: 60%" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Check</th>
+                    <th>Result</th>
+                    <th>Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
 ${detailRows}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
 ${repositorySloSection || ''}
 ${noRepositorySloBreachesMessage}
-          </article>`;
+            </div>
+          </details>`;
     })
     .join('\n');
 
@@ -459,6 +581,13 @@ const buildEntityReportHtml = ({
           organisationChecks: sourceDatasetData.organisation_checks,
         })
       : {};
+  const repositorySloDataByEntity =
+    selectedInputKey === 'selectedRepositories'
+      ? buildRepositorySloDataByEntity({
+          entities,
+          organisationChecks: sourceDatasetData.organisation_checks,
+        })
+      : {};
   const safeEntities =
     entities.length > 0 ? entities : [`No ${entityNounPlural} selected`];
   const safeEntityViews =
@@ -472,6 +601,9 @@ const buildEntityReportHtml = ({
     entityView => entityView.isCompliant === true
   ).length;
   const complianceRate = percentage(assessedCount, totalSelected);
+
+  const { totalDependabotAlerts, totalSecretScanningAlerts } =
+    calculateTotalSloAlerts(repositorySloDataByEntity);
 
   const reportHeaderHtml = buildReportHeaderHtml({
     heading: `${reportLabel} GitHub Usage Policy Report`,
@@ -500,61 +632,87 @@ ${reportHeaderHtml}
         </div>
         <div class="report-body">
           <div class="kpi-grid summary-kpi" aria-label="${escapeHtml(reportLabel)} compliance totals">
-            <dl class="kpi">
+            <dl class="kpi kpi-primary">
               <dt>Total ${escapeHtml(entityNounPlural)} compliant</dt>
               <dd>${assessedCount} / ${totalSelected}</dd>
               <p class="kpi-sub">${complianceRate}% of selected ${escapeHtml(entityNounPlural)} are currently assessed as compliant.</p>
             </dl>
+            ${
+              selectedInputKey === 'selectedRepositories'
+                ? `
+            <dl class="kpi">
+              <dt>Dependabot SLO breaches</dt>
+              <dd>${totalDependabotAlerts}</dd>
+              <p class="kpi-sub">${totalDependabotAlerts} open alert${totalDependabotAlerts === 1 ? '' : 's'} from Dependabot exceeding SLO.</p>
+            </dl>
+            <dl class="kpi">
+              <dt>Secret Scanning SLO breaches</dt>
+              <dd>${totalSecretScanningAlerts}</dd>
+              <p class="kpi-sub">${totalSecretScanningAlerts} open alert${totalSecretScanningAlerts === 1 ? '' : 's'} from Secret Scanning exceeding SLO.</p>
+            </dl>
+            `
+                : ''
+            }
           </div>
 
-          <article class="block">
+          <article class="block" id="summary-section">
             <h3>Selected ${escapeHtml(entityNounPlural.charAt(0).toUpperCase() + entityNounPlural.slice(1))} Summary</h3>
-            <table class="check-table">
-              <colgroup>
-                ${
-                  includeEntityRatings
-                    ? '<col style="width: 52%" /><col style="width: 16%" /><col style="width: 32%" />'
-                    : '<col style="width: 68%" /><col style="width: 32%" />'
-                }
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>${escapeHtml(reportLabel)}</th>
-                  ${includeEntityRatings ? '<th>Rating</th>' : ''}
-                  <th>Checks passed</th>
-                </tr>
-              </thead>
-              <tbody>
+            <div class="check-table-wrapper">
+              <table class="check-table">
+                <colgroup>
+                  ${
+                    includeEntityRatings
+                      ? selectedInputKey === 'selectedRepositories'
+                        ? '<col style="width: 36%" /><col style="width: 12%" /><col style="width: 20%" /><col style="width: 16%" /><col style="width: 16%" />'
+                        : '<col style="width: 52%" /><col style="width: 16%" /><col style="width: 32%" />'
+                      : '<col style="width: 68%" /><col style="width: 32%" />'
+                  }
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>${escapeHtml(reportLabel)}</th>
+                    ${includeEntityRatings ? '<th>Rating</th>' : ''}
+                    ${includeEntityRatings && selectedInputKey === 'selectedRepositories' ? '<th>SLO Status</th>' : ''}
+                    <th>Checks passed</th>
+                    ${includeEntityRatings && selectedInputKey === 'selectedRepositories' ? '<th>SLO Alerts</th>' : ''}
+                  </tr>
+                </thead>
+                <tbody>
 ${renderEntitySummaryRows({
   entityViews: safeEntityViews,
   anchorPrefix: detailAnchorPrefix,
   includeEntityRatings,
+  sloDataByEntity: repositorySloDataByEntity,
+  isRepositoryReport: selectedInputKey === 'selectedRepositories',
 })}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
             ${
               includeEntityRatings
                 ? `<details class="collapsible-block rating-criteria-collapsible scorecard-help-card">
               <summary>What do these ratings mean?</summary>
               ${
                 scorecardCriteriaEntries.length > 0
-                  ? `<table class="check-table">
-                <colgroup>
-                  <col style="width: 20%" />
-                  <col style="width: 24%" />
-                  <col style="width: 56%" />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>Rating</th>
-                    <th>Minimum compliance</th>
-                    <th>Required checks</th>
-                  </tr>
-                </thead>
-                <tbody>
+                  ? `<div class="check-table-wrapper">
+                <table class="check-table">
+                  <colgroup>
+                    <col style="width: 20%" />
+                    <col style="width: 24%" />
+                    <col style="width: 56%" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Rating</th>
+                      <th>Minimum compliance</th>
+                      <th>Required checks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 ${scorecardCriteriaRows}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
               <p class="note">Repositories are shown as Unrated when they do not meet any configured scorecard threshold.</p>`
                   : '<p class="note">No scorecard criteria is present in this dataset.</p>'
               }
@@ -570,11 +728,54 @@ ${renderEntityDetailBlocks({
   repositorySloCardsByEntity,
   organisation,
   includeEntityRatings,
+  sloDataByEntity: repositorySloDataByEntity,
 })}
         </div>
       </section>
 
 ${reportFooterHtml}
+    <div id="back-to-top-fab" class="back-to-top-fab" style="display: none;">
+      <button class="back-to-top-fab-button">⬆ Back to Top</button>
+    </div>
+    <script>
+      function expandDetailsForHash() {
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+          const detailsElement = document.getElementById(hash);
+          if (detailsElement && detailsElement.tagName === 'DETAILS') {
+            detailsElement.open = true;
+            detailsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }
+
+      function updateBackToTopVisibility() {
+        const fab = document.getElementById('back-to-top-fab');
+        if (!fab) return;
+        
+        fab.style.display = window.scrollY > 300 ? 'block' : 'none';
+      }
+      
+      function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Handle hash on page load
+      window.addEventListener('load', expandDetailsForHash);
+      
+      // Handle hash changes (when user clicks anchor links)
+      window.addEventListener('hashchange', expandDetailsForHash);
+      
+      // Show/hide back-to-top button based on scroll
+      window.addEventListener('scroll', updateBackToTopVisibility);
+      window.addEventListener('resize', updateBackToTopVisibility);
+      
+      // Add click handler for back-to-top button
+      document.getElementById('back-to-top-fab').addEventListener('click', scrollToTop);
+      
+      // Initial check
+      updateBackToTopVisibility();
+    </script>
     </main>`,
   });
 };

@@ -199,11 +199,117 @@ const normaliseRepositoryRatings = repositoryRatings => {
   }, {});
 };
 
+const getAlertCountFromSloRecord = alerts => {
+  if (typeof alerts === 'number') return alerts;
+  return Object.values(alerts).reduce(
+    (sum, val) => sum + (typeof val === 'number' ? val : 0),
+    0
+  );
+};
+
+const extractRepositoryNameSuffix = repoKey => {
+  const lastSlashIndex = repoKey.lastIndexOf('/');
+  return lastSlashIndex === -1
+    ? repoKey
+    : repoKey.substring(lastSlashIndex + 1);
+};
+
+const buildSloRepoMap = sloRepos => {
+  const map = new Map();
+  Object.entries(sloRepos).forEach(([repoKey, alerts]) => {
+    const alertCount = getAlertCountFromSloRecord(alerts);
+    if (alertCount > 0) {
+      const suffix = extractRepositoryNameSuffix(repoKey);
+      map.set(suffix, alertCount);
+    }
+  });
+  return map;
+};
+
+const buildSloMetricsPerRating = ({
+  repositoriesByName,
+  dependabotSloRecord,
+  secretScanningSloRecord,
+}) => {
+  const sloPerRating = {};
+
+  if (!repositoriesByName) return sloPerRating;
+
+  // Convert Map to entries if needed
+  let repositories = [];
+  if (repositoriesByName instanceof Map) {
+    repositories = Array.from(repositoriesByName.entries());
+  } else if (typeof repositoriesByName === 'object') {
+    repositories = Object.entries(repositoriesByName);
+  } else {
+    return sloPerRating;
+  }
+
+  // Pre-build lookup maps for O(1) access per repository
+  const dependabotMap = buildSloRepoMap(
+    dependabotSloRecord?.details?.repositories || {}
+  );
+  const secretScanningMap = buildSloRepoMap(
+    secretScanningSloRecord?.details?.repositories || {}
+  );
+
+  repositories.forEach(([repositoryName, repository]) => {
+    if (!repository) return;
+
+    const rating = String(repository.rating || 'unrated').toLowerCase();
+
+    if (!sloPerRating[rating]) {
+      sloPerRating[rating] = {
+        dependabotBreaches: 0,
+        dependabotAlerts: 0,
+        secretScanningBreaches: 0,
+        secretScanningAlerts: 0,
+      };
+    }
+
+    // Check Dependabot breaches
+    const dependabotAlertCount = dependabotMap.get(repositoryName);
+    if (dependabotAlertCount !== undefined) {
+      sloPerRating[rating].dependabotBreaches += 1;
+      sloPerRating[rating].dependabotAlerts += dependabotAlertCount;
+    }
+
+    // Check Secret Scanning breaches
+    const secretScanningAlertCount = secretScanningMap.get(repositoryName);
+    if (secretScanningAlertCount !== undefined) {
+      sloPerRating[rating].secretScanningBreaches += 1;
+      sloPerRating[rating].secretScanningAlerts += secretScanningAlertCount;
+    }
+  });
+
+  return sloPerRating;
+};
+
+const pluralize = (count, singular) => {
+  if (count === 1) return singular;
+  // Handle words ending in 'ch' or 'sh' which need 'es'
+  if (singular.endsWith('ch') || singular.endsWith('sh')) {
+    return `${singular}es`;
+  }
+  return `${singular}s`;
+};
+
+const buildSloMetricItem = (
+  label,
+  breaches,
+  alerts,
+  colorClass
+) => `<div class="rating-card-slo-item">
+                    <div class="rating-card-slo-heading ${colorClass}">${label}</div>
+                    <div class="rating-card-slo-value"><strong>${breaches}</strong> ${pluralize(breaches, 'breach')} (<strong>${alerts}</strong> ${pluralize(alerts, 'alert')})</div>
+                  </div>`;
+
 const buildRepositoryRatingCards = ({
   repositoryRatings,
   comparisonRepositoryRatings,
   totalRepositories,
   scorecardCriteria,
+  sloMetricsPerRating,
 }) => {
   const ratingEntries = Object.entries(repositoryRatings || {})
     .filter(([, count]) => Number.isFinite(Number(count)))
@@ -233,11 +339,24 @@ const buildRepositoryRatingCards = ({
       const share = percentage(count, totalRepositories);
       const tierClass = getRatingTierClass(rating, sortedCriteriaEntries);
 
+      const sloMetrics = sloMetricsPerRating?.[rating] || {
+        dependabotBreaches: 0,
+        dependabotAlerts: 0,
+        secretScanningBreaches: 0,
+        secretScanningAlerts: 0,
+      };
+
+      const sloMetricsHtml = `<div class="rating-card-slo-metrics">
+                  ${buildSloMetricItem('Secret Scanning:', sloMetrics.secretScanningBreaches, sloMetrics.secretScanningAlerts, 'slo-secret-scanning')}
+                  ${buildSloMetricItem('Dependabot:', sloMetrics.dependabotBreaches, sloMetrics.dependabotAlerts, 'slo-dependabot')}
+                </div>`;
+
       return `              <article class="rating-stat-card">
                 <p class="rating-stat-heading"><span class="pill rating ${escapeHtml(tierClass)}">${escapeHtml(formatRatingLabel(rating))}</span></p>
                 <p class="rating-stat-value">${count}</p>
                 <p class="rating-stat-sub">${share}% of repositories</p>
                 <p class="rating-delta ${deltaView.className}">${escapeHtml(deltaView.text)}</p>
+                ${sloMetricsHtml}
               </article>`;
     })
     .join('\n');
@@ -593,15 +712,8 @@ const buildOrganisationReportHtml = inputs => {
 
   const repositoryCheckRows = buildCheckPerformanceRows(sourceRepositoryChecks);
   const teamCheckRows = buildCheckPerformanceRows(sourceTeamChecks);
-  const repositoryRatingCards = buildRepositoryRatingCards({
-    repositoryRatings: sourceRepositoryRatings,
-    comparisonRepositoryRatings,
-    totalRepositories: repositorySummary.total,
-    scorecardCriteria: sourceScorecardCriteria,
-  });
-  const scorecardCriteriaRows = buildScorecardCriteriaRows(
-    scorecardCriteriaEntries
-  );
+
+  // Build SLO records first so we can calculate metrics per rating
   const sourceDependabotSloRecord = useVisibilityFiltering
     ? buildFilteredSloRecord({
         sloRecord: sourceDatasetData.organisation_checks?.dependabot_slo,
@@ -614,6 +726,24 @@ const buildOrganisationReportHtml = inputs => {
         repositoriesByName: sourceRepositoryMetrics.repositoriesByName,
       })
     : sourceDatasetData.organisation_checks?.secret_scanning_slo;
+
+  // Calculate SLO metrics per rating
+  const sourceSloMetricsPerRating = buildSloMetricsPerRating({
+    repositoriesByName: sourceRepositoryMetrics.repositoriesByName,
+    dependabotSloRecord: sourceDependabotSloRecord,
+    secretScanningSloRecord: sourceSecretScanningSloRecord,
+  });
+
+  const repositoryRatingCards = buildRepositoryRatingCards({
+    repositoryRatings: sourceRepositoryRatings,
+    comparisonRepositoryRatings,
+    totalRepositories: repositorySummary.total,
+    scorecardCriteria: sourceScorecardCriteria,
+    sloMetricsPerRating: sourceSloMetricsPerRating,
+  });
+  const scorecardCriteriaRows = buildScorecardCriteriaRows(
+    scorecardCriteriaEntries
+  );
   const comparisonDependabotSloRecord = useVisibilityFiltering
     ? buildFilteredSloRecord({
         sloRecord: comparisonDatasetData?.organisation_checks?.dependabot_slo,
