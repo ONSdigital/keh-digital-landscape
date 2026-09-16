@@ -1,5 +1,6 @@
 const s3Service = require('./s3Service');
 const logger = require('../config/logger');
+const postToWebhook = require('./alertService');
 
 const BUCKET = 'policyAudit';
 const AUDIT_PREFIX = 'audit-results/';
@@ -60,6 +61,12 @@ const getPolicyReportOrganisationOptions = async () => {
     };
   } catch (error) {
     logger.error('Error fetching policy reports configuration:', error);
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching policy reports configuration: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 };
@@ -104,21 +111,32 @@ const getDatasetsByOrganisation = async organisation => {
       `Error fetching datasets for organisation ${organisation}:`,
       error
     );
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching datasets for organisation ${organisation}: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 };
 
 /**
- * Fetches repository and team names from a specific dataset audit file.
+ * Fetches repository visibility data and team names from a specific dataset audit file.
  * @param {string} organisation - The organisation folder name in S3
  * @param {string} datasetName - The dataset filename (UUID) without .json extension
- * @returns {Promise<{repositories: string[], teams: string[]}>}
+ * @returns {Promise<{repositories: Array<{name: string, visibility: string}>, teams: string[]}>}
  */
 const getDatasetEntities = async (organisation, datasetName) => {
   try {
     const data = await getDatasetAuditData(organisation, datasetName);
 
-    const repositories = Object.keys(data.repositories || {});
+    const repositories = Object.entries(data.repositories || {}).map(
+      ([name, repository]) => ({
+        name,
+        visibility: repository.visibility,
+      })
+    );
     const teams = Object.keys(data.teams || {});
 
     logger.info(
@@ -127,7 +145,9 @@ const getDatasetEntities = async (organisation, datasetName) => {
     );
 
     return {
-      repositories: repositories.sort(),
+      repositories: repositories.sort((left, right) =>
+        left.name.localeCompare(right.name)
+      ),
       teams: teams.sort(),
     };
   } catch (error) {
@@ -135,6 +155,12 @@ const getDatasetEntities = async (organisation, datasetName) => {
       `Error fetching dataset entities for ${organisation}/${datasetName}:`,
       error
     );
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> Error fetching dataset entities for ${organisation}/${datasetName}: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     throw error;
   }
 };

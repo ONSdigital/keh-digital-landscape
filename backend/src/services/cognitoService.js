@@ -1,6 +1,6 @@
 const logger = require('../config/logger');
 const { AlbJwtVerifier, CognitoJwtVerifier } = require('aws-jwt-verify');
-
+const postToWebhook = require('./alertService');
 // Helper function to get dev user
 const getDevUser = () =>
   createUserObject(
@@ -92,6 +92,12 @@ async function verifyJwt(req, res, next) {
     next();
   } catch (error) {
     logger.error('JWT verification error:', { error: error.message });
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> JWT verification error: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     return res
       .status(401)
       .json({ message: 'Unauthorized', error: error.message });
@@ -145,6 +151,12 @@ async function getUserInfo(req, res) {
     });
   } catch (error) {
     logger.error('JWT verification error:', { error: error.message });
+    postToWebhook({
+      channel: process.env.CHANNEL_ID,
+      message: `<b>🚨 Digital Landscape Error 🚨</b><br> JWT verification error: ${error.message}`,
+    })
+      .then(result => logger.info('Success:', result))
+      .catch(err => logger.error('Failed:', err.message));
     res.status(401).json({ message: 'Unauthorized', error: error.message });
   }
 }

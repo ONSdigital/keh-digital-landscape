@@ -249,6 +249,7 @@ describe('Policy Reports routes', () => {
             organisation: 'my-org',
             sourceDataset: '20260723T121307Z',
             comparisonDataset: '20260716T121307Z',
+            repositoryVisibility: ['public', 'private', 'internal'],
           },
         }),
       });
@@ -265,6 +266,27 @@ describe('Policy Reports routes', () => {
           }),
         })
       );
+    });
+
+    it('returns 400 when repository visibility is invalid', async () => {
+      const res = await fetch(`${baseUrl}/policy-reports/api/generateReport`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportType: 'organisation',
+          inputs: {
+            organisation: 'my-org',
+            sourceDataset: '20260723T121307Z',
+            repositoryVisibility: ['external'],
+          },
+        }),
+      });
+
+      expect(res.status).toBe(400);
+      await expect(res.json()).resolves.toEqual({
+        error:
+          'Choose at least one valid repository visibility: public, private or internal.',
+      });
     });
 
     it('returns 400 when organisation is missing', async () => {
@@ -347,7 +369,11 @@ describe('Policy Reports routes', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reportType: 'repository',
-          inputs: { organisation: 'my-org', sourceDataset: '20260723T121307Z' },
+          inputs: {
+            organisation: 'my-org',
+            sourceDataset: '20260723T121307Z',
+            repositoryVisibility: ['public'],
+          },
         }),
       });
 
@@ -378,6 +404,7 @@ describe('Policy Reports routes', () => {
             organisation: 'my-org',
             sourceDataset: '20260723T121307Z',
             comparisonDataset: '20260716T121307Z',
+            repositoryVisibility: ['public'],
           },
         }),
       });
@@ -457,7 +484,11 @@ describe('Policy Reports routes', () => {
 
     it('returns 200 with the intersection of dataset and user repositories', async () => {
       vi.spyOn(policyReportsService, 'getDatasetEntities').mockResolvedValue({
-        repositories: ['repo-a', 'repo-b', 'repo-c'],
+        repositories: [
+          { name: 'repo-a', visibility: 'public' },
+          { name: 'repo-b', visibility: 'private' },
+          { name: 'repo-c', visibility: 'internal' },
+        ],
         teams: [],
       });
       vi.spyOn(
@@ -477,7 +508,10 @@ describe('Policy Reports routes', () => {
       expect(res.status).toBe(200);
       await expect(res.json()).resolves.toEqual(
         expect.objectContaining({
-          repositories: ['repo-a', 'repo-c'],
+          repositories: [
+            { name: 'repo-a', visibility: 'public' },
+            { name: 'repo-c', visibility: 'internal' },
+          ],
           cacheUsed: false,
           cachedAt: expect.any(Number),
           githubCurrentPage: 1,

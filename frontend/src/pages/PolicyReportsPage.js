@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PageBanner from '../components/PageBanner/PageBanner';
 import Layout from '../components/Layout/Layout';
+import MultiSelect from '../components/MultiSelect/MultiSelect';
 import SelectableEntityReport from '../components/policyReports/SelectableEntityReport/SelectableEntityReport';
 import { fetchPolicyReportOrganisationOptions } from '../utilities/policyReports/getOrganisations';
 import { fetchDatasetsByOrganisation } from '../utilities/policyReports/getDatasets';
@@ -17,6 +18,14 @@ import { fetchDatasetTeamsForUser } from '../utilities/policyReports/getTeams';
 import { generatePolicyReport } from '../utilities/policyReports/generatePolicyReport';
 import '../styles/PolicyReportsPage.css';
 
+const REPOSITORY_VISIBILITIES = ['public', 'private', 'internal'];
+const REPOSITORY_VISIBILITY_OPTIONS = REPOSITORY_VISIBILITIES.map(
+  visibility => ({
+    value: visibility,
+    label: visibility,
+  })
+);
+
 const PolicyReportsPage = () => {
   const [reportConfig, setReportConfig] = useState({
     organisationOptions: [],
@@ -31,6 +40,13 @@ const PolicyReportsPage = () => {
   const [isGitHubAuthLoading, setIsGitHubAuthLoading] = useState(true);
   const [githubUsername, setGithubUsername] = useState(null);
   const [repositorySearch, setRepositorySearch] = useState('');
+  const [
+    organisationRepositoryVisibility,
+    setOrganisationRepositoryVisibility,
+  ] = useState(REPOSITORY_VISIBILITIES);
+  const [repositoryVisibility, setRepositoryVisibility] = useState(
+    REPOSITORY_VISIBILITIES
+  );
   const [teamSearch, setTeamSearch] = useState('');
   const [selectedRepositories, setSelectedRepositories] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -155,6 +171,8 @@ const PolicyReportsPage = () => {
       setComparisonDataset('');
       setSelectedRepositories([]);
       setSelectedTeams([]);
+      setOrganisationRepositoryVisibility(REPOSITORY_VISIBILITIES);
+      setRepositoryVisibility(REPOSITORY_VISIBILITIES);
       const fetched = await fetchDatasetsByOrganisation(organisation);
       setDatasets(fetched);
       setIsDatasetsLoading(false);
@@ -439,9 +457,22 @@ const PolicyReportsPage = () => {
     loadDatasetReposAndTeams,
   ]);
 
-  const matchingRepositories = repositoryOptions.filter(repo =>
-    repo.toLowerCase().includes(repositorySearch.trim().toLowerCase())
-  );
+  const matchingRepositories = repositoryOptions.filter(repositoryOption => {
+    const repository =
+      typeof repositoryOption === 'string'
+        ? { name: repositoryOption, visibility: '' }
+        : repositoryOption;
+    const searchTerm = repositorySearch.trim().toLowerCase();
+    const matchesSearch =
+      repository.name.toLowerCase().includes(searchTerm) ||
+      repository.visibility.includes(searchTerm);
+
+    return (
+      matchesSearch &&
+      (!repository.visibility ||
+        repositoryVisibility.includes(repository.visibility))
+    );
+  });
   const totalRepositoryPages = Math.max(
     1,
     Math.ceil(matchingRepositories.length / repositoryResultsPerPage)
@@ -503,6 +534,8 @@ const PolicyReportsPage = () => {
     setTotalAccessibleRepositories(0);
     setTotalAccessibleTeams(0);
     setRepositorySearch('');
+    setOrganisationRepositoryVisibility(REPOSITORY_VISIBILITIES);
+    setRepositoryVisibility(REPOSITORY_VISIBILITIES);
     setTeamSearch('');
     setRepositoryListPage(1);
     setTeamListPage(1);
@@ -515,6 +548,31 @@ const PolicyReportsPage = () => {
 
   const handleRepositorySearchChange = value => {
     setRepositorySearch(value);
+    setRepositoryListPage(1);
+  };
+
+  const getSelectedVisibilityOptions = visibility =>
+    REPOSITORY_VISIBILITY_OPTIONS.filter(option =>
+      visibility.includes(option.value)
+    );
+
+  const handleOrganisationVisibilityChange = selectedOptions => {
+    setOrganisationRepositoryVisibility(
+      selectedOptions.map(option => option.value)
+    );
+  };
+
+  const handleRepositoryVisibilityChange = selectedOptions => {
+    const nextVisibility = selectedOptions.map(option => option.value);
+    setRepositoryVisibility(nextVisibility);
+    setSelectedRepositories(selected =>
+      selected.filter(repositoryName => {
+        const repository = repositoryOptions.find(
+          option => option.name === repositoryName
+        );
+        return repository && nextVisibility.includes(repository.visibility);
+      })
+    );
     setRepositoryListPage(1);
   };
 
@@ -818,6 +876,20 @@ const PolicyReportsPage = () => {
                         </p>
                       )}
                     </div>
+                    <div className="policy-reports-field policy-reports-space-top-xs">
+                      <span className="policy-reports-section-label">
+                        Repository visibility
+                      </span>
+                      <MultiSelect
+                        options={REPOSITORY_VISIBILITY_OPTIONS}
+                        value={getSelectedVisibilityOptions(
+                          organisationRepositoryVisibility
+                        )}
+                        onChange={handleOrganisationVisibilityChange}
+                        placeholder="Select repository visibility"
+                        ariaLabel="Organisation repository visibility"
+                      />
+                    </div>
                     <div className="policy-reports-auth-row policy-reports-actions-row">
                       <button
                         className="policy-reports-btn policy-reports-btn-primary"
@@ -834,6 +906,8 @@ const PolicyReportsPage = () => {
                               comparisonDataset,
                               comparisonDatasetDisplay:
                                 getDatasetDisplayLabelByName(comparisonDataset),
+                              repositoryVisibility:
+                                organisationRepositoryVisibility,
                             },
                           })
                         }
@@ -972,6 +1046,20 @@ const PolicyReportsPage = () => {
                           </div>
                         ) : (
                           <>
+                            <div className="policy-reports-field policy-reports-space-top-xs">
+                              <span className="policy-reports-section-label">
+                                Repository visibility
+                              </span>
+                              <MultiSelect
+                                options={REPOSITORY_VISIBILITY_OPTIONS}
+                                value={getSelectedVisibilityOptions(
+                                  repositoryVisibility
+                                )}
+                                onChange={handleRepositoryVisibilityChange}
+                                placeholder="Select repository visibility"
+                                ariaLabel="Repository visibility"
+                              />
+                            </div>
                             <SelectableEntityReport
                               searchId="repository-search"
                               searchLabel="Search repositories"
@@ -1008,6 +1096,7 @@ const PolicyReportsPage = () => {
                                         sourceDataset
                                       ),
                                     selectedRepositories,
+                                    repositoryVisibility,
                                   },
                                 })
                               }

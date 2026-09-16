@@ -5,6 +5,75 @@ const require = createRequire(import.meta.url);
 const { buildOrganisationReportHtml } = require('./organisationReportTemplate');
 
 describe('organisationReportTemplate', () => {
+  it('filters repository metrics and SLO alerts by selected visibility', () => {
+    const buildDataset = (publicAlerts, privateAlerts) => ({
+      summary: {
+        total_repositories: 2,
+        compliant_repositories: 1,
+        total_teams: 1,
+        compliant_teams: 1,
+        repository_checks: { codeowners: { total: 2, compliant: 1 } },
+        team_checks: { team_maintainer: { total: 1, compliant: 1 } },
+        repository_ratings: { gold: 1, bronze: 1 },
+      },
+      repositories: {
+        'public-repository': {
+          visibility: 'public',
+          rating: 'gold',
+          is_compliant: true,
+          checks: { codeowners: { result: 'pass' } },
+        },
+        'private-repository': {
+          visibility: 'private',
+          rating: 'bronze',
+          is_compliant: false,
+          checks: { codeowners: { result: 'fail' } },
+        },
+      },
+      organisation_checks: {
+        dependabot_slo: {
+          result: 'fail',
+          details: {
+            failing_alerts: publicAlerts + privateAlerts,
+            total_repositories_affected: 2,
+            repositories: {
+              'example/public-repository': { high: publicAlerts },
+              'example/private-repository': { critical: privateAlerts },
+            },
+          },
+        },
+        secret_scanning_slo: {
+          result: 'fail',
+          details: {
+            repositories: {
+              'example/public-repository': 2,
+              'example/private-repository': 4,
+            },
+          },
+        },
+      },
+    });
+
+    const html = buildOrganisationReportHtml({
+      organisation: 'example',
+      sourceDataset: 'source',
+      sourceDatasetDisplay: 'Source',
+      comparisonDataset: 'comparison',
+      comparisonDatasetDisplay: 'Comparison',
+      repositoryVisibility: ['public'],
+      sourceDatasetData: buildDataset(5, 64),
+      comparisonDatasetData: buildDataset(2, 4),
+    });
+
+    expect(html).toContain('>1<');
+    expect(html).toContain('>100.0%<');
+    expect(html).toContain('>5<');
+    expect(html).toContain('<strong>1</strong> repositories affected by SLO');
+    expect(html).toContain('<strong>2</strong> open alerts breaching SLO');
+    expect(html).toContain('+3 vs comparison dataset.');
+    expect(html).not.toContain('>64<');
+  });
+
   it('renders organisation metadata and organisation-specific sections', () => {
     const html = buildOrganisationReportHtml({
       organisation: 'ONS-Innovation',
@@ -209,8 +278,8 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('Required checks');
     expect(html).toContain('No mandatory checks');
     expect(html).toContain('Repository Rating Breakdown');
-    expect(html).toContain('class="pill rating rating-gold"');
-    expect(html).toContain('class="pill rating rating-bronze"');
+    expect(html).toContain('class="pill rating rating-tier-2"');
+    expect(html).toContain('class="pill rating rating-tier-4"');
     expect(html).toContain(
       'class="rating-delta neutral">No change vs comparison dataset.</p>'
     );
@@ -325,18 +394,18 @@ describe('organisationReportTemplate', () => {
     expect(html).toContain('>67<');
     expect(html).toContain('>108<');
     expect(html).toContain('Repository Rating Breakdown');
-    expect(html).toContain('class="pill rating rating-platinum"');
+    expect(html).toContain('class="pill rating rating-tier-1"');
     expect(html).toContain('class="pill rating rating-unrated"');
-    expect(html.indexOf('rating-platinum')).toBeLessThan(
-      html.indexOf('rating-gold')
+    expect(html.indexOf('rating-tier-1')).toBeLessThan(
+      html.indexOf('rating-tier-2')
     );
-    expect(html.indexOf('rating-gold')).toBeLessThan(
-      html.indexOf('rating-silver')
+    expect(html.indexOf('rating-tier-2')).toBeLessThan(
+      html.indexOf('rating-tier-3')
     );
-    expect(html.indexOf('rating-silver')).toBeLessThan(
-      html.indexOf('rating-bronze')
+    expect(html.indexOf('rating-tier-3')).toBeLessThan(
+      html.indexOf('rating-tier-4')
     );
-    expect(html.indexOf('rating-bronze')).toBeLessThan(
+    expect(html.indexOf('rating-tier-4')).toBeLessThan(
       html.indexOf('rating-unrated')
     );
     expect(html).toContain(

@@ -110,12 +110,12 @@ describe('entityReportTemplate', () => {
 
     expect(html).toContain('Repository GitHub Usage Policy Report');
     expect(html).not.toContain('<th>GitHub</th>');
-    expect(html).toContain('class="detail-block-header"');
+    expect(html).toContain('class="repository-detail-collapsible"');
     expect(html).toContain('id="repo-alpha-data-pipeline"');
     expect(html).toContain('id="repo-beta-insights-service"');
     expect(html).toContain('<th>Rating</th>');
-    expect(html).toContain('class="pill rating rating-bronze"');
-    expect(html).toContain('class="pill rating rating-gold"');
+    expect(html).toContain('class="pill rating rating-tier-4"');
+    expect(html).toContain('class="pill rating rating-tier-2"');
     expect(html).toContain('What do these ratings mean?');
     expect(html).toContain('Minimum compliance');
     expect(html).toContain('Required checks');
@@ -132,10 +132,10 @@ describe('entityReportTemplate', () => {
     expect(html.split('View on GitHub').length - 1).toBe(2);
     expect(html).toContain('alpha-data-pipeline');
     expect(html).toMatch(
-      /alpha-data-pipeline<\/h3>\s*<span class="pill rating rating-bronze">Bronze<\/span>/
+      /alpha-data-pipeline<\/h3>\s*<span class="pill rating rating-tier-4">Bronze<\/span>/
     );
     expect(html).toMatch(
-      /beta-insights-service<\/h3>\s*<span class="pill rating rating-gold">Gold<\/span>/
+      /beta-insights-service<\/h3>\s*<span class="pill rating rating-tier-2">Gold<\/span>/
     );
     expect(html.indexOf('Selected Repositories Summary')).toBeLessThan(
       html.indexOf('What do these ratings mean?')
@@ -157,8 +157,8 @@ describe('entityReportTemplate', () => {
     expect(html).toContain('>3<');
     expect(html).toContain('>4<');
     expect(html).toContain('Critical');
-    expect(html.split('Dependabot SLO').length - 1).toBe(1);
-    expect(html.split('Secret Scanning SLO').length - 1).toBe(1);
+    expect(html.split('Dependabot SLO').length - 1).toBe(2);
+    expect(html.split('Secret Scanning SLO').length - 1).toBe(2);
     expect(html).toContain('No SLO alert breaches for this repository.');
     expect(html).toContain(
       'Source dataset file: dataset/20260723T121307Z.json'
@@ -213,7 +213,7 @@ describe('entityReportTemplate', () => {
     expect(html).toContain(
       'https://github.com/orgs/my-org/teams/platform-core'
     );
-    expect(html).toContain('class="detail-block-header"');
+    expect(html).toContain('class="repository-detail-collapsible"');
     expect(html).toContain('View on GitHub');
   });
 });

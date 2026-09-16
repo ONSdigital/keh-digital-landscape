@@ -50,7 +50,7 @@ describe('policyReportGenerator/functions/scorecard', () => {
       },
     ]);
 
-    expect(html).toContain('rating-gold');
+    expect(html).toContain('rating-tier-1');
     expect(html).toContain('90.0%');
     expect(html).toContain('Codeowners');
     expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');

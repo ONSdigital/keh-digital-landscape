@@ -1,6 +1,6 @@
 # Adding New Pages
 
-This guide walks through all the changes required to add a new page to the application, covering both the frontend and backend. The [GitHub Policy Reports page](../../frontend/src/pages/PolicyReportsPage.js) is used as a worked example throughout.
+This guide walks through all the changes required to add a new page to the application, covering both the frontend and backend. The GitHub Policy Reports page is used as a worked example throughout. See the [Policy Reports documentation](../pages/policyreports/index.md) for more details.
 
 ---
 
