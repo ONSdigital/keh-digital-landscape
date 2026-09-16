@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: keh-digital-landscape
+  description: Web application providing ONS insights into technology adoption, projects, statistics, GitHub Copilot usage, address book data, and policy compliance.
+  annotations:
+    github.com/project-slug: ONSdigital/keh-digital-landscape
+  links:
+    - url: https://onsdigital.github.io/keh-digital-landscape
+      title: Digital Landscape Documentation
+spec:
+  type: website
+  lifecycle: production
+  owner: keh-dev
