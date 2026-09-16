@@ -5,9 +5,20 @@ metadata:
   description: Web application providing ONS insights into technology adoption, projects, statistics, GitHub Copilot usage, address book data, and policy compliance.
   annotations:
     github.com/project-slug: ONSdigital/keh-digital-landscape
+  tags:
+    - javascript
+    - nodejs
+    - express
+    - react
+    - aws-ecs
+    - aws-fargate
+    - aws-secrets-manager
+    - aws-cognito
   links:
     - url: https://onsdigital.github.io/keh-digital-landscape
       title: Digital Landscape Documentation
+    - url: mailto:knowledge.exchange.hub@ons.gov.uk
+      title: Contact
 spec:
   type: website
   lifecycle: production
