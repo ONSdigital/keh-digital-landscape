@@ -12,3 +12,9 @@ spec:
   type: website
   lifecycle: production
   owner: keh-dev
+  dependsOn:
+    - component:default/github-copilot-usage-lambda
+    - component:default/keh-address-book-lambda
+    - component:default/keh-github-policy-audit
+    - component:default/keh-github-statistics-scraper
+    - component:default/keh-tech-audit-tool
