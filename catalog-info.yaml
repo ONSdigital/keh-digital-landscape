@@ -1,0 +1,31 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: keh-digital-landscape
+  description: Web application providing ONS insights into technology adoption, projects, statistics, GitHub Copilot usage, address book data, and policy compliance.
+  annotations:
+    github.com/project-slug: ONSdigital/keh-digital-landscape
+  tags:
+    - javascript
+    - nodejs
+    - express
+    - react
+    - aws-ecs
+    - aws-fargate
+    - aws-secrets-manager
+    - aws-cognito
+  links:
+    - url: https://onsdigital.github.io/keh-digital-landscape
+      title: Digital Landscape Documentation
+    - url: mailto:knowledge.exchange.hub@ons.gov.uk
+      title: Contact
+spec:
+  type: website
+  lifecycle: production
+  owner: keh-dev
+  dependsOn:
+    - component:default/github-copilot-usage-lambda
+    - component:default/keh-address-book-lambda
+    - component:default/keh-github-policy-audit
+    - component:default/keh-github-statistics-scraper
+    - component:default/keh-tech-audit-tool
