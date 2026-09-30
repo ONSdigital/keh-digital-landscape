@@ -1409,6 +1409,10 @@ const ReviewPage = () => {
                 <p>Quadrant:</p>
                 <p>{pendingNewTechnology.description}</p>
               </div>
+              <div>
+                <p>Tags:</p>
+                <p>{pendingNewTechnology.tags?.join(', ')}</p>
+              </div>
               <div className="modal-buttons">
                 <button
                   onClick={handleAddConfirmModalYes}
