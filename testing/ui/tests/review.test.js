@@ -44,6 +44,16 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
   await interceptAPIJsonCall({ page });
   await interceptAPICSVCall({ page });
   await interceptAPIDirectoratesCall({ page });
+  await page.route('**/user/api/info', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        user: { email: 'reviewer@example.test', groups: ['reviewer'] },
+        development_mode: false,
+      }),
+    })
+  );
 
   // Clear all cookies
   await page.context().clearCookies();
