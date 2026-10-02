@@ -951,9 +951,22 @@ const ReviewPage = () => {
      * @returns {Array} Filtered array of items matching search and category criteria
      */
     const filteredItems = items.filter(item => {
+      const searchTermLower = searchTerm.trim().toLowerCase();
+      const matchesTag = item.tags?.some(tag => {
+        const tagValue = String(tag).trim().toLowerCase();
+        const tagOption = TECHNOLOGY_TAG_OPTIONS.find(
+          option => option.value.toLowerCase() === tagValue
+        );
+
+        return (
+          tagValue.includes(searchTermLower) ||
+          tagOption?.label.toLowerCase().includes(searchTermLower)
+        );
+      });
       const matchesSearch =
-        searchTerm === '' ||
-        item.title.toLowerCase().includes(searchTerm.toLowerCase());
+        searchTermLower === '' ||
+        item.title.toLowerCase().includes(searchTermLower) ||
+        matchesTag;
       const matchesCategories =
         selectedCategories.length === 0 ||
         selectedCategories.some(cat => cat.value === item.description);

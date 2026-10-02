@@ -44,6 +44,16 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
   await interceptAPIJsonCall({ page });
   await interceptAPICSVCall({ page });
   await interceptAPIDirectoratesCall({ page });
+  await page.route('**/user/api/info', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        user: { email: 'reviewer@example.test', groups: ['reviewer'] },
+        development_mode: false,
+      }),
+    })
+  );
 
   // Clear all cookies
   await page.context().clearCookies();
@@ -99,6 +109,23 @@ test('Check that directorate dropdown is present and has expected options', asyn
   // Check that the default selected option is Digital Services (the default set in directorateData.js)
   const selectedValue = await directorateSelector.inputValue();
   expect(selectedValue).toBe('0');
+});
+
+test('Search finds technologies by tag label', async ({ page }) => {
+  const taggedRadarData = {
+    ...radarData,
+    entries: radarData.entries.map(entry =>
+      entry.id === 'test-java'
+        ? { ...entry, tags: ['machine-learning'] }
+        : entry
+    ),
+  };
+
+  await interceptAPICall({ page, mockedRadarData: taggedRadarData });
+
+  await page.getByPlaceholder('Search technologies...').fill('Machine Learning');
+
+  await expect(page.locator('.hold-box #technology-test-java')).toBeVisible();
 });
 
 test('Check technologies appear in the correct areas for different directorates', async ({
