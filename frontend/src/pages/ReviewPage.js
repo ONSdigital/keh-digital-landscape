@@ -49,6 +49,7 @@ const ReviewPage = () => {
   const [pendingNewTechnology, setPendingNewTechnology] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [showAddTechnologyModal, setShowAddTechnologyModal] = useState(false);
   const [showMoveModal, setShowMoveModal] = useState(false);
   const [pendingMove, setPendingMove] = useState(null);
@@ -950,13 +951,29 @@ const ReviewPage = () => {
      * @returns {Array} Filtered array of items matching search and category criteria
      */
     const filteredItems = items.filter(item => {
+      const searchTermLower = searchTerm.trim().toLowerCase();
+      const matchesTag = item.tags?.some(tag => {
+        const tagValue = String(tag).trim().toLowerCase();
+        const tagOption = TECHNOLOGY_TAG_OPTIONS.find(
+          option => option.value.toLowerCase() === tagValue
+        );
+
+        return (
+          tagValue.includes(searchTermLower) ||
+          tagOption?.label.toLowerCase().includes(searchTermLower)
+        );
+      });
       const matchesSearch =
-        searchTerm === '' ||
-        item.title.toLowerCase().includes(searchTerm.toLowerCase());
+        searchTermLower === '' ||
+        item.title.toLowerCase().includes(searchTermLower) ||
+        matchesTag;
       const matchesCategories =
         selectedCategories.length === 0 ||
         selectedCategories.some(cat => cat.value === item.description);
-      return matchesSearch && matchesCategories;
+      const matchesTags =
+        selectedTags.length === 0 ||
+        selectedTags.some(tag => item.tags?.includes(tag.value));
+      return matchesSearch && matchesCategories && matchesTags;
     });
 
     /**
@@ -1105,6 +1122,15 @@ const ReviewPage = () => {
                       value={selectedCategories}
                       onChange={setSelectedCategories}
                       placeholder="Select categories..."
+                    />
+                  </div>
+                  <div className="admin-filter-section">
+                    <h2>Filter by Tag</h2>
+                    <MultiSelect
+                      options={TECHNOLOGY_TAG_OPTIONS}
+                      value={selectedTags}
+                      onChange={setSelectedTags}
+                      placeholder="Select tags..."
                     />
                   </div>
                   <div className="admin-filter-section">
@@ -1395,6 +1421,10 @@ const ReviewPage = () => {
               <div>
                 <p>Quadrant:</p>
                 <p>{pendingNewTechnology.description}</p>
+              </div>
+              <div>
+                <p>Tags:</p>
+                <p>{pendingNewTechnology.tags?.join(', ')}</p>
               </div>
               <div className="modal-buttons">
                 <button

@@ -435,6 +435,7 @@ function RadarPage() {
       setSearchResults([]);
       return;
     }
+    const searchTermLower = term.trim().toLowerCase();
     const results = data.entries
       .filter(entry => {
         // Get the most recent timeline entry
@@ -445,10 +446,23 @@ function RadarPage() {
           return false;
         }
 
-        // Check if title or description matches search term
+        const matchesTag = entry.tags?.some(tag => {
+          const tagValue = String(tag).trim().toLowerCase();
+          const tagOption = TECHNOLOGY_TAG_OPTIONS.find(
+            option => option.value.toLowerCase() === tagValue
+          );
+
+          return (
+            tagValue.includes(searchTermLower) ||
+            tagOption?.label.toLowerCase().includes(searchTermLower)
+          );
+        });
+
+        // Check if title, description, or tag matches search term
         return (
-          entry.title.toLowerCase().includes(term.toLowerCase()) ||
-          entry.description.toLowerCase().includes(term.toLowerCase())
+          entry.title.toLowerCase().includes(searchTermLower) ||
+          entry.description.toLowerCase().includes(searchTermLower) ||
+          matchesTag
         );
       })
       .map(entry => ({
