@@ -10,7 +10,7 @@ const techRadarSubmissionsUrl =
   'https://example.test/mock-tech-radar-submissions';
 
 // Function to intercept and mock the API call
-const interceptAPICall = async ({ page }) => {
+const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
   // Function to intercept and mock the API radarData call
   const interceptAPIJsonCall = async ({ page }) => {
     // Intercept and mock the teams API response with teamsDummyData
@@ -18,7 +18,7 @@ const interceptAPICall = async ({ page }) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(radarData),
+        body: JSON.stringify(mockedRadarData),
       });
     });
   };
@@ -142,6 +142,26 @@ test('Check technology change suggestion message is displayed with repository li
   const suggestionLink = page.getByRole('link', { name: 'repository' });
   await expect(suggestionLink).toBeVisible();
   await expect(suggestionLink).toHaveAttribute('href', techRadarSubmissionsUrl);
+});
+
+test('Search finds technologies by tag label', async ({ page }) => {
+  const taggedRadarData = {
+    ...radarData,
+    entries: radarData.entries.map(entry =>
+      entry.id === 'test-java'
+        ? { ...entry, tags: ['machine-learning'] }
+        : entry
+    ),
+  };
+
+  await interceptAPICall({ page, mockedRadarData: taggedRadarData });
+  await expect(page.locator('g#blip-test-java')).toBeVisible();
+
+  await page.getByPlaceholder('Search technologies...').fill('Machine Learning');
+
+  const searchResults = page.locator('.search-result-item');
+  await expect(searchResults).toHaveCount(1);
+  await expect(searchResults).toContainText('Java');
 });
 
 // Multiple Directorate Support
