@@ -123,7 +123,9 @@ test('Search finds technologies by tag label', async ({ page }) => {
 
   await interceptAPICall({ page, mockedRadarData: taggedRadarData });
 
-  await page.getByPlaceholder('Search technologies...').fill('Machine Learning');
+  await page
+    .getByPlaceholder('Search technologies...')
+    .fill('Machine Learning');
 
   await expect(page.locator('.hold-box #technology-test-java')).toBeVisible();
 });

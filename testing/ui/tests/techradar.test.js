@@ -157,7 +157,9 @@ test('Search finds technologies by tag label', async ({ page }) => {
   await interceptAPICall({ page, mockedRadarData: taggedRadarData });
   await expect(page.locator('g#blip-test-java')).toBeVisible();
 
-  await page.getByPlaceholder('Search technologies...').fill('Machine Learning');
+  await page
+    .getByPlaceholder('Search technologies...')
+    .fill('Machine Learning');
 
   const searchResults = page.locator('.search-result-item');
   await expect(searchResults).toHaveCount(1);
