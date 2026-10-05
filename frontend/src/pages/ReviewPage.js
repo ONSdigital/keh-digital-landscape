@@ -11,6 +11,7 @@ import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
 import { useData } from '../contexts/dataContext';
 import { MarkdownText } from '../utilities/markdownRenderer';
 import { getRelatedTechnologiesByTags } from '../utilities/relatedTechnologies';
+import { matchesTechnologyTag } from '../utilities/matchesTechnologyTag';
 import { TECHNOLOGY_TAG_OPTIONS } from '../constants/technologyTagConstants';
 import { format, set } from 'date-fns';
 import { getDirectorates } from '../utilities/getDirectorates';
@@ -952,21 +953,10 @@ const ReviewPage = () => {
      */
     const filteredItems = items.filter(item => {
       const searchTermLower = searchTerm.trim().toLowerCase();
-      const matchesTag = item.tags?.some(tag => {
-        const tagValue = String(tag).trim().toLowerCase();
-        const tagOption = TECHNOLOGY_TAG_OPTIONS.find(
-          option => option.value.toLowerCase() === tagValue
-        );
-
-        return (
-          tagValue.includes(searchTermLower) ||
-          tagOption?.label.toLowerCase().includes(searchTermLower)
-        );
-      });
       const matchesSearch =
         searchTermLower === '' ||
         item.title.toLowerCase().includes(searchTermLower) ||
-        matchesTag;
+        matchesTechnologyTag(item.tags, searchTermLower);
       const matchesCategories =
         selectedCategories.length === 0 ||
         selectedCategories.some(cat => cat.value === item.description);

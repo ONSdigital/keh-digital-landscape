@@ -12,6 +12,7 @@ import ProjectModal from '../components/Projects/ProjectModal';
 import InfoBox from '../components/InfoBox/InfoBox';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
 import { getRelatedTechnologiesByTags } from '../utilities/relatedTechnologies';
+import { matchesTechnologyTag } from '../utilities/matchesTechnologyTag';
 import { TECHNOLOGY_TAG_OPTIONS } from '../constants/technologyTagConstants';
 import { getDirectorates } from '../utilities/getDirectorates';
 import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
@@ -446,23 +447,11 @@ function RadarPage() {
           return false;
         }
 
-        const matchesTag = entry.tags?.some(tag => {
-          const tagValue = String(tag).trim().toLowerCase();
-          const tagOption = TECHNOLOGY_TAG_OPTIONS.find(
-            option => option.value.toLowerCase() === tagValue
-          );
-
-          return (
-            tagValue.includes(searchTermLower) ||
-            tagOption?.label.toLowerCase().includes(searchTermLower)
-          );
-        });
-
         // Check if title, description, or tag matches search term
         return (
           entry.title.toLowerCase().includes(searchTermLower) ||
           entry.description.toLowerCase().includes(searchTermLower) ||
-          matchesTag
+          matchesTechnologyTag(entry.tags, searchTermLower)
         );
       })
       .map(entry => ({
