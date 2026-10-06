@@ -12,6 +12,7 @@ import ProjectModal from '../components/Projects/ProjectModal';
 import InfoBox from '../components/InfoBox/InfoBox';
 import { useTechnologyStatus } from '../utilities/getTechnologyStatus';
 import { getRelatedTechnologiesByTags } from '../utilities/relatedTechnologies';
+import { matchesTechnologyTag } from '../utilities/matchesTechnologyTag';
 import { TECHNOLOGY_TAG_OPTIONS } from '../constants/technologyTagConstants';
 import { getDirectorates } from '../utilities/getDirectorates';
 import { specialTechMatchers } from '../utilities/getSpecialTechMatchers';
@@ -435,6 +436,7 @@ function RadarPage() {
       setSearchResults([]);
       return;
     }
+    const searchTermLower = term.trim().toLowerCase();
     const results = data.entries
       .filter(entry => {
         // Get the most recent timeline entry
@@ -445,10 +447,11 @@ function RadarPage() {
           return false;
         }
 
-        // Check if title or description matches search term
+        // Check if title, description, or tag matches search term
         return (
-          entry.title.toLowerCase().includes(term.toLowerCase()) ||
-          entry.description.toLowerCase().includes(term.toLowerCase())
+          entry.title.toLowerCase().includes(searchTermLower) ||
+          entry.description.toLowerCase().includes(searchTermLower) ||
+          matchesTechnologyTag(entry.tags, searchTermLower)
         );
       })
       .map(entry => ({
