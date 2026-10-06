@@ -26,6 +26,12 @@ const REPOSITORY_VISIBILITY_OPTIONS = REPOSITORY_VISIBILITIES.map(
   })
 );
 
+// This is only temporary while we launch in a phased approach
+// This, and its related logic, can be removed once the phased launch is complete
+// In addition to this, activeReportTab has been defaulted to 'repository' instead of 'organisation' based on `SHOW_ORGANISATION_REPORT`
+// This will also need to be reverted once the phased launch is complete
+const SHOW_ORGANISATION_REPORT = process.env.NODE_ENV !== 'production';
+
 const PolicyReportsPage = () => {
   const [reportConfig, setReportConfig] = useState({
     organisationOptions: [],
@@ -51,7 +57,9 @@ const PolicyReportsPage = () => {
   const [selectedRepositories, setSelectedRepositories] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [persistedFormState, setPersistedFormState] = useState(null);
-  const [activeReportTab, setActiveReportTab] = useState('organisation');
+  const [activeReportTab, setActiveReportTab] = useState(
+    SHOW_ORGANISATION_REPORT ? 'organisation' : 'repository'
+  );
 
   // Track whether we're in the process of restoring form state
   const isRestoringFormState = persistedFormState !== null;
@@ -141,7 +149,11 @@ const PolicyReportsPage = () => {
           setOrganisation(formState.organisation);
           setPersistedFormState(formState);
         }
-        const validTabs = ['organisation', 'repository', 'team'];
+        const validTabs = [
+          ...(SHOW_ORGANISATION_REPORT ? ['organisation'] : []),
+          'repository',
+          'team',
+        ];
         if (
           formState.activeReportTab &&
           validTabs.includes(formState.activeReportTab)
@@ -790,17 +802,19 @@ const PolicyReportsPage = () => {
                     role="tablist"
                     aria-label="Report type"
                   >
-                    <button
-                      role="tab"
-                      aria-selected={activeReportTab === 'organisation'}
-                      aria-controls="panel-organisation"
-                      id="tab-organisation"
-                      className={`policy-reports-tab-btn${activeReportTab === 'organisation' ? ' policy-reports-tab-btn-active' : ''}`}
-                      type="button"
-                      onClick={() => setActiveReportTab('organisation')}
-                    >
-                      Organisation Report
-                    </button>
+                    {SHOW_ORGANISATION_REPORT && (
+                      <button
+                        role="tab"
+                        aria-selected={activeReportTab === 'organisation'}
+                        aria-controls="panel-organisation"
+                        id="tab-organisation"
+                        className={`policy-reports-tab-btn${activeReportTab === 'organisation' ? ' policy-reports-tab-btn-active' : ''}`}
+                        type="button"
+                        onClick={() => setActiveReportTab('organisation')}
+                      >
+                        Organisation Report
+                      </button>
+                    )}
                     <button
                       role="tab"
                       aria-selected={activeReportTab === 'repository'}
@@ -825,138 +839,142 @@ const PolicyReportsPage = () => {
                     </button>
                   </div>
 
-                  <section
-                    id="panel-organisation"
-                    role="tabpanel"
-                    aria-labelledby="organisation-report-title"
-                    className="policy-reports-tab-panel"
-                    hidden={activeReportTab !== 'organisation'}
-                  >
-                    <h3
-                      id="organisation-report-title"
-                      className="policy-reports-tab-panel-title"
+                  {SHOW_ORGANISATION_REPORT && (
+                    <section
+                      id="panel-organisation"
+                      role="tabpanel"
+                      aria-labelledby="organisation-report-title"
+                      className="policy-reports-tab-panel"
+                      hidden={activeReportTab !== 'organisation'}
                     >
-                      Organisation Report
-                    </h3>
-                    <div className="policy-reports-field policy-reports-space-top-xs">
-                      <label htmlFor="comparison-dataset">
-                        Comparison dataset
-                      </label>
-                      <select
-                        id="comparison-dataset"
-                        className={`policy-reports-select-input ${isUsingSourceAsComparison ? 'policy-reports-select-input-highlight' : ''}`}
-                        name="comparison-dataset"
-                        value={comparisonDataset}
-                        disabled={!hasOlderComparisonDatasets}
-                        onChange={event =>
-                          setComparisonDataset(event.target.value)
-                        }
+                      <h3
+                        id="organisation-report-title"
+                        className="policy-reports-tab-panel-title"
                       >
-                        {!hasOlderComparisonDatasets && (
-                          <option value={sourceDataset}>
-                            No older datasets available
-                          </option>
-                        )}
-                        {comparisonDatasetOptions.map(dataset => (
-                          <option key={dataset.name} value={dataset.name}>
-                            {formatDatasetDisplayLabel(dataset)}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="policy-reports-hint policy-reports-hint-tight">
-                        This will be used to compare the selected source dataset
-                        against the chosen comparison dataset to demonstrate
-                        changes in compliance over time.
-                      </p>
-                      {isUsingSourceAsComparison && (
-                        <p className="policy-reports-hint policy-reports-hint-tight">
-                          No older datasets are available for this source. The
-                          source dataset will be used as the comparison for this
-                          report.
-                        </p>
-                      )}
-                    </div>
-                    <div className="policy-reports-field policy-reports-space-top-xs">
-                      <span className="policy-reports-section-label">
-                        Repository visibility
-                      </span>
-                      <MultiSelect
-                        options={REPOSITORY_VISIBILITY_OPTIONS}
-                        value={getSelectedVisibilityOptions(
-                          organisationRepositoryVisibility
-                        )}
-                        onChange={handleOrganisationVisibilityChange}
-                        placeholder="Select repository visibility"
-                        ariaLabel="Organisation repository visibility"
-                      />
-                    </div>
-                    <div className="policy-reports-auth-row policy-reports-actions-row">
-                      <button
-                        className="policy-reports-btn policy-reports-btn-primary"
-                        type="button"
-                        disabled={isOrganisationReportGenerateDisabled}
-                        onClick={() =>
-                          handleGeneratePolicyReport({
-                            reportType: 'Organisation',
-                            inputs: {
-                              organisation,
-                              sourceDataset,
-                              sourceDatasetDisplay:
-                                getDatasetDisplayLabelByName(sourceDataset),
-                              comparisonDataset,
-                              comparisonDatasetDisplay:
-                                getDatasetDisplayLabelByName(comparisonDataset),
-                              repositoryVisibility:
-                                organisationRepositoryVisibility,
-                            },
-                          })
-                        }
-                      >
-                        {activeGenerationType === 'Organisation'
-                          ? 'Generating Organisation Report...'
-                          : 'Generate Organisation Report'}
-                      </button>
-                      {activeGenerationType === 'Organisation' && (
-                        <span
-                          className="policy-reports-generation-status"
-                          role="status"
+                        Organisation Report
+                      </h3>
+                      <div className="policy-reports-field policy-reports-space-top-xs">
+                        <label htmlFor="comparison-dataset">
+                          Comparison dataset
+                        </label>
+                        <select
+                          id="comparison-dataset"
+                          className={`policy-reports-select-input ${isUsingSourceAsComparison ? 'policy-reports-select-input-highlight' : ''}`}
+                          name="comparison-dataset"
+                          value={comparisonDataset}
+                          disabled={!hasOlderComparisonDatasets}
+                          onChange={event =>
+                            setComparisonDataset(event.target.value)
+                          }
                         >
-                          <span
-                            className="policy-reports-inline-spinner"
-                            aria-hidden="true"
-                          />
-                          Generating report...
+                          {!hasOlderComparisonDatasets && (
+                            <option value={sourceDataset}>
+                              No older datasets available
+                            </option>
+                          )}
+                          {comparisonDatasetOptions.map(dataset => (
+                            <option key={dataset.name} value={dataset.name}>
+                              {formatDatasetDisplayLabel(dataset)}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="policy-reports-hint policy-reports-hint-tight">
+                          This will be used to compare the selected source
+                          dataset against the chosen comparison dataset to
+                          demonstrate changes in compliance over time.
+                        </p>
+                        {isUsingSourceAsComparison && (
+                          <p className="policy-reports-hint policy-reports-hint-tight">
+                            No older datasets are available for this source. The
+                            source dataset will be used as the comparison for
+                            this report.
+                          </p>
+                        )}
+                      </div>
+                      <div className="policy-reports-field policy-reports-space-top-xs">
+                        <span className="policy-reports-section-label">
+                          Repository visibility
                         </span>
-                      )}
-                      {generationFeedbackType === 'Organisation' &&
-                        generationMessage && (
+                        <MultiSelect
+                          options={REPOSITORY_VISIBILITY_OPTIONS}
+                          value={getSelectedVisibilityOptions(
+                            organisationRepositoryVisibility
+                          )}
+                          onChange={handleOrganisationVisibilityChange}
+                          placeholder="Select repository visibility"
+                          ariaLabel="Organisation repository visibility"
+                        />
+                      </div>
+                      <div className="policy-reports-auth-row policy-reports-actions-row">
+                        <button
+                          className="policy-reports-btn policy-reports-btn-primary"
+                          type="button"
+                          disabled={isOrganisationReportGenerateDisabled}
+                          onClick={() =>
+                            handleGeneratePolicyReport({
+                              reportType: 'Organisation',
+                              inputs: {
+                                organisation,
+                                sourceDataset,
+                                sourceDatasetDisplay:
+                                  getDatasetDisplayLabelByName(sourceDataset),
+                                comparisonDataset,
+                                comparisonDatasetDisplay:
+                                  getDatasetDisplayLabelByName(
+                                    comparisonDataset
+                                  ),
+                                repositoryVisibility:
+                                  organisationRepositoryVisibility,
+                              },
+                            })
+                          }
+                        >
+                          {activeGenerationType === 'Organisation'
+                            ? 'Generating Organisation Report...'
+                            : 'Generate Organisation Report'}
+                        </button>
+                        {activeGenerationType === 'Organisation' && (
                           <span
-                            className="policy-reports-generation-success policy-reports-generation-note-inline"
+                            className="policy-reports-generation-status"
                             role="status"
                           >
-                            {generationMessage}
+                            <span
+                              className="policy-reports-inline-spinner"
+                              aria-hidden="true"
+                            />
+                            Generating report...
                           </span>
                         )}
-                      {generationFeedbackType === 'Organisation' &&
-                        generationError && (
+                        {generationFeedbackType === 'Organisation' &&
+                          generationMessage && (
+                            <span
+                              className="policy-reports-generation-success policy-reports-generation-note-inline"
+                              role="status"
+                            >
+                              {generationMessage}
+                            </span>
+                          )}
+                        {generationFeedbackType === 'Organisation' &&
+                          generationError && (
+                            <span
+                              className="policy-reports-generation-error policy-reports-generation-note-inline"
+                              role="alert"
+                            >
+                              {generationError}
+                            </span>
+                          )}
+                        {!comparisonDataset && (
                           <span
-                            className="policy-reports-generation-error policy-reports-generation-note-inline"
+                            className="policy-reports-generation-error"
                             role="alert"
                           >
-                            {generationError}
+                            A comparison dataset is required for organisation
+                            reports.
                           </span>
                         )}
-                      {!comparisonDataset && (
-                        <span
-                          className="policy-reports-generation-error"
-                          role="alert"
-                        >
-                          A comparison dataset is required for organisation
-                          reports.
-                        </span>
-                      )}
-                    </div>
-                  </section>
+                      </div>
+                    </section>
+                  )}
 
                   <section
                     id="panel-repository"
