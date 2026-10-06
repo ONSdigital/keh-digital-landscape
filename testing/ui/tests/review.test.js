@@ -44,6 +44,16 @@ const interceptAPICall = async ({ page, mockedRadarData = radarData }) => {
   await interceptAPIJsonCall({ page });
   await interceptAPICSVCall({ page });
   await interceptAPIDirectoratesCall({ page });
+  await page.route('**/user/api/info', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        user: { email: 'reviewer@example.test', groups: ['reviewer'] },
+        development_mode: false,
+      }),
+    })
+  );
 
   // Clear all cookies
   await page.context().clearCookies();
@@ -99,6 +109,25 @@ test('Check that directorate dropdown is present and has expected options', asyn
   // Check that the default selected option is Digital Services (the default set in directorateData.js)
   const selectedValue = await directorateSelector.inputValue();
   expect(selectedValue).toBe('0');
+});
+
+test('Search finds technologies by tag label', async ({ page }) => {
+  const taggedRadarData = {
+    ...radarData,
+    entries: radarData.entries.map(entry =>
+      entry.id === 'test-java'
+        ? { ...entry, tags: ['machine-learning'] }
+        : entry
+    ),
+  };
+
+  await interceptAPICall({ page, mockedRadarData: taggedRadarData });
+
+  await page
+    .getByPlaceholder('Search technologies...')
+    .fill('Machine Learning');
+
+  await expect(page.locator('.hold-box #technology-test-java')).toBeVisible();
 });
 
 test('Check technologies appear in the correct areas for different directorates', async ({
@@ -280,16 +309,16 @@ test('Related technologies update when tags are edited', async ({ page }) => {
   // Open edit mode
   await page.getByRole('button', { name: /edit/i }).click();
 
+  const infoBox = page.locator('.info-box');
+
   // Open tags multiselect
-  await page.locator('[placeholder="Select tags..."]').click();
+  await infoBox.getByPlaceholder('Select tags...').click();
 
   // Add Machine Learning tag
-  await page
+  await infoBox
     .locator('.multi-select-option')
     .filter({ hasText: 'Machine Learning' })
     .click();
-
-  const infoBox = page.locator('.info-box');
 
   await infoBox
     .getByRole('combobox', { name: 'Search options' })
@@ -350,13 +379,13 @@ test('Adding a technology with tags saves tag values', async ({ page }) => {
   await page.getByLabel('Enter Technology Name').fill(techName);
   await page.getByLabel('Select Category').selectOption('Frameworks');
 
-  await page.locator('[placeholder="Select tags..."]').click();
-  await page
+  await addFormModal.getByPlaceholder('Select tags...').click();
+  await addFormModal
     .locator('.multi-select-option')
     .filter({ hasText: 'Machine Learning' })
     .click();
 
-  await page
+  await addFormModal
     .locator('.multi-select-option')
     .filter({ hasText: 'Data Processing' })
     .click();
